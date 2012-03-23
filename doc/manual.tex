@@ -1,5 +1,6 @@
 \documentclass{article}
 \usepackage{fullpage}
+\usepackage{moreverb}
 \begin{document}
 
 \title{Manual of Disambiguation}
@@ -22,9 +23,8 @@ probability of match between two records based
 on the comparison between the two records in significant 
 attributes such as names, geographical location and companies, 
 etc. The algorithm includes three major steps: 1. Blocking,
- 2. Training, and 3. Disambiguation. 
-
-The details of each step are described in the following sections.
+2. Training, and 3. Disambiguation.  The details of each 
+step are described in the following sections.
 
 The source code is written in C++ and uses many features 
 of C++, such as polymorphism, template, STL library, etc. 
@@ -70,11 +70,11 @@ Iterative blocking in a permissive way is applied in the
 disambiguation, because it is assumed that after each round 
 of disambiguation, blocks are well disambiguated and thus 
 similar and/or more stringent blockings are meaningless. 
-For example, the first round of blocking is “exact 
-first names + exact last names”, the second can 
-be “first 5 characters of first names + first 8 characters 
-of last names”, and the third round can be “first 
-3 characters of first names + first 5 characters of last names”.
+For example, the first round of blocking is exact 
+first names + exact last names, the second can 
+be first 5 characters of first names + first 8 characters 
+of last names, and the third round can be first 
+3 characters of first names + first 5 characters of last names.
 
 
 \subsection{Training}
@@ -241,7 +241,7 @@ Download from website and install.
 
 \subsubsection{Configure Makefile}
 
-Edit the file “makefile” in the source code package. 
+Edit the file \texttt{makefile} in the source code package. 
 Things include
 
 \begin{itemize}
@@ -263,7 +263,7 @@ pthread library, etc).
 \subsubsection{Compile}
 
 In the command line, in the directory where the 
-file “makefile” is, type “make”. 
+file makefile is, type “make”. 
 Source codes will compile automatically. A successful 
 compilation will generate several executables, namely
 “exedisambig” and “txt2sqlite3”. 
@@ -286,52 +286,78 @@ the disambiguation engine and the blocking rules.
 
 The configuration of the disambiguation engine includes the following items:
 
- Working directory: the directory where all the intermediary 
+\begin{itemize}
+
+\item Working directory: the directory where all the intermediary 
 and final files will be saved.
 
- Original CSV File: the source database of disambiguation in 
+\item Original CSV File: the source database of disambiguation in 
 text format, which is usually exported from a SQL database. 
 The first line of the file consists of names of each
 attribute/column, and the rest lines are data.
 
- Number of threads: the number of maximum threads to 
-allow multi-threading of the program.
+\item Number of threads: the number of maximum threads to 
+allow multi-threading of the program. Usually it is set to 
+be the number of CPUs in the computer.
 
-Usually it is set to be the number of CPUs in the computer.
-
- Generate stable training sets: match and non-match training sets from rare names are usually
-very stable. Therefore, if those training sets already exist, this switch can be set to “false”.
-However, since the creation of the stable training sets generally does not take too much time,
+\item  Generate stable training sets: match and non-match 
+training sets from rare names are usually very stable. Therefore, 
+if those training sets already exist, this switch can be set 
+to false. However, since the creation of the stable 
+training sets generally does not take too much time,
 it is usually recommended to be “true”.
- Use available ratios database: this switch controls whether or not training should take place.
-Since training is usually somewhat time-costly (~4 hours), this switch can be set to “true” if
-training is unnecessary, such as when debugging. But generally this option should be set to
-“false”.
- Thresholds: the thresholds series to determine whether or not two records are a match should
-be set in a permissive way, such as “0.99, 0.98, 0.95”. The reason to do this is to allow most
-similar records conglomerate first, which can help improve the accuracy.
- Necessary attributes: This option selects those necessary attributes to load into the memory
-from the original CSV file, because not all the data in the original CSV file need to be loaded.
-These necessary attributes should be exactly the same as those appearing in the first line of
-the CSV file.
- Adjust prior by frequency: This option controls the evaluation of the priori probability for
-each block. It is an option that should always set to be “true” unless modification of the code
-occurs after thorough understanding of the code.
- Debug mode: this switch indicates whether the program is for debugging or not. Set to “false”
-if a normal disambiguation is desired. In debug mode, the program will look for the debug
-configuration file “debug\_block\_x.txt” in the working directory, where x is the current round
-of disambiguation. The debug configuration file contains all the specified blocks that are of
-interest, and the program only disambiguates those blocks.
- Number of training pairs: the maximum of pairs of records obtained for training. Usually set
-to 10 million.
- Starting round: this number specifies the round of disambiguation to start with.
- Starting file: this string specifies the file of previous disambiguation result from which the
-disambiguation starts. If the starting round is 1, the starting file just needs to be a valid
-location in the file system, because it will be automatically created or overwritten.
- Postprocess after each round: the switch determines whether or not post-processing should be
-applied after each round of disambiguation. It can be either “true” or “false”, although “true”
-is recommended.
 
+
+\item Use available ratios database: this switch controls 
+whether or not training should take place. Since training is 
+usually somewhat time-costly (~4 hours), this switch can be 
+set to “true” if training is unnecessary, such as 
+when debugging. But generally this option should be set to false.
+
+\item Thresholds: the thresholds series to determine whether 
+or not two records are a match should be set in a permissive way, 
+such as “0.99, 0.98, 0.95”. The reason to do this is to allow most
+similar records conglomerate first, which can help improve the accuracy.
+
+\item Necessary attributes: This option selects those necessary 
+attributes to load into the memory from the original CSV file, 
+because not all the data in the original CSV file need to be loaded.
+These necessary attributes should be exactly the same as those 
+appearing in the first line of the CSV file.
+
+\item Adjust prior by frequency: This option controls the evaluation 
+of the priori probability for each block. It is an option that 
+should always set to be true unless modification of the code
+occurs after thorough understanding of the code.
+
+\item Debug mode: this switch indicates whether the program is 
+for debugging or not. Set to \texttt{false} if a normal 
+disambiguation is desired. In debug mode, the program will 
+look for the debug configuration file debug\_block\_x.txt 
+in the working directory, where x is the current round
+of disambiguation. The debug configuration file contains all 
+the specified blocks that are of interest, and the program only 
+disambiguates those blocks.
+
+\item Number of training pairs: the maximum of pairs of records 
+obtained for training. Usually set to 10 million.
+
+\item Starting round: this number specifies the round of 
+disambiguation to start with.
+
+\item Starting file: this string specifies the file of previous 
+disambiguation result from which the disambiguation starts. If the
+starting round is 1, the starting file just needs to be a valid
+location in the file system, because it will be automatically 
+created or overwritten.
+
+
+\item Postprocess after each round: the switch determines whether 
+or not post-processing should be applied after each round of 
+disambiguation. It can be either true or false,
+although true is recommended.
+
+\end{itemize}
 
 \subsubsection{Blocking Configuration}
 
@@ -340,6 +366,7 @@ The blocking configuration file determines the blocking
 rules and the similarity profile components
 for each round of disambiguation. It is in the format of:
 
+\begin{verbatim}
 [ Round X ]
 
 Attribute Name 1: String Manipulation parameters
@@ -353,8 +380,12 @@ Attribute Name 1: String Manipulation parameters
 …
 Attribute Name N: String Manipulation parameters
 Active Similarity Attributes: attribute names of similarity profile components.
+\end{verbatim}
+
+
 In the current engine, a typical example is:
 
+\begin{verbatim}
 [ Round 5 ]
 
 Firstname: 1 : 0 , 3 , true
@@ -362,19 +393,32 @@ Middlename: 1 : 0 , 0 , false
 Lastname: 0 : 0, 5, true
 ACTIVE SIMILARITY ATTRIBUTES: Firstname, Middlename, Lastname, Latitude, Coauthor,
 Assignee
-This means that the blocking identification for round 5 is created from three attributes:
- First name: the raw data is read from the index 1 position of the first name attribute object ( see
-more details in source codes), and is truncated from the index 0 position of the string for a
-maximum length of 3 characters in a forward direction ( left to right ).
- Middle name: the raw data is read from the index 1 position of the middle name attribute object
-( see more details in source codes), and is truncated from the index 0 position of the string for a
-maximum length of 0 characters in a backward direction ( right to left ).
- Last name: the raw data is read from the index 0 position of the last name attribute object ( see
-more details in source codes), and is truncated from the index 0 position of the string for a
-maximum length of 5 characters in a forward direction ( left to right ).
-And the components of similarity profiles are: first name, middle name, last name, latitude
-(geographical location), coauthor, assignee (company).
+\end{verbatim}
 
+
+This means that the blocking identification for round 5 is 
+created from three attributes:
+
+\begin{itemize}
+
+\item First name: the raw data is read from the index 1 position 
+of the first name attribute object (see more details in source codes), 
+and is truncated from the index 0 position of the string for a
+maximum length of 3 characters in a forward direction ( left to right ).
+
+\item Middle name: the raw data is read from the index 1 position 
+of the middle name attribute object (see more details in source codes), 
+and is truncated from the index 0 position of the string for a
+maximum length of 0 characters in a backward direction ( right to left ).
+
+\item Last name: the raw data is read from the index 0 position of
+the last name attribute object (see more details in source codes), 
+and is truncated from the index 0 position of the string for a
+maximum length of 5 characters in a forward direction ( left to right ).
+And the components of similarity profiles are: first name, middle name,
+last name, latitude (geographical location), coauthor, assignee (company).
+
+\end{itemize}
 
 \subsection{Export Disambiguation Results}
 
@@ -394,15 +438,30 @@ The disambiguation engine is designed in an object-oriented
 way. The key concepts in the whole engine include:
 
 
- Attributes: conceptualized as the information in each column in the database. The attribute
-class has a complicated hierarchy and thus requires much more understanding. As for the
-implementation, each CONCRETE attribute class has multiple pointers to data strings. See
-more details in the source code.
- Records: a vector of attributes representing a full record in the database. More strictly, each
+\begin{itemize}
+
+\item Attributes: conceptualized as the information in each 
+column in the database. The attribute class has a complicated 
+hierarchy and thus requires much more understanding. As for the
+implementation, each CONCRETE attribute class has multiple 
+pointers to data strings. See more details in the source code.
+
+\item Records: a vector of attributes representing a full 
+record in the database. More strictly, each
 record contains a vector of pointers to attributes.
- Clusters: conceptualized as a unique inventor having multiple records. Each cluster contains a
-list of pointers to records.
+
+\item Clusters: conceptualized as a unique inventor having 
+multiple records. Each cluster contains a list of
+pointers to records.
+
+\end{itemize}
+
+
 The following picture shows the data structure of the disambiguation.
+
+
+%%% Insert image here
+
 
 
 \subsection{Customization of Attributes}
@@ -413,47 +472,101 @@ each of which implements some more functionality and thus
 becomes more concrete. At the  very low level of the 
 hierarchy, there are several modes to choose. Ideally one 
 only needs to pick up a mode to inherit if a concrete class 
-is supposed to be defined. It is also the class creator’s 
+is supposed to be defined. It is also the class creator's 
 responsibility to know and to define (or override) the 
 following data members and member functions for a 
 given concrete class:
 
- Class name: the name of the concrete class.
- Class name specifier string: the name specifier of the concrete class, which can be used to
+\begin{itemize}
+
+\item Class name: the name of the concrete class.
+
+\item Class name specifier string: the name specifier
+of the concrete class, which can be used to
 retrieve data from the original data file.
- Class group: the training group of the class, such as personal side, patent side, or none.
- Name specifiers of interactive classes: the specifiers of the classes that is necessary for the
+
+\item Class group: the training group of the class, 
+such as personal side, patent side, or none.
+
+\item Name specifiers of interactive classes: the 
+specifiers of the classes that is necessary for the
 current class in order for a viable comparison definition.
- Number of interactive classes: the number of interactive classes.
- Maximum value: the maximum score of the comparison function of the class.
- Compare: the comparison function of the class.
- Other functions if necessary.
-Here is a typical example of the customization of the Firstname attribute and the Latitude attribute.
+
+\item Number of interactive classes: the number of 
+interactive classes.
+
+\item Maximum value: the maximum score of the comparison 
+function of the class.
+
+\item Compare: the comparison function of the class.
+
+\item Other functions if necessary.
+
+\end{itemize}
+
+Here is a typical example of the customization of the 
+Firstname attribute and the Latitude attribute.
+
 For Firstname:
- Class name: cFirstname. This class has no interaction with other classes and thus simply
-inherits from the mode “cAttribute\_Single\_Mode<cFirstname>”.
- Class name specifier string: “Firstname”. This is exactly the same as the one in the original
+
+\begin{itemize}
+
+\item Class name: cFirstname. This class has no interaction 
+with other classes and thus simply inherits from the mode 
+\texttt{cAttribute\_Single\_Mode<cFirstname>}.
+
+\item Class name specifier string: “Firstname”. 
+This is exactly the same as the one in the original
 database.
- Class group: “Personal”. First name is in the personal information side.
- Name specifiers of interactive classes: {} (empty).
- Number of Interactive classes: 0
- Maximum value: 4. The rating is user-defined and has to be consistent with the comparison
-function.
- Compare: Override the parent class definition.
- Other functions:
- split\_string: defines how the data is extracted from the original database and stored in the
+
+\item Class group: “Personal”. First name is in the 
+personal information side.
+
+\item Name specifiers of interactive classes: {} (empty).
+
+\item Number of Interactive classes: 0
+
+\item Maximum value: 4. The rating is user-defined and has to
+be consistent with the comparison function.
+
+\item Compare: Override the parent class definition.
+
+\item Other functions:
+
+\item \texttt{split\_string}: defines how the data is extracted 
+from the original database and stored in the
 class object.
- exact\_compare: defines how the “exact” comparison function works.
+
+\item exact\_compare: defines how the exact
+comparison function works.
+
+\end{itemize}
+
 For Latitude:
- Class name: cLatitude. This class has interaction with several other attributes, so it inherits
-from “cAttribute\_Interactive\_Mode<cLatitude, cLatitude\_Data>”, where cLatitude\_Data
-contains the real data and inherits from “cAttribute\_Singe\_Mode<cLatitude\_Data>”.
- Class name specifier string: “Latitude”.
- Class group: “Patent”
- Name specifiers of interactive classes: {“Longitude”, “City”, “Country”}
- Number of interactive classes: 3
- Maximum value: 5.
- Compare: Overridden.
+
+\begin{itemize}
+
+\item Class name: cLatitude. This class has interaction with several 
+other attributes, so it inherits from 
+\texttt{cAttribute\_Interactive\_Mode<cLatitude, cLatitude\_Data>},
+where \texttt{cLatitude\_Data} contains the real data and inherits 
+from \texttt{cAttribute\_Singe\_Mode<cLatitude\_Data>}.
+
+\item Class name specifier string: Latitude.
+
+\item Class group: Patent
+
+\item Name specifiers of interactive classes:
+{Longitude, City, Country}
+
+\item Number of interactive classes: 3
+
+\item Maximum value: 5.
+
+\item Compare: Overridden.
+
+\end{itemize}
+
 
 \subsection{Customization of Cluster Comparisons}
 
@@ -462,36 +575,63 @@ disambiguation, includes several configurable
 steps that can be very influential to the results.
 When two clusters are compared:
 
+\begin{itemize}
 
- The two representatives of the clusters are compared to get a post-probability. If the
-probability does not pass a minimum screening threshold, the clusters are judged to be of
-different inventors and should not merge. The comparison of the clusters stops here.
- If the probability passes the minimum threshold, then:
-o Another threshold, dependent on the features of the clusters, is calculated and will be
-used as a caliber in the further disambiguation of the two clusters. The threshold
-depends on the cohesions of the two clusters, the career gap between the clusters, the
-number of common locations between the clusters, etc.
-o A priority queue of a given size is created. The size of the queue depends on the size of
-both clusters. The larger the clusters, the larger the queue size.
-o Exhaustive comparisons between members of the two clusters are performed, and the
-results are fed into the priority queue in the following manner.
- If the priority queue is not full, the new result fills into the queue.
- If the queue is full, the new result is compared with the lowest value in the
+\item  The two representatives of the clusters are compared 
+to get a post-probability. If the probability does not pass 
+a minimum screening threshold, the clusters are judged to be of
+different inventors and should not merge. The comparison of 
+the clusters stops here.
+
+\item If the probability passes the minimum threshold, then:
+
+\begin{itemize}
+
+\item Another threshold, dependent on the features of the 
+clusters, is calculated and will be used as a caliber in the 
+further disambiguation of the two clusters. The threshold
+depends on the cohesions of the two clusters, the career 
+gap between the clusters, the number of common locations 
+between the clusters, etc.
+
+\item A priority queue of a given size is created. The size 
+of the queue depends on the size of both clusters. The larger
+the clusters, the larger the queue size.
+
+\item Exhaustive comparisons between members of the two 
+clusters are performed, and the results are fed into the
+priority queue in the following manner.
+
+\end{itemize}
+
+\item If the priority queue is not full, the new result fills into the queue.
+
+\item If the queue is full, the new result is compared with the lowest value in the
 queue.
- If the new result is greater than the lowest value, and the lowest
+
+\item If the new result is greater than the lowest value, and the lowest
 value is less than the caliber threshold, then the new result simply
 replaces the lowest value in the priority queue.
- If the new results is less than the lowest value but greater than the
+
+\item If the new results is less than the lowest value but greater than the
 caliber threshold, the new result is added to the priority queue.
- If the new result is less than the lowest value and also less than the
+
+\item If the new result is less than the lowest value and also less than the
 caliber threshold, discard the new result.
+
 o The average value of the priority queue is then calculated after the exhaustive
 comparisons finish. If the average is greater than the caliber threshold, the two
 clusters are labeled as of a same inventor and will be followed by a merge of the
 clusters; otherwise, the comparison of the clusters stops here.
- If the clusters are labeled as a merge, the two clusters will merge into a new bigger cluster,
-with the previously calculated average value of the priority queue as its new cohesion value
-(or with-in-cluster density). A new representative of the new cluster will be decided later.
+
+\item If the clusters are labeled as a merge, the two clusters 
+will merge into a new bigger cluster, with the previously calculated 
+average value of the priority queue as its new cohesion value
+(or with-in-cluster density). A new representative of the new 
+cluster will be decided later.
+
+\end{itemize}
+
 
 
 Therefore, the customization of the cluster comparisons can be in:
