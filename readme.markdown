@@ -16,6 +16,6 @@ The main manual is located here: `doc/manual.pdf`.
 
 ## Handy links
 
-* [Harvard Dataverse Network(DVN)[http://dvn.iq.harvard.edu/dvn/dv/patent)
+* [Harvard Dataverse Network(DVN)](http://dvn.iq.harvard.edu/dvn/dv/patent)
 * [USPTO](http://www.uspto.gov/)
 * [Google Patent information distribution](http://www.google.com/googlebooks/uspto-patents.html)
