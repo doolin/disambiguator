@@ -1,1 +1,4 @@
 *.o
+*.gch
+exedisambig
+txt2sqlite3
