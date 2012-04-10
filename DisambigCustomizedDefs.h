@@ -137,9 +137,21 @@ public:
 };
 
 // Modeled after the Street class
+class cAppDateStr: public cAttribute_Single_Mode <cAppDateStr> {
+public:
+	cAppDateStr(const char * source = NULL) {}
+};
+
+// Modeled after the Street class
 class cInvSeq: public cAttribute_Single_Mode <cInvSeq> {
 public:
 	cInvSeq(const char * source = NULL) {}
+};
+
+// Modeled after the Street class
+class cinvnum_N: public cAttribute_Single_Mode <cinvnum_N> {
+public:
+	cinvnum_N(const char * source = NULL) {}
 };
 
 class cCountry: public cAttribute_Single_Mode <cCountry> {

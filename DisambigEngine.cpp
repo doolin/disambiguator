@@ -1987,25 +1987,16 @@ bool fetch_records_from_txt(list <cRecord> & source, const char * txt_file, cons
 	}
 
 
-        std::cout << "Here0..." << std::endl;
-
 	cRecord::column_names = requested_columns;
 	cAttribute ** pointer_array = new cAttribute *[num_cols];
 
 	pos = prev_pos = 0;
-        std::cout << "Here1..." << std::endl;
-
-        std::cout << "pointer_array[0]: " << pointer_array[0] << std::endl;
 
 	unsigned int position_in_ratios = 0;
         std::cout << "num_cols: " << num_cols << std::endl;
 	for ( unsigned int i = 0; i < num_cols; ++i ) {
 
-                std::cout << "i: " << i << std::endl;
-
 		const int pos_in_query = cAttribute::position_in_registry(cRecord::column_names[i]);
-
-                std::cout << "Here2..." << std::endl;
 
 		if ( pos_in_query == -1 ) {
 			for ( unsigned int j = 0; j < i; ++j )
@@ -2032,38 +2023,28 @@ bool fetch_records_from_txt(list <cRecord> & source, const char * txt_file, cons
 		}
 #endif
 
-                std::cout << "Here3..." << std::endl;
-
 		if ( pointer_array[i]->get_attrib_group() != string("None") ) {
 			++position_in_ratios;
                 }
 
-                std::cout << "Here4..." << std::endl;
 	}
 
+        std::cout << std::endl;
 
 	// always do this for all the attribute classes
 	for ( unsigned int i = 0; i < num_cols; ++i ) {
-                std::cout << "Here4.5..., i: " << i << std::endl;
 		pointer_array[i]->check_interactive_consistency(cRecord::column_names);
         }
-
-        std::cout << "Here5..." << std::endl;
 
 	std::cout << "Involved attributes are: ";
 	for ( unsigned int i = 0; i < num_cols; ++i )
 		std::cout << pointer_array[i]->get_class_name() << ", ";
 	std::cout << std::endl;
 
-
-        std::cout << "Here6..." << std::endl;
-
 	std::cout << "Polymorphic data types are: ";
 	for ( unsigned int i = 0; i < num_cols; ++i )
 		std::cout << typeid(*pointer_array[i]).name()<< ", ";
 	std::cout << std::endl;
-
-        std::cout << "Here7..." << std::endl;
 
 	std::cout << "Polymorphic data types are: ";
 	vector <string> string_cache(num_cols);
@@ -2072,13 +2053,9 @@ bool fetch_records_from_txt(list <cRecord> & source, const char * txt_file, cons
 		string_cache.at(i).reserve(string_cache_size);
 	}
 
-        std::cout << "Here8..." << std::endl;
-
 	std::cout << "Polymorphic data types are: ";
 	unsigned long size = 0;
 	std::cout << "Reading " << txt_file << " ......"<< std::endl;
-
-        std::cout << "Here9..." << std::endl;
 
 	std::cout << "Polymorphic data types are: ";
 	const unsigned int base  =  100000;
@@ -2165,6 +2142,12 @@ cAttribute * create_attribute_instance ( const string & id ) {
 	}
 	else if ( id == cInvSeq::static_get_class_name() ) {
 		p = new cInvSeq;
+	}
+	else if ( id == cinvnum_N::static_get_class_name() ) {
+		p = new cinvnum_N;
+	}
+	else if ( id == cAppDateStr::static_get_class_name() ) {
+		p = new cAppDateStr;
 	}
 	else if ( id == cCountry::static_get_class_name() ) {
 		p = new cCountry;

@@ -38,9 +38,12 @@ template <> const string cAttribute_Basic<cLongitude >::attrib_group = "Patent";
 
 
 template <> const string cAttribute_Basic<cStreet>::class_name = "Street";
+// All the following are new
 template <> const string cAttribute_Basic<cState>::class_name = "State";
 template <> const string cAttribute_Basic<cZipcode>::class_name = "Zipcode";
 template <> const string cAttribute_Basic<cInvSeq>::class_name = "InvSeq";
+template <> const string cAttribute_Basic<cAppDateStr>::class_name = "AppDateStr";
+template <> const string cAttribute_Basic<cinvnum_N>::class_name = "invnum_N";
 
 
 template <> const string cAttribute_Basic<cCountry>::class_name = "Country";
