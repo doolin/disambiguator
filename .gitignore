@@ -2,3 +2,5 @@
 *.gch
 exedisambig
 txt2sqlite3
+.fuse*
+*.gdb
