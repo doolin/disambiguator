@@ -2163,6 +2163,9 @@ cAttribute * create_attribute_instance ( const string & id ) {
 	else if ( id == cZipcode::static_get_class_name() ) {
 		p = new cZipcode;
 	}
+	else if ( id == cInvSeq::static_get_class_name() ) {
+		p = new cInvSeq;
+	}
 	else if ( id == cCountry::static_get_class_name() ) {
 		p = new cCountry;
 	}
