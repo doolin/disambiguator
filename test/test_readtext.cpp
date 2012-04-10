@@ -1,3 +1,7 @@
+/**
+ * Switch to ccpunit:
+ * http://cppunit.sourceforge.net/doc/1.11.6/cppunit_cookbook.html
+ */
 #include <boost/test/auto_unit_test.hpp>
 using namespace boost::unit_test;
 
