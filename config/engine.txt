@@ -1,14 +1,14 @@
 //Configuration file for the Disambiguation Engine
 WORKING DIRECTORY = ./data
-ORIGINAL CSV FILE = ./data/invpat.csv
+ORIGINAL CSV FILE = /media/HITACHI/backup_server/1tb/home/doolin/src/CPP_Disambiguation/data/invpat.csv
 NUMBER OF THREADS = 2
 GENERATE STABLE TRAINING SETS = true
 USE AVAILABLE RATIOS DATABASE = false
 THRESHOLDS = 0.99, 0.95
-NECESSARY ATTRIBUTES = Firstname, Lastname, Unique_Record_ID, Middlename, Longitude, Class, Latitude, Coauthor, Assignee, AsgNum, Country, Street, ApplyYear, City, Patent
+NECESSARY ATTRIBUTES = Firstname, Lastname, Street, City, State, Country, Zipcode, Lat, Lon, InvSeq, Patent, AppDateStr, Assignee, AsgNum, Class, coauths, invnum_N
 ADJUST PRIOR BY FREQUENCY = true
 DEBUG MODE = false
 NUMBER OF TRAINING PAIRS = 1000000
 STARTING ROUND = 1
-STARTING FILE = ./data/match_cons.txt
+STARTING FILE = /media/HITACHI/backup_server/1tb/home/doolin/src/CPP_Disambiguation/data/match_cons.txt
 POSTPROCESS AFTER EACH ROUND = true

@@ -1948,6 +1948,9 @@ bool fetch_records_from_txt(list <cRecord> & source, const char * txt_file, cons
 	//getline(infile, filedata);
 	//if ( filedata != raw_txt_authenticator )
 	//	throw cException_File_Not_Found("Specified file is not a valid one.");
+ 
+        //std::cout << "requested_columns.size: " << requested_columns.size << std::endl; 
+        std::cout << "requested_columns[0]: " << requested_columns[0] << std::endl; 
 
 	vector <string> total_col_names;
 	getline(infile, filedata);
@@ -1962,9 +1965,11 @@ bool fetch_records_from_txt(list <cRecord> & source, const char * txt_file, cons
 			columnname = filedata.substr( prev_pos );
 		total_col_names.push_back(columnname);
 		prev_pos = pos + delim_size;
+                std::cout << "columnname: " << columnname << std::endl;
 	}
 	cAttribute::register_class_names(requested_columns);
 	const unsigned int num_cols = requested_columns.size();
+        std::cout << "num_cols: " << num_cols << std::endl;
 	vector < unsigned int > requested_column_indice;
 	for ( unsigned int i = 0; i < num_cols; ++i ) {
 		unsigned int j;
@@ -1981,13 +1986,26 @@ bool fetch_records_from_txt(list <cRecord> & source, const char * txt_file, cons
 		}
 	}
 
+
+        std::cout << "Here0..." << std::endl;
+
 	cRecord::column_names = requested_columns;
 	cAttribute ** pointer_array = new cAttribute *[num_cols];
 
 	pos = prev_pos = 0;
+        std::cout << "Here1..." << std::endl;
+
+        std::cout << "pointer_array[0]: " << pointer_array[0] << std::endl;
+
 	unsigned int position_in_ratios = 0;
+        std::cout << "num_cols: " << num_cols << std::endl;
 	for ( unsigned int i = 0; i < num_cols; ++i ) {
+
+                std::cout << "i: " << i << std::endl;
+
 		const int pos_in_query = cAttribute::position_in_registry(cRecord::column_names[i]);
+
+                std::cout << "Here2..." << std::endl;
 
 		if ( pos_in_query == -1 ) {
 			for ( unsigned int j = 0; j < i; ++j )
@@ -1995,9 +2013,10 @@ bool fetch_records_from_txt(list <cRecord> & source, const char * txt_file, cons
 			delete [] pointer_array;
 			throw cException_ColumnName_Not_Found(cRecord::column_names[i].c_str());
 		}
-		else
+		else {
 			pointer_array[i] = create_attribute_instance ( cRecord::column_names[i].c_str() );
-
+                }
+ 
 #if 0
 		if ( cRecord::column_names[i] == cLongitude::class_name ) {
 			cLatitude::interactive_column_indice_in_query.push_back(i);
@@ -2013,33 +2032,57 @@ bool fetch_records_from_txt(list <cRecord> & source, const char * txt_file, cons
 		}
 #endif
 
-		if ( pointer_array[i]->get_attrib_group() != string("None") )
+                std::cout << "Here3..." << std::endl;
+
+                if (i > 4) break;
+
+		if ( pointer_array[i]->get_attrib_group() != string("None") ) {
 			++position_in_ratios;
+                }
+
+                std::cout << "Here4..." << std::endl;
 	}
 
+
 	// always do this for all the attribute classes
-	for ( unsigned int i = 0; i < num_cols; ++i )
+	for ( unsigned int i = 0; i < num_cols; ++i ) {
+                std::cout << "Here4.5..., i: " << i << std::endl;
 		pointer_array[i]->check_interactive_consistency(cRecord::column_names);
+        }
+
+        std::cout << "Here5..." << std::endl;
 
 	std::cout << "Involved attributes are: ";
 	for ( unsigned int i = 0; i < num_cols; ++i )
 		std::cout << pointer_array[i]->get_class_name() << ", ";
 	std::cout << std::endl;
 
+
+        std::cout << "Here6..." << std::endl;
+
 	std::cout << "Polymorphic data types are: ";
 	for ( unsigned int i = 0; i < num_cols; ++i )
 		std::cout << typeid(*pointer_array[i]).name()<< ", ";
 	std::cout << std::endl;
 
+        std::cout << "Here7..." << std::endl;
+
+	std::cout << "Polymorphic data types are: ";
 	vector <string> string_cache(num_cols);
 	const unsigned int string_cache_size = 2048;
 	for ( unsigned int i = 0; i < num_cols; ++i ) {
 		string_cache.at(i).reserve(string_cache_size);
 	}
 
+        std::cout << "Here8..." << std::endl;
+
+	std::cout << "Polymorphic data types are: ";
 	unsigned long size = 0;
 	std::cout << "Reading " << txt_file << " ......"<< std::endl;
 
+        std::cout << "Here9..." << std::endl;
+
+	std::cout << "Polymorphic data types are: ";
 	const unsigned int base  =  100000;
 	const cAttribute * pAttrib;
 	vector <const cAttribute *> temp_vec_attrib;

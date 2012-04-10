@@ -454,6 +454,7 @@ int Full_Disambiguation( const char * EngineConfigFile, const char * BlockingCon
 	bool is_success = fetch_records_from_txt(all_records, filename2, column_vec);
 	if (not is_success) return 1;
 
+        std::cout << "Here..." << std::endl;
 
 	list < const cRecord *> all_rec_pointers;
 	for ( list<cRecord>::const_iterator p = all_records.begin(); p != all_records.end(); ++p )
