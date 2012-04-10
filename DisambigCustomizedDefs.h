@@ -124,6 +124,18 @@ public:
 
 };
 
+// Modeled after the Street class
+class cState: public cAttribute_Single_Mode <cState> {
+public:
+	cState(const char * source = NULL) {}
+};
+
+// Modeled after the Street class
+class cZipcode: public cAttribute_Single_Mode <cZipcode> {
+public:
+	cZipcode(const char * source = NULL) {}
+};
+
 class cCountry: public cAttribute_Single_Mode <cCountry> {
 public:
 	static unsigned int const max_value = 2;

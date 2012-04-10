@@ -2034,8 +2034,6 @@ bool fetch_records_from_txt(list <cRecord> & source, const char * txt_file, cons
 
                 std::cout << "Here3..." << std::endl;
 
-                if (i > 4) break;
-
 		if ( pointer_array[i]->get_attrib_group() != string("None") ) {
 			++position_in_ratios;
                 }
@@ -2158,6 +2156,12 @@ cAttribute * create_attribute_instance ( const string & id ) {
 	}
 	else if ( id == cStreet::static_get_class_name() ) {
 		p = new cStreet;
+	}
+	else if ( id == cState::static_get_class_name() ) {
+		p = new cState;
+	}
+	else if ( id == cZipcode::static_get_class_name() ) {
+		p = new cZipcode;
 	}
 	else if ( id == cCountry::static_get_class_name() ) {
 		p = new cCountry;
