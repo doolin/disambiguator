@@ -363,6 +363,7 @@ bool EngineConfiguration::config_engine(const char * filename, std::ostream & os
 int main( int argc, char * argv[]) {
 	std::cout << std::endl;
 	std::cout << "====================== STARTING DISAMBIGUATION ===========================" << std::endl;
+	std::cout << "__FILE__:__LINE__" << __FILE__ << ":" << __LINE__ << std::endl;
 	std::cout << std::endl;
 
 	int choice;
@@ -454,19 +455,24 @@ int Full_Disambiguation( const char * EngineConfigFile, const char * BlockingCon
 	bool is_success = fetch_records_from_txt(all_records, filename2, column_vec);
 	if (not is_success) return 1;
 
-        std::cout << "Here..." << std::endl;
+        std::cout << "Passed reading in csv data..." << std::endl;
 
 	list < const cRecord *> all_rec_pointers;
 	for ( list<cRecord>::const_iterator p = all_records.begin(); p != all_records.end(); ++p )
 		all_rec_pointers.push_back(&(*p));
 	cAssignee::configure_assignee(all_rec_pointers);
 
+        std::cout << "Passed configuring assignees..." << std::endl;
+
 	//patent stable
 	const string training_stable [] = { working_dir + "/xset03_stable.txt",
-												working_dir + "/tset02_stable.txt" };
+                                            working_dir + "/tset02_stable.txt" };
 	const vector<string> training_stable_vec ( training_stable, training_stable + sizeof(training_stable)/sizeof(string));
-	if ( train_stable )
+	if ( train_stable ) {
 		make_stable_training_sets_by_personal ( all_records, limit, training_stable_vec);
+        }
+
+        std::cout << "Stable training sets made..." << std::endl;
 
 	map <string, const cRecord *> uid_dict;
 	const string uid_identifier = cUnique_Record_ID::static_get_class_name();
