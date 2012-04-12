@@ -222,10 +222,20 @@ void cRecord::clean_member_attrib_pool() {
  * Algorithm: exhaustive comparison. Time complexity = O(n); if no matching is found, a exception will be thrown.
  */
 unsigned int cRecord::get_index_by_name(const string & inputstr) {
-	for ( unsigned int i = 0 ; i < column_names.size(); ++i )
-		if ( column_names.at(i) == inputstr )
+	for ( unsigned int i = 0 ; i < column_names.size(); ++i ) {
+		if ( column_names.at(i) == inputstr ) {
 			return i;
-	throw cException_ColumnName_Not_Found(inputstr.c_str());
+                }
+        }
+
+#define STRINGIZE_DETAIL(x) #x
+#define STRINGIZE(x) STRINGIZE_DETAIL(x)
+        string s = string("from ") + string(__FILE__) + string(":") 
+                 + string(STRINGIZE(__LINE__));
+        s += inputstr;
+        //string s = inputstr + string("from "__FILE__":"__LINE__);
+	//throw cException_ColumnName_Not_Found(inputstr.c_str());
+	throw cException_ColumnName_Not_Found(s.c_str());
 }
 
 /*
