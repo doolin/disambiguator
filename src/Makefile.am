@@ -15,7 +15,7 @@ CONCERTINCLUDE=$(ILOGINSTALLDIR)/concert/include
 CPLEXLIB=$(ILOGINSTALLDIR)/cplex/lib/x86-64_sles10_4.1/static_pic
 CONCERTLIB=$(ILOGINSTALLDIR)/concert/lib/x86-64_sles10_4.1/static_pic
 
-INCLUDES = -I/usr/local/include -I$(CPLEXINCLUDE) -I$(CONCERTINCLUDE) 
+INCLUDES = -I/usr/local/include -I$(CPLEXINCLUDE) -I$(CONCERTINCLUDE) -I../include
 
 bin_PROGRAMS = disambiguate
 disambiguate_SOURCES = DisambigCluster.cpp DisambigComp.cpp DisambigCustomizedDefs.cpp DisambigDefs.cpp DisambigEngine.cpp DisambigFileOper.cpp Disambigmain.cpp DisambigNewCluster.cpp DisambigPostProcess.cpp DisambigRatios.cpp DisambigRatioSmoothing.cpp DisambigTraining.cpp DisambigUtilities.cpp Threading.cpp strcmp95.c
