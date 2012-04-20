@@ -342,13 +342,15 @@ cRatios:: cRatios(const vector < const cRatioComponent *> & component_pointer_ve
 		More_Components(**p);
 	}
 	
+
+#if 0
 	// now checking the final ratios
 	const vector < unsigned int > & firstline = final_ratios.begin()->first;
 	for ( vector< unsigned int >::const_iterator k = firstline.begin(); k < firstline.end(); ++k ) {
 		if ( *k == impossible_value )
 			throw cRatioComponent::cException_Ratios_Not_Ready( "Final Ratios is not ready yet. ");
 	}
-	
+#endif	
 
 	// smoothing here
 	smooth();
