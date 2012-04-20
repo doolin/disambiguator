@@ -1,0 +1,5 @@
+disambiguate
+.deps/
+*.o
+Makefile
+Makefile.in

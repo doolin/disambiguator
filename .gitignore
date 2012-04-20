@@ -1,3 +1,17 @@
+stamp-h1
+install-sh
+autoscan.log
+autom4te.cache/
+aclocal.m4
+missing
+depcomp
+config.h
+config.log
+config.status
+config.h.in
+Makefile
+Makefile.in
+.deps/
 Rare*.txt
 prior*.txt
 *.o
@@ -6,3 +20,4 @@ exedisambig
 txt2sqlite3
 .fuse*
 *.gdb
+configure
