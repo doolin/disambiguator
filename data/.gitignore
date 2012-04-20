@@ -6,3 +6,7 @@ xset*.txt
 network*.txt
 newmatch*.txt
 postprocess*.txt
+final.txt.pplog
+final.txt
+match_cons.txt
+match_cons2.txt
