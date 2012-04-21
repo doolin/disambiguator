@@ -192,6 +192,8 @@ int BlockingConfiguration::config_blocking( const char * filename, const string 
 	return 0;
 }
 
+
+
 bool EngineConfiguration::config_engine(const char * filename, std::ostream & os) {
 	os << "Reading Engine Configuration from " << filename << " ... ..." << std::endl;
 	const char * delim = "=";
@@ -360,7 +362,11 @@ bool EngineConfiguration::config_engine(const char * filename, std::ostream & os
 		return false;
 }
 
-int main( int argc, char * argv[]) {
+
+
+int
+disambiguate_main(void) {
+
 	std::cout << std::endl;
 	std::cout << "====================== STARTING DISAMBIGUATION ===========================" << std::endl;
 	std::cout << "__FILE__:__LINE__" << __FILE__ << ":" << __LINE__ << std::endl;
@@ -423,7 +429,6 @@ int main( int argc, char * argv[]) {
 	std::cout << std::endl;
 	return 0;
 }
-
 
 
 
