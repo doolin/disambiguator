@@ -5,6 +5,7 @@ AC_PREREQ([2.65])
 AC_INIT([disambiguation], [1.0], [david.doolin@gmail.com])
 AM_INIT_AUTOMAKE([foreign])
 AC_PROG_RANLIB
+AM_PATH_CPPUNIT
 AC_CONFIG_SRCDIR([src/DisambigCluster.cpp])
 AC_CONFIG_HEADERS([config.h])
 
@@ -42,5 +43,6 @@ AC_FUNC_MALLOC
 AC_CHECK_FUNCS([memset sqrt])
 
 AC_CONFIG_FILES([Makefile
+                 test/Makefile
                  src/Makefile])
 AC_OUTPUT
