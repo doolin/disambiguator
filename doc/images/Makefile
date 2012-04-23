@@ -1,3 +1,4 @@
+# Makefile added to git, overriding global ignore
 
 INKSCAPE = /Applications/Inkscape.app/Contents/Resources/bin/inkscape
 
