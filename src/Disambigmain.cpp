@@ -365,8 +365,9 @@ bool EngineConfiguration::config_engine(const char * filename, std::ostream & os
 
 
 int
-disambiguate_main(void) {
+disambiguate_main(std::string & engineconf, std::string & blockingconf) {
 
+#if 0
 	std::cout << std::endl;
 	std::cout << "====================== STARTING DISAMBIGUATION ===========================" << std::endl;
 	std::cout << "__FILE__:__LINE__" << __FILE__ << ":" << __LINE__ << std::endl;
@@ -375,14 +376,17 @@ disambiguate_main(void) {
 	int choice;
 	std::cout << "Choose one option: 1. Disambiguation. 2. Calculate Out-Of-Cluster Density. Choice = ";
 	std::cin >> choice;
+#endif
+        int choice = 1;
 
 	string enginefile ;
 	string blockingfile ;
 	switch ( choice ) {
 	case 1:
-		enginefile = check_file_existence("Disambiguation Engine Configuration.");
-		blockingfile = check_file_existence("Disambiguation Blocking Configuration.");
-		Full_Disambiguation(enginefile.c_str(), blockingfile.c_str());
+		//enginefile = check_file_existence("Disambiguation Engine Configuration.");
+		//blockingfile = check_file_existence("Disambiguation Blocking Configuration.");
+		//Full_Disambiguation(enginefile.c_str(), blockingfile.c_str());
+		Full_Disambiguation(engineconf.c_str(), blockingconf.c_str());
 		break;
 	case 2: {
 		enginefile = check_file_existence("Disambiguation Engine Configuration.");

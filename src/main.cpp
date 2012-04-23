@@ -1,7 +1,8 @@
 #include <iostream>
+#include <string>
 #include <stdlib.h>
 
-int disambiguate_main(void);
+int disambiguate_main(std::string & engineconf, std::string & blockconf);
 
 int
 main(int argc, char ** argv) {
@@ -11,5 +12,8 @@ main(int argc, char ** argv) {
     exit(0);
   }
 
-  return disambiguate_main();
+  std::string engineconf(argv[1]);
+  std::string blockconf(argv[2]);
+
+  return disambiguate_main(engineconf, blockconf);
 }
