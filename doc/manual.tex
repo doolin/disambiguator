@@ -41,6 +41,17 @@ The code is compiled in Linux by GNU gcc/g++/make.
 
 \subsection{Schematic}
 
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=6in]{images/disambiguation_workflow.png}
+\caption{Workflow.}
+\label{fig:workflow}
+\end{center}
+\end{figure}
+
+
+
 This is a schematic of the whole disambiguation process. 
 Each array represents one step, with the
 square box of identical color representing the source 
@@ -227,6 +238,7 @@ a sqlite3 database).
 
 \section{Configuration and Compilation of Executables}
 
+
 \subsection{Configure IBM CPLEX}
 
 IBM CPLEX package for academia is usually free for download 
@@ -265,17 +277,17 @@ pthread library, etc).
 \subsubsection{Compile}
 
 In the command line, in the directory where the 
-file makefile is, type “make”. 
+file makefile is, type \texttt{make}
 Source codes will compile automatically. A successful 
 compilation will generate several executables, namely
-“exedisambig” and “txt2sqlite3”. 
+\texttt{exedisambig} and \texttt{txt2sqlite3}.
 The former is the main disambiguation program, and the 
 latter is the executable that dumps the disambiguation 
 result into sqlite3 databases. Errors in compilation are 
 usually caused by incorrect configurations in 
-the “makefile” file. If necessary, type 
-“make clean” to remove all the newly built 
-object files, and “make” to rebuild.
+the \texttt{makefile} file. If necessary, type 
+\texttt{make clean} to remove all the newly built 
+object files, and \texttt{make} to rebuild.
 
 
 \subsection{Configuration of Disambiguation}
@@ -286,7 +298,8 @@ the disambiguation engine and the blocking rules.
 
 \subsubsection{Engine Configuration}
 
-The configuration of the disambiguation engine includes the following items:
+The configuration of the disambiguation engine
+includes the following items:
 
 \begin{itemize}
 
@@ -307,18 +320,18 @@ training sets from rare names are usually very stable. Therefore,
 if those training sets already exist, this switch can be set 
 to false. However, since the creation of the stable 
 training sets generally does not take too much time,
-it is usually recommended to be “true”.
+it is usually recommended to be \texttt{true}.
 
 
 \item Use available ratios database: this switch controls 
 whether or not training should take place. Since training is 
 usually somewhat time-costly (~4 hours), this switch can be 
-set to “true” if training is unnecessary, such as 
+set to \texttt{true} if training is unnecessary, such as 
 when debugging. But generally this option should be set to false.
 
 \item Thresholds: the thresholds series to determine whether 
 or not two records are a match should be set in a permissive way, 
-such as “0.99, 0.98, 0.95”. The reason to do this is to allow most
+such as $0.99$, $0.98$, $0.95$. The reason to do this is to allow most
 similar records conglomerate first, which can help improve the accuracy.
 
 \item Necessary attributes: This option selects those necessary 
@@ -462,12 +475,21 @@ pointers to records.
 The following picture shows the data structure of the disambiguation.
 
 
-%%% Insert image here
+
 \begin{figure}
 \begin{center}
 \includegraphics{images/algorithm.pdf}
 \caption{An Algorithm.}
 \label{fig:algorithm}
+\end{center}
+\end{figure}
+
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=4in]{images/disambiguation_data_structure.png}
+\caption{Data structure.}
+\label{fig:datastructure}
 \end{center}
 \end{figure}
 
@@ -527,7 +549,7 @@ with other classes and thus simply inherits from the mode
 This is exactly the same as the one in the original
 database.
 
-\item Class group: “Personal”. First name is in the 
+\item Class group: \texttt{Personal}. First name is in the 
 personal information side.
 
 \item Name specifiers of interactive classes: {} (empty).
