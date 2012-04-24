@@ -1,3 +1,5 @@
+gmon*
+tmp
 lib*.a
 disambiguate
 .deps/
