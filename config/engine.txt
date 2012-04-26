@@ -1,5 +1,5 @@
 //Configuration file for the Disambiguation Engine
-WORKING DIRECTORY = ./data
+WORKING DIRECTORY = ../data
 ORIGINAL CSV FILE = /media/HITACHI/backup_server/1tb/home/doolin/src/CPP_Disambiguation/test/invpat2.txt
 NUMBER OF THREADS = 2
 GENERATE STABLE TRAINING SETS = true

@@ -248,8 +248,8 @@ void cRatioComponent::prepare(const char* x_file, const char * m_file) {
 		//throw cException_Partial_SP_Missing(attrib_group.c_str());
 	}
 	
-        std::cout << "Exiting line 251 " << __FILE__ << std::endl;
-        exit(0);
+        //std::cout << "Exiting line 251 " << __FILE__ << std::endl;
+        //exit(0);
 
 	smooth();
 	similarity_map.clear();
