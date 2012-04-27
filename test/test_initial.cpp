@@ -18,7 +18,7 @@ public:
  
   void runTest() {
     Initial * i = new Initial();
-    CPPUNIT_ASSERT( i->value  == 2 );
+    CPPUNIT_ASSERT( i->value  == 1 );
   }
 };
 
