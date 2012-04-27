@@ -1,0 +1,14 @@
+//Configuration file for the Disambiguation Engine
+WORKING DIRECTORY = ../data
+ORIGINAL CSV FILE = /media/HITACHI/backup_server/1tb/home/doolin/src/Python-Scripts/invpat2011.csv
+NUMBER OF THREADS = 1
+GENERATE STABLE TRAINING SETS = true
+USE AVAILABLE RATIOS DATABASE = false
+THRESHOLDS = 0.99, 0.95
+NECESSARY ATTRIBUTES = Firstname, Lastname, Street, City, State, Country, Zipcode, Lat, Lng, InvSeq, Patent, AppYear, GYear, AppDate, Assignee, AsgNum, Class, Invnum, Invnum_N
+ADJUST PRIOR BY FREQUENCY = true
+DEBUG MODE = true 
+NUMBER OF TRAINING PAIRS = 100
+STARTING ROUND = 1
+STARTING FILE = /media/HITACHI/backup_server/1tb/home/doolin/src/CPP_Disambiguation/data/match_cons2.txt
+POSTPROCESS AFTER EACH ROUND = false
