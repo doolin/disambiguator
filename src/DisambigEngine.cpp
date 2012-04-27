@@ -231,7 +231,7 @@ unsigned int cRecord::get_index_by_name(const string & inputstr) {
 #define STRINGIZE_DETAIL(x) #x
 #define STRINGIZE(x) STRINGIZE_DETAIL(x)
         string s = string("from ") + string(__FILE__) + string(":") 
-                 + string(STRINGIZE(__LINE__));
+                 + string(STRINGIZE(__LINE__)) + string("column name: ");
         s += inputstr;
         //string s = inputstr + string("from "__FILE__":"__LINE__);
 	//throw cException_ColumnName_Not_Found(inputstr.c_str());
@@ -1991,7 +1991,7 @@ bool fetch_records_from_txt(list <cRecord> & source, const char * txt_file, cons
 		}
 		if ( j == total_col_names.size() ) {
 			std::cerr << "Critical Error in reading " << txt_file << std::endl
-						<<"Column names not available in the first line. Please Check the correctness." << std::endl;
+			<<"Column names not available in the first line. Please Check the correctness." << std::endl;
 			throw cException_ColumnName_Not_Found(requested_columns.at(i).c_str());
 		}
 	}
@@ -2007,7 +2007,8 @@ bool fetch_records_from_txt(list <cRecord> & source, const char * txt_file, cons
 	for ( unsigned int i = 0; i < num_cols; ++i ) {
 
 		const int pos_in_query = cAttribute::position_in_registry(cRecord::column_names[i]);
-
+std::cout << "pos_in_query: " << pos_in_query << std::endl;
+std::cout << "cRecord::column_names[i]: " << cRecord::column_names[i] << std::endl;
 		if ( pos_in_query == -1 ) {
 			for ( unsigned int j = 0; j < i; ++j )
 				delete pointer_array[j];
@@ -2033,10 +2034,12 @@ bool fetch_records_from_txt(list <cRecord> & source, const char * txt_file, cons
 		}
 #endif
 
+std::cout << "i: " << i << std::endl;
+// If this crashes, will need to add code in the function `create_attribute_instance`
 		if ( pointer_array[i]->get_attrib_group() != string("None") ) {
+std::cout << "pointer_array[i]->get_attrib_group(): " << pointer_array[i]->get_attrib_group() << std::endl;
 			++position_in_ratios;
                 }
-
 	}
 
         std::cout << std::endl;
@@ -2156,8 +2159,14 @@ cAttribute * create_attribute_instance ( const string & id ) {
 	else if ( id == cinvnum_N::static_get_class_name() ) {
 		p = new cinvnum_N;
 	}
-	else if ( id == cAppDateStr::static_get_class_name() ) {
-		p = new cAppDateStr;
+	else if ( id == cinvnum::static_get_class_name() ) {
+		p = new cinvnum;
+	}
+	//else if ( id == cAppDateStr::static_get_class_name() ) {
+//		p = new cAppDateStr;
+//	}
+	else if ( id == cAppDate::static_get_class_name() ) {
+		p = new cAppDate;
 	}
 	else if ( id == cCountry::static_get_class_name() ) {
 		p = new cCountry;
@@ -2179,6 +2188,12 @@ cAttribute * create_attribute_instance ( const string & id ) {
 	}
 	else if ( id == cApplyYear::static_get_class_name() ) {
 		p = new cApplyYear;
+	}
+	else if ( id == cAppYear::static_get_class_name() ) {
+		p = new cAppYear;
+	}
+	else if ( id == cGYear::static_get_class_name() ) {
+		p = new cGYear;
 	}
 	else if ( id == cCity::static_get_class_name() ) {
 		p = new cCity;

@@ -42,8 +42,10 @@ template <> const string cAttribute_Basic<cStreet>::class_name = "Street";
 template <> const string cAttribute_Basic<cState>::class_name = "State";
 template <> const string cAttribute_Basic<cZipcode>::class_name = "Zipcode";
 template <> const string cAttribute_Basic<cInvSeq>::class_name = "InvSeq";
-template <> const string cAttribute_Basic<cAppDateStr>::class_name = "AppDateStr";
-template <> const string cAttribute_Basic<cinvnum_N>::class_name = "invnum_N";
+//template <> const string cAttribute_Basic<cAppDateStr>::class_name = "AppDateStr";
+template <> const string cAttribute_Basic<cAppDate>::class_name = "AppDate";
+template <> const string cAttribute_Basic<cinvnum_N>::class_name = "Invnum_N";
+template <> const string cAttribute_Basic<cinvnum>::class_name = "Invnum";
 
 
 template <> const string cAttribute_Basic<cCountry>::class_name = "Country";
@@ -73,6 +75,8 @@ template <> const string cAttribute_Basic<cAsgNum>::class_name = "AsgNum";
 template <> const string cAttribute_Basic<cUnique_Record_ID>::class_name = "Unique_Record_ID";
 
 template <> const string cAttribute_Basic<cApplyYear>::class_name = "ApplyYear";
+template <> const string cAttribute_Basic<cAppYear>::class_name = "AppYear";
+template <> const string cAttribute_Basic<cGYear>::class_name = "GYear";
 
 template <> const string cAttribute_Basic<cCity>::class_name = "City";
 
