@@ -2,7 +2,7 @@
 INCLUDES = ../include
 #LIBS = ../src
 
-TESTS = distest idtest
+TESTS = distest idtest typedefs
 bin_PROGRAMS = $(TESTS)
 
 distest_SOURCES = test_initial.cpp
@@ -13,3 +13,8 @@ idtest_SOURCES = test_uniqueid.cpp
 idtest_CPPFLAGS = $(CPPUNIT_CFLAGS) -I$(INCLUDES)
 idtest_LDFLAGS = $(CPPUNIT_LIBS)  #-ldl
 idtest_LDADD = -L../src -ldisambiguation $(CPPUNIT_LIBS) 
+
+typedefs_SOURCES = test_typedefs.cpp
+typedefs_CPPFLAGS = $(CPPUNIT_CFLAGS) -I$(INCLUDES)
+typedefs_LDFLAGS = $(CPPUNIT_LIBS)  #-ldl
+typedefs_LDADD = -L../src -ldisambiguation $(CPPUNIT_LIBS) 
