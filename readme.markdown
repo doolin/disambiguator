@@ -1,7 +1,8 @@
 # Patent Inventor Disambiguation
 
 **NOTE: this is a legacy code base which I've assumed development on.
-I had no hand in designing the structure or operation of this code base.**
+I'm working to bring the code base under full test coverage, and
+adding extensibility via a callback architecture.**
 
 This project is part of an ongoing effort to match inventors
 with patents, information which is useful for public policy
