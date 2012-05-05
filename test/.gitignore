@@ -1,3 +1,7 @@
+blocking
+record
+typedefs
+idtest
 distest
 *.o
 a.out

@@ -1,3 +1,4 @@
+*.log
 gmon*
 tmp
 lib*.a

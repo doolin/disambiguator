@@ -137,9 +137,16 @@ public:
 };
 
 // Modeled after the Street class
+/*
 class cAppDateStr: public cAttribute_Single_Mode <cAppDateStr> {
 public:
 	cAppDateStr(const char * source = NULL) {}
+};
+*/
+
+class cAppDate: public cAttribute_Single_Mode <cAppDate> {
+public:
+	cAppDate(const char * source = NULL) {}
 };
 
 // Modeled after the Street class
@@ -152,6 +159,11 @@ public:
 class cinvnum_N: public cAttribute_Single_Mode <cinvnum_N> {
 public:
 	cinvnum_N(const char * source = NULL) {}
+};
+
+class cinvnum: public cAttribute_Single_Mode <cinvnum> {
+public:
+	cinvnum(const char * source = NULL) {}
 };
 
 class cCountry: public cAttribute_Single_Mode <cCountry> {
@@ -247,6 +259,17 @@ public:
 	//SHOULD NOT OVERRIDE THE COMPARISON FUNCTION SINCE LONGITUDE IS NOT BEING COMPARED. IT IS WITH THE LATITUDE COMPARISION.
 };
 
+class cAppYear: public cAttribute_Single_Mode<cAppYear> {
+public:
+	cAppYear(const char * source = NULL ){}
+	//SHOULD NOT OVERRIDE THE COMPARISON FUNCTION SINCE LONGITUDE IS NOT BEING COMPARED. IT IS WITH THE LATITUDE COMPARISION.
+};
+
+class cGYear: public cAttribute_Single_Mode<cGYear> {
+public:
+	cGYear(const char * source = NULL ){}
+	//SHOULD NOT OVERRIDE THE COMPARISON FUNCTION SINCE LONGITUDE IS NOT BEING COMPARED. IT IS WITH THE LATITUDE COMPARISION.
+};
 class cCity: public cAttribute_Single_Mode <cCity> {
 public:
 	cCity(const char * source = NULL ) {}
