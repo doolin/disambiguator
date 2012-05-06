@@ -1,8 +1,8 @@
 /*
  * DisambigEngine.cpp
  *
- *  Created on: Dec 13, 2010
- *      Author: ysun
+ * Created on: Dec 13, 2010
+ * Author: ysun
  */
 
 #include "DisambigEngine.h"
@@ -793,12 +793,17 @@ void cReconfigurator_Coauthor :: reconfigure ( const cRecord * p ) const {
 
 }
 
+
 /*
- * Aim: to find a ratio that corresponds to a given similarity profile in a given similarity profile binary tree.
+ * Aim: to find a ratio that corresponds to a given similarity
+ * profile in a given similarity profile binary tree.
  * Algorithm: STL map find.
  */
+double 
+fetch_ratio(const vector < unsigned int > & ratio_to_lookup,
+            const map < vector  < unsigned int>,
+            double, cSimilarity_Compare > & ratiosmap ) {
 
-double fetch_ratio(const vector < unsigned int > & ratio_to_lookup, const map < vector  < unsigned int>, double, cSimilarity_Compare > & ratiosmap ) {
 	map < vector < unsigned int >, double, cSimilarity_Compare >::const_iterator p = ratiosmap.find( ratio_to_lookup);
 	if ( p == ratiosmap.end())
 		return 0;
@@ -809,16 +814,20 @@ double fetch_ratio(const vector < unsigned int > & ratio_to_lookup, const map < 
 
 
 
-std::pair<const cRecord *, double> disambiguate_by_set (
-									const cRecord * key1, const cGroup_Value & match1, const double cohesion1,
-									 const cRecord * key2, const cGroup_Value & match2, const double cohesion2,
-									 const double prior,
-									 const cRatios & ratio,  const double mutual_threshold ) {
+std::pair<const cRecord *, double> 
+disambiguate_by_set (const cRecord * key1,
+                     const cGroup_Value & match1,
+                     const double cohesion1,
+                     const cRecord * key2,
+                     const cGroup_Value & match2,
+                     const double cohesion2,
+                     const double prior,
+                     const cRatios & ratio,  const double mutual_threshold ) {
+
 	static const unsigned int firstname_index = cRecord::get_similarity_index_by_name(cFirstname::static_get_class_name());
 	static const unsigned int midname_index = cRecord::get_similarity_index_by_name(cMiddlename::static_get_class_name());
 	static const unsigned int lastname_index = cRecord::get_similarity_index_by_name(cLastname::static_get_class_name());
 	static const unsigned int country_index = cRecord::get_index_by_name(cCountry::static_get_class_name());
-
 	static const bool country_check = true;
 
 
@@ -934,12 +943,9 @@ std::pair<const cRecord *, double> disambiguate_by_set (
 }
 
 
+void 
+copyfile(const char * target, const char * source) {
 
-/*
- * Aim: Copy file.
- */
-
-void copyfile(const char * target, const char * source) {
 	std::cout << "Copying file " << source << " to " << target << std::endl;
 	std::ifstream   input( source,std::ios::binary);
 	std::ofstream   output( target,std::ios::binary);
@@ -951,23 +957,30 @@ void copyfile(const char * target, const char * source) {
 
 
 
-//==========================================
-//===========================================
 
 /*
- * Aim: to fetch records from a txt format file into memory. This is a very important function.
+ * Aim: to fetch records from a txt format file into memory.
+ * This is a very important function.
+ *
  * Algorithm:
- * First of all, read the first line in the file. The first line should include all the information of each column. ie. They are usually the
- * column names. The format of the first line is "Column Name1,Column Name 2,Column Name3,...,Column Name Last". If the delimiter is not
+ * First of all, read the first line in the file. The first
+ * line should include all the information of each column. ie. They
+ * are usually the * column names. The format of the first line is
+ * "Column Name1,Column Name 2,Column Name3,...,Column Name Last".If the delimiter is not
  * comma, change the function variable "delim".
- * Second, check the argument "requested_columns" in all the columns, and record the indice of requested_columns
- * Third, starting from the second line to the end of the file, read relevant information with the help of delimiters and indice,
+ * Second, check the argument "requested_columns" in all the columns,
+ * and record the indice of requested_columns
+ * Third, starting from the second line to the end of the file,
+ * read relevant information with the help of delimiters and indice,
  * and save them in appropriate attributes.
- * Finally, do some concrete class related stuff, like setting static members and run reconfigurations.
+ * Finally, do some concrete class related stuff, like setting
+ * static members and run reconfigurations.
  *
  */
 
-bool fetch_records_from_txt(list <cRecord> & source, const char * txt_file, const vector<string> &requested_columns ){
+bool
+fetch_records_from_txt(list <cRecord> & source, const char * txt_file, const vector<string> &requested_columns) {
+
 	std::ifstream::sync_with_stdio(false);
 	const char * delim = ",";	// this deliminator should never occur in the data.
 	const unsigned int delim_size = strlen(delim);
@@ -1148,7 +1161,10 @@ std::cout << "pointer_array[i]->get_attrib_group(): " << pointer_array[i]->get_a
 	return true;
 }
 
-cAttribute * create_attribute_instance ( const string & id ) {
+
+cAttribute *
+create_attribute_instance ( const string & id ) {
+
 	cAttribute *p = NULL;
 	if ( id == cFirstname::static_get_class_name() ) {
 		p = new cFirstname;
@@ -1232,7 +1248,9 @@ cAttribute * create_attribute_instance ( const string & id ) {
 }
 
 
-const cRecord_Reconfigurator * generate_interactive_reconfigurator( const cAttribute * pAttrib) {
+const 
+cRecord_Reconfigurator * generate_interactive_reconfigurator( const cAttribute * pAttrib) {
+
 	vector <string > linked_attribs (pAttrib->get_interactive_class_names());
 	string my_name = pAttrib->get_class_name();
 	//ATTENTION: OBJECT IS ON HEAP.
@@ -1240,19 +1258,27 @@ const cRecord_Reconfigurator * generate_interactive_reconfigurator( const cAttri
 	return preconfig;
 }
 
-void cRecord::reconfigure_record_for_interactives() const {
+
+void 
+cRecord::reconfigure_record_for_interactives() const {
+
 	for ( vector <const cAttribute *>::const_iterator cipa = vector_pdata.begin(); cipa != vector_pdata.end(); ++cipa ) {
 		(*cipa)->reconfigure_for_interactives( this);
 	}
 }
 
-void reconfigure_interactives ( const cRecord_Reconfigurator * pc, const cRecord * pRec) {
+
+void 
+reconfigure_interactives (const cRecord_Reconfigurator * pc,
+                          const cRecord * pRec) {
+
 	pc->reconfigure(pRec);
 }
 
 
+void 
+cAssignee::configure_assignee( const list < const cRecord *> & recs) {
 
-void cAssignee::configure_assignee( const list < const cRecord *> & recs) {
 	static const unsigned int asgnumidx = cRecord::get_index_by_name(cAsgNum::static_get_class_name());
 
 	for ( list< const cRecord *>::const_iterator p = recs.begin(); p != recs.end(); ++p ) {
@@ -1267,7 +1293,10 @@ void cAssignee::configure_assignee( const list < const cRecord *> & recs) {
 }
 
 
-void build_patent_tree( map < const cRecord *, cGroup_Value, cSort_by_attrib > & patent_tree , const list < const cRecord * > & all_rec_pointers ) {
+void 
+build_patent_tree(map < const cRecord *, cGroup_Value, cSort_by_attrib > & patent_tree,
+                        const list < const cRecord * > & all_rec_pointers ) {
+
 	map < const cRecord *, cGroup_Value, cSort_by_attrib >::iterator ppatentmap;
 	for ( list < const cRecord * >::const_iterator p = all_rec_pointers.begin(); p != all_rec_pointers.end(); ++p ) {
 		ppatentmap = patent_tree.find(*p);
@@ -1281,7 +1310,11 @@ void build_patent_tree( map < const cRecord *, cGroup_Value, cSort_by_attrib > &
 	}
 }
 
-void build_patent_tree( map < const cRecord *, cGroup_Value, cSort_by_attrib > & patent_tree , const list < cRecord > & all_records ) {
+
+void 
+build_patent_tree(map < const cRecord *, cGroup_Value, cSort_by_attrib > & patent_tree,
+                  const list < cRecord > & all_records ) {
+
 	list < const cRecord *> all_pointers;
 	for ( list < cRecord >::const_iterator p = all_records.begin(); p != all_records.end(); ++p )
 		all_pointers.push_back(&(*p));
@@ -1289,7 +1322,9 @@ void build_patent_tree( map < const cRecord *, cGroup_Value, cSort_by_attrib > &
 }
 
 
-string check_file_existence(const string & description) {
+string 
+check_file_existence(const string & description) {
+
 	std::ifstream infile;
 	while ( true ) {
 		string file;
