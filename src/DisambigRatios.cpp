@@ -284,45 +284,6 @@ void cRatioComponent::get_similarity_info() {
 	}
 }
 
-/*
-void cRatios::Get_Coefficients() {
-	// y = a1x1 + a2x2 + ... + anxn + a0(-1)
-	double R_square = 0;
-	vector < vector < double> > mat;
-	vector < double > b;
- 	for ( map < vector < unsigned int > , double, cSimilarity_Compare >::const_iterator p = final_ratios.begin(); p != final_ratios.end(); ++p ) {
-		vector<double > row;
-		for ( vector < unsigned int >:: const_iterator q = p->first.begin(); q != p->first.end();++q)
-			row.push_back(*q);
-		//ATTENTION HERE
-		row.push_back(1);
-		mat.push_back(row);
-
-	}
-
- 	double max_rsq = -10;
- 	unsigned int root_order;
- 	vector < double> temp_coeff;
- 	for (  root_order = 1; root_order < 10; ++ root_order) {
- 		b.clear();
- 		for ( map < vector < unsigned int > , double, cSimilarity_Compare >::const_iterator p = final_ratios.begin(); p != final_ratios.end(); ++p )
- 			b.push_back(pow(p->second, 1.0/root_order));
- 		temp_coeff = NNLS_fit(mat,b, R_square);
- 		if ( R_square > max_rsq) {
- 			max_rsq = R_square;
- 			final_root_order = root_order;
- 			coeffs = temp_coeff;
- 		}
- 	}
- 	if ( R_square < 0.5 ) {
- 		std::cout << "WARINING: R-SQUARE OF COEFFICIENTS IS SMALL. THE LINEAR RELATION IS PROBABLY PROBLEMATIC." << std::endl;
- 		final_root_order = 0;
- 		std::cout << "USING UNSMOOTHED RAW COUNTS INSTEAD." << std::endl;
- 	}
-}
-
-*/
-
 
 cRatios:: cRatios(const vector < const cRatioComponent *> & component_pointer_vector, const char * filename, const cRecord & rec) {
 	std::cout << "Creating the final version ratios file ..." << std::endl;
@@ -344,7 +305,7 @@ cRatios:: cRatios(const vector < const cRatioComponent *> & component_pointer_ve
 		More_Components(**p);
 	}
 	
-
+// LEAVE THIS IN, this is something which may be necessary, it's one of my #if'ed out blocks. -dmd
 #if 0
 	// now checking the final ratios
 	const vector < unsigned int > & firstline = final_ratios.begin()->first;
@@ -398,7 +359,9 @@ void cRatios::More_Components( const cRatioComponent & additional_component) {
 }
 
 
-void cRatios::write_ratios_file( const char * filename) const {
+void 
+cRatios::write_ratios_file( const char * filename) const {
+
 	std::ofstream::sync_with_stdio(false);
 	std::cout << "Number of of ratios vectors = " << final_ratios.size() << std::endl;
 	std::cout << "Saving the ratios in the file " << filename << std::endl;
@@ -418,7 +381,10 @@ void cRatios::write_ratios_file( const char * filename) const {
 	std::cout << "Ratios file saved." << std::endl;
 }
 
-void cRatios::read_ratios_file(const char * filename) {
+
+void 
+cRatios::read_ratios_file(const char * filename) {
+
 	std::ifstream::sync_with_stdio(false);
 	std::ifstream infile ( filename );
 	const unsigned int primary_delim_size = strlen(primary_delim);
