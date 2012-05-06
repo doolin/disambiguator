@@ -682,47 +682,52 @@ cReconfigurator_AsianNames::cReconfigurator_AsianNames(): country_index(cRecord:
 	east_asian.push_back(string("TW"));
 }
 
-/*
+
+/**
  * Aim: reconfigure the asian name in accordance with the current scoring system.
- * Algorithm: check the country first. If the country is in [ "KR", "CN", "TW"], do this operation:
- *			1. create a vector of string, and save FULL first name into the vector. Then create a firstname attribute from the vector
- *			2. create a vector of string, and save "FULL firstname" + "FULL lastname" into the vector. Then create a middlename attribute from the vector.
- *			3. change the cRecord data such that the firstname pointer points to the newly created firstname object. So for the middle name.
+ *
+ * Algorithm: check the country first. If the country is in [ "KR", "CN", "TW"],
+ * do this operation:
+ *  1. Create a vector of string, and save FULL first name into the vector. 
+ *     Then create a firstname attribute from the vector
+ *  2. Create a vector of string, and save "FULL firstname" + "FULL lastname"
+ *     into the vector. Then create a middlename attribute from the vector.
+ *  3. Change the cRecord data such that the firstname pointer points to the
+ *     newly created firstname object. So for the middle name.
  */
+void 
+cReconfigurator_AsianNames::reconfigure( const cRecord * p ) const {
 
-void cReconfigurator_AsianNames::reconfigure( const cRecord * p ) const {
-	bool need_reconfigure = false;
-	const string & country = *  p->get_attrib_pointer_by_index(country_index)->get_data().at(0) ;
-	for ( register vector<string>::const_iterator ci = east_asian.begin(); ci != east_asian.end(); ++ci )
-		if ( country == *ci ) {
-			need_reconfigure = true;
-			break;
-		}
+    bool need_reconfigure = false;
+    const string & country = *  p->get_attrib_pointer_by_index(country_index)->get_data().at(0) ;
 
-	if ( need_reconfigure == false )
-		return;
+    for ( register vector<string>::const_iterator ci = east_asian.begin(); ci != east_asian.end(); ++ci )
+        if ( country == *ci ) {
+            need_reconfigure = true;
+            break;
+        }
 
-	// do not change original attributes. add new ones.
-	const cAttribute * cur_af = p->get_attrib_pointer_by_index(firstname_index);
-	const string & fn_alias = * cur_af ->get_data().at(0);
-	const vector <string> fn ( 2, fn_alias );
-	const cAttribute * paf = cFirstname::static_clone_by_data(fn);
+    if (need_reconfigure == false) return;
 
-	const cAttribute * cur_am = p->get_attrib_pointer_by_index(middlename_index);
-	const string & lnstr = * p->get_attrib_pointer_by_index(lastname_index)->get_data().at(0);
-	const string mnstr ( fn_alias + "." + lnstr);
-	const vector < string > mn(2, mnstr);
-	const cAttribute * pam = cMiddlename ::static_clone_by_data(mn);
+    // do not change original attributes. add new ones.
+    const cAttribute * cur_af = p->get_attrib_pointer_by_index(firstname_index);
+    const string & fn_alias = * cur_af ->get_data().at(0);
+    const vector <string> fn ( 2, fn_alias );
+    const cAttribute * paf = cFirstname::static_clone_by_data(fn);
 
-	cRecord * q = const_cast < cRecord * > (p);
+    const cAttribute * cur_am = p->get_attrib_pointer_by_index(middlename_index);
+    const string & lnstr = * p->get_attrib_pointer_by_index(lastname_index)->get_data().at(0);
+    const string mnstr ( fn_alias + "." + lnstr);
+    const vector < string > mn(2, mnstr);
+    const cAttribute * pam = cMiddlename ::static_clone_by_data(mn);
 
-	cur_af->reduce_attrib(1);
-	cur_am->reduce_attrib(1);
-	q->set_attrib_pointer_by_index(paf, firstname_index);
-	q->set_attrib_pointer_by_index(pam, middlename_index);
+    cRecord * q = const_cast < cRecord * > (p);
 
+    cur_af->reduce_attrib(1);
+    cur_am->reduce_attrib(1);
+    q->set_attrib_pointer_by_index(paf, firstname_index);
+    q->set_attrib_pointer_by_index(pam, middlename_index);
 }
-
 
 
 cReconfigurator_Interactives::cReconfigurator_Interactives( const string & my_name,
@@ -734,7 +739,9 @@ cReconfigurator_Interactives::cReconfigurator_Interactives( const string & my_na
 	}
 }
 
-void cReconfigurator_Interactives::reconfigure ( const cRecord * p ) const {
+
+void 
+cReconfigurator_Interactives::reconfigure ( const cRecord * p ) const {
 
 	vector < const cAttribute * > interact;
 	for ( vector < unsigned int >::const_iterator i = relevant_indice.begin(); i != relevant_indice.end(); ++i ) {
@@ -758,6 +765,7 @@ cReconfigurator_Coauthor::cReconfigurator_Coauthor ( const map < const cRecord *
 	cCoauthor::clear_data_pool();
 	cCoauthor::clear_attrib_pool();
 }
+
 
 /*
  * Aim: to recreate the whole coauthor database, and link them to appropriate pointers.
@@ -810,8 +818,6 @@ fetch_ratio(const vector < unsigned int > & ratio_to_lookup,
 	else
 		return p->second;
 }
-
-
 
 
 std::pair<const cRecord *, double> 
@@ -1322,23 +1328,23 @@ build_patent_tree(map < const cRecord *, cGroup_Value, cSort_by_attrib > & paten
 }
 
 
-string 
+string
 check_file_existence(const string & description) {
 
-	std::ifstream infile;
-	while ( true ) {
-		string file;
-		std::cout << "Enter file name for " << description << " : ";
-		std::cin >> file;
-		infile.open(file.c_str(), std::ios::in);
-		if ( infile.good() ) {
-			infile.close();
-			std::cout << file << " accepted." << std::endl;
-			return file;
-		}
-		else {
-			std::cerr << file << " does not exist. Try again." << std::endl;
-			infile.close();
-		}
-	}
+    std::ifstream infile;
+    while ( true ) {
+        string file;
+        std::cout << "Enter file name for " << description << " : ";
+        std::cin >> file;
+        infile.open(file.c_str(), std::ios::in);
+        if ( infile.good() ) {
+            infile.close();
+            std::cout << file << " accepted." << std::endl;
+            return file;
+        }
+        else {
+            std::cerr << file << " does not exist. Try again." << std::endl;
+            infile.close();
+        }
+    }
 }
