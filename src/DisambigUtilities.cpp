@@ -13,9 +13,14 @@
 #include "DisambigTraining.h"
 #include "DisambigCluster.h"
 #include "DisambigPostProcess.h"
-bool make_changable_training_sets_by_patent(const list <const cRecord*> & record_pointers, const vector<string >& blocking_column_names,
-						const vector < const cString_Manipulator *> & pstring_oper, const unsigned int limit, const vector <string> & training_filenames) {
 
+
+bool
+make_changable_training_sets_by_patent(const list <const cRecord*> & record_pointers,
+                                       const vector<string >& blocking_column_names,
+                                       const vector < const cString_Manipulator *> & pstring_oper,
+                                       const unsigned int limit,
+                                       const vector <string> & training_filenames) {
 
 	if ( training_filenames.size() != 2 )
 		throw cException_Other("Training: there should be 2 changeable training sets.");
@@ -87,7 +92,11 @@ bool make_changable_training_sets_by_patent(const list <const cRecord*> & record
 
 
 
-bool make_stable_training_sets_by_personal( const list <cRecord> & all_records, const unsigned int limit, const vector <string> & training_filenames) {
+bool 
+make_stable_training_sets_by_personal(const list <cRecord> & all_records,
+                                      const unsigned int limit,
+                                      const vector <string> & training_filenames) {
+
 	//if ( training_filenames.size() != 2 )
 		//throw cException_Other("Training: there should be 2 changeable training sets.");
 
@@ -143,10 +152,15 @@ bool make_stable_training_sets_by_personal( const list <cRecord> & all_records, 
 
 
 
-std::pair < const cRecord *, set < const cRecord * > > ones_temporal_unique_coauthors ( const cCluster & record_cluster,
-		const map < const cRecord *, const cRecord *> & complete_uid2uinv,
-		const map < const cRecord *, cGroup_Value, cSort_by_attrib > & complete_patent_tree,
-		const unsigned int begin_year, const unsigned int end_year, const unsigned int year_index ) {
+std::pair < const cRecord *, set < const cRecord * > > 
+ones_temporal_unique_coauthors (const cCluster & record_cluster,
+                                const map < const cRecord *, 
+                                const cRecord *> & complete_uid2uinv,
+                                const map < const cRecord *, cGroup_Value, cSort_by_attrib > & complete_patent_tree,
+                                const unsigned int begin_year, 
+                                const unsigned int end_year, 
+                                const unsigned int year_index ) {
+
 	//[ begin_year, end_year )
 
 	const cRecord * ret1 = NULL;
@@ -187,7 +201,11 @@ std::pair < const cRecord *, set < const cRecord * > > ones_temporal_unique_coau
 }
 
 
-void one_step_prostprocess( const list < cRecord > & all_records, const char * last_disambig_result, const char * outputfile) {
+void 
+one_step_prostprocess(const list < cRecord > & all_records, 
+                      const char * last_disambig_result, 
+                      const char * outputfile) {
+
 	map <string, const cRecord *> uid_dict;
 	const string uid_identifier = cUnique_Record_ID::static_get_class_name();
 	create_btree_uid2record_pointer(uid_dict, all_records, uid_identifier);
@@ -208,7 +226,9 @@ void one_step_prostprocess( const list < cRecord > & all_records, const char * l
 }
 
 
-string remove_headtail_space( const string & s ) {
+string 
+remove_headtail_space(const string & s) {
+
 	string::const_iterator istart = s.begin() , iend = s.end();
 	while( istart != iend ) {
 		if( *istart != ' ' )
@@ -227,7 +247,12 @@ string remove_headtail_space( const string & s ) {
 	return str_result;
 }
 
-void out_of_cluster_density( const cCluster_Set & upper, const cCluster_Set & lower, const cRatios & ratio, std::ofstream & ofile ) {
+
+void 
+out_of_cluster_density(const cCluster_Set & upper,
+                       const cCluster_Set & lower,
+                       const cRatios & ratio, std::ofstream & ofile ) {
+
 	static const unsigned int uid_index = cRecord::get_index_by_name(cUnique_Record_ID::static_get_class_name());
 	const unsigned int base = 100000;
 	std:: cout << "Processing out-of-cluster density ... ..." << std::endl;
@@ -307,5 +332,3 @@ void out_of_cluster_density( const cCluster_Set & upper, const cCluster_Set & lo
 	}
 	std::cout << "Totally, " << cluster_count << " clusters have been process for out-of-cluster density." << std::endl;
 }
-
-
