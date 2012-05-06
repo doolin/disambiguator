@@ -1,8 +1,8 @@
-/*
+/**
  * DisambigComp.cpp
  *
- *  Created on: Dec 9, 2010
- *      Author: ysun
+ * Created on: Dec 9, 2010
+ * Author: ysun
  */
 
 #include "DisambigComp.h"
@@ -24,9 +24,8 @@ using std::list;
 //this function is to get the incontinuous longest common subsequence of two vectors.
 //for example, the mid name comparision uses the function | or the following continuous function.
 template <typename Tp, typename Functor>
-vector <Tp> Longest_Common_Subsequence_Incontinuous(const vector <Tp> & s1, const vector <Tp> &s2, const Functor & func)
-{
-    
+vector <Tp> Longest_Common_Subsequence_Incontinuous(const vector <Tp> & s1, const vector <Tp> &s2, const Functor & func) {
+
 	static const vector < Tp > emptyresult;
     if(s1.empty()||s2.empty())
         return emptyresult;
@@ -84,6 +83,7 @@ vector <Tp> Longest_Common_Subsequence_Incontinuous(const vector <Tp> & s1, cons
     return ans;
 }
 
+
 template <typename Tp, typename Functor>
 vector <Tp> Longest_Common_Subsequence_Continuous(const vector <Tp> & s1, const vector <Tp> &s2, const Functor & func) {
 	static const vector < Tp > emptyresult;
@@ -123,29 +123,17 @@ vector <Tp> Longest_Common_Subsequence_Continuous(const vector <Tp> & s1, const 
 }
 
 
+inline bool
+cSentence_JWComparator:: operator()(const string * ps1, const string * ps2) const {
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-inline bool cSentence_JWComparator:: operator()(const string * ps1, const string * ps2) const {
-	const double compres = strcmp95_modified(ps1->c_str(), ps2->c_str());
-	return compres > threshold;
+    const double compres = strcmp95_modified(ps1->c_str(), ps2->c_str());
+    return compres > threshold;
 };
 
 
+char * 
+extract_initials(char * dest, const char * source) {
 
-
-char * extract_initials(char * dest, const char * source) {
 	if ( source == NULL || dest == NULL )
 		return NULL;
 	char * ret = dest;
@@ -161,7 +149,9 @@ char * extract_initials(char * dest, const char * source) {
 	return ret;
 };
 
-int nospacecmp(const char* str1, const char* str2){
+
+int
+nospacecmp(const char* str1, const char* str2){
     const char *c1, *c2;
     const char delim = ' ';
     for(c1 = str1, c2=str2; (*c1 != '\0') && (*c2 != '\0'); ++c1, ++c2 ){
@@ -174,7 +164,9 @@ int nospacecmp(const char* str1, const char* str2){
     return  ( *c1!='\0' ) - ( *c2!='\0' );
 }
 
-int jwcmp_old(const string & str1, const string& str2){
+
+int
+jwcmp_old(const string & str1, const string& str2){
     const char *delim= " ";
     const unsigned int delim_size = strlen(delim);
     const double threshold  = 0.95;
