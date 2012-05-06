@@ -594,20 +594,17 @@ name_compare(const string & s1,
              const unsigned int prev,
              const unsigned int cur) {
 
-    if ( s1.empty() || s2.empty() )
-        return 1;
-    if ( s1 == s2 )
-        return 4;
+    if (s1.empty() || s2.empty()) return 1;
+    if (s1 == s2) return 4;
+
     int misspell_score = is_misspell(s1.c_str(), s2.c_str()) ;
-    if ( misspell_score )
-        return 3;
+    if (misspell_score) return 3;
 
     unsigned int abbrev_score = is_abbreviation ( s1.c_str(), s2.c_str());
-    if ( abbrev_score == 0 )
+    if (abbrev_score == 0) {
         return 0;
-    else if ( cur != 0 && cur <= abbrev_score ) {
-        if ( prev == 0 || ( prev != 0 && prev > abbrev_score ) )
-            return 4;
+    } else if ( cur != 0 && cur <= abbrev_score ) {
+        if ( prev == 0 || ( prev != 0 && prev > abbrev_score ) ) return 4;
     }
 
     return 2;
