@@ -13,6 +13,9 @@ AC_CONFIG_HEADERS([config.h])
 AC_PROG_CXX
 AC_PROG_CC
 
+#AM_CFLAGS = -g3 -O0
+#AM_CXXFLAGS = -g3 -O0
+
 # Checks for libraries.
 # FIXME: Replace `main' with a function in `-lboost_unit_test_framework':
 AC_CHECK_LIB([boost_unit_test_framework], [main])
