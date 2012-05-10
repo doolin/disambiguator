@@ -171,7 +171,7 @@ get_weight (const unsigned int x_count, const unsigned int m_count) {
 
 
 void 
-smoothing_inter_extrapolation_cplex(map < cSimilarity_Profile, double, cSimilarity_Compare  >& ratio_map,
+smoothing_inter_extrapolation_cplex(map < cSimilarity_Profile, double, cSimilarity_Compare > & ratio_map,
     const cSimilarity_Profile & min_sp,
     const cSimilarity_Profile & max_sp,
     const map < cSimilarity_Profile, unsigned int, cSimilarity_Compare  > & x_counts,
@@ -219,14 +219,12 @@ smoothing_inter_extrapolation_cplex(map < cSimilarity_Profile, double, cSimilari
         }
     }
 
-    std::cout << "There are " << total_nodes << " similarity profiles, "
-            << total_equality << " equalities and "
-            << total_possible_inequality << " inequalities in all." << std::endl;
+    std::cout << "There are " 
+              << total_nodes << " similarity profiles, "
+              << total_equality << " equalities and "
+              << total_possible_inequality << " inequalities in all." << std::endl;
 
     std::cout << "Starting Quadratic Programming. ( Take the logarithm ) ..." << std::endl;
-
-    //==========================
-    ///USING cplex NOW.
 
 
     IloEnv env;
@@ -247,6 +245,7 @@ smoothing_inter_extrapolation_cplex(map < cSimilarity_Profile, double, cSimilari
         IloExpr target(env);
         for ( map < cSimilarity_Profile, double,  cSimilarity_Compare  >::const_iterator cpm = ratio_map.begin();
                 cpm != ratio_map.end(); ++cpm ) {
+
             const double log_val = log ( cpm->second);
             const double wt =  get_weight( x_counts.find (cpm->first)->second , m_counts.find (cpm->first)->second ) ;
             const unsigned int k = sp2index( cpm->first, min_sp, max_sp);
@@ -255,11 +254,11 @@ smoothing_inter_extrapolation_cplex(map < cSimilarity_Profile, double, cSimilari
             const double line_coef = ( - 2.0 ) * log_val * wt;
             target += line_coef * var[k];
         }
+
         IloObjective obj ( env, target, IloObjective::Minimize);
         model.add(obj);
 
         //configuring constraints
-
         for ( unsigned int i = 0 ; i < total_nodes; ++i ) {
             const cSimilarity_Profile the_sp = index2sp(i, min_sp, max_sp );
 
