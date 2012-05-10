@@ -43,12 +43,15 @@ cCluster_Info::cCluster_Info(const map <string, const cRecord*> & input_uid2reco
 /*
  * Aim: return the list of clusters by the pointer of blocking id string.
  */
-const cCluster_Info::cRecGroup & cCluster_Info::get_comparision_map(const string* bid) const {
-	map < string, cRecGroup >::const_iterator q = cluster_by_block.find(*bid);
-	if ( q == cluster_by_block.end())
-		throw cException_Attribute_Not_In_Tree(bid->c_str());
-	return q->second;
+const cCluster_Info::cRecGroup & 
+cCluster_Info::get_comparision_map(const string* bid) const {
+
+    map < string, cRecGroup >::const_iterator q = cluster_by_block.find(*bid);
+    if ( q == cluster_by_block.end())
+        throw cException_Attribute_Not_In_Tree(bid->c_str());
+    return q->second;
 }
+
 
 /*
  * Aim: return the list of clusters by the pointer of blocking id string.
