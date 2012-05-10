@@ -22,17 +22,23 @@ const char * const cCluster_Info::secondary_delim = ",";
 unsigned int cWorker_For_Disambiguation::count = 0;
 pthread_mutex_t cWorker_For_Disambiguation::iter_lock = PTHREAD_MUTEX_INITIALIZER;
 
+
 /*
  * Aim: constructor of cCluster_Info objects
  */
 cCluster_Info::cCluster_Info(const map <string, const cRecord*> & input_uid2record,
-							const bool input_is_matching , const bool aum , const bool debug  )
-		: uid2record_pointer(&input_uid2record), is_matching(input_is_matching),
-		  frequency_adjust_mode(aum), debug_mode(debug) {
-	std::cout << "A cluster information class is set up." << std::endl;
-	std::cout << "FREQUENCY_ADJUST_PRIOR_MODE: " << (frequency_adjust_mode ? "ON" : "OFF")
-				<< "       DEBUG MODE: " << (debug_mode ? "ON" : "OFF") << std::endl;
+                             const bool input_is_matching,
+                             const bool aum,
+                             const bool debug)
+                           : uid2record_pointer(&input_uid2record),
+                             is_matching(input_is_matching),
+                             frequency_adjust_mode(aum), debug_mode(debug) {
+
+    std::cout << "A cluster information class is set up." << std::endl;
+    std::cout << "FREQUENCY_ADJUST_PRIOR_MODE: " << (frequency_adjust_mode ? "ON" : "OFF")
+              << "       DEBUG MODE: " << (debug_mode ? "ON" : "OFF") << std::endl;
 } ;
+
 
 /*
  * Aim: return the list of clusters by the pointer of blocking id string.
@@ -106,6 +112,7 @@ void cCluster_Info::retrieve_last_comparision_info ( const cBlocking_Operation &
 		map < const string*, map < const cRecord *, double> >::iterator prim_co_iter;
 		unsigned int count = 0;
 		const unsigned int base = 100000;
+
 		cluster_by_block.clear();
 		this->column_stat.clear();
 		this->column_stat.resize(num_columns);
@@ -113,9 +120,11 @@ void cCluster_Info::retrieve_last_comparision_info ( const cBlocking_Operation &
 		this->max_occurrence.resize(num_columns);
 		this->min_occurrence.clear();
 		this->min_occurrence.resize(num_columns);
+
 		if (infile.good()) {
 			string filedata;
 			cRecGroup::iterator pm;
+
 			while ( getline(infile, filedata)) {
 				register size_t pos = 0, prev_pos = 0;
 				pos = filedata.find(primary_delim, prev_pos);
@@ -123,6 +132,7 @@ void cCluster_Info::retrieve_last_comparision_info ( const cBlocking_Operation &
 				const cRecord * key = retrieve_record_pointer_by_unique_id( keystring, *uid2record_pointer);
 				const string b_id = blocker.extract_blocking_info(key);
 				vector < string > column_part (num_columns) ;
+
 				for ( unsigned int i = 0; i < num_columns; ++i ) {
 				    const string temp = blocker.extract_column_info ( key, i );
 				    column_part.at(i) = temp;
