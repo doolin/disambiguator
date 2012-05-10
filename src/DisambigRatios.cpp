@@ -208,7 +208,7 @@ cRatioComponent::prepare(const char* x_file,
             all_possible.insert(p->first);
     }
 
-    for ( set< vector < unsigned int >, cSimilarity_Compare >::const_iterator ps = all_possible.begin(); ps != all_possible.end(); ++ps ) {
+    for (set< vector < unsigned int >, cSimilarity_Compare >::const_iterator ps = all_possible.begin(); ps != all_possible.end(); ++ps ) {
         map < vector < unsigned int >, unsigned int, cSimilarity_Compare >::iterator p = x_counts.find(*ps);
         if ( p == x_counts.end() )
             x_counts.insert(std::pair< vector< unsigned int>, unsigned int >(*ps, laplace_base));
@@ -281,7 +281,9 @@ cRatioComponent:: cRatioComponent( const map < string, const cRecord * > & uid_t
             : attrib_group(groupname), puid_tree(&uid_tree), is_ready(false) {
 };
 
-void cRatioComponent::get_similarity_info() {
+void 
+cRatioComponent::get_similarity_info() {
+
     positions_in_ratios.clear();
     positions_in_record.clear();
     attrib_names.clear();
@@ -289,6 +291,7 @@ void cRatioComponent::get_similarity_info() {
     const cRecord & sample_record = cRecord::get_sample_record();
     static const string useless_group_label = "None";
     unsigned int ratios_pos = 0, record_pos = 0;
+
     for (vector<const cAttribute*>::const_iterator p = sample_record.vector_pdata.begin(); p != sample_record.vector_pdata.end(); ++p) {
         const string & info = (*p)->get_attrib_group();
         bool comparator_activated = (*p)->is_comparator_activated();
@@ -305,9 +308,13 @@ void cRatioComponent::get_similarity_info() {
 }
 
 
-cRatios:: cRatios(const vector < const cRatioComponent *> & component_pointer_vector, const char * filename, const cRecord & rec) {
+cRatios::cRatios(const vector < const cRatioComponent *> & component_pointer_vector,
+                 const char * filename,
+                 const cRecord & rec) {
+
     std::cout << "Creating the final version ratios file ..." << std::endl;
     unsigned int ratio_size = 0;
+
     for ( vector< const cRatioComponent *>::const_iterator p = component_pointer_vector.begin(); p != component_pointer_vector.end(); ++p ) {
         std::cout << " Size of Ratio Component = " << (*p)->get_ratios_map().size() << std::endl;
         ratio_size += (*p)->get_component_positions_in_ratios().size();
@@ -326,7 +333,7 @@ cRatios:: cRatios(const vector < const cRatioComponent *> & component_pointer_ve
     }
     
 // LEAVE THIS IN, this is something which may be necessary, it's one of my #if'ed out blocks. -dmd
-#if 1
+#if 0
     // now checking the final ratios
     const vector < unsigned int > & firstline = final_ratios.begin()->first;
     for ( vector< unsigned int >::const_iterator k = firstline.begin(); k < firstline.end(); ++k ) {
@@ -356,25 +363,34 @@ void
 cRatios::More_Components(const cRatioComponent & additional_component) {
 
     map < vector <unsigned int>, double, cSimilarity_Compare > temp_ratios;
+
     map < vector < unsigned int > , unsigned int, cSimilarity_Compare > temp_x_counts, temp_m_counts;
     const vector < unsigned int > & temp_pos_in_rec = additional_component. get_component_positions_in_record();
     const vector < unsigned int > & positions_in_ratios = additional_component.get_component_positions_in_ratios();
+
     for ( unsigned int k = 0; k < positions_in_ratios.size(); ++k ) {
         attrib_names.at( positions_in_ratios.at(k) ) = cRecord::get_column_names().at(temp_pos_in_rec.at(k) );
     }
-    
+ 
+    std::cout << "final_ratios.size(): " << final_ratios.size() << std::endl;
+
     for (map < vector <unsigned int>, double, cSimilarity_Compare >::iterator p = final_ratios.begin(); p != final_ratios.end(); ++p ) {
+
         vector < unsigned int > key = p->first;
+
         for ( map < vector <unsigned int>, double, cSimilarity_Compare >::const_iterator vv = additional_component.get_ratios_map().begin();
              vv != additional_component.get_ratios_map().end(); ++vv) {
+
             for ( unsigned int j = 0; j < vv->first.size(); ++j ) {
                 key.at( positions_in_ratios.at(j) ) = vv->first.at(j);
             }
+
             temp_ratios.insert( std::pair < vector < unsigned int >, double >(key, p->second * vv->second));
             temp_x_counts.insert(std::pair < vector < unsigned int >, unsigned int >(key, this->x_counts.find(p->first)->second + additional_component.get_x_counts().find(vv->first)->second ) );
             temp_m_counts.insert(std::pair < vector < unsigned int >, unsigned int >(key, this->m_counts.find(p->first)->second + additional_component.get_m_counts().find(vv->first)->second ) );
         }
     }
+
     final_ratios = temp_ratios;
     x_counts = temp_x_counts;
     m_counts = temp_m_counts;

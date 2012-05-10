@@ -227,9 +227,8 @@ void smoothing_inter_extrapolation_cplex(map < cSimilarity_Profile, double,  cSi
 	//first, build all the possible similarity profiles.
 	if ( min_sp.size() != max_sp.size() )
 		throw cException_Other("Minimum similarity profile and Maximum similarity profile are not consistent.");
+
 	unsigned int total_nodes = 1;
-
-
 	const unsigned int overflow_check = 0 - 1;
 	for ( unsigned int i = 0; i < min_sp.size(); ++i ) {
 		if ( max_sp.at(i) < min_sp.at(i) )
