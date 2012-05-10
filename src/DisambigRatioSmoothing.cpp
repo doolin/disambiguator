@@ -19,7 +19,8 @@
 
 static const bool should_do_name_range_check = true;
 
-void smoothing_inter_extrapolation_cplex(map < cSimilarity_Profile, double,  cSimilarity_Compare  >& ratio_map,
+void 
+smoothing_inter_extrapolation_cplex(map < cSimilarity_Profile, double,  cSimilarity_Compare  >& ratio_map,
 				const cSimilarity_Profile & min_sp, const cSimilarity_Profile & max_sp,
 				const map < cSimilarity_Profile, unsigned int, cSimilarity_Compare  > & x_counts,
 				const map < cSimilarity_Profile, unsigned int, cSimilarity_Compare  > & m_counts,
@@ -88,7 +89,9 @@ void smoothing_inter_extrapolation_cplex(map < cSimilarity_Profile, double,  cSi
 
 
 
-unsigned int sp2index ( const cSimilarity_Profile & sp, const cSimilarity_Profile & min_sp, const cSimilarity_Profile & max_sp ) {
+unsigned int 
+sp2index ( const cSimilarity_Profile & sp, const cSimilarity_Profile & min_sp, const cSimilarity_Profile & max_sp ) {
+
 	if ( sp.size() != min_sp.size() )
 		throw cException_Other("Convertion error in smoothing.");
 	unsigned int index = 0;
@@ -104,7 +107,10 @@ unsigned int sp2index ( const cSimilarity_Profile & sp, const cSimilarity_Profil
 	return index;
 }
 
-cSimilarity_Profile index2sp ( unsigned int index, const cSimilarity_Profile & min_sp, const cSimilarity_Profile & max_sp ) {
+
+cSimilarity_Profile 
+index2sp ( unsigned int index, const cSimilarity_Profile & min_sp, const cSimilarity_Profile & max_sp ) {
+
 	static const unsigned int ulimit = 0 - 1;
 	cSimilarity_Profile sp ( min_sp );
 	for ( unsigned int i = min_sp.size() - 1 ; i  != ulimit ; --i ) {
@@ -119,7 +125,9 @@ cSimilarity_Profile index2sp ( unsigned int index, const cSimilarity_Profile & m
 	return sp;
 }
 
-void cRatioComponent::smooth() {
+void 
+cRatioComponent::smooth() {
+
 	std::cout << "Starting data smoothing..." << std::endl;
 	std::cout << "This step is skipped for cRatioComponent objects." << std::endl;
 	return;
@@ -138,7 +146,8 @@ void cRatioComponent::smooth() {
 }
 
 
-void cRatios::smooth() {
+void 
+cRatios::smooth() {
 	std::cout << "Starting ratios smoothing..." << std::endl;
 	//smoothing( final_ratios, similarity_map, x_counts, m_counts, this->get_attrib_names(), should_do_name_range_check);
 	const cSimilarity_Profile max = get_max_similarity (this->attrib_names);
@@ -152,7 +161,9 @@ void cRatios::smooth() {
 
 
 
-vector < cSimilarity_Profile > find_lesser_neighbour( const cSimilarity_Profile & sp, const cSimilarity_Profile & min_sp	) {
+vector < cSimilarity_Profile > 
+find_lesser_neighbour(const cSimilarity_Profile & sp, const cSimilarity_Profile & min_sp) {
+
 	vector < cSimilarity_Profile > vs;
 	for ( unsigned int i = 0; i < sp.size(); ++i ) {
 		if ( min_sp.at(i) > sp.at(i) )
@@ -168,7 +179,9 @@ vector < cSimilarity_Profile > find_lesser_neighbour( const cSimilarity_Profile 
 	return vs;
 }
 
-vector < cSimilarity_Profile > find_greater_neighbour( const cSimilarity_Profile & sp, const cSimilarity_Profile & max_sp	) {
+vector < cSimilarity_Profile >
+find_greater_neighbour( const cSimilarity_Profile & sp, const cSimilarity_Profile & max_sp) {
+
 	vector < cSimilarity_Profile > vs;
 	for ( unsigned int i = 0; i < sp.size(); ++i ) {
 		if ( max_sp.at(i) < sp.at(i) )
@@ -184,8 +197,12 @@ vector < cSimilarity_Profile > find_greater_neighbour( const cSimilarity_Profile
 	return vs;
 }
 
-vector < std::pair < cSimilarity_Profile, cSimilarity_Profile> > find_neighbours( const cSimilarity_Profile & sp,
-		const cSimilarity_Profile & min_sp, const cSimilarity_Profile & max_sp	) {
+
+vector < std::pair < cSimilarity_Profile, cSimilarity_Profile> >
+find_neighbours(const cSimilarity_Profile & sp,
+		const cSimilarity_Profile & min_sp,
+                const cSimilarity_Profile & max_sp) {
+
 	vector < std::pair < cSimilarity_Profile, cSimilarity_Profile> > vs;
 	for ( unsigned int i = 0; i < sp.size(); ++i ) {
 		if ( min_sp.at(i) > sp.at(i) )
@@ -205,15 +222,17 @@ vector < std::pair < cSimilarity_Profile, cSimilarity_Profile> > find_neighbours
 }
 
 
-double get_weight ( const unsigned int x_count, const unsigned int m_count ) {
+double 
+get_weight (const unsigned int x_count, const unsigned int m_count) {
+
 	return 1.0 * x_count + 1.0 * m_count;
 }
 
 
 
-//================================================================
 
-void smoothing_inter_extrapolation_cplex(map < cSimilarity_Profile, double,  cSimilarity_Compare  >& ratio_map,
+void 
+smoothing_inter_extrapolation_cplex(map < cSimilarity_Profile, double,  cSimilarity_Compare  >& ratio_map,
 				const cSimilarity_Profile & min_sp, const cSimilarity_Profile & max_sp,
 				const map < cSimilarity_Profile, unsigned int, cSimilarity_Compare  > & x_counts,
 				const map < cSimilarity_Profile, unsigned int, cSimilarity_Compare  > & m_counts,
@@ -368,6 +387,5 @@ void smoothing_inter_extrapolation_cplex(map < cSimilarity_Profile, double,  cSi
 		throw;
 	}
 	env.end();
-
 
 }
