@@ -25,6 +25,8 @@
 
 typedef map <string, const cRecord *> Dict;
 
+typedef vector <string> Label;
+
 class Initial {
 public:
   Initial(void) : value(1) {}
@@ -41,6 +43,12 @@ public:
     const string uid_identifier = cUnique_Record_ID::static_get_class_name();
     //uid = string("Unique_Record_ID");
     CPPUNIT_ASSERT( uid_identifier == string("Unique_Record_ID"));
+    delete i;
+  }
+
+  void LabelTest(void) {
+    Label * l = new Label();
+    delete l;
   }
 };
 
@@ -49,5 +57,9 @@ main(int argc, char ** argv) {
 
   InitialTest * it = new InitialTest(std::string("initial test"));
   it->runTest();
+  it->LabelTest();
+
+  delete it;
+
   return 0;
 }
