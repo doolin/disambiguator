@@ -7,4 +7,6 @@
 
 typedef std::vector<std::string> Label;
 
+typedef std::vector < unsigned int > SimilarityProfile;
+
 #endif /* PATENT_TYPEDEFS_H */

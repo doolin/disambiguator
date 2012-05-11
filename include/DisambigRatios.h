@@ -12,8 +12,10 @@
 #include <iostream>
 #include <map>
 #include <set>
-#include "DisambigDefs.h"
 #include <fstream>
+
+#include "disambiguation.h"
+#include "DisambigDefs.h"
 
 using std::string;
 using std::set;
@@ -23,7 +25,7 @@ using std::map;
  * The classes associated with ratios are relatively hard to understand yet very important.
  */
 
-typedef vector < unsigned int > cSimilarity_Profile;
+//typedef vector < unsigned int > SimilarityProfile;
 
 
 /*
@@ -34,7 +36,7 @@ typedef vector < unsigned int > cSimilarity_Profile;
  * Private:
  * 		unsigned int compare_entry: the position of interest.
  * Public:
- * 		bool operator() ( const cSimilarity_Profile * p1, const cSimilarity_Profile * p2 ) const:
+ * 		bool operator() ( const SimilarityProfile * p1, const SimilarityProfile * p2 ) const:
  * 			to compare the two similarity profiles at the position of compare_entry.
  * 		cMonotonic_Similarity_Compare( const unsigned int entry): constructor
  * 		void reset_entry( const unsigned int entry): reset the variable compare_entry to the input entry.
@@ -45,7 +47,7 @@ struct cMonotonic_Similarity_Compare {
 private:
 	unsigned int compare_entry;
 public:
-	bool operator() ( const cSimilarity_Profile * p1, const cSimilarity_Profile * p2 ) const {
+	bool operator() ( const SimilarityProfile * p1, const SimilarityProfile * p2 ) const {
 		return p1->at(compare_entry) < p2->at(compare_entry);
 	}
 	cMonotonic_Similarity_Compare( const unsigned int entry) : compare_entry(entry) {};
@@ -57,7 +59,7 @@ public:
  * members in this set is sorted by a given similarity entry in an ascending way.
  */
 
-typedef set< const cSimilarity_Profile *, cMonotonic_Similarity_Compare> monotonic_set;
+typedef set< const SimilarityProfile *, cMonotonic_Similarity_Compare> monotonic_set;
 
 
 /*
@@ -66,15 +68,15 @@ typedef set< const cSimilarity_Profile *, cMonotonic_Similarity_Compare> monoton
  * is to allow comparison of similarity profiles skipping a certain entry in the profile.
  *
  * Private:
- * 		const cSimilarity_Profile * psim: pointer to a similarity profile.
+ * 		const SimilarityProfile * psim: pointer to a similarity profile.
  * 		unsigned int monotonic_dimension: an entry in which comparison of similarity profiles will skip.
- * 		bool compare_without_primary( const cSimilarity_Profile * p1, const cSimilarity_Profile * p2 ) const:
+ * 		bool compare_without_primary( const SimilarityProfile * p1, const SimilarityProfile * p2 ) const:
  * 			compare the similarity profiles in all dimensions except the "monotonic_dimension" dimension.
  * Public:
  *		bool operator < ( const cSimilarity_With_Monotonicity_Dimension & rhs) const:
  *			comparison function that is used only in map/set.
  *		const unsigned int get_monotonic_dimension() const: return the monotunic_dimension
- *		cSimilarity_With_Monotonicity_Dimension( const cSimilarity_Profile * p, const unsigned int dm ):
+ *		cSimilarity_With_Monotonicity_Dimension( const SimilarityProfile * p, const unsigned int dm ):
  *				constructor.
  *
  * Use of the above classes is primarily in the DisambigRatioSmoothing.cpp.
@@ -84,13 +86,13 @@ typedef set< const cSimilarity_Profile *, cMonotonic_Similarity_Compare> monoton
  */
 struct cSimilarity_With_Monotonicity_Dimension {
 private:
-	const cSimilarity_Profile * psim;
+	const SimilarityProfile * psim;
 	unsigned int monotonic_dimension;
-	bool compare_without_primary( const cSimilarity_Profile * p1, const cSimilarity_Profile * p2 ) const;
+	bool compare_without_primary( const SimilarityProfile * p1, const SimilarityProfile * p2 ) const;
 public:
 	bool operator < ( const cSimilarity_With_Monotonicity_Dimension & rhs) const;
 	const unsigned int get_monotonic_dimension() const {return monotonic_dimension;}
-	explicit cSimilarity_With_Monotonicity_Dimension( const cSimilarity_Profile * p, const unsigned int dm )
+	explicit cSimilarity_With_Monotonicity_Dimension( const SimilarityProfile * p, const unsigned int dm )
 		: psim ( p ), monotonic_dimension(dm) {}
 };
 
