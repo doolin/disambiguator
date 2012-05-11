@@ -504,8 +504,11 @@ int countrycmp(const string & country1, const string & country2 ) {
 	return score;
 }
 
-int classcmp(const string &class1, const string& class2 ){
-    return ( class1 == class2 )? 1 : 0;
+
+int
+classcmp(const string &class1, const string& class2) {
+
+    return (class1 == class2 ) ? 1 : 0;
 }
 
 
