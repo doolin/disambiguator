@@ -289,20 +289,23 @@ cRecord::get_similarity_index_by_name(const string & inputstr) {
 }
 
 
-void 
+void
 cRecord::activate_comparators_by_name (const vector < string > & inputvec) {
 
-	cRecord::active_similarity_names = inputvec;
-	for ( vector < const cAttribute *>::const_iterator p = cRecord::sample_record_pointer->get_attrib_vector().begin();
-			p != cRecord::sample_record_pointer->get_attrib_vector().end(); ++p ) {
-		const string & classlabel = (*p)->get_class_name();
-		if ( std::find( inputvec.begin(), inputvec.end(), classlabel) == inputvec.end() ) {
-			(*p)->deactivate_comparator();
-		}
-		else {
-			(*p)->activate_comparator();
-		}
-	}
-	cRecord::update_active_similarity_names();
-}
+    cRecord::active_similarity_names = inputvec;
 
+    for ( vector < const cAttribute *>::const_iterator p = cRecord::sample_record_pointer->get_attrib_vector().begin();
+            p != cRecord::sample_record_pointer->get_attrib_vector().end(); ++p ) {
+
+        const string & classlabel = (*p)->get_class_name();
+
+        if (std::find( inputvec.begin(), inputvec.end(), classlabel) == inputvec.end()) {
+            (*p)->deactivate_comparator();
+        }
+        else {
+            (*p)->activate_comparator();
+        }
+    }
+
+    cRecord::update_active_similarity_names();
+}
