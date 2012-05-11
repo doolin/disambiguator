@@ -58,6 +58,7 @@ public:
   void LabelTest(char const * label) {
     const string s(label);
     Label l(1, s);
+    Label m(1, string("baz"));
   }
 };
 
