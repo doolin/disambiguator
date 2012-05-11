@@ -5,8 +5,8 @@
  *      Author: ysun
  */
 
-#ifndef DISAMBIGENGINE_H_
-#define DISAMBIGENGINE_H_
+#ifndef PATENT_ENGINE_H
+#define PATENT_ENGINE_H
 
 #include <iostream>
 #include <list>
@@ -25,15 +25,6 @@ using std::list;
 using std::vector;
 using std::map;
 using std::set;
-
-//asgdetail consists of assignee number and its patent counts.
-typedef std::pair<string, unsigned int> asgdetail;
-
-// cGroup_Value is a list of const cRecord pointers. This definition will be used throughout the whole project.
-typedef list<const cRecord*> cGroup_Value;
-
-// forward diclarations
-class cBlocking_Operation_By_Coauthors;
 
 /*
  * cSort_by_attrib:
@@ -686,4 +677,4 @@ void build_patent_tree( map < const cRecord *, cGroup_Value, cSort_by_attrib > &
 void build_patent_tree( map < const cRecord *, cGroup_Value, cSort_by_attrib > & patent_tree , const list < const cRecord * > & all_rec_pointers );
 string check_file_existence(const string & description);
 
-#endif /* DISAMBIGENGINE_H_ */
+#endif /* PATENT_ENGINE_H */
