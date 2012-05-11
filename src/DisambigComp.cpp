@@ -512,27 +512,32 @@ int coauthorcmp(const string &coauthor1, const string& coauthor2 ){
     return ( coauthor1 == coauthor2 )? 1 : 0;
 }
 
-int asgcmp(const string & asg1, const string & asg2, const map<string, std::pair<string, unsigned int> > * const asg_table_pointer){
-	map<string, std::pair<string, unsigned int> >::const_iterator p1, p2;
-	p1 = asg_table_pointer->find(asg1);
-	p2 = asg_table_pointer->find(asg2);
 
-	if ( p1 == asg_table_pointer->end() || p2 == asg_table_pointer->end() ) {
-		std::cout << "Error: either assignee is not found in the assignee tree. "<< asg1 << " or " << asg2 << std::endl;
-		throw std::runtime_error("Assignee comparison error.");
-	}
-	int score = 0;
-	if ( p1->second.first == p2->second.first && p1->second.first.size() > 3 ) {
-		score = Jaro_Wrinkler_Max;
-		if ( p1->second.second < 100 || p2->second.second < 100)
-			score += 1;
-		//else if ( p1->second.second < 1000 || p2->second.second < 1000 )
-		//	score += 1;
-	}
-	else {
-		score = jwcmp(asg1, asg2);
-	}
-	return score;
+int
+asgcmp(const string & asg1, const string & asg2,
+       const map<string, std::pair<string, unsigned int> > * const asg_table_pointer) {
+
+    map<string, std::pair<string, unsigned int> >::const_iterator p1, p2;
+    p1 = asg_table_pointer->find(asg1);
+    p2 = asg_table_pointer->find(asg2);
+
+    if ( p1 == asg_table_pointer->end() || p2 == asg_table_pointer->end() ) {
+        std::cout << "Error: either assignee is not found in the assignee tree. "<< asg1 << " or " << asg2 << std::endl;
+        throw std::runtime_error("Assignee comparison error.");
+    }
+
+    int score = 0;
+    if ( p1->second.first == p2->second.first && p1->second.first.size() > 3 ) {
+        score = Jaro_Wrinkler_Max;
+        if ( p1->second.second < 100 || p2->second.second < 100)
+            score += 1;
+        //else if ( p1->second.second < 1000 || p2->second.second < 1000 )
+        //    score += 1;
+    }
+    else {
+        score = jwcmp(asg1, asg2);
+    }
+    return score;
 }
 
 
