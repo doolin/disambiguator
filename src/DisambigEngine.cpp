@@ -24,13 +24,16 @@
 using std::map;
 using std::set;
 
+#ifdef RECORD
+
 /*
  * Declaration ( and definition ) of static members in some classes.
  */
 vector <string> cRecord::column_names;
 vector <string> cRecord::active_similarity_names;
 const cRecord * cRecord::sample_record_pointer = NULL;
-const string cBlocking_Operation::delim = "##";
+
+//const string cBlocking_Operation::delim = "##";
 
 
 /*
@@ -305,6 +308,12 @@ cRecord::activate_comparators_by_name (const vector < string > & inputvec) {
 	cRecord::update_active_similarity_names();
 }
 
+//////  Apparently the end of the cRecord class
+
+#endif
+
+
+
 /**
  * Aim: to truncate string as desired. See the explanation in the
  * header file for more details
@@ -356,13 +365,18 @@ cString_Truncate::manipulate( const string & inputstring ) const {
 	return result;
 }
 
+
+
+const string cBlocking_Operation::delim = "##";
+
 /*
  * Aim: to extract initials of each word in a string, maybe not starting from the first word.
  * See the explanation in the header file for more details
  * Algorithm: simple string manipulation in C.
  */
+string 
+cExtract_Initials::manipulate( const string & inputstring ) const {
 
-string cExtract_Initials::manipulate( const string & inputstring ) const {
 	size_t pos, prev_pos;
 	pos = prev_pos = 0;
 	
