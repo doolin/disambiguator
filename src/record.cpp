@@ -36,48 +36,48 @@ const cRecord * cRecord::sample_record_pointer = NULL;
 
 /*
  * Aim: to check the number of columns that are supposed to be useful in a cRecord object.
- * 		Firstname, middlename, lastname, assignee (company), latitude and city are believed to be useful.
- * 		Other attributes, such as street and coauthor, are allowed to be missing.
+ *         Firstname, middlename, lastname, assignee (company), latitude and city are believed to be useful.
+ *         Other attributes, such as street and coauthor, are allowed to be missing.
  * Algorithm: use " is_informative() " function to check each specified attribute, and return the sum.
  */
 
 unsigned int 
 cRecord::informative_attributes() const {
 
-	static const unsigned int firstname_index = cRecord::get_index_by_name(cFirstname::static_get_class_name());
-	static const unsigned int middlename_index = cRecord::get_index_by_name(cMiddlename::static_get_class_name());
-	static const unsigned int lastname_index = cRecord::get_index_by_name(cLastname::static_get_class_name());
-	static const unsigned int assignee_index = cRecord::get_index_by_name(cAssignee::static_get_class_name());
-	static const unsigned int lat_index = cRecord::get_index_by_name(cLatitude::static_get_class_name());
-	static const unsigned int ctry_index = cRecord::get_index_by_name(cCountry::static_get_class_name());
+    static const unsigned int firstname_index = cRecord::get_index_by_name(cFirstname::static_get_class_name());
+    static const unsigned int middlename_index = cRecord::get_index_by_name(cMiddlename::static_get_class_name());
+    static const unsigned int lastname_index = cRecord::get_index_by_name(cLastname::static_get_class_name());
+    static const unsigned int assignee_index = cRecord::get_index_by_name(cAssignee::static_get_class_name());
+    static const unsigned int lat_index = cRecord::get_index_by_name(cLatitude::static_get_class_name());
+    static const unsigned int ctry_index = cRecord::get_index_by_name(cCountry::static_get_class_name());
 
-	unsigned int cnt = 0;
+    unsigned int cnt = 0;
 
-	this->vector_pdata.at(firstname_index)->is_informative() && (++cnt);
-	this->vector_pdata.at(middlename_index)->is_informative() && (++cnt);
-	this->vector_pdata.at(lastname_index)->is_informative() && (++cnt);
-	this->vector_pdata.at(assignee_index)->is_informative() && (++cnt);
-	this->vector_pdata.at(lat_index)->is_informative() && (++cnt);
-	this->vector_pdata.at(ctry_index)->is_informative() && (++cnt);
+    this->vector_pdata.at(firstname_index)->is_informative() && (++cnt);
+    this->vector_pdata.at(middlename_index)->is_informative() && (++cnt);
+    this->vector_pdata.at(lastname_index)->is_informative() && (++cnt);
+    this->vector_pdata.at(assignee_index)->is_informative() && (++cnt);
+    this->vector_pdata.at(lat_index)->is_informative() && (++cnt);
+    this->vector_pdata.at(ctry_index)->is_informative() && (++cnt);
 
-	return cnt;
+    return cnt;
 }
 
 /*
  * Aim: to keep updated the names of current similarity profile columns.
  * Algorithm: use a static sample cRecord pointer to check the comparator status of each attribute.
- * 				Clears the original cRecord::active_similarity_names and update with a newer one.
+ *                 Clears the original cRecord::active_similarity_names and update with a newer one.
  */
 void 
 cRecord::update_active_similarity_names() {
 
-	cRecord::active_similarity_names.clear();
-	const cRecord * pr = cRecord::sample_record_pointer;
-	for ( vector < const cAttribute *>::const_iterator p = pr->vector_pdata.begin(); p != pr->vector_pdata.end(); ++p ) {
-		//std::cout << (*p)->get_class_name() << " , ";		//for debug purpose
-		if ( (*p)->is_comparator_activated() )
-			cRecord::active_similarity_names.push_back((*p)->get_class_name());
-	}
+    cRecord::active_similarity_names.clear();
+    const cRecord * pr = cRecord::sample_record_pointer;
+    for ( vector < const cAttribute *>::const_iterator p = pr->vector_pdata.begin(); p != pr->vector_pdata.end(); ++p ) {
+        //std::cout << (*p)->get_class_name() << " , ";        //for debug purpose
+        if ( (*p)->is_comparator_activated() )
+            cRecord::active_similarity_names.push_back((*p)->get_class_name());
+    }
 }
 
 /*
@@ -103,7 +103,7 @@ cRecord::print(std::ostream & os ) const {
 
   const char lend = '\n';
   for ( vector <const cAttribute *>::const_iterator p = this->vector_pdata.begin(); p != this->vector_pdata.end(); ++p )
-	(*p)->print( os );
+    (*p)->print( os );
   os << "===============================" << lend;
 }
 
@@ -118,60 +118,60 @@ cRecord::print(std::ostream & os ) const {
 vector <unsigned int> 
 cRecord::record_compare(const cRecord & rhs) const {
 
-	static const bool detail_debug = false;
-	vector <unsigned int > rec_comp_result;
-	if ( detail_debug ) {
-		static const unsigned int uid_index = cRecord::get_index_by_name(cUnique_Record_ID::static_get_class_name());
-		const string debug_string = "06476708-1";
-		const string * ps = this->get_attrib_pointer_by_index(uid_index)->get_data().at(0);
-		const string * qs = rhs.get_attrib_pointer_by_index(uid_index)->get_data().at(0);
-		if ( *ps == debug_string || * qs == debug_string ) {
-			std::cout << "Before record compare: "<< std::endl;
-			std::cout << "-----------" << std::endl;
-			this->print();
-			std::cout << "===========" << std::endl;
-			rhs.print();
-			std::cout << std::endl << std::endl;
-		}
-	}
-	try{
-		for ( unsigned int i = 0; i < this->vector_pdata.size(); ++i ) {
-			try {
-				unsigned int stage_result = this->vector_pdata[i]->compare(*(rhs.vector_pdata[i]));
-				rec_comp_result.push_back( stage_result );
-			}
-			catch (const cException_No_Comparision_Function & err) {
-				//std::cout << err.what() << " does not have comparision function. " << std::endl; //for debug purpose
-			}
-		}
-	}
-	catch ( const cException_Interactive_Misalignment & except) {
-		std::cout << "Skipped" << std::endl;
-		rec_comp_result.clear();
-	}
+    static const bool detail_debug = false;
+    vector <unsigned int > rec_comp_result;
+    if ( detail_debug ) {
+        static const unsigned int uid_index = cRecord::get_index_by_name(cUnique_Record_ID::static_get_class_name());
+        const string debug_string = "06476708-1";
+        const string * ps = this->get_attrib_pointer_by_index(uid_index)->get_data().at(0);
+        const string * qs = rhs.get_attrib_pointer_by_index(uid_index)->get_data().at(0);
+        if ( *ps == debug_string || * qs == debug_string ) {
+            std::cout << "Before record compare: "<< std::endl;
+            std::cout << "-----------" << std::endl;
+            this->print();
+            std::cout << "===========" << std::endl;
+            rhs.print();
+            std::cout << std::endl << std::endl;
+        }
+    }
+    try{
+        for ( unsigned int i = 0; i < this->vector_pdata.size(); ++i ) {
+            try {
+                unsigned int stage_result = this->vector_pdata[i]->compare(*(rhs.vector_pdata[i]));
+                rec_comp_result.push_back( stage_result );
+            }
+            catch (const cException_No_Comparision_Function & err) {
+                //std::cout << err.what() << " does not have comparision function. " << std::endl; //for debug purpose
+            }
+        }
+    }
+    catch ( const cException_Interactive_Misalignment & except) {
+        std::cout << "Skipped" << std::endl;
+        rec_comp_result.clear();
+    }
 
-	//for debug only.
-	if ( detail_debug ) {
-		static const unsigned int uid_index = cRecord::get_index_by_name(cUnique_Record_ID::static_get_class_name());
-		const string debug_string = "06476708-1";
-		const string * ps = this->get_attrib_pointer_by_index(uid_index)->get_data().at(0);
-		const string * qs = rhs.get_attrib_pointer_by_index(uid_index)->get_data().at(0);
-		if ( *ps == debug_string || * qs == debug_string ) {
-			std::cout << "After record compare: "<< std::endl;
-			std::cout << "-----------" << std::endl;
-			this->print();
-			std::cout << "===========" << std::endl;
-			rhs.print();
-			std::cout << "..........." << std::endl;
-			std::cout << "Similarity Profile =";
-			for ( vector < unsigned int >::const_iterator t = rec_comp_result.begin(); t != rec_comp_result.end(); ++t )
-				std::cout << *t << ",";
-			std::cout << std::endl << std::endl;
-		}
-	}
+    //for debug only.
+    if ( detail_debug ) {
+        static const unsigned int uid_index = cRecord::get_index_by_name(cUnique_Record_ID::static_get_class_name());
+        const string debug_string = "06476708-1";
+        const string * ps = this->get_attrib_pointer_by_index(uid_index)->get_data().at(0);
+        const string * qs = rhs.get_attrib_pointer_by_index(uid_index)->get_data().at(0);
+        if ( *ps == debug_string || * qs == debug_string ) {
+            std::cout << "After record compare: "<< std::endl;
+            std::cout << "-----------" << std::endl;
+            this->print();
+            std::cout << "===========" << std::endl;
+            rhs.print();
+            std::cout << "..........." << std::endl;
+            std::cout << "Similarity Profile =";
+            for ( vector < unsigned int >::const_iterator t = rec_comp_result.begin(); t != rec_comp_result.end(); ++t )
+                std::cout << *t << ",";
+            std::cout << std::endl << std::endl;
+        }
+    }
 
 
-	return rec_comp_result;
+    return rec_comp_result;
 }
 
 
@@ -186,24 +186,24 @@ vector <unsigned int>
 cRecord::record_compare_by_attrib_indice (const cRecord &rhs, 
                                           const vector < unsigned int > & attrib_indice_to_compare) const {
 
-	vector <unsigned int > rec_comp_result;
-	try{
-		for ( unsigned int j = 0; j < attrib_indice_to_compare.size(); ++j ) {
-			try {
-				unsigned int i = attrib_indice_to_compare.at(j);
-				unsigned int stage_result = this->vector_pdata[i]->compare(*(rhs.vector_pdata[i]));
-				rec_comp_result.push_back( stage_result );
-			}
-			catch (const cException_No_Comparision_Function & err) {
-				//std::cout << err.what() << " does not have comparision function. " << std::endl;
-			}
-		}
-	}
-	catch ( const cException_Interactive_Misalignment & except) {
-		std::cout << "Skipped" << std::endl;
-		rec_comp_result.clear();
-	}
-	return rec_comp_result;
+    vector <unsigned int > rec_comp_result;
+    try{
+        for ( unsigned int j = 0; j < attrib_indice_to_compare.size(); ++j ) {
+            try {
+                unsigned int i = attrib_indice_to_compare.at(j);
+                unsigned int stage_result = this->vector_pdata[i]->compare(*(rhs.vector_pdata[i]));
+                rec_comp_result.push_back( stage_result );
+            }
+            catch (const cException_No_Comparision_Function & err) {
+                //std::cout << err.what() << " does not have comparision function. " << std::endl;
+            }
+        }
+    }
+    catch ( const cException_Interactive_Misalignment & except) {
+        std::cout << "Skipped" << std::endl;
+        rec_comp_result.clear();
+    }
+    return rec_comp_result;
 }
 
 
@@ -214,13 +214,13 @@ cRecord::record_compare_by_attrib_indice (const cRecord &rhs,
 unsigned int 
 cRecord::record_exact_compare(const cRecord & rhs ) const {
 
-	unsigned int result = 0;
-	for ( unsigned int i = 0; i < this->vector_pdata.size(); ++i ) {
-		int ans = this->vector_pdata.at(i)->exact_compare( * rhs.vector_pdata.at(i));
-		if ( 1 == ans )
-			++result;
-	}
-	return result;
+    unsigned int result = 0;
+    for ( unsigned int i = 0; i < this->vector_pdata.size(); ++i ) {
+        int ans = this->vector_pdata.at(i)->exact_compare( * rhs.vector_pdata.at(i));
+        if ( 1 == ans )
+            ++result;
+    }
+    return result;
 }
 
 
@@ -242,9 +242,9 @@ cRecord::print() const {
 void 
 cRecord::clean_member_attrib_pool() {
 
-	for ( vector < const cAttribute *>::const_iterator p = sample_record_pointer->vector_pdata.begin();
-			p != sample_record_pointer->vector_pdata.end(); ++p )
-		(*p)->clean_attrib_pool();
+    for ( vector < const cAttribute *>::const_iterator p = sample_record_pointer->vector_pdata.begin();
+            p != sample_record_pointer->vector_pdata.end(); ++p )
+        (*p)->clean_attrib_pool();
 }
 
 
@@ -255,9 +255,9 @@ cRecord::clean_member_attrib_pool() {
 unsigned int 
 cRecord::get_index_by_name(const string & inputstr) {
 
-	for ( unsigned int i = 0 ; i < column_names.size(); ++i ) {
-		if ( column_names.at(i) == inputstr ) {
-			return i;
+    for ( unsigned int i = 0 ; i < column_names.size(); ++i ) {
+        if ( column_names.at(i) == inputstr ) {
+            return i;
                 }
         }
 
@@ -267,8 +267,8 @@ cRecord::get_index_by_name(const string & inputstr) {
                  + string(STRINGIZE(__LINE__)) + string("column name: ");
         s += inputstr;
         //string s = inputstr + string("from "__FILE__":"__LINE__);
-	//throw cException_ColumnName_Not_Found(inputstr.c_str());
-	throw cException_ColumnName_Not_Found(s.c_str());
+    //throw cException_ColumnName_Not_Found(inputstr.c_str());
+    throw cException_ColumnName_Not_Found(s.c_str());
 }
 
 
@@ -282,10 +282,10 @@ cRecord::get_index_by_name(const string & inputstr) {
 unsigned int 
 cRecord::get_similarity_index_by_name(const string & inputstr) {
 
-	for ( unsigned int i = 0 ; i < active_similarity_names.size(); ++i )
-		if ( active_similarity_names.at(i) == inputstr )
-			return i;
-	throw cException_ColumnName_Not_Found(inputstr.c_str());
+    for ( unsigned int i = 0 ; i < active_similarity_names.size(); ++i )
+        if ( active_similarity_names.at(i) == inputstr )
+            return i;
+    throw cException_ColumnName_Not_Found(inputstr.c_str());
 }
 
 
