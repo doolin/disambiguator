@@ -21,10 +21,10 @@ using std::string;
 using std::set;
 using std::map;
 
+
 /*
  * The classes associated with ratios are relatively hard to understand yet very important.
  */
-
 //typedef vector < unsigned int > SimilarityProfile;
 
 
@@ -54,12 +54,12 @@ public:
 	void reset_entry( const unsigned int entry) { compare_entry = entry;}
 };
 
+
 /*
- * monotonic_set:
+ * MonotonicSet:
  * members in this set is sorted by a given similarity entry in an ascending way.
  */
-
-typedef set< const SimilarityProfile *, cMonotonic_Similarity_Compare> monotonic_set;
+typedef set< const SimilarityProfile *, cMonotonic_Similarity_Compare> MonotonicSet;
 
 
 /*
@@ -119,7 +119,7 @@ public:
  * 		vector < unsigned int > positions_in_record: position of the current components in the cRecord::column_names.
  *		const string attrib_group: the attribute GROUP identifier for which the cRatioComponent object represents.
  *		const map < string, const cRecord *> * puid_tree: the pointer to a map of unique record id string to its correspoinding record pointer.
- *		map < cSimilarity_With_Monotonicity_Dimension, monotonic_set > similarity_map:
+ *		map < cSimilarity_With_Monotonicity_Dimension, MonotonicSet > similarity_map:
  *			a map of similarity profiles and their monotonic set for a certain dimension.
  *		vector < string > attrib_names: attribute names that belong the the atribute group.
  *		bool is_ready: a boolean value indicating the readiness of the object. The object is usable only if is_ready is true.
@@ -153,7 +153,7 @@ private:
 	vector < unsigned int > positions_in_record;
 	const string attrib_group;
 	const map < string, const cRecord *> * puid_tree;
-	map < cSimilarity_With_Monotonicity_Dimension, monotonic_set > similarity_map;
+	map < cSimilarity_With_Monotonicity_Dimension, MonotonicSet > similarity_map;
 	vector < string > attrib_names;
 	bool is_ready;
 	map < vector < unsigned int > , unsigned int, cSimilarity_Compare > x_counts, m_counts;
@@ -195,10 +195,7 @@ private:
 	//vector <double> coeffs;
 	//unsigned int final_root_order;
 	map < vector < unsigned int > , unsigned int, cSimilarity_Compare > x_counts, m_counts;
-	map < cSimilarity_With_Monotonicity_Dimension, monotonic_set > similarity_map;
-
-
-
+	map < cSimilarity_With_Monotonicity_Dimension, MonotonicSet > similarity_map;
 
 	void More_Components( const cRatioComponent & additional_component);
 	void Get_Coefficients();
@@ -221,7 +218,6 @@ public:
 };
 
 vector < unsigned int > get_max_similarity(const vector < string > & attrib_names) ;
-//====================
 
 
 
