@@ -326,3 +326,13 @@ cRecord::activate_comparators_by_name (const vector < string > & inputvec) {
 
     cRecord::update_active_similarity_names();
 }
+
+
+void 
+cRecord::reconfigure_record_for_interactives() const {
+
+    for ( vector <const cAttribute *>::const_iterator cipa = vector_pdata.begin(); cipa != vector_pdata.end(); ++cipa ) {
+        (*cipa)->reconfigure_for_interactives( this);
+    }
+}
+

@@ -384,17 +384,6 @@ string cBlocking_Operation_By_Coauthors::extract_blocking_info(const cRecord * p
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 /*
  * Aim: constructor of cReconfigurator_AsianNames.
  */
@@ -988,15 +977,6 @@ cRecord_Reconfigurator * generate_interactive_reconfigurator( const cAttribute *
 	//ATTENTION: OBJECT IS ON HEAP.
 	const cRecord_Reconfigurator * preconfig = new cReconfigurator_Interactives( my_name, linked_attribs );
 	return preconfig;
-}
-
-
-void 
-cRecord::reconfigure_record_for_interactives() const {
-
-	for ( vector <const cAttribute *>::const_iterator cipa = vector_pdata.begin(); cipa != vector_pdata.end(); ++cipa ) {
-		(*cipa)->reconfigure_for_interactives( this);
-	}
 }
 
 
