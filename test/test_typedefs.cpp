@@ -23,6 +23,10 @@
 #include <Threading.h>
 #include <txt2sqlite3.h>
 
+/**
+ * Run thie code with /usr/bin/valgrind ./typedefs --leak-check=full
+ */
+
 typedef map <string, const cRecord *> Dict;
 
 typedef vector <string> Label;
@@ -50,7 +54,13 @@ public:
     Label * l = new Label();
     delete l;
   }
+
+  void LabelTest(char const * label) {
+    const string s(label);
+    Label l(1, s);
+  }
 };
+
 
 int
 main(int argc, char ** argv) {
@@ -58,6 +68,7 @@ main(int argc, char ** argv) {
   InitialTest * it = new InitialTest(std::string("initial test"));
   it->runTest();
   it->LabelTest();
+  it->LabelTest("foobar");
 
   delete it;
 
