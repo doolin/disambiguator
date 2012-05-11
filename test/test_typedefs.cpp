@@ -23,13 +23,16 @@
 #include <Threading.h>
 #include <txt2sqlite3.h>
 
+
+#include <disambiguation.h>
+
 /**
  * Run thie code with /usr/bin/valgrind ./typedefs --leak-check=full
  */
 
 typedef map <string, const cRecord *> Dict;
 
-typedef vector <string> Label;
+//typedef vector <string> Label;
 
 class Initial {
 public:

@@ -6,6 +6,8 @@
 #include <string>
 
 
+#include <disambiguation.h>
+
 #include <DisambigEngine.h>
 
 
