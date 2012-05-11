@@ -508,8 +508,11 @@ int classcmp(const string &class1, const string& class2 ){
     return ( class1 == class2 )? 1 : 0;
 }
 
-int coauthorcmp(const string &coauthor1, const string& coauthor2 ){
-    return ( coauthor1 == coauthor2 )? 1 : 0;
+
+int 
+coauthorcmp(const string & coauthor1, const string & coauthor2) {
+
+    return (coauthor1 == coauthor2) ? 1 : 0;
 }
 
 
