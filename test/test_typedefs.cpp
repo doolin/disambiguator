@@ -32,6 +32,11 @@
 
 typedef map <string, const cRecord *> Dict;
 
+//const map<string, std::pair<string, unsigned int> > * const asg_table_pointer
+typedef std::pair<std::string, unsigned int> TableVal;
+typedef std::map<std::string, TableVal> Table;
+const Table * const asg_table_pointer = NULL;
+
 //typedef vector <string> Label;
 
 class Initial {
