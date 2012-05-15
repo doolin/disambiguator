@@ -32,6 +32,7 @@
 
 typedef map <string, const cRecord *> Dict;
 
+// From: https://github.com/doolin/CPP_Disambiguation/blob/master/src/DisambigComp.cpp#L571
 //const map<string, std::pair<string, unsigned int> > * const asg_table_pointer
 typedef std::pair<std::string, unsigned int> TableVal;
 typedef std::map<std::string, TableVal> Table;
