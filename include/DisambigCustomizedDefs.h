@@ -8,9 +8,6 @@
 #ifndef DISAMBIGCUSTOMIZEDDEFS_H_
 #define DISAMBIGCUSTOMIZEDDEFS_H_
 
-#include "DisambigDefs.h"
-#include "DisambigComp.h"
-
 /*
  * For each concrete class, if it can be one of the components in the similarity profile, whether its comparator is activated or not,
  * a "STATIC CONST UNSIGNED INT" member, namely max_value, should be declared and defined in the concrete class. At the same time,

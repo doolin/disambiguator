@@ -42,5 +42,7 @@ void reconfigure_interactives ( const cRecord_Reconfigurator * pc, const cRecord
 
 #include "exceptions.h"
 #include "attribute.h"
+#include "DisambigComp.h"
+#include "DisambigCustomizedDefs.h"
 
 #endif /* DISAMBIGLIB_HPP_ */
