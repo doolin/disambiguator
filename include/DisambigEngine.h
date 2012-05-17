@@ -15,7 +15,8 @@
 #include <map>
 #include <set>
 #include <algorithm>
-#include "DisambigDefs.h"
+
+#include "attribute.h"
 #include "Threading.h"
 
 using std::string;

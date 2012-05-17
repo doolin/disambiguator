@@ -15,7 +15,7 @@
 #include <fstream>
 
 #include "disambiguation.h"
-#include "DisambigDefs.h"
+#include "attribute.h"
 
 using std::string;
 using std::set;

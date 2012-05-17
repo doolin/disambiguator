@@ -5,7 +5,7 @@
  *      Author: ysun
  */
 
-#include "DisambigDefs.h"
+#include "attribute.h"
 
 template <> const string Attribute_Basic<cFirstname>::class_name = "Firstname";
 template <> const string Attribute_Basic<cFirstname>::attrib_group = "Personal";

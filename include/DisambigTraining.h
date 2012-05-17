@@ -34,7 +34,7 @@
 #ifndef DISAMBIGTRAINING_H_
 #define DISAMBIGTRAINING_H_
 
-#include "DisambigDefs.h"
+#include "attribute.h"
 #include "DisambigEngine.h"
 #include "Threading.h"
 

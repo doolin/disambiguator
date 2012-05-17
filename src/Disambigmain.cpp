@@ -8,7 +8,8 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
-#include "DisambigDefs.h"
+
+#include "attribute.h"
 #include "DisambigEngine.h"
 #include "DisambigFileOper.h"
 #include "DisambigRatios.h"

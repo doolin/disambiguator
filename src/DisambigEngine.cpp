@@ -6,7 +6,7 @@
  */
 
 #include "DisambigEngine.h"
-#include "DisambigDefs.h"
+#include "attribute.h"
 #include "DisambigFileOper.h"
 #include "DisambigCluster.h"
 #include "DisambigRatios.h"

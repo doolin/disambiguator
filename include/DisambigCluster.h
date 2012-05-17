@@ -11,7 +11,7 @@
 #include <iostream>
 #include <map>
 #include <set>
-#include "DisambigDefs.h"
+#include "attribute.h"
 #include <fstream>
 #include <pthread.h>
 #include "Threading.h"
