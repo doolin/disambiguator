@@ -22,7 +22,7 @@
 #include <typeinfo>
 #include <memory>
 
-#define INERT_ATTRIB_GROUP_IDENTIFIER "NONE"			// the attribute group specifier that is not the component of similarity profiles
+#define INERT_ATTRIB_GROUP_IDENTIFIER "NONE" // the attribute group specifier that is not the component of similarity profiles
 
 
 using std::string;
@@ -40,133 +40,10 @@ const cRecord_Reconfigurator * generate_interactive_reconfigurator( const Attrib
 void reconfigure_interactives ( const cRecord_Reconfigurator * pc, const cRecord * pRec);
 
 
-
 class Attribute;
-//======================================================================================
 
-/*
- *  cAbstract_Exception
- *  	-- cException_Diff_Attribute
- *  	-- cException_No_Comparision_Function
- *  	-- cException_ColumnName_Not_Found
- *  	-- cException_Insufficient_Interactives
- *  	-- cException_No_Interactives
- *  	-- cException_Invalid_Function
- *  	-- cException_Interactive_Misalignment
- *  	-- cException_File_Not_Found
- *  	-- cException_Assignee_Not_In_Tree
- *  	-- cException_Invalid_Attribute_For_Sort
- *  	-- cException_Invalid_Probability
- *  	-- cException_Vector_Data
- *  	-- cException_Attribute_Not_In_Tree
- *  	-- cException_Duplicate_Attribute_In_Tree
- *  	-- cException_Unknown_Similarity_Profile
- *  	-- cException_Attribute_Disabled
- *  	-- cException_Other
- *  	-- cException_Blocking_Disabled
- *
- *  To create a new exception class, simply inherit the cAbstract_Exception class, and write a constructor.
- *
- */
+#include "exceptions.h"
 
-
-class cAbstract_Exception: public std::exception {
-private:
-	string m_errmsg;
-public:
-	cAbstract_Exception(const char *errmsg) : m_errmsg(errmsg) {};
-	const char * what() const throw() {return m_errmsg.c_str();}
-	~cAbstract_Exception() throw() {};
-};
-
-class cException_Diff_Attribute : public cAbstract_Exception{};
-class cException_No_Comparision_Function : public cAbstract_Exception {
-public:
-	cException_No_Comparision_Function(const char* errmsg): cAbstract_Exception(errmsg) {};
-};
-
-class cException_ColumnName_Not_Found : public cAbstract_Exception {
-public:
-	cException_ColumnName_Not_Found(const char* errmsg): cAbstract_Exception(errmsg) {};
-};
-
-
-class cException_Insufficient_Interactives: public cAbstract_Exception {
-public:
-	cException_Insufficient_Interactives(const char* errmsg): cAbstract_Exception(errmsg) {};
-};
-
-class cException_No_Interactives: public cAbstract_Exception {
-public:
-	cException_No_Interactives(const char* errmsg): cAbstract_Exception(errmsg) {};
-};
-
-class cException_Invalid_Function : public cAbstract_Exception {
-public:
-	cException_Invalid_Function( const char * errmsg) : cAbstract_Exception(errmsg) {};
-};
-
-class cException_Interactive_Misalignment: public cAbstract_Exception {
-public:
-	cException_Interactive_Misalignment (const char* errmsg) : cAbstract_Exception(errmsg) {};
-};
-
-class cException_File_Not_Found: public cAbstract_Exception {
-public:
-	cException_File_Not_Found(const char* errmsg): cAbstract_Exception(errmsg) {};
-};
-class cException_Assignee_Not_In_Tree: public cAbstract_Exception {
-public:
-	cException_Assignee_Not_In_Tree(const char* errmsg): cAbstract_Exception(errmsg) {};
-};
-
-class cException_Invalid_Attribute_For_Sort: public cAbstract_Exception{
-public:
-	cException_Invalid_Attribute_For_Sort(const char* errmsg): cAbstract_Exception(errmsg) {};
-};
-
-class cException_Invalid_Probability: public cAbstract_Exception {
-public:
-	cException_Invalid_Probability(const char* errmsg): cAbstract_Exception(errmsg) {};
-};
-
-class cException_Vector_Data: public cAbstract_Exception {
-public:
-	cException_Vector_Data(const char* errmsg): cAbstract_Exception(errmsg) {};
-};
-
-class cException_Attribute_Not_In_Tree: public cAbstract_Exception {
-public:
-	cException_Attribute_Not_In_Tree(const char* errmsg): cAbstract_Exception(errmsg) {};
-};
-
-class cException_Duplicate_Attribute_In_Tree: public cAbstract_Exception {
-public:
-	cException_Duplicate_Attribute_In_Tree(const char* errmsg): cAbstract_Exception(errmsg) {};
-};
-
-class cException_Unknown_Similarity_Profile: public cAbstract_Exception {
-public:
-	cException_Unknown_Similarity_Profile(const char* errmsg): cAbstract_Exception(errmsg) {};
-};
-
-class cException_Attribute_Disabled : public cAbstract_Exception {
-public:
-	cException_Attribute_Disabled(const char* errmsg): cAbstract_Exception(errmsg){};
-};
-
-class cException_Other: public cAbstract_Exception {
-public:
-	cException_Other(const char* errmsg): cAbstract_Exception(errmsg){};
-};
-
-class cException_Blocking_Disabled : public cAbstract_Exception {
-public:
-	cException_Blocking_Disabled(const char* errmsg): cAbstract_Exception(errmsg){};
-};
-
-
-//=============================================
 
 /*
  * cSimilarity_Compare:
@@ -877,120 +754,7 @@ public:
 
 };
 
-#if 0
-/*
- *  template < Concrete Class Name > Attribute_Single_Interactive_Mode (OBSOLETE NOW) :
- *  This type of class shares the same storage behaviors as the Singe_Mode, however, it stores additional information to allow its interaction with
- *  other classes. A typical example is the Latitude class, which also needs information about longitude, street, country, city, etc.
- *  The concrete child class is responsible for the configuration of the interactive elements, by calling the config_interactive function, during either
- *  initialization or reconfiguration, or both. To see reconfiguration methods, look at the cRecord_Reconfigurator class hierarchy in the "DisambigEngine.h".
- *  The comparison function is a pure virtual function here, forcing concrete child classes to implement.
- *
- *  Private:
- *  	static map < Inter_Vector, unsigned int > Interactive_Pool: another pooling system for interactive_vector data.
- *  	const Inter_Vector * pInteractive: the pointer that points to the interactive vector which is pooled.
- *  	static bool has_reconfiged: static variable to check whether such class is reconfigured. It is necessary because it has interactive members.
- *   	static const Inter_Vector * add_interactive_vector(const Inter_Vector & inputvec, const unsigned int n ):
- *   				add the interactive vector into the pooling system by reference-counting. returns the pointer. For internal use only.
- *   	static const Inter_Vector * reduce_interactive_vector(const Inter_Vector & inputvec, const unsigned int n )
- *   				reduce the interactive vector into the pooling system by reference-counting. returns the pointer. Null if counter=0. For internal use only.
- *
- *  Public:
- *  	Attribute_Single_Interactive_Mode(const char * source = NULL ): default constructor. Set initial pointer to NULL, forcing reconfiguration.
- *  	const vector <const Attribute *> & get_interactive_vector() const: Returns the interactive data.
- *  	bool operator < ( const Attribute & rhs ) const: overridden version of less than operator. Necessary because interactive data are also involved. Do not call explicitly.
- *  	const Attribute* config_interactive (const vector <const Attribute *> &inputvec ) const:
- *  			create or find an attribute object such that interactive_data = inputvec, with the same local data. Returns the pointer to the object.
- *		unsigned int compare(const Attribute & rhs) const = 0: Pure virtual function, forcing child class to implement.
- *		static bool check_if_reconfigured(): check if the class is reconfigured. Throw an error if false.
- *
- *	ATTENTION: WHEN OVERRIDING THE COMPARISON FUNCTION OF THIS CLASS, "check_if_reconfigured()" MUST BE CALLED.
- */
 
-
-template < typename AttribType >
-class Attribute_Single_Interactive_Mode: public Attribute_Single_Mode < AttribType > {
-	friend class cReconfigurator_Interactives;
-	typedef vector<const Attribute *> Inter_Vector;
-private:
-	static std::auto_ptr < const cRecord_Reconfigurator > preconfig;
-	static void obtain_interactive_reconfigurator( const Attribute * p) {
-		std::auto_ptr < const cRecord_Reconfigurator > tmp_ptr (generate_interactive_reconfigurator(p));
-		preconfig = tmp_ptr;
-	}
-
-private:
-	static map < Inter_Vector, unsigned int > Interactive_Pool;
-	static bool has_reconfiged;
-	const Inter_Vector * pInteractive;
-
-	static const Inter_Vector * add_interactive_vector(const Inter_Vector & inputvec, const unsigned int n ) {
-		map < Inter_Vector, unsigned int> ::iterator p = Interactive_Pool.find(inputvec);
-		if ( p == Interactive_Pool.end() )
-			p = Interactive_Pool.insert(std::pair<Inter_Vector,unsigned int>(inputvec, n)).first;
-		else
-			p->second += n;
-
-		return &(p->first);
-	}
-
-	static const Inter_Vector * reduce_interactive_vector(const Inter_Vector & inputvec, const unsigned int n ) {
-		map < Inter_Vector, unsigned int> ::iterator p = Interactive_Pool.find(inputvec);
-		if ( p == Interactive_Pool.end() )
-			throw ( cException_Other ("Vector not found"));
-		if ( p->second < n )
-			throw ( cException_Other ("Too many deductions."));
-
-		p->second -= n;
-
-		if ( p->second == 0 ) {
-			Interactive_Pool.erase(p);
-			return NULL;
-		}
-		else
-			return &(p->first);
-	}
-
-	const Attribute* config_interactive (const vector <const Attribute *> &inputvec ) const {
-		if ( pInteractive != NULL ) {
-			std::cout << "=====REFUSE to reset interactives. Pointer was initialized before." << std::endl;
-			return NULL;
-		}
-		AttribType temp(dynamic_cast< const AttribType &>(*this) );
-
-		temp.Attribute_Single_Interactive_Mode::pInteractive = temp.Attribute_Single_Interactive_Mode::add_interactive_vector(inputvec, 1);
-		const Attribute * pattrib_in_pool = temp.add_attrib(1);
-		has_reconfiged = true;
-		return pattrib_in_pool;
-	}
-	void reconfigure_for_interactives( const cRecord * pRec) const {
-		if ( preconfig.get() == NULL )
-			obtain_interactive_reconfigurator(this);
-		reconfigure_interactives ( preconfig.get(), pRec);
-	}
-
-public:
-	Attribute_Single_Interactive_Mode(const char * source = NULL ) : pInteractive(NULL) {}
-	const vector <const Attribute *> & get_interactive_vector() const {return *pInteractive;}
-	bool operator < ( const Attribute & rhs ) const {
-		if ( this->get_data() < rhs.get_data() )
-			return true;
-		else if ( rhs.get_data() < this->get_data() )
-			return false;
-		else
-			return & (this->get_interactive_vector() ) < & ( rhs.get_interactive_vector() );
-	}
-
-
-	static bool check_if_reconfigured() {
-		if ( ! has_reconfiged )
-			throw cException_Other("Interactive class has not been reconfigured yet.");
-		return has_reconfiged;
-	}
-
-	unsigned int compare(const Attribute & rhs) const = 0;		//forcing child class to implement because it is unknown.
-};
-#endif
 
 /*
  * Attribute_Interactive_Mode:
