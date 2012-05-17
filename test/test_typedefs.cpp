@@ -9,7 +9,6 @@
 #include <DisambigEngine.h>
 #include <DisambigCluster.h>
 #include <DisambigComp.h>
-#include <DisambigCustomizedDefs.h>
 #include <DisambigDefs.h>
 #include <DisambigEngine.h>
 #include <DisambigFileOper.h>
