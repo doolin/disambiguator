@@ -42,14 +42,14 @@ void cCluster::merge( cCluster & mergee, const cCluster_Head & info ) {
 	static const unsigned int rec_size = cRecord::record_size();
 
 	for ( unsigned int i = 0 ; i < rec_size; ++i ) {
-		list < const cAttribute ** > l1;
+		list < const Attribute ** > l1;
 		for ( cGroup_Value::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p ) {
-			l1.push_back( const_cast < const cAttribute ** > ( &(*p)->get_attrib_pointer_by_index(i)  )   );
+			l1.push_back( const_cast < const Attribute ** > ( &(*p)->get_attrib_pointer_by_index(i)  )   );
 		}
 
-		list < const cAttribute ** > l2;
+		list < const Attribute ** > l2;
 		for ( cGroup_Value::const_iterator p = mergee.m_fellows.begin(); p != mergee.m_fellows.end(); ++p ) {
-			l2.push_back( const_cast < const cAttribute ** > ( &(*p)->get_attrib_pointer_by_index(i)  )   );
+			l2.push_back( const_cast < const Attribute ** > ( &(*p)->get_attrib_pointer_by_index(i)  )   );
 		}
 		attrib_merge(l1, l2);
 	}
@@ -80,15 +80,15 @@ void cCluster::change_mid_name()  {
 		return;
 	static const unsigned int midname_index = cRecord::get_index_by_name(cMiddlename::static_get_class_name());
 	static const unsigned int lastname_index = cRecord::get_index_by_name(cLastname::static_get_class_name());
-	map < const cAttribute *, const cAttribute *> last2mid;
-	map < const cAttribute *, const cAttribute * >::iterator q;
+	map < const Attribute *, const Attribute *> last2mid;
+	map < const Attribute *, const Attribute * >::iterator q;
 	for ( cGroup_Value::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p ) {
-		const cAttribute * pl = (*p)->get_attrib_pointer_by_index(lastname_index);
-		const cAttribute * pm = (*p)->get_attrib_pointer_by_index(midname_index);
+		const Attribute * pl = (*p)->get_attrib_pointer_by_index(lastname_index);
+		const Attribute * pm = (*p)->get_attrib_pointer_by_index(midname_index);
 		q = last2mid.find(pl);
 		if ( q == last2mid.end() )  {
 			if ( pm->is_informative() ) {
-				last2mid.insert( std::pair< const cAttribute *, const cAttribute *> (pl, pm) );
+				last2mid.insert( std::pair< const Attribute *, const Attribute *> (pl, pm) );
 			}
 		}
 		else {
@@ -99,16 +99,16 @@ void cCluster::change_mid_name()  {
 		}
 	}
 
-	map < const cAttribute *, const cAttribute * >::const_iterator cq;
+	map < const Attribute *, const Attribute * >::const_iterator cq;
 	for ( cGroup_Value::iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p ) {
-		const cAttribute * pl = (*p)->get_attrib_pointer_by_index(lastname_index);
-		const cAttribute * const & pm = (*p)->get_attrib_pointer_by_index(midname_index);
+		const Attribute * pl = (*p)->get_attrib_pointer_by_index(lastname_index);
+		const Attribute * const & pm = (*p)->get_attrib_pointer_by_index(midname_index);
 		cq = last2mid.find(pl);
 		//skip empty middle names.
 		if ( pm->is_informative() && pm != cq->second ) {
 			cq->second->add_attrib(1);
 			pm->reduce_attrib(1);
-			const cAttribute* & rpm = const_cast < const cAttribute* & > (pm);
+			const Attribute* & rpm = const_cast < const Attribute* & > (pm);
 			rpm = cq->second;
 		}
 	}
@@ -153,8 +153,8 @@ cCluster_Head cCluster::disambiguate( const cCluster & rhs, const double prior, 
 	}
 
 	double threshold = mutual_threshold;
-	const cAttribute * this_country = this->m_info.m_delegate->get_attrib_pointer_by_index(country_index);
-	const cAttribute * rhs_country = rhs.m_info.m_delegate->get_attrib_pointer_by_index(country_index);
+	const Attribute * this_country = this->m_info.m_delegate->get_attrib_pointer_by_index(country_index);
+	const Attribute * rhs_country = rhs.m_info.m_delegate->get_attrib_pointer_by_index(country_index);
 
 	for ( unsigned int i = 0; i < sizeof(asian_countries)/sizeof(string); ++i ) {
 		if ( this_country == rhs_country && * this_country->get_data().at(0) == asian_countries[i] ) {
@@ -211,18 +211,18 @@ void cCluster::insert_elem( const cRecord * more_elem) {
 void cCluster::self_repair() {
 	const unsigned int rec_size = cRecord::record_size();
 	for ( unsigned int i = 0 ; i < rec_size; ++i ) {
-		list < const cAttribute ** > l1;
-		list < const cAttribute ** > l2;
+		list < const Attribute ** > l1;
+		list < const Attribute ** > l2;
 		cGroup_Value::const_iterator p1 = this->m_fellows.begin();
 		if ( p1 == this->m_fellows.end() )
 			break;
 		cGroup_Value::const_iterator q2 = p1;
 		++q2;
-		l2.push_back( const_cast < const cAttribute ** > ( &(*p1)->get_attrib_pointer_by_index(i)  )   );
+		l2.push_back( const_cast < const Attribute ** > ( &(*p1)->get_attrib_pointer_by_index(i)  )   );
 		while ( q2 != this->m_fellows.end() ) {
-			l1.push_back( const_cast < const cAttribute ** > ( &(*p1)->get_attrib_pointer_by_index(i)  )   );
+			l1.push_back( const_cast < const Attribute ** > ( &(*p1)->get_attrib_pointer_by_index(i)  )   );
 			l2.pop_front();
-			l2.push_back( const_cast < const cAttribute ** > ( &(*q2)->get_attrib_pointer_by_index(i)  )   );
+			l2.push_back( const_cast < const Attribute ** > ( &(*q2)->get_attrib_pointer_by_index(i)  )   );
 			attrib_merge(l1, l2);
 			++p1;
 			++q2;
@@ -238,7 +238,7 @@ void cCluster::self_repair() {
 
 /*
  * Aim: to find a representative/delegate for a cluster.
- * Algorithm: for each specified column, build a binary map of const cAttribute pointer -> unsigned int ( as a counter).
+ * Algorithm: for each specified column, build a binary map of const Attribute pointer -> unsigned int ( as a counter).
  * 			Then traverse the whole cluster and fill in the counter. Finally, get the most frequent.
  *
  */
@@ -246,22 +246,22 @@ void cCluster::find_representative()  {
 	static const string useful_columns[] = { cFirstname::static_get_class_name(), cMiddlename::static_get_class_name(), cLastname::static_get_class_name(),
 											cLatitude::static_get_class_name(), cAssignee::static_get_class_name(), cCity::static_get_class_name(), cCountry::static_get_class_name()};
 	static const unsigned int nc = sizeof(useful_columns)/sizeof(string);
-	vector < map < const cAttribute *, unsigned int > > tracer( nc );
+	vector < map < const Attribute *, unsigned int > > tracer( nc );
 	vector < unsigned int > indice;
 	for ( unsigned int i = 0; i < nc; ++i )
 		indice.push_back ( cRecord::get_index_by_name( useful_columns[i]));
 
 	for ( cGroup_Value::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p ) {
 		for ( unsigned int i = 0 ; i < nc; ++i ) {
-			const cAttribute * pA = (*p)->get_attrib_pointer_by_index(indice.at(i));
+			const Attribute * pA = (*p)->get_attrib_pointer_by_index(indice.at(i));
 			++ tracer.at(i)[pA];
 		}
 	}
-	vector < const cAttribute * > most;
+	vector < const Attribute * > most;
 	for ( unsigned int i = 0; i < nc ; ++i ) {
-		const cAttribute * most_pA = NULL;
+		const Attribute * most_pA = NULL;
 		unsigned int most_cnt = 0;
-		for ( map < const cAttribute *, unsigned int >::const_iterator p = tracer.at(i).begin(); p != tracer.at(i).end(); ++p ) {
+		for ( map < const Attribute *, unsigned int >::const_iterator p = tracer.at(i).begin(); p != tracer.at(i).end(); ++p ) {
 			if ( p->second > most_cnt ) {
 				most_cnt = p->second;
 				most_pA = p->first;
@@ -275,7 +275,7 @@ void cCluster::find_representative()  {
 	for ( cGroup_Value::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p ) {
 		unsigned int c = 0;
 		for ( unsigned int i = 0 ; i < nc; ++i ) {
-			const cAttribute * pA = (*p)->get_attrib_pointer_by_index(indice.at(i));
+			const Attribute * pA = (*p)->get_attrib_pointer_by_index(indice.at(i));
 			if ( pA == most.at(i) )
 				++c;
 		}
@@ -292,7 +292,7 @@ void cCluster::find_representative()  {
 void cCluster::update_year_range() {
 	static const unsigned int appyearindex = cRecord::get_index_by_name(cApplyYear::static_get_class_name());
 	for ( cGroup_Value::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p ) {
-		const cAttribute * pAttribYear = (*p)->get_attrib_pointer_by_index(appyearindex);
+		const Attribute * pAttribYear = (*p)->get_attrib_pointer_by_index(appyearindex);
 		const string * py = pAttribYear->get_data().at(0);
 		unsigned int year = atoi ( py->c_str());
 		if ( year > 2100 || year < 1500 ) {
@@ -341,7 +341,7 @@ void cCluster::update_locations() {
 	locs.clear();
 	static const unsigned int latindex = cRecord::get_index_by_name(cLatitude::static_get_class_name());
 	for ( cGroup_Value::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p ) {
-		const cAttribute * pA = (*p)->get_attrib_pointer_by_index(latindex);
+		const Attribute * pA = (*p)->get_attrib_pointer_by_index(latindex);
 		const cLatitude * pAttribLat = dynamic_cast< const cLatitude *> ( pA );
 		if ( pAttribLat == 0 ) {
 			(*p)->print();

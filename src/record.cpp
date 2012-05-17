@@ -74,7 +74,7 @@ cRecord::update_active_similarity_names() {
     cRecord::active_similarity_names.clear();
     const cRecord * pr = cRecord::sample_record_pointer;
 
-    for ( vector < const cAttribute *>::const_iterator p = pr->vector_pdata.begin(); p != pr->vector_pdata.end(); ++p ) {
+    for ( vector < const Attribute *>::const_iterator p = pr->vector_pdata.begin(); p != pr->vector_pdata.end(); ++p ) {
         //std::cout << (*p)->get_class_name() << " , ";        //for debug purpose
         if ( (*p)->is_comparator_activated() )
             cRecord::active_similarity_names.push_back((*p)->get_class_name());
@@ -104,7 +104,7 @@ cRecord::print(std::ostream & os) const {
 
   const char lend = '\n';
 
-  for (vector <const cAttribute *>::const_iterator p = this->vector_pdata.begin();
+  for (vector <const Attribute *>::const_iterator p = this->vector_pdata.begin();
        p != this->vector_pdata.end(); ++p) {
     (*p)->print( os );
   }
@@ -259,7 +259,7 @@ cRecord::print() const {
 void 
 cRecord::clean_member_attrib_pool() {
 
-    for ( vector < const cAttribute *>::const_iterator p = sample_record_pointer->vector_pdata.begin();
+    for ( vector < const Attribute *>::const_iterator p = sample_record_pointer->vector_pdata.begin();
             p != sample_record_pointer->vector_pdata.end(); ++p )
         (*p)->clean_attrib_pool();
 }
@@ -311,7 +311,7 @@ cRecord::activate_comparators_by_name (const vector < string > & inputvec) {
 
     cRecord::active_similarity_names = inputvec;
 
-    for ( vector < const cAttribute *>::const_iterator p = cRecord::sample_record_pointer->get_attrib_vector().begin();
+    for ( vector < const Attribute *>::const_iterator p = cRecord::sample_record_pointer->get_attrib_vector().begin();
             p != cRecord::sample_record_pointer->get_attrib_vector().end(); ++p ) {
 
         const string & classlabel = (*p)->get_class_name();
@@ -331,7 +331,7 @@ cRecord::activate_comparators_by_name (const vector < string > & inputvec) {
 void 
 cRecord::reconfigure_record_for_interactives() const {
 
-    for ( vector <const cAttribute *>::const_iterator cipa = vector_pdata.begin(); cipa != vector_pdata.end(); ++cipa ) {
+    for ( vector <const Attribute *>::const_iterator cipa = vector_pdata.begin(); cipa != vector_pdata.end(); ++cipa ) {
         (*cipa)->reconfigure_for_interactives( this);
     }
 }

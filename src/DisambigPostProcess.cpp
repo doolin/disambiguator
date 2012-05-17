@@ -104,7 +104,7 @@ void post_polish( cCluster_Set & m, map < const cRecord *, const cRecord *> & ui
 	do {
 		round_cnt = cnt;
 		for ( Cluster_Container ::const_iterator q = m.get_set().begin(); q != m.get_set().end(); ++q ) {
-			const cAttribute * center_country_attrib = q->get_cluster_head().m_delegate->get_attrib_pointer_by_index(country_index);
+			const Attribute * center_country_attrib = q->get_cluster_head().m_delegate->get_attrib_pointer_by_index(country_index);
 			if ( ! center_country_attrib->is_informative() )
 				continue;
 			const string * centercountry = center_country_attrib->get_data().at(0);
@@ -117,21 +117,21 @@ void post_polish( cCluster_Set & m, map < const cRecord *, const cRecord *> & ui
 			list < const cRecord *> links ( linkages.begin(), linkages.end()) ;
 
 
-			const cAttribute * center_first_attrib = q->get_cluster_head().m_delegate->get_attrib_pointer_by_index(fi);
+			const Attribute * center_first_attrib = q->get_cluster_head().m_delegate->get_attrib_pointer_by_index(fi);
 			if ( center_first_attrib->get_data().empty() ) {
 				q->get_cluster_head().m_delegate->print();
 				throw cException_Other("Center First");
 			}
 			const string * centerfirst = center_first_attrib->get_data().at(0);
 
-			const cAttribute * center_last_attrib = q->get_cluster_head().m_delegate->get_attrib_pointer_by_index(li);
+			const Attribute * center_last_attrib = q->get_cluster_head().m_delegate->get_attrib_pointer_by_index(li);
 			if ( center_last_attrib->get_data().empty() ) {
 				q->get_cluster_head().m_delegate->print();
 				throw cException_Other("Center Last");
 			}
 			const string * centerlast = center_last_attrib->get_data().at(0);
 
-			const cAttribute * center_uid_attrib = q->get_cluster_head().m_delegate->get_attrib_pointer_by_index(uid_index);
+			const Attribute * center_uid_attrib = q->get_cluster_head().m_delegate->get_attrib_pointer_by_index(uid_index);
 			if ( center_uid_attrib->get_data().empty() ) {
 				q->get_cluster_head().m_delegate->print();
 				throw cException_Other("Center UID");
@@ -147,21 +147,21 @@ void post_polish( cCluster_Set & m, map < const cRecord *, const cRecord *> & ui
 				//const string * puid = (*r)->get_attrib_pointer_by_index(uid_index)->get_data().at(0);
 
 
-				const cAttribute * pfirst_attrib = (*r)->get_attrib_pointer_by_index(fi);
+				const Attribute * pfirst_attrib = (*r)->get_attrib_pointer_by_index(fi);
 				if ( pfirst_attrib->get_data().empty() ) {
 					(*r)->print();
 					throw cException_Other("P First");
 				}
 				const string * pfirst = pfirst_attrib->get_data().at(0);
 
-				const cAttribute * plast_attrib = (*r)->get_attrib_pointer_by_index(li);
+				const Attribute * plast_attrib = (*r)->get_attrib_pointer_by_index(li);
 				if ( plast_attrib->get_data().empty() ) {
 					(*r)->print();
 					throw cException_Other("P Last");
 				}
 				const string * plast = plast_attrib->get_data().at(0);
 
-				const cAttribute * puid_attrib = (*r)->get_attrib_pointer_by_index(uid_index);
+				const Attribute * puid_attrib = (*r)->get_attrib_pointer_by_index(uid_index);
 				if ( puid_attrib->get_data().empty() ) {
 					(*r)->print();
 					throw cException_Other("P UID");
@@ -174,7 +174,7 @@ void post_polish( cCluster_Set & m, map < const cRecord *, const cRecord *> & ui
 					//const string * qlast = (*s)->get_attrib_pointer_by_index(li)->get_data().at(0);
 					//const string * quid = (*s)->get_attrib_pointer_by_index(uid_index)->get_data().at(0);
 
-					const cAttribute * qfirst_attrib = (*s)->get_attrib_pointer_by_index(fi);
+					const Attribute * qfirst_attrib = (*s)->get_attrib_pointer_by_index(fi);
 					if ( qfirst_attrib->get_data().empty() ) {
 						(*s)->print();
 						throw cException_Other("Q First");
@@ -182,14 +182,14 @@ void post_polish( cCluster_Set & m, map < const cRecord *, const cRecord *> & ui
 					const string * qfirst = qfirst_attrib->get_data().at(0);
 
 
-					const cAttribute * qlast_attrib = (*s)->get_attrib_pointer_by_index(li);
+					const Attribute * qlast_attrib = (*s)->get_attrib_pointer_by_index(li);
 					if ( qlast_attrib->get_data().empty() ) {
 						(*s)->print();
 						throw cException_Other("Q Last");
 					}
 					const string * qlast = qlast_attrib->get_data().at(0);
 
-					const cAttribute * quid_attrib = (*s)->get_attrib_pointer_by_index(uid_index);
+					const Attribute * quid_attrib = (*s)->get_attrib_pointer_by_index(uid_index);
 					if ( quid_attrib->get_data().empty() ) {
 						(*s)->print();
 						throw cException_Other("Q UID");
@@ -278,14 +278,14 @@ void cCluster_Set::output_results( const char * dest_file) const {
 
 	for ( Cluster_Container ::const_iterator p = this->consolidated.begin(); p != this->consolidated.end(); ++p ) {
 
-		const cAttribute * key_pattrib = p->get_cluster_head().m_delegate->get_attrib_pointer_by_index(uid_index);
+		const Attribute * key_pattrib = p->get_cluster_head().m_delegate->get_attrib_pointer_by_index(uid_index);
 
 		os << * key_pattrib->get_data().at(0) << cCluster_Info::primary_delim;
 		double cohesion_value = p->get_cluster_head().m_cohesion;
 		os << cohesion_value << cCluster_Info::primary_delim;
 
 		for ( cGroup_Value::const_iterator q = p->get_fellows().begin(); q != p->get_fellows().end(); ++q ) {
-			const cAttribute * value_pattrib = (*q)->get_attrib_pointer_by_index(uid_index);
+			const Attribute * value_pattrib = (*q)->get_attrib_pointer_by_index(uid_index);
 
 			os << * value_pattrib->get_data().at(0) << cCluster_Info::secondary_delim;
 		}

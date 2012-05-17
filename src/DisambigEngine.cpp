@@ -425,16 +425,16 @@ cReconfigurator_AsianNames::reconfigure( const cRecord * p ) const {
     if (need_reconfigure == false) return;
 
     // do not change original attributes. add new ones.
-    const cAttribute * cur_af = p->get_attrib_pointer_by_index(firstname_index);
+    const Attribute * cur_af = p->get_attrib_pointer_by_index(firstname_index);
     const string & fn_alias = * cur_af ->get_data().at(0);
     const vector <string> fn ( 2, fn_alias );
-    const cAttribute * paf = cFirstname::static_clone_by_data(fn);
+    const Attribute * paf = cFirstname::static_clone_by_data(fn);
 
-    const cAttribute * cur_am = p->get_attrib_pointer_by_index(middlename_index);
+    const Attribute * cur_am = p->get_attrib_pointer_by_index(middlename_index);
     const string & lnstr = * p->get_attrib_pointer_by_index(lastname_index)->get_data().at(0);
     const string mnstr ( fn_alias + "." + lnstr);
     const vector < string > mn(2, mnstr);
-    const cAttribute * pam = cMiddlename ::static_clone_by_data(mn);
+    const Attribute * pam = cMiddlename ::static_clone_by_data(mn);
 
     cRecord * q = const_cast < cRecord * > (p);
 
@@ -458,12 +458,12 @@ cReconfigurator_Interactives::cReconfigurator_Interactives( const string & my_na
 void 
 cReconfigurator_Interactives::reconfigure ( const cRecord * p ) const {
 
-	vector < const cAttribute * > interact;
+	vector < const Attribute * > interact;
 	for ( vector < unsigned int >::const_iterator i = relevant_indice.begin(); i != relevant_indice.end(); ++i ) {
 		interact.push_back(p->get_attrib_pointer_by_index(*i));
 	}
-	const cAttribute * const & tp = p->get_attrib_pointer_by_index(my_index);
-	const cAttribute * & cp = const_cast< const cAttribute * &> (tp);
+	const Attribute * const & tp = p->get_attrib_pointer_by_index(my_index);
+	const Attribute * & cp = const_cast< const Attribute * &> (tp);
 	cp = tp->config_interactive(interact);
 }
 
@@ -510,8 +510,8 @@ void cReconfigurator_Coauthor :: reconfigure ( const cRecord * p ) const {
 							+ lastname_extracter.manipulate( * (*q)->get_data_by_index(lastnameindex).at(0) );
 		temp.attrib_set.insert(cCoauthor::static_add_string (fullname) );
 	}
-	const cAttribute * np = cCoauthor::static_add_attrib(temp, 1);
-	const cAttribute ** to_change = const_cast< const cAttribute ** > ( & p->get_attrib_pointer_by_index(coauthor_index));
+	const Attribute * np = cCoauthor::static_add_attrib(temp, 1);
+	const Attribute ** to_change = const_cast< const Attribute ** > ( & p->get_attrib_pointer_by_index(coauthor_index));
 	*to_change = np;
 
 }
@@ -556,8 +556,8 @@ disambiguate_by_set (const cRecord * key1,
 	const bool prescreening = true;
 	if ( prescreening ) {
 		if ( country_check ) {
-			const cAttribute * p1 = key1->get_attrib_pointer_by_index(country_index);
-			const cAttribute * p2 = key2->get_attrib_pointer_by_index(country_index);
+			const Attribute * p1 = key1->get_attrib_pointer_by_index(country_index);
+			const Attribute * p2 = key2->get_attrib_pointer_by_index(country_index);
 			if ( p1 != p2 && p1->is_informative() && p2->is_informative() )
 				return std::pair<const cRecord *, double> (NULL, 0);
 		}
@@ -597,8 +597,8 @@ disambiguate_by_set (const cRecord * key1,
 		for ( cGroup_Value::const_iterator q = match2.begin(); q != match2.end(); ++q ) {
 
 			if ( country_check ) {
-				const cAttribute * p1 = (*p)->get_attrib_pointer_by_index(country_index);
-				const cAttribute * p2 = (*q)->get_attrib_pointer_by_index(country_index);
+				const Attribute * p1 = (*p)->get_attrib_pointer_by_index(country_index);
+				const Attribute * p2 = (*q)->get_attrib_pointer_by_index(country_index);
 				if ( p1 != p2 && p1->is_informative() && p2->is_informative() )
 					return std::pair<const cRecord *, double> (NULL, 0);
 			}
@@ -732,7 +732,7 @@ fetch_records_from_txt(list <cRecord> & source, const char * txt_file, const vec
 		prev_pos = pos + delim_size;
                 std::cout << "columnname: " << columnname << std::endl;
 	}
-	cAttribute::register_class_names(requested_columns);
+	Attribute::register_class_names(requested_columns);
 	const unsigned int num_cols = requested_columns.size();
         std::cout << "num_cols: " << num_cols << std::endl;
 	vector < unsigned int > requested_column_indice;
@@ -753,7 +753,7 @@ fetch_records_from_txt(list <cRecord> & source, const char * txt_file, const vec
 
 
 	cRecord::column_names = requested_columns;
-	cAttribute ** pointer_array = new cAttribute *[num_cols];
+	Attribute ** pointer_array = new Attribute *[num_cols];
 
 	pos = prev_pos = 0;
 
@@ -761,7 +761,7 @@ fetch_records_from_txt(list <cRecord> & source, const char * txt_file, const vec
         std::cout << "num_cols: " << num_cols << std::endl;
 	for ( unsigned int i = 0; i < num_cols; ++i ) {
 
-		const int pos_in_query = cAttribute::position_in_registry(cRecord::column_names[i]);
+		const int pos_in_query = Attribute::position_in_registry(cRecord::column_names[i]);
 std::cout << "pos_in_query: " << pos_in_query << std::endl;
 std::cout << "cRecord::column_names[i]: " << cRecord::column_names[i] << std::endl;
 		if ( pos_in_query == -1 ) {
@@ -827,9 +827,9 @@ std::cout << "pointer_array[i]->get_attrib_group(): " << pointer_array[i]->get_a
 
 	std::cout << "Polymorphic data types are: ";
 	const unsigned int base  =  100000;
-	const cAttribute * pAttrib;
-	vector <const cAttribute *> temp_vec_attrib;
-	vector <const cAttribute *> Latitude_interactive_attribute_pointers;
+	const Attribute * pAttrib;
+	vector <const Attribute *> temp_vec_attrib;
+	vector <const Attribute *> Latitude_interactive_attribute_pointers;
 	while (getline(infile, filedata) ) {
 		temp_vec_attrib.clear();
 
@@ -883,10 +883,10 @@ std::cout << "pointer_array[i]->get_attrib_group(): " << pointer_array[i]->get_a
 }
 
 
-cAttribute *
+Attribute *
 create_attribute_instance ( const string & id ) {
 
-	cAttribute *p = NULL;
+	Attribute *p = NULL;
 	if ( id == cFirstname::static_get_class_name() ) {
 		p = new cFirstname;
 	}
@@ -970,7 +970,7 @@ create_attribute_instance ( const string & id ) {
 
 
 const 
-cRecord_Reconfigurator * generate_interactive_reconfigurator( const cAttribute * pAttrib) {
+cRecord_Reconfigurator * generate_interactive_reconfigurator( const Attribute * pAttrib) {
 
 	vector <string > linked_attribs (pAttrib->get_interactive_class_names());
 	string my_name = pAttrib->get_class_name();

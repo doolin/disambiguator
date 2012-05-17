@@ -20,7 +20,7 @@ get_max_similarity(const vector < string > & attrib_names)  {
 
     vector < unsigned int > sp;
     for ( vector < string > :: const_iterator p = attrib_names.begin(); p != attrib_names.end(); ++p ) {
-        const cAttribute * pAttrib = cRecord::get_sample_record().get_attrib_pointer_by_index(cRecord::get_index_by_name(*p));
+        const Attribute * pAttrib = cRecord::get_sample_record().get_attrib_pointer_by_index(cRecord::get_index_by_name(*p));
         const unsigned int max_entry = pAttrib->get_attrib_max_value();
         sp.push_back(max_entry);
     }
@@ -42,7 +42,7 @@ cRatioComponent::sp_stats (const list<std::pair<string, string> > & trainpairs,
     map <string, const cRecord *> dict;
     map<string, const cRecord *>::iterator pm;
     for ( list<cRecord>::const_iterator p = source.begin(); p != source.end(); ++p ) {
-        const cAttribute *pAttrib = p->get_attrib_pointer_by_index(unique_index); 
+        const Attribute *pAttrib = p->get_attrib_pointer_by_index(unique_index); 
         if ( pAttrib->get_data().size() != 1 ) 
             throw cException_Vector_Data(pAttrib->get_class_name().c_str());
         const string & info = pAttrib->get_data().at(0);
@@ -292,7 +292,7 @@ cRatioComponent::get_similarity_info() {
     static const string useless_group_label = "None";
     unsigned int ratios_pos = 0, record_pos = 0;
 
-    for (vector<const cAttribute*>::const_iterator p = sample_record.vector_pdata.begin(); p != sample_record.vector_pdata.end(); ++p) {
+    for (vector<const Attribute*>::const_iterator p = sample_record.vector_pdata.begin(); p != sample_record.vector_pdata.end(); ++p) {
         const string & info = (*p)->get_attrib_group();
         bool comparator_activated = (*p)->is_comparator_activated();
         //std::cout << (*p)->get_class_name() << std::endl;

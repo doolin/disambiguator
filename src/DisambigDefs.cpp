@@ -13,7 +13,7 @@ using std::list;
 using std::string;
 
 const cSimilarity_Compare::cException_Different_Similarity_Dimensions cSimilarity_Compare::default_sp_exception("Error: Different Similarity profile dimensions");
-vector <string> cAttribute::Derived_Class_Name_Registry;
+vector <string> Attribute::Derived_Class_Name_Registry;
 
 
 
@@ -27,7 +27,7 @@ vector <string> cAttribute::Derived_Class_Name_Registry;
  *
  */
 
-bool cAttribute::split_string(const char* recdata) {
+bool Attribute::split_string(const char* recdata) {
 	static const string emptystring ("");
 	vector < const string * > & data = this->get_data_modifiable();
 	const char * p = recdata;
@@ -87,7 +87,7 @@ bool cAttribute::split_string(const char* recdata) {
  *
  */
 
-void attrib_merge ( list < const cAttribute * *> & l1, list < const cAttribute * *> & l2 ) {
+void attrib_merge ( list < const Attribute * *> & l1, list < const Attribute * *> & l2 ) {
 	static const string errmsg = "Error: attribute pointers are not pointing to the same object. Attribute Type = ";
 	if ( l1.empty() || l2.empty() )
 		return;
@@ -95,11 +95,11 @@ void attrib_merge ( list < const cAttribute * *> & l1, list < const cAttribute *
 	// calls the class member function to check if attrib merge is supported.
 	// if Null is returned, it means attrib_merge is not supported.
 	// usually for set_mode classes, attrib_merge works, and classes of single_mode do not support such operation.
-	const cAttribute * new_object_pointer = (*l1.front())->attrib_merge(** l2.front());
+	const Attribute * new_object_pointer = (*l1.front())->attrib_merge(** l2.front());
 	if ( new_object_pointer == NULL )
 		return;
 
-	for ( list < const cAttribute * * >::const_iterator p = l1.begin(); p != l1.end(); ++p ) {
+	for ( list < const Attribute * * >::const_iterator p = l1.begin(); p != l1.end(); ++p ) {
 		if ( **p != * l1.front() ) {
 			std::cout << "------------" <<std::endl;
 			std::cout << "Front address: " << *l1.front() << " Other address: " << **p << std::endl;
@@ -110,7 +110,7 @@ void attrib_merge ( list < const cAttribute * *> & l1, list < const cAttribute *
 		}
 	}
 
-	for ( list < const cAttribute *  * >::const_iterator p = l2.begin(); p != l2.end(); ++p ) {
+	for ( list < const Attribute *  * >::const_iterator p = l2.begin(); p != l2.end(); ++p ) {
 		if ( **p != *l2.front() ) {
 			std::cout << "------------" <<std::endl;
 			std::cout << "Front address: " << *l2.front() << " Other address: " << **p << std::endl;
@@ -132,18 +132,18 @@ void attrib_merge ( list < const cAttribute * *> & l1, list < const cAttribute *
 	if ( l1_size + l2_size != 2 )
 		new_object_pointer->add_attrib( l1_size + l2_size - 2 );
 
-	for ( list < const cAttribute * * >::const_iterator p = l1.begin(); p != l1.end(); ++p )
+	for ( list < const Attribute * * >::const_iterator p = l1.begin(); p != l1.end(); ++p )
 		**p = new_object_pointer;
-	for ( list < const cAttribute *  * >::const_iterator p = l2.begin(); p != l2.end(); ++p )
+	for ( list < const Attribute *  * >::const_iterator p = l2.begin(); p != l2.end(); ++p )
 		**p = new_object_pointer;
 
 }
 
-void cAttribute::register_class_names( const vector < string > & input) {
+void Attribute::register_class_names( const vector < string > & input) {
 	Derived_Class_Name_Registry = input;
 }
 
-int cAttribute::position_in_registry( const string & s ) {
+int Attribute::position_in_registry( const string & s ) {
 	int i = 0;
 	for ( i = 0; i < static_cast<int> (Derived_Class_Name_Registry.size()); ++i ) {
 		if ( s == Derived_Class_Name_Registry.at(i))

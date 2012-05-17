@@ -44,8 +44,8 @@ private:
 	const unsigned int attrib_index;	//attrib_index is the column index on which the cRecord's comparison depends.
 public:
 	bool operator () (const cRecord * prec1, const cRecord *prec2 ) const {
-		const cAttribute * attr1 = prec1->vector_pdata.at(attrib_index);
-		const cAttribute * attr2 = prec2->vector_pdata.at(attrib_index);
+		const Attribute * attr1 = prec1->vector_pdata.at(attrib_index);
+		const Attribute * attr2 = prec2->vector_pdata.at(attrib_index);
 
 		return attr1->get_data().at(0) < attr2->get_data().at(0);
 	};
@@ -316,17 +316,17 @@ public:
  * Private:
  * 		vector < const cString_Manipulator * > vsm: the vector of string manipulator pointers.
  * 		vector < unsigned int > indice: the vector of column indice from which the manipulators extract information, respectively.
- * 		vector < const unsigned int * > pdata_indice: the vector of the const interger pointers indicating the positions of data in the data vector in cAttribute on which the extractions take place.
+ * 		vector < const unsigned int * > pdata_indice: the vector of the const interger pointers indicating the positions of data in the data vector in Attribute on which the extractions take place.
  *
  * Public:
  * 	cBlocking_Operation_Multiple_Column_Manipulate (const vector < const cString_Manipulator * > & inputvsm, const vector<string> & columnnames, const vector < unsigned int > & di )
  * 		: This is a constructor of the class. inputvsm = the vector of string manipulator pointers
  * 			columnnames = the vector of strings which reprensents the name of columns that the extractions will be applied on, respectively.
- * 			di = the vector of indice in the cAttribute::data, which will serve as the source string pointers.
+ * 			di = the vector of indice in the Attribute::data, which will serve as the source string pointers.
  * 			NOTE: di SHOULD NOT BE DESTRUCTED BEFORE THE cBlocking_Operation_Multiple_Column_Manipulate object is discarded.
  * cBlocking_Operation_Multiple_Column_Manipulate (const cString_Manipulator * const* pinputvsm, const string * pcolumnnames, const unsigned int  * pdi, const unsigned int num_col ):
  * 			This is another constructor of the class object. pinputvsm = pointer of the string manipulator pointers array
- * 			pcolumnnames = pointer of the strings array. pdi = pointer of the cAttribute::data indice array. num_col = number of involed columns.
+ * 			pcolumnnames = pointer of the strings array. pdi = pointer of the Attribute::data indice array. num_col = number of involed columns.
  * 			NOTE: pdi SHOULD NOT BE DESTRUCTED BEFORE THE cBlocking_Operation_Multiple_Column_Manipulate object is discarded.
  *	string extract_blocking_info(const cRecord * p) const: extracts information and returns a string.
  *	string extract_column_info ( const cRecord * p, unsigned int flag ) const: extracts information from specified column and returns a string
@@ -357,22 +357,22 @@ public:
  *
  * cBlocking_Operation_Multiple_Column_Manipulate mcmobj ( vec_strman, vec_label, vec_di );	//create a multiple column blocking info extractor.
  *
- * Assuming there is a cRecord object, recobj. As is described above, recobj contains a vector of const cAttribute pointers.
- * Say within the many cAttribute pointers that recobj has, 3 of them are:
- * 1. const cAttribute * pfirstname: pointing to an attribute whose data vector contains 3 string pointers:
+ * Assuming there is a cRecord object, recobj. As is described above, recobj contains a vector of const Attribute pointers.
+ * Say within the many Attribute pointers that recobj has, 3 of them are:
+ * 1. const Attribute * pfirstname: pointing to an attribute whose data vector contains 3 string pointers:
  * 		1.1 pfirstname->data[0] points to "ALEXANDER"
  * 		1.2 pfirstname->data[1] points to "NICOLAS"
  * 		1.3 pfirstname->data[2] points to "ALEXNICOLE".
  * Then the first string manipulator, rsobj, will look for the string of data[1] and returns "NICOLAS".
  *
- * 2. const cAttribute * passignee: pointing to an attribute whose data vector contains 4 string pointers:
+ * 2. const Attribute * passignee: pointing to an attribute whose data vector contains 4 string pointers:
  * 		2.1 passignee->data[0] points to "MICROSOFT CORP, LTD"
  * 		2.2 passignee->data[1] points to "MICROSOFT CORPORATION, LTD"
  * 		2.3 passignee->data[2] points to "MICROSOFT CHINA"
  * 		2.4 passignee->data[3] points to "MICROSOFT SHANGHAI, CHINA"
  * Then the second string manipulator, also rsobj, will look for the string of data[0] and returns "MICROSOFTCORP,LTD"
  *
- * 3. const cAttribute * plastname: pointing to an attribute whose data vector contains 4 string pointers:
+ * 3. const Attribute * plastname: pointing to an attribute whose data vector contains 4 string pointers:
  * 		3.1 plastname->data[0] points to "JOHNSON"
  * 		3.2 plastname->data[1] points to "JOHNSON JR"
  * 		3.3 plastname->data[2] points to "JOHN STONE"
@@ -521,15 +521,15 @@ public:
  *
  * For example: assuming there is a record object, recobj, which has the cFirstname attribute, cMiddlename and cLastname attribute shown as below.
  * Before reconfiguration:
- *  1. const cAttribute * pfirstname: pointing to an attribute whose data vector contains 2 string pointers:
+ *  1. const Attribute * pfirstname: pointing to an attribute whose data vector contains 2 string pointers:
  * 		1.1 pfirstname->data[0] points to "MING LIANG"
  * 		1.2 pfirstname->data[1] points to "MING"
  *
- *  2. const cAttribute * pmiddlename: pointing to an attribute whose data vector contains 2 string pointers:
+ *  2. const Attribute * pmiddlename: pointing to an attribute whose data vector contains 2 string pointers:
  * 		2.1 pfirstname->data[0] points to "MING LIANG"
  * 		2.2 pfirstname->data[1] points to "LIANG"
  *
- *  3. const cAttribute * plasname: pointing to an attribute whose data vector contains 2 string pointers:
+ *  3. const Attribute * plasname: pointing to an attribute whose data vector contains 2 string pointers:
  * 		3.1 pfirstname->data[0] points to "ZHANG"
  * 		3.2 pfirstname->data[1] points to "ZHANG"
  *
@@ -539,15 +539,15 @@ public:
  *  We now have:
  *
  * 	After reconfiguration:
- *  1. const cAttribute * pfirstname: pointing to an attribute whose data vector contains 2 string pointers:
+ *  1. const Attribute * pfirstname: pointing to an attribute whose data vector contains 2 string pointers:
  * 		1.1 pfirstname->data[0] points to "MING LIANG"
  * 		1.2 pfirstname->data[1] points to "MING LIANG"
  *
- *  2. const cAttribute * pmiddlename: pointing to an attribute whose data vector contains 2 string pointers:
+ *  2. const Attribute * pmiddlename: pointing to an attribute whose data vector contains 2 string pointers:
  * 		2.1 pfirstname->data[0] points to "MING LIANG.ZHANG"
  * 		2.2 pfirstname->data[1] points to "MING LIANG.ZHANG"
  *
- *  3. const cAttribute * plasname: pointing to an attribute whose data vector contains 2 string pointers:
+ *  3. const Attribute * plasname: pointing to an attribute whose data vector contains 2 string pointers:
  * 		3.1 pfirstname->data[0] points to "ZHANG"
  * 		3.2 pfirstname->data[1] points to "ZHANG"
  *
@@ -571,7 +571,7 @@ public:
 
 /*
  * cReconfigurator_Interactives:
- * This class is used to modify the objects to connect with its associated other cAttribute objects.
+ * This class is used to modify the objects to connect with its associated other Attribute objects.
  *
  * Example:
  * vector < string > links;
@@ -671,7 +671,7 @@ std::pair<const cRecord *, double> disambiguate_by_set (const cRecord * key1, co
  */
 
 void copyfile(const char * target, const char * source);
-cAttribute * create_attribute_instance ( const string & id );
+Attribute * create_attribute_instance ( const string & id );
 
 void build_patent_tree( map < const cRecord *, cGroup_Value, cSort_by_attrib > & patent_tree , const list < cRecord > & all_records );
 void build_patent_tree( map < const cRecord *, cGroup_Value, cSort_by_attrib > & patent_tree , const list < const cRecord * > & all_rec_pointers );

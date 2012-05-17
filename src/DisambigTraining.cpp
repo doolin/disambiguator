@@ -208,8 +208,8 @@ unsigned int cBlocking_For_Training::create_xset01_on_block(const string & block
 		//std::cout << "===========" << std::endl;
 
 
-		const cAttribute * pcouter = ( (*outercursor)->get_attrib_pointer_by_index(coauthors_index));
-		const cAttribute * pcinner = ( (*innercursor)->get_attrib_pointer_by_index(coauthors_index));
+		const Attribute * pcouter = ( (*outercursor)->get_attrib_pointer_by_index(coauthors_index));
+		const Attribute * pcinner = ( (*innercursor)->get_attrib_pointer_by_index(coauthors_index));
 
 
 		//set < string > outer_coauthors( (*outercursor)->get_data_by_index(coauthors_index).begin(), (*outercursor)->get_data_by_index(coauthors_index).end());
@@ -331,8 +331,8 @@ unsigned int cBlocking_For_Training::create_tset05_on_block(const string & block
 
 		static const string problem_countries[] = {"KR", "CN", "TW"};
 		static const vector <string> problem_countries_vector (problem_countries, problem_countries + sizeof(problem_countries) / sizeof(string));
-		const cAttribute * poc = ( (*outercursor)->get_attrib_pointer_by_index(country_index));
-		const cAttribute * pic = ( (*innercursor)->get_attrib_pointer_by_index(country_index));
+		const Attribute * poc = ( (*outercursor)->get_attrib_pointer_by_index(country_index));
+		const Attribute * pic = ( (*innercursor)->get_attrib_pointer_by_index(country_index));
 
 		for ( vector < string >::const_iterator pcv = problem_countries_vector.begin(); pcv != problem_countries_vector.end(); ++pcv ) {
 			const string & outer_cty = * poc->get_data().at(0);
@@ -350,8 +350,8 @@ unsigned int cBlocking_For_Training::create_tset05_on_block(const string & block
 
 			//other criteria apply here.
 		unsigned int coauthors_num = 0;
-		const cAttribute * pcouter = ( (*outercursor)->get_attrib_pointer_by_index(coauthors_index));
-		const cAttribute * pcinner = ( (*innercursor)->get_attrib_pointer_by_index(coauthors_index));
+		const Attribute * pcouter = ( (*outercursor)->get_attrib_pointer_by_index(coauthors_index));
+		const Attribute * pcinner = ( (*innercursor)->get_attrib_pointer_by_index(coauthors_index));
 
 		/*
 		set < string > outer_coauthors( (*outercursor)->get_data_by_index(coauthors_index).begin(), (*outercursor)->get_data_by_index(coauthors_index).end());

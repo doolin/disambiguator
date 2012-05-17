@@ -316,7 +316,7 @@ void cCluster_Info::print(std::ostream & os) const {
 	static const cException_Vector_Data except(uid_name.c_str());
 	for ( map <string, cRecGroup >::const_iterator q = cluster_by_block.begin(); q != cluster_by_block.end(); ++q ) {
 		for ( cRecGroup::const_iterator p = q->second.begin(); p != q->second.end(); ++p ) {
-			const cAttribute * key_pattrib = p->get_cluster_head().m_delegate->get_attrib_pointer_by_index(uid_index);
+			const Attribute * key_pattrib = p->get_cluster_head().m_delegate->get_attrib_pointer_by_index(uid_index);
 			os << * key_pattrib->get_data().at(0) << primary_delim;
 
 			double cohesion_value;
@@ -328,7 +328,7 @@ void cCluster_Info::print(std::ostream & os) const {
 			os << cohesion_value << primary_delim;
 
 			for ( cGroup_Value::const_iterator q = p->get_fellows().begin(); q != p->get_fellows().end(); ++q ) {
-				const cAttribute * value_pattrib = (*q)->get_attrib_pointer_by_index(uid_index);
+				const Attribute * value_pattrib = (*q)->get_attrib_pointer_by_index(uid_index);
 				os << * value_pattrib->get_data().at(0) << secondary_delim;
 			}
 			os << '\n';

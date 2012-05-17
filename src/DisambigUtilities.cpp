@@ -171,7 +171,7 @@ ones_temporal_unique_coauthors (const cCluster & record_cluster,
 	cGroup_Value qualified_same_author;
 	for ( cGroup_Value::const_iterator psa = same_author.begin(); psa != same_author.end(); ++psa ) {
 		//check year range
-		const cAttribute * pAttrib = (*psa)->get_attrib_pointer_by_index(year_index);
+		const Attribute * pAttrib = (*psa)->get_attrib_pointer_by_index(year_index);
 		const unsigned int checkyear = atoi (pAttrib->get_data().at(0)->c_str());
 		if ( checkyear >= begin_year && checkyear < end_year )
 			qualified_same_author.push_back(*psa);
