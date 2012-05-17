@@ -43,7 +43,6 @@ void reconfigure_interactives ( const cRecord_Reconfigurator * pc, const cRecord
 #include "exceptions.h"
 #include "attribute.h"
 #include "DisambigComp.h"
-//#include "DisambigCustomizedDefs.h"
 
 
 /*
@@ -53,8 +52,6 @@ void reconfigure_interactives ( const cRecord_Reconfigurator * pc, const cRecord
  *      Author: ysun
  */
 
-//#ifndef DISAMBIGCUSTOMIZEDDEFS_H_
-//#define DISAMBIGCUSTOMIZEDDEFS_H_
 
 /*
  * For each concrete class, if it can be one of the components in the similarity profile, whether its comparator is activated or not,
@@ -374,6 +371,5 @@ template <> const unsigned int Attribute_Basic<cLatitude >::num_of_interactive_c
 template <> const unsigned int Attribute_Basic<cLongitude >::num_of_interactive_columns;
 template <typename Derived> const unsigned int Attribute_Basic<Derived>::num_of_interactive_columns = 0;
 
-//#endif /* DISAMBIGCUSTOMIZEDDEFS_H_ */
 
 #endif /* DISAMBIGLIB_HPP_ */
