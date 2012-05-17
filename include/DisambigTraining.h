@@ -40,7 +40,7 @@
 
 
 
-typedef std::pair< const cRecord *, const cRecord *> pointer_pairs;
+typedef std::pair< const Record *, const Record *> pointer_pairs;
 
 struct cPrint_Pair {
 private:
@@ -56,12 +56,12 @@ public:
 	cPrint_Pair(std::ostream & os, const vector < string > & vec_columnnames)
 		: myos(os), primary_delim(","), secondary_delim( " | "), is_vector(true) {
 		for ( vector<string>::const_iterator p = vec_columnnames.begin(); p != vec_columnnames.end() ; ++p )
-			indice.push_back(cRecord::get_index_by_name(*p));
+			indice.push_back(Record::get_index_by_name(*p));
 	}
 
 	cPrint_Pair(std::ostream & os, const string & col_name)
 			: myos(os), primary_delim(","), secondary_delim( " | "), is_vector(false) {
-		single_index = cRecord::get_index_by_name(col_name);
+		single_index = Record::get_index_by_name(col_name);
 	}
 
 	void operator() (const pointer_pairs & source) {
@@ -112,12 +112,12 @@ protected:
 	};
 
 	map<string, cGroup_Value > blocking_data;
-	map < const cRecord *, const string *> record2blockingstring;
+	map < const Record *, const string *> record2blockingstring;
 	const vector <string> blocking_column_names;
 	const vector<const cString_Manipulator*> string_manipulator_pointers;
 
 public:
-	explicit cBlocking(const list<const cRecord *> & psource, const vector<string> & blocking_column_names, const vector<const cString_Manipulator*>& pmanipulators, const string & unique_identifier );
+	explicit cBlocking(const list<const Record *> & psource, const vector<string> & blocking_column_names, const vector<const cString_Manipulator*>& pmanipulators, const string & unique_identifier );
 	const map<string, cGroup_Value > & get_block_map() const {return blocking_data;}
 };
 
@@ -144,7 +144,7 @@ public:
 	typedef unsigned int(cBlocking_For_Training::*pFunc)(const string & block_id, const vector <unsigned int> & equal_indice, const vector<const cString_Manipulator*>& pmanipulators_equal,
 															const vector <unsigned int> &nonequal_indice, const vector<const cString_Manipulator*>& pmanipulators_nonequal, const bool is_firstround);
 
-	explicit cBlocking_For_Training( const list < const cRecord *> & source, const vector<string> & blocking_column_names,
+	explicit cBlocking_For_Training( const list < const Record *> & source, const vector<string> & blocking_column_names,
 									const vector<const cString_Manipulator*>& pmanipulators, const string & unique_identifier, const unsigned int qt);
 	unsigned int create_xset01_on_block(const string & block_id, const vector <unsigned int> & equal_indice, const vector<const cString_Manipulator*>& pmanipulators_equal,
 										const vector <unsigned int> &nonequal_indice, const vector<const cString_Manipulator*>& pmanipulators_nonequal, const bool is_firstround);
@@ -184,11 +184,11 @@ private:
 
 
 
-void find_rare_names_v2(const vector < cGroup_Value * > &vec_pdest, const list< const cRecord* > & source );
-unsigned int create_tset02(list <pointer_pairs> &results, 	const list <const cRecord*> & reclist,
+void find_rare_names_v2(const vector < cGroup_Value * > &vec_pdest, const list< const Record* > & source );
+unsigned int create_tset02(list <pointer_pairs> &results, 	const list <const Record*> & reclist,
 							const vector <string> & column_names, const vector < const cGroup_Value * > & vec_prare_names, const unsigned int limit );
-unsigned int create_xset03(list <pointer_pairs> &results, 	const list <const cRecord*> & reclist,
+unsigned int create_xset03(list <pointer_pairs> &results, 	const list <const Record*> & reclist,
 							const vector < const cGroup_Value * > & vec_prare_names, const unsigned int limit );
-unsigned int create_xset01(list <pointer_pairs> &results, const list <const cRecord *> & source,  const unsigned int limit );
+unsigned int create_xset01(list <pointer_pairs> &results, const list <const Record *> & source,  const unsigned int limit );
 
 #endif /* DISAMBIGTRAINING_H_ */

@@ -18,7 +18,7 @@ public:
   RecordTest( std::string name ) : CppUnit::TestCase( name ) {}
 
   void delete_record() {
-    cRecord * rc = new cRecord();
+    Record * rc = new Record();
     delete rc;
   }
  

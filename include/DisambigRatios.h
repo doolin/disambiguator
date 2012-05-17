@@ -116,9 +116,9 @@ public:
  * 		map < vector <unsigned int>, double, cSimilarity_Compare > ratio_map: a ratio map for the current component.
  * 			Key = similarity profile, Value = ratio, Comparator = cSimilarity_Compare
  * 		vector < unsigned int > positions_in_ratios: positions of the current components in the complete similarity profile.
- * 		vector < unsigned int > positions_in_record: position of the current components in the cRecord::column_names.
+ * 		vector < unsigned int > positions_in_record: position of the current components in the Record::column_names.
  *		const string attrib_group: the attribute GROUP identifier for which the cRatioComponent object represents.
- *		const map < string, const cRecord *> * puid_tree: the pointer to a map of unique record id string to its correspoinding record pointer.
+ *		const map < string, const Record *> * puid_tree: the pointer to a map of unique record id string to its correspoinding record pointer.
  *		map < cSimilarity_With_Monotonicity_Dimension, MonotonicSet > similarity_map:
  *			a map of similarity profiles and their monotonic set for a certain dimension.
  *		vector < string > attrib_names: attribute names that belong the the atribute group.
@@ -136,7 +136,7 @@ public:
  *		void get_similarity_info(): to get the information of similarity profiles of the attribute group.
  *
  * Public: 
- * 		cRatioComponent ( const map < string, const cRecord * > uid_tree, const string & groupname ):
+ * 		cRatioComponent ( const map < string, const Record * > uid_tree, const string & groupname ):
  * 			constructor. uid_tree = map of unique record id string to its record pointer. groupname = attribute group name.
  *
  */
@@ -152,7 +152,7 @@ private:
 	vector < unsigned int > positions_in_ratios;
 	vector < unsigned int > positions_in_record;
 	const string attrib_group;
-	const map < string, const cRecord *> * puid_tree;
+	const map < string, const Record *> * puid_tree;
 	map < cSimilarity_With_Monotonicity_Dimension, MonotonicSet > similarity_map;
 	vector < string > attrib_names;
 	bool is_ready;
@@ -168,7 +168,7 @@ public:
 		cException_Ratios_Not_Ready(const char* errmsg): cAbstract_Exception(errmsg){};
 	};
 	
-	explicit cRatioComponent( const map < string, const cRecord * > & uid_tree, const string & groupname);
+	explicit cRatioComponent( const map < string, const Record * > & uid_tree, const string & groupname);
 	void prepare(const char* x_flie, const char * m_file);
 	const map < vector < unsigned int >, double, cSimilarity_Compare > & get_ratios_map() const {
 		if ( is_ready )
@@ -203,7 +203,7 @@ private:
 	static const char * secondary_delim;
 
 public:
-	cRatios(const vector < const cRatioComponent *> & component_vector, const char * filename, const cRecord & rec);
+	cRatios(const vector < const cRatioComponent *> & component_vector, const char * filename, const Record & rec);
 	cRatios( const char *filename);
 	const map < vector < unsigned int >, double, cSimilarity_Compare > & get_ratios_map() const {
 		return final_ratios;

@@ -28,28 +28,28 @@ using std::set;
 /*
  * cSort_by_attrib:
  * A functor for comparison of attributes in associated containers such as map or set.
- * bool operator () (const cRecord * prec1, const cRecord *prec2 ) const: comparison between two records pointers based on their content.
+ * bool operator () (const Record * prec1, const Record *prec2 ) const: comparison between two records pointers based on their content.
  * 			The conparison content depends on the internal information of the cSort_by_attrib object. i.e. attrib_index;
  *
  * Example:
- * 1. cSort_by_attrib obj1( "Patent" ); this will create an instance obj1 which compares two cRecord pointers based on the "Patent" information column.
- *    map < const cRecord *, VALUE_TYPE, cSort_by_attrib > m1(obj1); will create a map (binary tree) whose key is const cRecord pointer, and
+ * 1. cSort_by_attrib obj1( "Patent" ); this will create an instance obj1 which compares two Record pointers based on the "Patent" information column.
+ *    map < const Record *, VALUE_TYPE, cSort_by_attrib > m1(obj1); will create a map (binary tree) whose key is const Record pointer, and
  *    		the way of sorting is through comparison of "Patent" attribute. Binary tree is ideal for fast search, insertion and deletion.
  *
  */
 
 class cSort_by_attrib {
 private:
-	const unsigned int attrib_index;	//attrib_index is the column index on which the cRecord's comparison depends.
+	const unsigned int attrib_index;	//attrib_index is the column index on which the Record's comparison depends.
 public:
-	bool operator () (const cRecord * prec1, const cRecord *prec2 ) const {
+	bool operator () (const Record * prec1, const Record *prec2 ) const {
 		const Attribute * attr1 = prec1->vector_pdata.at(attrib_index);
 		const Attribute * attr2 = prec2->vector_pdata.at(attrib_index);
 
 		return attr1->get_data().at(0) < attr2->get_data().at(0);
 	};
 	cSort_by_attrib(const unsigned int i): attrib_index(i) {};
-	cSort_by_attrib(const string & attrib_name): attrib_index(cRecord::get_index_by_name(attrib_name) ) {};
+	cSort_by_attrib(const string & attrib_name): attrib_index(Record::get_index_by_name(attrib_name) ) {};
 };
 
 
@@ -242,7 +242,7 @@ public:
  * 	- cBlocking_Operation_Column_Manipulate
  * 	- cBlocking_Operation_Multiple_Column_Manipulate
  *
- * cBlocking_Operation reads data from a const cRecord pointer, and extract information to create a string which represents the blocking id to which the record belongs.
+ * cBlocking_Operation reads data from a const Record pointer, and extract information to create a string which represents the blocking id to which the record belongs.
  *
  * Protected:
  * 		string infoless: this string represents the string that has delimiters ONLY. i.e. no useful information at all.
@@ -251,13 +251,13 @@ public:
  * Public:
  * 		const string & get_useless_string () const: returns the infoless string.
  * 		static const string delim: the separator between columns. Defined in cpp file. Will be used by other modules.
- * 		virtual string extract_blocking_info(const cRecord *) const = 0: pure virtual function to extract information from a cRecord pointer.
- * 		virtual string extract_column_info ( const cRecord *, unsigned int flag ) const:
+ * 		virtual string extract_blocking_info(const Record *) const = 0: pure virtual function to extract information from a Record pointer.
+ * 		virtual string extract_column_info ( const Record *, unsigned int flag ) const:
  * 				virtual function that extract information from the (flag)th column.
  *  	virtual unsigned int num_involved_columns() const: return number of columns that the extraction operates on.
  *
  * Example:
- * 		cRecord recobj: firstname = "JACK", lastname = "SMITH", patent = "12345A"
+ * 		Record recobj: firstname = "JACK", lastname = "SMITH", patent = "12345A"
  * 		if cBlocking_Operation::delim == "###", then
  * 			extract_blocking_info ( &recobj ) probably returns "J###SMI###" if the blocking operation
  * 											just wants the first char of firstname and 3 chars from lastname.
@@ -273,8 +273,8 @@ protected:
 public:
 	const string & get_useless_string () const { return infoless;}
 	static const string delim;
-	virtual string extract_blocking_info(const cRecord *) const = 0;
-	virtual string extract_column_info ( const cRecord *, unsigned int flag ) const { throw cException_Other ("Function not defined yet.");}
+	virtual string extract_blocking_info(const Record *) const = 0;
+	virtual string extract_column_info ( const Record *, unsigned int flag ) const { throw cException_Other ("Function not defined yet.");}
 	virtual ~cBlocking_Operation() {};
 	virtual unsigned int num_involved_columns() const { return 1;}
 };
@@ -301,9 +301,9 @@ private:
 	const unsigned int column_index;
 public:
 	explicit cBlocking_Operation_Column_Manipulate(const cString_Manipulator & inputsm, const string & colname)
-			: sm(inputsm), column_index(cRecord::get_index_by_name(colname)) { infoless = delim;}
-	string extract_blocking_info(const cRecord * p) const {return sm.manipulate( * p->get_data_by_index(column_index).at(0));}
-	string extract_column_info ( const cRecord * p, unsigned int flag ) const { return extract_blocking_info(p);}
+			: sm(inputsm), column_index(Record::get_index_by_name(colname)) { infoless = delim;}
+	string extract_blocking_info(const Record * p) const {return sm.manipulate( * p->get_data_by_index(column_index).at(0));}
+	string extract_column_info ( const Record * p, unsigned int flag ) const { return extract_blocking_info(p);}
 };
 
 
@@ -327,8 +327,8 @@ public:
  * 			This is another constructor of the class object. pinputvsm = pointer of the string manipulator pointers array
  * 			pcolumnnames = pointer of the strings array. pdi = pointer of the Attribute::data indice array. num_col = number of involed columns.
  * 			NOTE: pdi SHOULD NOT BE DESTRUCTED BEFORE THE cBlocking_Operation_Multiple_Column_Manipulate object is discarded.
- *	string extract_blocking_info(const cRecord * p) const: extracts information and returns a string.
- *	string extract_column_info ( const cRecord * p, unsigned int flag ) const: extracts information from specified column and returns a string
+ *	string extract_blocking_info(const Record * p) const: extracts information and returns a string.
+ *	string extract_column_info ( const Record * p, unsigned int flag ) const: extracts information from specified column and returns a string
  *	unsigned int num_involved_columns() const : return number of involved columns.
  *
  *
@@ -356,7 +356,7 @@ public:
  *
  * cBlocking_Operation_Multiple_Column_Manipulate mcmobj ( vec_strman, vec_label, vec_di );	//create a multiple column blocking info extractor.
  *
- * Assuming there is a cRecord object, recobj. As is described above, recobj contains a vector of const Attribute pointers.
+ * Assuming there is a Record object, recobj. As is described above, recobj contains a vector of const Attribute pointers.
  * Say within the many Attribute pointers that recobj has, 3 of them are:
  * 1. const Attribute * pfirstname: pointing to an attribute whose data vector contains 3 string pointers:
  * 		1.1 pfirstname->data[0] points to "ALEXANDER"
@@ -396,8 +396,8 @@ private:
 public:
 	cBlocking_Operation_Multiple_Column_Manipulate (const vector < const cString_Manipulator * > & inputvsm, const vector<string> & columnnames, const vector < unsigned int > & di );
 	cBlocking_Operation_Multiple_Column_Manipulate (const cString_Manipulator * const* pinputvsm, const string * pcolumnnames, const unsigned int  * pdi, const unsigned int num_col );
-	string extract_blocking_info(const cRecord * p) const;
-	string extract_column_info ( const cRecord * p, unsigned int flag ) const;
+	string extract_blocking_info(const Record * p) const;
+	string extract_column_info ( const Record * p, unsigned int flag ) const;
 	unsigned int num_involved_columns() const { return vsm.size();}
 	void reset_data_indice( const vector < unsigned int > & indice );
 	const vector < string > & get_blocking_attribute_names() const { return attributes_names;}
@@ -416,33 +416,33 @@ class cCluster_Info;	//forward declaration.
  * Therefore, this class is actually working beyond its original design purpose. And one should be familiar with the class members.
  *
  * Private:
- * 		map < const cRecord *, cGroup_Value, cSort_by_attrib > patent_tree: a binary tree to sort records by patent information.
- * 				key = const cRecord pointer, value = list < const cRecord * >, comparison function = an object of cSort_by_attrib, which includes the column information.
- *		map < const cRecord *, const cRecord * > uid2uinv_tree: a binary tree that maps a unique record pointer to its unique inventor record pointer.
- *		map < const cRecord *, unsigned int > uinv2count_tree: a binary tree that maps the unique inventor record pointer to the number of its associated patents.
+ * 		map < const Record *, cGroup_Value, cSort_by_attrib > patent_tree: a binary tree to sort records by patent information.
+ * 				key = const Record pointer, value = list < const Record * >, comparison function = an object of cSort_by_attrib, which includes the column information.
+ *		map < const Record *, const Record * > uid2uinv_tree: a binary tree that maps a unique record pointer to its unique inventor record pointer.
+ *		map < const Record *, unsigned int > uinv2count_tree: a binary tree that maps the unique inventor record pointer to the number of its associated patents.
  *		const unsigned int num_coauthors: number of coauthors to extract for blocking. Usually it should not be too large ( like 10 ).
  *
- *		void build_patent_tree(const list < const cRecord * > & allrec): reads a list of const cRecord pointers and build patent tree.
+ *		void build_patent_tree(const list < const Record * > & allrec): reads a list of const Record pointers and build patent tree.
  *				NOTE THAT the comparison function for the tree is determined in the constructor.
- *		cGroup_Value get_topN_coauthors( const cRecord * pRec, const unsigned int topN) const:
- *				find the top N most prolific coauthors of the input pRec record pointer, and return a list of const cRecord pointers.
+ *		cGroup_Value get_topN_coauthors( const Record * pRec, const unsigned int topN) const:
+ *				find the top N most prolific coauthors of the input pRec record pointer, and return a list of const Record pointers.
  *
  * Public:
- *		cBlocking_Operation_By_Coauthors(const list < const cRecord * > & allrec, const cCluster_Info& cluster, const unsigned int coauthors):
- *				initialize a class object. allrec = a complete list of const cRecord pointers.
+ *		cBlocking_Operation_By_Coauthors(const list < const Record * > & allrec, const cCluster_Info& cluster, const unsigned int coauthors):
+ *				initialize a class object. allrec = a complete list of const Record pointers.
  *				cluster = a cCluster_Info object, which contains all the information of clustering from the previous disambiguation.
  *				coauthors = number of coauthors for blocking information extraction.
- *		cBlocking_Operation_By_Coauthors(const list < const cRecord * > & allrec, const unsigned int coauthors): the second constructor.
- *		string extract_blocking_info(const cRecord * prec) const; extract blocking string for the cRecord to which prec points, and returns a string.
+ *		cBlocking_Operation_By_Coauthors(const list < const Record * > & allrec, const unsigned int coauthors): the second constructor.
+ *		string extract_blocking_info(const Record * prec) const; extract blocking string for the Record to which prec points, and returns a string.
  *		void build_uid2uinv_tree( const cCluster_Info & source): build an internal unique record id to unique inventor id map from a cCluster_Info object.
- *		const map < const cRecord *, cGroup_Value, cSort_by_attrib > & get_patent_tree() const : get the reference of const patent tree
- *		map < const cRecord *, const cRecord * > & get_uid2uinv_tree(): get the reference of the unique record id to unique inventor id tree.
+ *		const map < const Record *, cGroup_Value, cSort_by_attrib > & get_patent_tree() const : get the reference of const patent tree
+ *		map < const Record *, const Record * > & get_uid2uinv_tree(): get the reference of the unique record id to unique inventor id tree.
  *																		NOTE: the referenced tree is not const so it is modifiable.
  *
  *
  * Example:
  *
- * list < const cRecord * > complete_list;	//initialize a list
+ * list < const Record * > complete_list;	//initialize a list
  * Do something here to add elements into the list.
  * cBlocking_Operation_By_Coauthors bobcobj ( complete_list, 2 ); //create an instance of cBlocking_Operation_By_Coauthors
  * 													// and set the maximum most prolific coauthors to 2, for blocking information extraction.
@@ -454,47 +454,47 @@ class cCluster_Info;	//forward declaration.
  */
 class cBlocking_Operation_By_Coauthors : public cBlocking_Operation {
 private:
-	map < const cRecord *, cGroup_Value, cSort_by_attrib > patent_tree;
-	map < const cRecord *, const cRecord * > uid2uinv_tree;
-	map < const cRecord *, unsigned int > uinv2count_tree;
+	map < const Record *, cGroup_Value, cSort_by_attrib > patent_tree;
+	map < const Record *, const Record * > uid2uinv_tree;
+	map < const Record *, unsigned int > uinv2count_tree;
 
 	const unsigned int num_coauthors;
 
-	void build_patent_tree(const list < const cRecord * > & allrec);
-	cGroup_Value get_topN_coauthors( const cRecord *, const unsigned int topN) const;
+	void build_patent_tree(const list < const Record * > & allrec);
+	cGroup_Value get_topN_coauthors( const Record *, const unsigned int topN) const;
 
 public:
-	cBlocking_Operation_By_Coauthors(const list < const cRecord * > & allrec, const cCluster_Info& cluster, const unsigned int coauthors);
-	cBlocking_Operation_By_Coauthors(const list < const cRecord * > & allrec, const unsigned int num_coauthors);
-	string extract_blocking_info(const cRecord *) const;
+	cBlocking_Operation_By_Coauthors(const list < const Record * > & allrec, const cCluster_Info& cluster, const unsigned int coauthors);
+	cBlocking_Operation_By_Coauthors(const list < const Record * > & allrec, const unsigned int num_coauthors);
+	string extract_blocking_info(const Record *) const;
 	void build_uid2uinv_tree( const cCluster_Info &);
-	const map < const cRecord *, cGroup_Value, cSort_by_attrib > & get_patent_tree() const {return patent_tree;}
-	map < const cRecord *, const cRecord * > & get_uid2uinv_tree() { return uid2uinv_tree;}
+	const map < const Record *, cGroup_Value, cSort_by_attrib > & get_patent_tree() const {return patent_tree;}
+	map < const Record *, const Record * > & get_uid2uinv_tree() { return uid2uinv_tree;}
 
 };
 
 
 /*
- * cRecord_Reconfigurator
+ * Record_Reconfigurator
  * 	- cReconfigurator_AsianNames
  * 	- cReconfigurator_Latitude_Interactives
  * 	- cReconfigurator_Coauthor
  *
  * The record reconfigurator hierarchy is used to modify the data after initial loading from text files.
  * For some reasons, initial data are not ideal for disambiguation, and modification of such data is necessary.
- * It is also critical to reconfigure cRecord objects when interactions between attributes exist.
- * To add more concrete classes, simply inherit the cRecord_Reconfigurator class and implement the "void reconfigure ( const cRecord * ) const" virtual function.
- * To use a concrete cRecord_Reconfigurator class, create an object of the class and treat the object as a function, as shown below.
+ * It is also critical to reconfigure Record objects when interactions between attributes exist.
+ * To add more concrete classes, simply inherit the Record_Reconfigurator class and implement the "void reconfigure ( const Record * ) const" virtual function.
+ * To use a concrete Record_Reconfigurator class, create an object of the class and treat the object as a function, as shown below.
  *
  */
 
 
-class cRecord_Reconfigurator {
+class Record_Reconfigurator {
 public:
-	virtual void reconfigure ( const cRecord * ) const = 0;
-	void operator () ( cRecord & r ) const  {this->reconfigure(&r);}
-	void operator () ( const cRecord * p) const { this->reconfigure(p); }
-	virtual ~cRecord_Reconfigurator(){}
+	virtual void reconfigure ( const Record * ) const = 0;
+	void operator () ( Record & r ) const  {this->reconfigure(&r);}
+	void operator () ( const Record * p) const { this->reconfigure(p); }
+	virtual ~Record_Reconfigurator(){}
 };
 
 /*
@@ -515,7 +515,7 @@ public:
  *
  * Public:
  * 		cReconfigurator_AsianNames(): constructor
- * 		void reconfigure( const cRecord * ) const: virtual function.
+ * 		void reconfigure( const Record * ) const: virtual function.
  *
  *
  * For example: assuming there is a record object, recobj, which has the cFirstname attribute, cMiddlename and cLastname attribute shown as below.
@@ -553,7 +553,7 @@ public:
  */
 
 
-class cReconfigurator_AsianNames : public cRecord_Reconfigurator {
+class cReconfigurator_AsianNames : public Record_Reconfigurator {
 private:
 	const unsigned int country_index;
 	const unsigned int firstname_index;
@@ -563,7 +563,7 @@ private:
 	const cString_Remove_Space rmvsp;
 public:
 	cReconfigurator_AsianNames();
-	void reconfigure( const cRecord * ) const;
+	void reconfigure( const Record * ) const;
 };
 
 
@@ -583,13 +583,13 @@ public:
  */
 
 
-class cReconfigurator_Interactives: public cRecord_Reconfigurator {
+class cReconfigurator_Interactives: public Record_Reconfigurator {
 private:
 	unsigned int my_index;
 	vector < unsigned int > relevant_indice;
 public:
 	cReconfigurator_Interactives(const string & my_name, const vector <string> & relevant_attributes);
-	void reconfigure ( const cRecord *) const;
+	void reconfigure ( const Record *) const;
 };
 
 /*
@@ -600,17 +600,17 @@ public:
  * Therefore, this class should be used very cautiously, as it wipes everything about coauthor WHENEVER an object of such class is created.
  *
  * Private:
- * 		const map < const cRecord *, cGroup_Value, cSort_by_attrib > * reference_pointer: a pointer to a patent tree, which can be obtained in a cBlocking_Operation_By_Coauthor object.
+ * 		const map < const Record *, cGroup_Value, cSort_by_attrib > * reference_pointer: a pointer to a patent tree, which can be obtained in a cBlocking_Operation_By_Coauthor object.
  * 		const unsigned int coauthor_index: the index of the coauthor column in many columns.
  *
  * Public:
- * 		cReconfigurator_Coauthor ( const map < const cRecord *, cGroup_Value, cSort_by_attrib > & patent_authors):
+ * 		cReconfigurator_Coauthor ( const map < const Record *, cGroup_Value, cSort_by_attrib > & patent_authors):
  * 			create a class object through a patent tree ( which is usually from a cBlocking_Operation_By_Coauthor object ).
- * 		void reconfigure ( const cRecord * ) const: virtual function.
+ * 		void reconfigure ( const Record * ) const: virtual function.
  *
  *
  * Example:
- * list < const cRecord * > complete; // create a complete list of cRecord objects
+ * list < const Record * > complete; // create a complete list of Record objects
  * Do something to fill in the list;
  * cBlocking_Operation_By_Coauthor bobcobj( complete, 1 ); // create a cBlocking_Operation_By_Coauthor object.
  * cReconfigurator_Coauthor rcobj ( bobcobj.get_patent_tree() );	//create an object of coauthor reconfigurator. This also wipes everything of the whole coauthor column!!
@@ -619,13 +619,13 @@ public:
  *
  */
 
-class cReconfigurator_Coauthor : public cRecord_Reconfigurator {
+class cReconfigurator_Coauthor : public Record_Reconfigurator {
 private:
-	const map < const cRecord *, cGroup_Value, cSort_by_attrib > * reference_pointer;
+	const map < const Record *, cGroup_Value, cSort_by_attrib > * reference_pointer;
 	const unsigned int coauthor_index;
 public:
-	cReconfigurator_Coauthor ( const map < const cRecord *, cGroup_Value, cSort_by_attrib > & patent_authors);
-	void reconfigure ( const cRecord * ) const;
+	cReconfigurator_Coauthor ( const map < const Record *, cGroup_Value, cSort_by_attrib > & patent_authors);
+	void reconfigure ( const Record * ) const;
 };
 
 
@@ -654,13 +654,13 @@ class cRatios; //forward declaration
  * 		threshold: threshold of the probability that the two clusters should be the of the same inventor.
  *
  * Return Value:
- * 		std::pair < const cRecord *, double >: This is a pair value, which consists of two parts.
- * 		1. const cRecord *: NULL if the two clusters are identified as of different inventors, and key1 if they are of the same inventors.
+ * 		std::pair < const Record *, double >: This is a pair value, which consists of two parts.
+ * 		1. const Record *: NULL if the two clusters are identified as of different inventors, and key1 if they are of the same inventors.
  * 		2. double: the cohesion of the combination of the first and the second cluster. This is only valid if the first returned pointer is not NULL.
  */
 
-std::pair<const cRecord *, double> disambiguate_by_set (const cRecord * key1, const cGroup_Value & match1, const double cohesion1,
-									 const cRecord * key2, const cGroup_Value & match2, const double cohesion2,
+std::pair<const Record *, double> disambiguate_by_set (const Record * key1, const cGroup_Value & match1, const double cohesion1,
+									 const Record * key2, const cGroup_Value & match2, const double cohesion2,
 									 const double prior, 
 									 const cRatios & ratio,  const double threshold ) ;
 
@@ -672,8 +672,8 @@ std::pair<const cRecord *, double> disambiguate_by_set (const cRecord * key1, co
 void copyfile(const char * target, const char * source);
 Attribute * create_attribute_instance ( const string & id );
 
-void build_patent_tree( map < const cRecord *, cGroup_Value, cSort_by_attrib > & patent_tree , const list < cRecord > & all_records );
-void build_patent_tree( map < const cRecord *, cGroup_Value, cSort_by_attrib > & patent_tree , const list < const cRecord * > & all_rec_pointers );
+void build_patent_tree( map < const Record *, cGroup_Value, cSort_by_attrib > & patent_tree , const list < Record > & all_records );
+void build_patent_tree( map < const Record *, cGroup_Value, cSort_by_attrib > & patent_tree , const list < const Record * > & all_rec_pointers );
 string check_file_existence(const string & description);
 
 #endif /* PATENT_ENGINE_H */

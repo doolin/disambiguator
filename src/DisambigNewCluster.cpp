@@ -9,7 +9,7 @@
 
 //static members initialization.
 const cRatios * cCluster::pratio = NULL;
-const map < const cRecord *, cGroup_Value, cSort_by_attrib > * cCluster::reference_pointer = NULL;
+const map < const Record *, cGroup_Value, cSort_by_attrib > * cCluster::reference_pointer = NULL;
 
 
 /*
@@ -39,7 +39,7 @@ void cCluster::merge( cCluster & mergee, const cCluster_Head & info ) {
 	if ( mergee.m_mergeable == false )
 		throw cException_Empty_Cluster("Merging error: mergEE is empty.");
 
-	static const unsigned int rec_size = cRecord::record_size();
+	static const unsigned int rec_size = Record::record_size();
 
 	for ( unsigned int i = 0 ; i < rec_size; ++i ) {
 		list < const Attribute ** > l1;
@@ -78,8 +78,8 @@ void cCluster::change_mid_name()  {
 	// The folowing step actually changes the raw data. Changes the abbreviated middlename to a longer one if possible.
 	if ( ! cMiddlename::is_enabled() )
 		return;
-	static const unsigned int midname_index = cRecord::get_index_by_name(cMiddlename::static_get_class_name());
-	static const unsigned int lastname_index = cRecord::get_index_by_name(cLastname::static_get_class_name());
+	static const unsigned int midname_index = Record::get_index_by_name(cMiddlename::static_get_class_name());
+	static const unsigned int lastname_index = Record::get_index_by_name(cLastname::static_get_class_name());
 	map < const Attribute *, const Attribute *> last2mid;
 	map < const Attribute *, const Attribute * >::iterator q;
 	for ( cGroup_Value::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p ) {
@@ -130,14 +130,14 @@ cCluster::cCluster( const cCluster & rhs ) : m_info(rhs.m_info), m_fellows(rhs.m
 
 /*
  * Aim: to compare "*this" with rhs, and check whether the clusters should merge. If it is a merge, the returned
- * 		cluster head consists of a non-NULL cRecord pointer and a cohesion value; if it is nor a merge, the returned cluster
- * 		head is composed of a NULL cRecord pointer, and the cohesion value is useless then.
+ * 		cluster head consists of a non-NULL Record pointer and a cohesion value; if it is nor a merge, the returned cluster
+ * 		head is composed of a NULL Record pointer, and the cohesion value is useless then.
  * Algorithm: Check if some special cases should be dealt first. Otherwise, call disambiguate_by_set in DisambigEngine.cpp
  *
  */
 
 cCluster_Head cCluster::disambiguate( const cCluster & rhs, const double prior, const double mutual_threshold) const {
-	static const unsigned int country_index = cRecord::get_index_by_name(cCountry::static_get_class_name());
+	static const unsigned int country_index = Record::get_index_by_name(cCountry::static_get_class_name());
 	static const string asian_countries[] = {"JP"};
 	static const double asian_threshold = 0.99;
 	static const double max_threshold = 0.999;
@@ -187,7 +187,7 @@ cCluster_Head cCluster::disambiguate( const cCluster & rhs, const double prior, 
 	if ( threshold_to_use > max_threshold )
 		threshold_to_use = max_threshold;
 
-	std::pair<const cRecord *, double > ans ( disambiguate_by_set ( this->m_info.m_delegate, this->m_fellows, this->m_info.m_cohesion,
+	std::pair<const Record *, double > ans ( disambiguate_by_set ( this->m_info.m_delegate, this->m_fellows, this->m_info.m_cohesion,
 												rhs.m_info.m_delegate, rhs.m_fellows, rhs.m_info.m_cohesion,
 													prior_to_use, *pratio, threshold_to_use) );
 
@@ -199,7 +199,7 @@ cCluster_Head cCluster::disambiguate( const cCluster & rhs, const double prior, 
  * Aim: insert a new record pointer to the member list.
  */
 
-void cCluster::insert_elem( const cRecord * more_elem) {
+void cCluster::insert_elem( const Record * more_elem) {
 	this->m_fellows.push_back(more_elem);
 	m_usable = false;
 }
@@ -209,7 +209,7 @@ void cCluster::insert_elem( const cRecord * more_elem) {
  */
 
 void cCluster::self_repair() {
-	const unsigned int rec_size = cRecord::record_size();
+	const unsigned int rec_size = Record::record_size();
 	for ( unsigned int i = 0 ; i < rec_size; ++i ) {
 		list < const Attribute ** > l1;
 		list < const Attribute ** > l2;
@@ -249,7 +249,7 @@ void cCluster::find_representative()  {
 	vector < map < const Attribute *, unsigned int > > tracer( nc );
 	vector < unsigned int > indice;
 	for ( unsigned int i = 0; i < nc; ++i )
-		indice.push_back ( cRecord::get_index_by_name( useful_columns[i]));
+		indice.push_back ( Record::get_index_by_name( useful_columns[i]));
 
 	for ( cGroup_Value::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p ) {
 		for ( unsigned int i = 0 ; i < nc; ++i ) {
@@ -271,7 +271,7 @@ void cCluster::find_representative()  {
 	}
 
 	unsigned int m_cnt = 0;
-	const cRecord * mp = NULL;
+	const Record * mp = NULL;
 	for ( cGroup_Value::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p ) {
 		unsigned int c = 0;
 		for ( unsigned int i = 0 ; i < nc; ++i ) {
@@ -290,7 +290,7 @@ void cCluster::find_representative()  {
 }
 
 void cCluster::update_year_range() {
-	static const unsigned int appyearindex = cRecord::get_index_by_name(cApplyYear::static_get_class_name());
+	static const unsigned int appyearindex = Record::get_index_by_name(cApplyYear::static_get_class_name());
 	for ( cGroup_Value::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p ) {
 		const Attribute * pAttribYear = (*p)->get_attrib_pointer_by_index(appyearindex);
 		const string * py = pAttribYear->get_data().at(0);
@@ -339,7 +339,7 @@ unsigned int cCluster::patents_gap( const cCluster & rhs) const {
 
 void cCluster::update_locations() {
 	locs.clear();
-	static const unsigned int latindex = cRecord::get_index_by_name(cLatitude::static_get_class_name());
+	static const unsigned int latindex = Record::get_index_by_name(cLatitude::static_get_class_name());
 	for ( cGroup_Value::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p ) {
 		const Attribute * pA = (*p)->get_attrib_pointer_by_index(latindex);
 		const cLatitude * pAttribLat = dynamic_cast< const cLatitude *> ( pA );
@@ -353,13 +353,13 @@ void cCluster::update_locations() {
 	}
 }
 
-void cCluster::add_uid2uinv( map < const cRecord *, const cRecord *> & uid2uinv ) const {
-	map < const cRecord *, const cRecord *>::iterator q;
+void cCluster::add_uid2uinv( map < const Record *, const Record *> & uid2uinv ) const {
+	map < const Record *, const Record *>::iterator q;
 	for ( cGroup_Value::const_iterator p = this->m_fellows.begin(); p != m_fellows.end(); ++p ) {
 		q = uid2uinv.find(*p);
 		if ( q != uid2uinv.end() )
 			throw cException_Other("Add uid: already exists.");
 		else
-			uid2uinv.insert(std::pair<const cRecord *, const cRecord *>(*p, this->m_info.m_delegate));
+			uid2uinv.insert(std::pair<const Record *, const Record *>(*p, this->m_info.m_delegate));
 	}
 }

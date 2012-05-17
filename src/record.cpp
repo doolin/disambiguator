@@ -27,29 +27,29 @@ using std::set;
 /*
  * Declaration ( and definition ) of static members in some classes.
  */
-vector <string> cRecord::column_names;
-vector <string> cRecord::active_similarity_names;
-const cRecord * cRecord::sample_record_pointer = NULL;
+vector <string> Record::column_names;
+vector <string> Record::active_similarity_names;
+const Record * Record::sample_record_pointer = NULL;
 
 //const string cBlocking_Operation::delim = "##";
 
 
 /*
- * Aim: to check the number of columns that are supposed to be useful in a cRecord object.
+ * Aim: to check the number of columns that are supposed to be useful in a Record object.
  *         Firstname, middlename, lastname, assignee (company), latitude and city are believed to be useful.
  *         Other attributes, such as street and coauthor, are allowed to be missing.
  * Algorithm: use " is_informative() " function to check each specified attribute, and return the sum.
  */
 
 unsigned int 
-cRecord::informative_attributes() const {
+Record::informative_attributes() const {
 
-    static const unsigned int firstname_index = cRecord::get_index_by_name(cFirstname::static_get_class_name());
-    static const unsigned int middlename_index = cRecord::get_index_by_name(cMiddlename::static_get_class_name());
-    static const unsigned int lastname_index = cRecord::get_index_by_name(cLastname::static_get_class_name());
-    static const unsigned int assignee_index = cRecord::get_index_by_name(cAssignee::static_get_class_name());
-    static const unsigned int lat_index = cRecord::get_index_by_name(cLatitude::static_get_class_name());
-    static const unsigned int ctry_index = cRecord::get_index_by_name(cCountry::static_get_class_name());
+    static const unsigned int firstname_index = Record::get_index_by_name(cFirstname::static_get_class_name());
+    static const unsigned int middlename_index = Record::get_index_by_name(cMiddlename::static_get_class_name());
+    static const unsigned int lastname_index = Record::get_index_by_name(cLastname::static_get_class_name());
+    static const unsigned int assignee_index = Record::get_index_by_name(cAssignee::static_get_class_name());
+    static const unsigned int lat_index = Record::get_index_by_name(cLatitude::static_get_class_name());
+    static const unsigned int ctry_index = Record::get_index_by_name(cCountry::static_get_class_name());
 
     unsigned int cnt = 0;
 
@@ -65,32 +65,32 @@ cRecord::informative_attributes() const {
 
 /*
  * Aim: to keep updated the names of current similarity profile columns.
- * Algorithm: use a static sample cRecord pointer to check the comparator status of each attribute.
- *                 Clears the original cRecord::active_similarity_names and update with a newer one.
+ * Algorithm: use a static sample Record pointer to check the comparator status of each attribute.
+ *                 Clears the original Record::active_similarity_names and update with a newer one.
  */
 void 
-cRecord::update_active_similarity_names() {
+Record::update_active_similarity_names() {
 
-    cRecord::active_similarity_names.clear();
-    const cRecord * pr = cRecord::sample_record_pointer;
+    Record::active_similarity_names.clear();
+    const Record * pr = Record::sample_record_pointer;
 
     for ( vector < const Attribute *>::const_iterator p = pr->vector_pdata.begin(); p != pr->vector_pdata.end(); ++p ) {
         //std::cout << (*p)->get_class_name() << " , ";        //for debug purpose
         if ( (*p)->is_comparator_activated() )
-            cRecord::active_similarity_names.push_back((*p)->get_class_name());
+            Record::active_similarity_names.push_back((*p)->get_class_name());
     }
 }
 
 /*
  * Aim: a global function that performs the same functionality
  * as the above one. However, this function is declared and callable in
- * the template implementations in "DisambigDefs.h", where cRecord has 
+ * the template implementations in "DisambigDefs.h", where Record has 
  * not be declared yet.
  */
 void 
-cRecord_update_active_similarity_names() {
+Record_update_active_similarity_names() {
 
-  cRecord::update_active_similarity_names();
+  Record::update_active_similarity_names();
 }
 
 
@@ -100,7 +100,7 @@ cRecord_update_active_similarity_names() {
  * each attribute pointer's "print( ostream )" method in the record object.
  */
 void 
-cRecord::print(std::ostream & os) const {
+Record::print(std::ostream & os) const {
 
   const char lend = '\n';
 
@@ -121,14 +121,14 @@ cRecord::print(std::ostream & os) const {
  */
 
 vector <unsigned int> 
-cRecord::record_compare(const cRecord & rhs) const {
+Record::record_compare(const Record & rhs) const {
 
     static const bool detail_debug = false;
     vector <unsigned int > rec_comp_result;
 
     if ( detail_debug ) {
 
-        static const unsigned int uid_index = cRecord::get_index_by_name(cUnique_Record_ID::static_get_class_name());
+        static const unsigned int uid_index = Record::get_index_by_name(cUnique_Record_ID::static_get_class_name());
         const string debug_string = "06476708-1";
         const string * ps = this->get_attrib_pointer_by_index(uid_index)->get_data().at(0);
         const string * qs = rhs.get_attrib_pointer_by_index(uid_index)->get_data().at(0);
@@ -162,7 +162,7 @@ cRecord::record_compare(const cRecord & rhs) const {
 
     //for debug only.
     if ( detail_debug ) {
-        static const unsigned int uid_index = cRecord::get_index_by_name(cUnique_Record_ID::static_get_class_name());
+        static const unsigned int uid_index = Record::get_index_by_name(cUnique_Record_ID::static_get_class_name());
         const string debug_string = "06476708-1";
         const string * ps = this->get_attrib_pointer_by_index(uid_index)->get_data().at(0);
         const string * qs = rhs.get_attrib_pointer_by_index(uid_index)->get_data().at(0);
@@ -194,7 +194,7 @@ cRecord::record_compare(const cRecord & rhs) const {
  *
  */
 vector <unsigned int> 
-cRecord::record_compare_by_attrib_indice (const cRecord &rhs, 
+Record::record_compare_by_attrib_indice (const Record &rhs, 
                                           const vector < unsigned int > & attrib_indice_to_compare) const {
 
     vector <unsigned int > rec_comp_result;
@@ -227,7 +227,7 @@ cRecord::record_compare_by_attrib_indice (const cRecord &rhs,
  * Algorithm: call each attribute pointer's "exact_compare" method.
  */
 unsigned int 
-cRecord::record_exact_compare(const cRecord & rhs ) const {
+Record::record_exact_compare(const Record & rhs ) const {
 
     unsigned int result = 0;
 
@@ -245,7 +245,7 @@ cRecord::record_exact_compare(const cRecord & rhs ) const {
  * Aim: print the record on standard output. The definition here is to avoid inlineness to allow debugging.
  */
 void 
-cRecord::print() const { 
+Record::print() const { 
 
   this->print(std::cout);
 }
@@ -257,7 +257,7 @@ cRecord::print() const {
  *
  */
 void 
-cRecord::clean_member_attrib_pool() {
+Record::clean_member_attrib_pool() {
 
     for ( vector < const Attribute *>::const_iterator p = sample_record_pointer->vector_pdata.begin();
             p != sample_record_pointer->vector_pdata.end(); ++p )
@@ -270,7 +270,7 @@ cRecord::clean_member_attrib_pool() {
  * Algorithm: exhaustive comparison. Time complexity = O(n); if no matching is found, a exception will be thrown.
  */
 unsigned int 
-cRecord::get_index_by_name(const string & inputstr) {
+Record::get_index_by_name(const string & inputstr) {
 
     for ( unsigned int i = 0 ; i < column_names.size(); ++i ) {
         if ( column_names.at(i) == inputstr ) {
@@ -297,7 +297,7 @@ cRecord::get_index_by_name(const string & inputstr) {
  * if no matching is found, a exception will be thrown.
  */
 unsigned int 
-cRecord::get_similarity_index_by_name(const string & inputstr) {
+Record::get_similarity_index_by_name(const string & inputstr) {
 
     for (unsigned int i = 0 ; i < active_similarity_names.size(); ++i)
         if ( active_similarity_names.at(i) == inputstr ) return i;
@@ -307,12 +307,12 @@ cRecord::get_similarity_index_by_name(const string & inputstr) {
 
 
 void
-cRecord::activate_comparators_by_name (const vector < string > & inputvec) {
+Record::activate_comparators_by_name (const vector < string > & inputvec) {
 
-    cRecord::active_similarity_names = inputvec;
+    Record::active_similarity_names = inputvec;
 
-    for ( vector < const Attribute *>::const_iterator p = cRecord::sample_record_pointer->get_attrib_vector().begin();
-            p != cRecord::sample_record_pointer->get_attrib_vector().end(); ++p ) {
+    for ( vector < const Attribute *>::const_iterator p = Record::sample_record_pointer->get_attrib_vector().begin();
+            p != Record::sample_record_pointer->get_attrib_vector().end(); ++p ) {
 
         const string & classlabel = (*p)->get_class_name();
 
@@ -324,12 +324,12 @@ cRecord::activate_comparators_by_name (const vector < string > & inputvec) {
         }
     }
 
-    cRecord::update_active_similarity_names();
+    Record::update_active_similarity_names();
 }
 
 
 void 
-cRecord::reconfigure_record_for_interactives() const {
+Record::reconfigure_record_for_interactives() const {
 
     for ( vector <const Attribute *>::const_iterator cipa = vector_pdata.begin(); cipa != vector_pdata.end(); ++cipa ) {
         (*cipa)->reconfigure_for_interactives( this);

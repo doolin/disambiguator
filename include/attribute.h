@@ -23,13 +23,13 @@ using std::vector;
 using std::map;
 using std::set;
 
-class cRecord;
-class cRecord_Reconfigurator;
+class Record;
+class Record_Reconfigurator;
 class Attribute;
 
-void cRecord_update_active_similarity_names();
-const cRecord_Reconfigurator * generate_interactive_reconfigurator( const Attribute * pAttrib);
-void reconfigure_interactives ( const cRecord_Reconfigurator * pc, const cRecord * pRec);
+void Record_update_active_similarity_names();
+const Record_Reconfigurator * generate_interactive_reconfigurator( const Attribute * pAttrib);
+void reconfigure_interactives ( const Record_Reconfigurator * pc, const Record * pRec);
 
 
 #include "exceptions.h"
@@ -135,10 +135,10 @@ public:
 //====================================================================
 class Attribute {
 private:
-    friend class cRecord;
+    friend class Record;
     friend void attrib_merge ( list < const Attribute **> & l1, list < const Attribute **> & l2 );
     static vector <string> Derived_Class_Name_Registry;
-    virtual void reconfigure_for_interactives( const cRecord * pRec) const {};
+    virtual void reconfigure_for_interactives( const Record * pRec) const {};
 protected:
     virtual vector < const string * > & get_data_modifiable() = 0;
     virtual const Attribute * attrib_merge ( const Attribute & rhs) const { return NULL;};
@@ -300,7 +300,7 @@ public:
             //throw cException_No_Comparision_Function ( ( string("Attribute GROUP is not set properly. Attribute = ") + class_name + string(" Group = ") + attrib_group ).c_str());
         bool_comparator_activated = true;
         std::cout << static_get_class_name() << " comparison is active now." << std::endl;
-        cRecord_update_active_similarity_names() ;
+        Record_update_active_similarity_names() ;
     }
     static void static_deactivate_comparator() {
         if ( attrib_group == INERT_ATTRIB_GROUP_IDENTIFIER )
@@ -308,7 +308,7 @@ public:
             //throw cException_No_Comparision_Function ( ( string("Attribute GROUP is not set properly. Attribute = ") + class_name + string(" Group = ") + attrib_group ).c_str());
         bool_comparator_activated = false;
         std::cout << static_get_class_name() << " comparison is deactivated." << std::endl;
-        cRecord_update_active_similarity_names() ;
+        Record_update_active_similarity_names() ;
     }
 
     void activate_comparator() const { this->static_activate_comparator(); }
@@ -341,7 +341,7 @@ public:
 
 template <typename Derived>
 class Attribute_Intermediary : public Attribute_Basic < Derived > {
-    friend bool fetch_records_from_txt(list <cRecord> & source, const char * txt_file, const vector<string> &requested_columns);
+    friend bool fetch_records_from_txt(list <Record> & source, const char * txt_file, const vector<string> &requested_columns);
 private:
     static set < string > data_pool;
     static map < Derived, int > attrib_pool;
@@ -766,7 +766,7 @@ class Attribute_Interactive_Mode : public Attribute_Basic < ConcreteType > {
 private:
     mutable PooledDataType * pAttrib;
     mutable vector<const Attribute *> inter_vecs;
-    static std::auto_ptr < const cRecord_Reconfigurator > preconfig;
+    static std::auto_ptr < const Record_Reconfigurator > preconfig;
     static list < ConcreteType > attrib_list;
     static bool has_reconfiged;
     static std::auto_ptr < PooledDataType > stat_pdata;
@@ -825,7 +825,7 @@ public:
     }
 
     void obtain_interactive_reconfigurator() const {
-        std::auto_ptr < const cRecord_Reconfigurator > tmp_ptr (generate_interactive_reconfigurator(this));
+        std::auto_ptr < const Record_Reconfigurator > tmp_ptr (generate_interactive_reconfigurator(this));
         preconfig = tmp_ptr;
     }
 
@@ -835,7 +835,7 @@ public:
         return has_reconfiged;
     }
 
-    void reconfigure_for_interactives( const cRecord * pRec) const {
+    void reconfigure_for_interactives( const Record * pRec) const {
         if ( preconfig.get() == NULL )
             obtain_interactive_reconfigurator();
         reconfigure_interactives ( preconfig.get(), pRec);
@@ -879,7 +879,7 @@ public:
 
 //declaration of static member
 template < typename AttribType> vector < const string * > Attribute_Set_Intermediary<AttribType>::temporary_storage;
-template <typename ConcreteType, typename PooledDataType> std::auto_ptr < const cRecord_Reconfigurator > Attribute_Interactive_Mode<ConcreteType, PooledDataType>::preconfig;
+template <typename ConcreteType, typename PooledDataType> std::auto_ptr < const Record_Reconfigurator > Attribute_Interactive_Mode<ConcreteType, PooledDataType>::preconfig;
 template <typename ConcreteType, typename PooledDataType> list < ConcreteType > Attribute_Interactive_Mode<ConcreteType, PooledDataType>::attrib_list;
 template <typename ConcreteType, typename PooledDataType> bool Attribute_Interactive_Mode<ConcreteType, PooledDataType>::has_reconfiged = false;
 template <typename ConcreteType, typename PooledDataType> std::auto_ptr < PooledDataType > Attribute_Interactive_Mode<ConcreteType, PooledDataType>::stat_pdata;
@@ -1116,7 +1116,7 @@ public:
 	cAssignee(const char * source = NULL ) {}
 	unsigned int compare(const Attribute & rhs) const;
 	//static void set_assignee_tree_pointer(const map<string, std::pair<string, unsigned int>  >& asgtree) {assignee_tree_pointer = & asgtree;}
-	static void configure_assignee( const list <const cRecord *> & );
+	static void configure_assignee( const list <const Record *> & );
 	unsigned int get_attrib_max_value() const {
 		if ( ! is_comparator_activated() )
 			Attribute::get_attrib_max_value();

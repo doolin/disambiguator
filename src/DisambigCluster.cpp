@@ -26,7 +26,7 @@ pthread_mutex_t cWorker_For_Disambiguation::iter_lock = PTHREAD_MUTEX_INITIALIZE
 /*
  * Aim: constructor of cCluster_Info objects
  */
-cCluster_Info::cCluster_Info(const map <string, const cRecord*> & input_uid2record,
+cCluster_Info::cCluster_Info(const map <string, const Record*> & input_uid2record,
                              const bool input_is_matching,
                              const bool aum,
                              const bool debug)
@@ -90,7 +90,7 @@ bool cCluster_Info::is_consistent() const {
  *
  * 		So this function clears all the variables in the object first. And then,
  * 		For each line in the file:
- * 			Read the delegate string, and find its cRecord pointer.
+ * 			Read the delegate string, and find its Record pointer.
  * 			Use the pointer and the "blocker" to create a blocking string id, b_id.
  * 				For each part of b_id, record its occurrence in the variable "column_stat".
  * 			Look up the map "cluster_by_block" for b_id and get the cluster list. If b_id does not exist,
@@ -112,7 +112,7 @@ void cCluster_Info::retrieve_last_comparision_info ( const cBlocking_Operation &
 		const unsigned int secondary_delim_size = strlen(secondary_delim);
 		cGroup_Value empty_set;
 		map < string , cRecGroup >::iterator prim_iter;
-		map < const string*, map < const cRecord *, double> >::iterator prim_co_iter;
+		map < const string*, map < const Record *, double> >::iterator prim_co_iter;
 		unsigned int count = 0;
 		const unsigned int base = 100000;
 
@@ -132,7 +132,7 @@ void cCluster_Info::retrieve_last_comparision_info ( const cBlocking_Operation &
 				register size_t pos = 0, prev_pos = 0;
 				pos = filedata.find(primary_delim, prev_pos);
 				string keystring = filedata.substr( prev_pos, pos - prev_pos);
-				const cRecord * key = retrieve_record_pointer_by_unique_id( keystring, *uid2record_pointer);
+				const Record * key = retrieve_record_pointer_by_unique_id( keystring, *uid2record_pointer);
 				const string b_id = blocker.extract_blocking_info(key);
 				vector < string > column_part (num_columns) ;
 
@@ -158,7 +158,7 @@ void cCluster_Info::retrieve_last_comparision_info ( const cBlocking_Operation &
 				cGroup_Value tempv;
 				while ( ( pos = filedata.find(secondary_delim, prev_pos) )!= string::npos){
 					string valuestring = filedata.substr( prev_pos, pos - prev_pos);
-					const cRecord * value = retrieve_record_pointer_by_unique_id( valuestring, *uid2record_pointer);
+					const Record * value = retrieve_record_pointer_by_unique_id( valuestring, *uid2record_pointer);
 					tempv.push_back(value);
 					prev_pos = pos + secondary_delim_size;
 				}
@@ -254,14 +254,14 @@ void cCluster_Info::reset_blocking(const cBlocking_Operation & blocker, const ch
  * Aim: to consolidate records which have the same blocking id together. It should be a very strict consolidation, so
  * 		the blocker should be very strict.
  */
-void cCluster_Info::preliminary_consolidation(const cBlocking_Operation & blocker, const list < const cRecord *> & all_rec_list) {
+void cCluster_Info::preliminary_consolidation(const cBlocking_Operation & blocker, const list < const Record *> & all_rec_list) {
 	std::cout << "Preliminary consolidation ... ..." << std::endl;
 	total_num = 0;
 	cluster_by_block.clear();
 	useless = blocker.get_useless_string();
 	map < string, cRecGroup >::iterator mi;
 	const cGroup_Value empty_fellows;
-	for ( list < const cRecord * > ::const_iterator p = all_rec_list.begin(); p != all_rec_list.end(); ++p ) {
+	for ( list < const Record * > ::const_iterator p = all_rec_list.begin(); p != all_rec_list.end(); ++p ) {
 		string temp ( blocker.extract_blocking_info(*p));
 		mi = cluster_by_block.find(temp);
 		if ( mi == cluster_by_block.end() ) {
@@ -312,7 +312,7 @@ void cCluster_Info::print(std::ostream & os) const {
 		throw cException_Duplicate_Attribute_In_Tree("Not Consistent!");
 	std::ostream::sync_with_stdio(false);
 	const string & uid_name = cUnique_Record_ID::static_get_class_name();
-	const unsigned int uid_index = cRecord::get_index_by_name(uid_name);
+	const unsigned int uid_index = Record::get_index_by_name(uid_name);
 	static const cException_Vector_Data except(uid_name.c_str());
 	for ( map <string, cRecGroup >::const_iterator q = cluster_by_block.begin(); q != cluster_by_block.end(); ++q ) {
 		for ( cRecGroup::const_iterator p = q->second.begin(); p != q->second.end(); ++p ) {
@@ -606,9 +606,9 @@ void cCluster_Info::disambiguate(const cRatios & ratio, const unsigned int num_t
 			}
 		}
 	}
-	const unsigned int fi = cRecord::get_index_by_name(cFirstname::static_get_class_name());
-	const unsigned int li = cRecord::get_index_by_name(cLastname::static_get_class_name());
-	const unsigned int ui = cRecord::get_index_by_name(cUnique_Record_ID::static_get_class_name());
+	const unsigned int fi = Record::get_index_by_name(cFirstname::static_get_class_name());
+	const unsigned int li = Record::get_index_by_name(cLastname::static_get_class_name());
+	const unsigned int ui = Record::get_index_by_name(cUnique_Record_ID::static_get_class_name());
 	std::cout << std::endl;
 	std::cout << "Most consolidated cluster: " << * pmax->get_cluster_head().m_delegate->get_data_by_index(fi).at(0)
 			<<"." << * pmax->get_cluster_head().m_delegate->get_data_by_index(li).at(0)

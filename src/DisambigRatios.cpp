@@ -20,7 +20,7 @@ get_max_similarity(const vector < string > & attrib_names)  {
 
     vector < unsigned int > sp;
     for ( vector < string > :: const_iterator p = attrib_names.begin(); p != attrib_names.end(); ++p ) {
-        const Attribute * pAttrib = cRecord::get_sample_record().get_attrib_pointer_by_index(cRecord::get_index_by_name(*p));
+        const Attribute * pAttrib = Record::get_sample_record().get_attrib_pointer_by_index(Record::get_index_by_name(*p));
         const unsigned int max_entry = pAttrib->get_attrib_max_value();
         sp.push_back(max_entry);
     }
@@ -34,14 +34,14 @@ cRatioComponent::sp_stats (const list<std::pair<string, string> > & trainpairs,
                            unsigned int, cSimilarity_Compare > & sp_counts ) const {
 
     const vector < unsigned int > & component_indice_in_record = get_component_positions_in_record();
-    //const list <cRecord > & source = *psource;
+    //const list <Record > & source = *psource;
     //cSort_by_attrib unique_comparator(unique_identifier);
-    //const unsigned int unique_index = cRecord::get_index_by_name(unique_identifier);
+    //const unsigned int unique_index = Record::get_index_by_name(unique_identifier);
     
     /*
-    map <string, const cRecord *> dict;
-    map<string, const cRecord *>::iterator pm;
-    for ( list<cRecord>::const_iterator p = source.begin(); p != source.end(); ++p ) {
+    map <string, const Record *> dict;
+    map<string, const Record *>::iterator pm;
+    for ( list<Record>::const_iterator p = source.begin(); p != source.end(); ++p ) {
         const Attribute *pAttrib = p->get_attrib_pointer_by_index(unique_index); 
         if ( pAttrib->get_data().size() != 1 ) 
             throw cException_Vector_Data(pAttrib->get_class_name().c_str());
@@ -49,21 +49,21 @@ cRatioComponent::sp_stats (const list<std::pair<string, string> > & trainpairs,
         pm = dict.find( info);
         if ( pm != dict.end() )
             throw cException_Invalid_Attribute_For_Sort( pAttrib->get_class_name().c_str());
-        dict.insert(std::pair<string, const cRecord*>(info, &(*p) ));
+        dict.insert(std::pair<string, const Record*>(info, &(*p) ));
     }
      */
-    const map <string, const cRecord *> & dict = *puid_tree;
-    map<string, const cRecord *>::const_iterator pm;
+    const map <string, const Record *> & dict = *puid_tree;
+    map<string, const Record *>::const_iterator pm;
     map < vector < unsigned int >, unsigned int, cSimilarity_Compare >::iterator psp;
     for ( list< std::pair<string, string> >::const_iterator p = trainpairs.begin(); p != trainpairs.end(); ++p ) {
         pm = dict.find(p->first);
         if ( pm == dict.end() )
             throw cException_Attribute_Not_In_Tree( ( string("\"") + p->first + string ("\"") ).c_str() );
-        const cRecord *plhs = pm->second;
+        const Record *plhs = pm->second;
         pm = dict.find(p->second);
         if ( pm == dict.end() )
             throw cException_Attribute_Not_In_Tree( ( string("\"") + p->second + string ("\"") ).c_str() );
-        const cRecord *prhs = pm->second;
+        const Record *prhs = pm->second;
         
         vector < unsigned int > similarity_profile = plhs->record_compare_by_attrib_indice(*prhs, component_indice_in_record);
         //debug only
@@ -122,7 +122,7 @@ cRatioComponent::stats_output( const char * filename) const {
 
     of << splabel  << "(";
     for ( vector < unsigned int >:: const_iterator tt = this->positions_in_record.begin(); tt != this->positions_in_record.end(); ++tt )
-        of << cRecord::get_column_names().at(*tt) << ",";
+        of << Record::get_column_names().at(*tt) << ",";
     of << ")";
 
     of << delim << mc << delim << nmc << '\n';
@@ -277,7 +277,7 @@ cRatioComponent::prepare(const char* x_file,
 }
 
 
-cRatioComponent:: cRatioComponent( const map < string, const cRecord * > & uid_tree, const string & groupname)
+cRatioComponent:: cRatioComponent( const map < string, const Record * > & uid_tree, const string & groupname)
             : attrib_group(groupname), puid_tree(&uid_tree), is_ready(false) {
 };
 
@@ -287,8 +287,8 @@ cRatioComponent::get_similarity_info() {
     positions_in_ratios.clear();
     positions_in_record.clear();
     attrib_names.clear();
-    //const cRecord & sample_record = psource->front();
-    const cRecord & sample_record = cRecord::get_sample_record();
+    //const Record & sample_record = psource->front();
+    const Record & sample_record = Record::get_sample_record();
     static const string useless_group_label = "None";
     unsigned int ratios_pos = 0, record_pos = 0;
 
@@ -299,7 +299,7 @@ cRatioComponent::get_similarity_info() {
         if ( info == attrib_group && comparator_activated) {
             positions_in_ratios.push_back(ratios_pos);
             positions_in_record.push_back(record_pos);
-            attrib_names.push_back(cRecord::get_column_names().at(record_pos));
+            attrib_names.push_back(Record::get_column_names().at(record_pos));
         }
         if ( info != useless_group_label && comparator_activated )
             ++ratios_pos;
@@ -310,7 +310,7 @@ cRatioComponent::get_similarity_info() {
 
 cRatios::cRatios(const vector < const cRatioComponent *> & component_pointer_vector,
                  const char * filename,
-                 const cRecord & rec) {
+                 const Record & rec) {
 
     std::cout << "Creating the final version ratios file ..." << std::endl;
     unsigned int ratio_size = 0;
@@ -369,7 +369,7 @@ cRatios::More_Components(const cRatioComponent & additional_component) {
     const vector < unsigned int > & positions_in_ratios = additional_component.get_component_positions_in_ratios();
 
     for ( unsigned int k = 0; k < positions_in_ratios.size(); ++k ) {
-        attrib_names.at( positions_in_ratios.at(k) ) = cRecord::get_column_names().at(temp_pos_in_rec.at(k) );
+        attrib_names.at( positions_in_ratios.at(k) ) = Record::get_column_names().at(temp_pos_in_rec.at(k) );
     }
  
     std::cout << "final_ratios.size(): " << final_ratios.size() << std::endl;
@@ -458,6 +458,6 @@ cRatios::read_ratios_file(const char * filename) {
     }
     std::cout << filename << " has been loaded as the final ratios file"<< std::endl;
     std::cout << "Resetting similarity profiles ... ..." << std::endl;
-    cRecord::activate_comparators_by_name(attrib_names);
+    Record::activate_comparators_by_name(attrib_names);
     std::cout << "-----Similarity Profiles reset.-------" << std::endl;
 }

@@ -10,9 +10,9 @@
 #include <fstream>
 #include <cstring>
 
-const cRecord * 
-retrieve_record_pointer_by_unique_id(const string & uid, const map <string, const cRecord*> & uid_tree) {
-	map <string, const cRecord *>::const_iterator cpm = uid_tree.find(uid);
+const Record * 
+retrieve_record_pointer_by_unique_id(const string & uid, const map <string, const Record*> & uid_tree) {
+	map <string, const Record *>::const_iterator cpm = uid_tree.find(uid);
 	if ( cpm == uid_tree.end())
 		throw cException_Attribute_Not_In_Tree(uid.c_str());
 	else
@@ -21,12 +21,12 @@ retrieve_record_pointer_by_unique_id(const string & uid, const map <string, cons
 
 
 void 
-create_btree_uid2record_pointer(map<string, const cRecord *> & uid_tree, const list<cRecord> & reclist, const string& uid_name ) {
+create_btree_uid2record_pointer(map<string, const Record *> & uid_tree, const list<Record> & reclist, const string& uid_name ) {
 	uid_tree.clear();
-	const unsigned int uid_index = cRecord::get_index_by_name(uid_name);
+	const unsigned int uid_index = Record::get_index_by_name(uid_name);
 	cException_Vector_Data except(uid_name.c_str());
-	map <string, const cRecord *>::iterator pm;
-	for ( list<cRecord>::const_iterator p = reclist.begin(); p != reclist.end(); ++p ) {
+	map <string, const Record *>::iterator pm;
+	for ( list<Record>::const_iterator p = reclist.begin(); p != reclist.end(); ++p ) {
 		const Attribute * pattrib = p->get_attrib_pointer_by_index(uid_index);
 		//if ( pattrib->get_data().size() != 1 )
 		//	throw except;
@@ -34,6 +34,6 @@ create_btree_uid2record_pointer(map<string, const cRecord *> & uid_tree, const l
 		pm = uid_tree.find( label );
 		if ( pm != uid_tree.end())
 			throw cException_Duplicate_Attribute_In_Tree(label.c_str());
-		uid_tree.insert(std::pair< string, const cRecord *>(label, &(*p)));
+		uid_tree.insert(std::pair< string, const Record *>(label, &(*p)));
 	}
 }

@@ -19,25 +19,25 @@
  * cCluster_Head:
  * This class contains two pieces of information about a cluster: its delegate and its cohesion.
  * Public:
- * 		const cRecord * m_delegate: the delegate (representative) of a cluster. Usually this pointer contains the most frequently occurring information.
+ * 		const Record * m_delegate: the delegate (representative) of a cluster. Usually this pointer contains the most frequently occurring information.
  * 		double m_cohesion: the cohesion of a cluster, meaning the probability for the members of the cluster to be of the same inventor.
  *
- * 		cCluster_Head(const cRecord * const p, const double c): constructor
+ * 		cCluster_Head(const Record * const p, const double c): constructor
  * 		cCluster_Head ( const cCluster_Head & rhs): copy constructor
  *
  */
 
 class cCluster_Head {
 public:
-	const cRecord * m_delegate;
+	const Record * m_delegate;
 	double m_cohesion;
-	cCluster_Head(const cRecord * const p, const double c): m_delegate(p), m_cohesion(c) {};
+	cCluster_Head(const Record * const p, const double c): m_delegate(p), m_cohesion(c) {};
 	cCluster_Head ( const cCluster_Head & rhs): m_delegate(rhs.m_delegate), m_cohesion(rhs.m_cohesion) {}
 };
 
 /*
  * cCluster:
- * This class objects are the molecules of disambiguation, while cRecord objects are atoms of disambiguation.
+ * This class objects are the molecules of disambiguation, while Record objects are atoms of disambiguation.
  * Each cluster contains a cluster_head, a list of members, and some other
  * information. The aim of disambiguation is reorganize clusters so that some can probably compound to bigger ones. Disambiguation
  * starts from smallest clusters that contain only one record, and ends with clusters that contain some amount of records.
@@ -49,7 +49,7 @@ public:
  *		bool m_usable: a boolean preventing misuse earlier than fully prepared.
  *
  *		static const cRatios * pratio: a pointer that points to a cRatio object which contains a map of similarity profile to ratio
- *		static const map < const cRecord *, cGroup_Value, cSort_by_attrib > * reference_pointer:
+ *		static const map < const Record *, cGroup_Value, cSort_by_attrib > * reference_pointer:
  *					a pointer that points to a patent tree, which can be obtained in a cBlocking_Operation_By_Coauthor object.
  *		cCluster & operator = ( const cCluster &): forbid the assignment operation.
  *		void find_representative():  to sets a component of cluster head to be the record whose columns appear most frequently among the all the members.
@@ -66,9 +66,9 @@ public:
  *		static void set_ratiomap_pointer( const cRatios & r): set the ratio map pointer to a good one.
  *		const cGroup_Value & get_fellows() const: get the members ( actually it is reference to const )of the cluster.
  *		const cCluster_Head & get_cluster_head () const: get the cluster head ( const reference ) of the cluster.
- *		void insert_elem( const cRecord *): insert a new member into the member list. This could potentially change the cluster head.
+ *		void insert_elem( const Record *): insert a new member into the member list. This could potentially change the cluster head.
  *		void self_repair(): call this if insertion of elements is done manually, usually for a batch of record objects (not recommended).
- *		static void set_reference_patent_tree_pointer(const map < const cRecord *, cGroup_Value, cSort_by_attrib > & reference_patent_tree ): set the patent tree pointer.
+ *		static void set_reference_patent_tree_pointer(const map < const Record *, cGroup_Value, cSort_by_attrib > & reference_patent_tree ): set the patent tree pointer.
  *		void change_mid_name(): to change pointers to abbreviated middle names to full middle names.
  *					This step is controversial, as it actually changed the raw data. Or more correctly, it changed the pointers of the raw data.
  *
@@ -83,7 +83,7 @@ private:
 	bool m_usable;
 
 	static const cRatios * pratio;
-	static const map < const cRecord *, cGroup_Value, cSort_by_attrib > * reference_pointer;
+	static const map < const Record *, cGroup_Value, cSort_by_attrib > * reference_pointer;
 
 	cCluster & operator = ( const cCluster &);
 	void find_representative();
@@ -106,13 +106,13 @@ public:
 	static void set_ratiomap_pointer( const cRatios & r) {pratio = &r;}
 	const cGroup_Value & get_fellows() const {return m_fellows;}
 	const cCluster_Head & get_cluster_head () const {return m_info;};
-	void insert_elem( const cRecord *);
+	void insert_elem( const Record *);
 
 	void self_repair();
-	static void set_reference_patent_tree_pointer(const map < const cRecord *, cGroup_Value, cSort_by_attrib > & reference_patent_tree ) { reference_pointer = & reference_patent_tree;}
+	static void set_reference_patent_tree_pointer(const map < const Record *, cGroup_Value, cSort_by_attrib > & reference_patent_tree ) { reference_pointer = & reference_patent_tree;}
 
 	void change_mid_name();
-	void add_uid2uinv( map < const cRecord *, const cRecord *> & uid2uinv ) const;
+	void add_uid2uinv( map < const Record *, const Record *> & uid2uinv ) const;
 };
 
 /*

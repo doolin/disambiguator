@@ -29,7 +29,7 @@
  * Run thie code with /usr/bin/valgrind ./typedefs --leak-check=full
  */
 
-typedef map <string, const cRecord *> Dict;
+typedef map <string, const Record *> Dict;
 
 // From: https://github.com/doolin/CPP_Disambiguation/blob/master/src/DisambigComp.cpp#L571
 //const map<string, std::pair<string, unsigned int> > * const asg_table_pointer

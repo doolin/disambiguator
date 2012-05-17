@@ -135,7 +135,7 @@ cBlocking_Operation_Multiple_Column_Manipulate::cBlocking_Operation_Multiple_Col
 	if ( inputvsm.size() != columnnames.size() )
 		throw cException_Other("Critical Error in cBlocking_Operation_Multiple_Column_Manipulate: size of string manipulaters is different from size of columns");
 	for ( unsigned int i = 0; i < columnnames.size(); ++i ) {
-		indice.push_back(cRecord::get_index_by_name( columnnames.at(i)));
+		indice.push_back(Record::get_index_by_name( columnnames.at(i)));
 		infoless += delim;
 		pdata_indice.push_back( di.at(i));
 	}
@@ -146,7 +146,7 @@ cBlocking_Operation_Multiple_Column_Manipulate::cBlocking_Operation_Multiple_Col
 	for ( unsigned int i = 0; i < num_col; ++i ) {
 		vsm.push_back(*pinputvsm++);
 		attributes_names.push_back(*pcolumnnames);
-		indice.push_back(cRecord::get_index_by_name(*pcolumnnames++));
+		indice.push_back(Record::get_index_by_name(*pcolumnnames++));
 		infoless += delim;
 		pdata_indice.push_back(*pdi ++);
 	}
@@ -160,7 +160,7 @@ cBlocking_Operation_Multiple_Column_Manipulate::cBlocking_Operation_Multiple_Col
  * pointers to create strings, and concatenate them.
  */
 string 
-cBlocking_Operation_Multiple_Column_Manipulate::extract_blocking_info(const cRecord * p) const {
+cBlocking_Operation_Multiple_Column_Manipulate::extract_blocking_info(const Record * p) const {
 
 	string temp;
 	for ( unsigned int i = 0; i < vsm.size(); ++i ) {
@@ -184,7 +184,7 @@ cBlocking_Operation_Multiple_Column_Manipulate::reset_data_indice ( const vector
 /*
  * Aim: to extract a specific blocking string. look at the header file for mor details.
  */
-string cBlocking_Operation_Multiple_Column_Manipulate::extract_column_info ( const cRecord * p, unsigned int flag ) const {
+string cBlocking_Operation_Multiple_Column_Manipulate::extract_column_info ( const Record * p, unsigned int flag ) const {
 	if ( flag >= indice.size() )
 		throw cException_Other("Flag index error.");
 	return vsm[flag]->manipulate( * p->get_data_by_index(indice[flag]).at( pdata_indice.at(flag)) );
@@ -197,7 +197,7 @@ string cBlocking_Operation_Multiple_Column_Manipulate::extract_column_info ( con
  */
 
 cBlocking_Operation_By_Coauthors::cBlocking_Operation_By_Coauthors(
-    const list < const cRecord * > & all_rec_pointers,
+    const list < const Record * > & all_rec_pointers,
     const cCluster_Info & cluster, const unsigned int coauthors)
 	: patent_tree(cSort_by_attrib(cPatent::static_get_class_name())), num_coauthors(coauthors) {
 
@@ -218,7 +218,7 @@ cBlocking_Operation_By_Coauthors::cBlocking_Operation_By_Coauthors(
 
 
 
-cBlocking_Operation_By_Coauthors::cBlocking_Operation_By_Coauthors(const list < const cRecord * > & all_rec_pointers, const unsigned int coauthors)
+cBlocking_Operation_By_Coauthors::cBlocking_Operation_By_Coauthors(const list < const Record * > & all_rec_pointers, const unsigned int coauthors)
 	: patent_tree(cSort_by_attrib(cPatent::static_get_class_name())), num_coauthors(coauthors) {
 	if ( num_coauthors > 4 ) {
 		std::cout << "================ WARNING =====================" << std::endl;
@@ -238,21 +238,21 @@ cBlocking_Operation_By_Coauthors::cBlocking_Operation_By_Coauthors(const list < 
  * to allow fast search.
  * 
  * Algorithm: create a patent->patent holder map (std::map),
- * and for any given const cRecord pointer p, look for the patent
+ * and for any given const Record pointer p, look for the patent
  * attribute of p in * the map. If the patent attribute is not found,
- * insert p into the map as a key, and insert a list of const cRecord
+ * insert p into the map as a key, and insert a list of const Record
  * pointers which includes p as * a value of the key; if the patent
  * attribute is found, find the corresponding value ( which is a list ),
  * and append p into the list.
  */
 void 
-cBlocking_Operation_By_Coauthors::build_patent_tree(const list < const cRecord * > & all_rec_pointers) {
-	map < const cRecord *, cGroup_Value, cSort_by_attrib >::iterator ppatentmap;
-	for ( list < const cRecord * >::const_iterator p = all_rec_pointers.begin(); p != all_rec_pointers.end(); ++p ) {
+cBlocking_Operation_By_Coauthors::build_patent_tree(const list < const Record * > & all_rec_pointers) {
+	map < const Record *, cGroup_Value, cSort_by_attrib >::iterator ppatentmap;
+	for ( list < const Record * >::const_iterator p = all_rec_pointers.begin(); p != all_rec_pointers.end(); ++p ) {
 		ppatentmap = patent_tree.find(*p);
 		if ( ppatentmap == patent_tree.end() ) {
 			cGroup_Value temp ( 1, *p);
-			patent_tree.insert( std::pair < const cRecord *, cGroup_Value > (*p, temp) );
+			patent_tree.insert( std::pair < const Record *, cGroup_Value > (*p, temp) );
 		}
 		else {
 			ppatentmap->second.push_back(*p);
@@ -262,11 +262,11 @@ cBlocking_Operation_By_Coauthors::build_patent_tree(const list < const cRecord *
 
 /*
  * Aim: to create binary tree of unique record id -> unique inventor id, also to allow fast search and insertion/deletion.
- * 		the unique inventor id is also a const cRecord pointer, meaning that different unique record ids may be associated with a same
- * 		const cRecord pointer that represents them.
+ * 		the unique inventor id is also a const Record pointer, meaning that different unique record ids may be associated with a same
+ * 		const Record pointer that represents them.
  * Algorithm: clean the uinv2count and uid2uinv tree first.
  * 				For any cluster in the cCluser_Info object:
- * 					For any const cRecord pointer p in the cluster member list:
+ * 					For any const Record pointer p in the cluster member list:
  * 						create a std::pair of ( p, d ), where d is the delegate ( or representative ) of the cluster
  * 						insert the pair into uid2uinv map.
  * 					End for
@@ -282,14 +282,14 @@ void cBlocking_Operation_By_Coauthors::build_uid2uinv_tree( const cCluster_Info 
 	//for ( map < string, cRecGroup >::const_iterator p = cluster.get_cluster_map().begin(); p != cluster.get_cluster_map().end(); ++p ) {
 	for ( map < string, cRecGroup >::const_iterator p = cluster.get_cluster_map().begin(); p != cluster.get_cluster_map().end(); ++p ) {
 		for ( cRecGroup::const_iterator q = p->second.begin(); q != p->second.end(); ++q ) {
-			const cRecord * value = q->get_cluster_head().m_delegate;
-			map < const cRecord *, unsigned int >::iterator pcount = uinv2count_tree.find(value);
+			const Record * value = q->get_cluster_head().m_delegate;
+			map < const Record *, unsigned int >::iterator pcount = uinv2count_tree.find(value);
 			if ( pcount == uinv2count_tree.end() )
-				pcount = uinv2count_tree.insert(std::pair<const cRecord *, unsigned int>(value, 0)).first;
+				pcount = uinv2count_tree.insert(std::pair<const Record *, unsigned int>(value, 0)).first;
 
 			for ( cGroup_Value::const_iterator r = q->get_fellows().begin(); r != q->get_fellows().end(); ++r ) {
-				const cRecord * key = *r;
-				uid2uinv_tree.insert(std::pair< const cRecord * , const cRecord *> (key, value ));
+				const Record * key = *r;
+				uid2uinv_tree.insert(std::pair< const Record * , const Record *> (key, value ));
 				++ ( pcount->second);
 				++count;
 			}
@@ -299,9 +299,9 @@ void cBlocking_Operation_By_Coauthors::build_uid2uinv_tree( const cCluster_Info 
 }
 
 /*
- * Aim: to get a list of top N coauthors ( as represented by a const cRecord pointer ) of an inventor to whom prec ( a unique record id ) belongs.
+ * Aim: to get a list of top N coauthors ( as represented by a const Record pointer ) of an inventor to whom prec ( a unique record id ) belongs.
  * Algorithm:
- * 		1. create a binary tree T( std::map ). Key = number of holding patents, value = const cRecord pointer to the unique inventor.
+ * 		1. create a binary tree T( std::map ). Key = number of holding patents, value = const Record pointer to the unique inventor.
  * 		2. For any associated record r:
  * 				find r in the uinv2count tree.
  * 				if number of nodes in T < N, insert (count(r), r) into T;
@@ -313,7 +313,7 @@ void cBlocking_Operation_By_Coauthors::build_uid2uinv_tree( const cCluster_Info 
  *
  */
 
-cGroup_Value cBlocking_Operation_By_Coauthors::get_topN_coauthors( const cRecord * prec, const unsigned int topN ) const {
+cGroup_Value cBlocking_Operation_By_Coauthors::get_topN_coauthors( const Record * prec, const unsigned int topN ) const {
 	const cGroup_Value & list_alias = patent_tree.find(prec)->second;
 	map < unsigned int, cGroup_Value > occurrence_map;
 	unsigned int cnt = 0;
@@ -321,12 +321,12 @@ cGroup_Value cBlocking_Operation_By_Coauthors::get_topN_coauthors( const cRecord
 		if ( *p == prec )
 			continue;
 
-		map < const cRecord *, const cRecord * >::const_iterator puid2uiv = uid2uinv_tree.find(*p);
+		map < const Record *, const Record * >::const_iterator puid2uiv = uid2uinv_tree.find(*p);
 		if ( puid2uiv == uid2uinv_tree.end() )
 			throw cException_Other("Critical Error: unique record id to unique inventer id tree is incomplete!!");
-		const cRecord * coauthor_pointer = puid2uiv->second;
+		const Record * coauthor_pointer = puid2uiv->second;
 
-		map < const cRecord *, unsigned int >::const_iterator puinv2count = uinv2count_tree.find(coauthor_pointer);
+		map < const Record *, unsigned int >::const_iterator puinv2count = uinv2count_tree.find(coauthor_pointer);
 		if ( puinv2count == uinv2count_tree.end())
 			throw cException_Other("Critical Error: unique inventer id to number of holding patents tree is incomplete!!");
 		const unsigned int coauthor_count = puinv2count->second;
@@ -364,11 +364,11 @@ cGroup_Value cBlocking_Operation_By_Coauthors::get_topN_coauthors( const cRecord
  * Algorithm: see get_topN_coauthor
  */
 
-string cBlocking_Operation_By_Coauthors::extract_blocking_info(const cRecord * prec) const {
+string cBlocking_Operation_By_Coauthors::extract_blocking_info(const Record * prec) const {
 	const cGroup_Value top_coauthor_list = get_topN_coauthors(prec, num_coauthors);
 	// now make string
-	const unsigned int firstnameindex = cRecord::get_index_by_name(cFirstname::static_get_class_name());
-	const unsigned int lastnameindex = cRecord::get_index_by_name(cLastname::static_get_class_name());
+	const unsigned int firstnameindex = Record::get_index_by_name(cFirstname::static_get_class_name());
+	const unsigned int lastnameindex = Record::get_index_by_name(cLastname::static_get_class_name());
 
 	string answer;
 	for ( cGroup_Value::const_iterator p = top_coauthor_list.begin(); p != top_coauthor_list.end(); ++p ) {
@@ -388,10 +388,10 @@ string cBlocking_Operation_By_Coauthors::extract_blocking_info(const cRecord * p
  * Aim: constructor of cReconfigurator_AsianNames.
  */
 
-cReconfigurator_AsianNames::cReconfigurator_AsianNames(): country_index(cRecord::get_index_by_name(cCountry::static_get_class_name())),
-								firstname_index(cRecord::get_index_by_name(cFirstname::static_get_class_name())),
-								middlename_index(cRecord::get_index_by_name(cMiddlename::static_get_class_name())),
-								lastname_index(cRecord::get_index_by_name(cLastname::static_get_class_name())){
+cReconfigurator_AsianNames::cReconfigurator_AsianNames(): country_index(Record::get_index_by_name(cCountry::static_get_class_name())),
+								firstname_index(Record::get_index_by_name(cFirstname::static_get_class_name())),
+								middlename_index(Record::get_index_by_name(cMiddlename::static_get_class_name())),
+								lastname_index(Record::get_index_by_name(cLastname::static_get_class_name())){
 	east_asian.push_back(string("KR"));
 	east_asian.push_back(string("CN"));
 	east_asian.push_back(string("TW"));
@@ -407,11 +407,11 @@ cReconfigurator_AsianNames::cReconfigurator_AsianNames(): country_index(cRecord:
  *     Then create a firstname attribute from the vector
  *  2. Create a vector of string, and save "FULL firstname" + "FULL lastname"
  *     into the vector. Then create a middlename attribute from the vector.
- *  3. Change the cRecord data such that the firstname pointer points to the
+ *  3. Change the Record data such that the firstname pointer points to the
  *     newly created firstname object. So for the middle name.
  */
 void 
-cReconfigurator_AsianNames::reconfigure( const cRecord * p ) const {
+cReconfigurator_AsianNames::reconfigure( const Record * p ) const {
 
     bool need_reconfigure = false;
     const string & country = *  p->get_attrib_pointer_by_index(country_index)->get_data().at(0) ;
@@ -436,7 +436,7 @@ cReconfigurator_AsianNames::reconfigure( const cRecord * p ) const {
     const vector < string > mn(2, mnstr);
     const Attribute * pam = cMiddlename ::static_clone_by_data(mn);
 
-    cRecord * q = const_cast < cRecord * > (p);
+    Record * q = const_cast < Record * > (p);
 
     cur_af->reduce_attrib(1);
     cur_am->reduce_attrib(1);
@@ -447,16 +447,16 @@ cReconfigurator_AsianNames::reconfigure( const cRecord * p ) const {
 
 cReconfigurator_Interactives::cReconfigurator_Interactives( const string & my_name,
 		const vector < string > & relevant_attribs ) {
-	my_index = cRecord::get_index_by_name(my_name);
+	my_index = Record::get_index_by_name(my_name);
 	for ( vector<string>::const_iterator p = relevant_attribs.begin(); p != relevant_attribs.end(); ++p ) {
-		unsigned int idx = cRecord::get_index_by_name(*p);
+		unsigned int idx = Record::get_index_by_name(*p);
 		relevant_indice.push_back(idx);
 	}
 }
 
 
 void 
-cReconfigurator_Interactives::reconfigure ( const cRecord * p ) const {
+cReconfigurator_Interactives::reconfigure ( const Record * p ) const {
 
 	vector < const Attribute * > interact;
 	for ( vector < unsigned int >::const_iterator i = relevant_indice.begin(); i != relevant_indice.end(); ++i ) {
@@ -475,8 +475,8 @@ cReconfigurator_Interactives::reconfigure ( const cRecord * p ) const {
  * that point to a cCoauthor object. Therefore, creation of cReconfigurator_Coauthor objects shall NEVER happen during disambiguation.
  *
  */
-cReconfigurator_Coauthor::cReconfigurator_Coauthor ( const map < const cRecord *, cGroup_Value, cSort_by_attrib > & patent_authors) :
-		reference_pointer ( & patent_authors), coauthor_index ( cRecord::get_index_by_name(cCoauthor::static_get_class_name())) {
+cReconfigurator_Coauthor::cReconfigurator_Coauthor ( const map < const Record *, cGroup_Value, cSort_by_attrib > & patent_authors) :
+		reference_pointer ( & patent_authors), coauthor_index ( Record::get_index_by_name(cCoauthor::static_get_class_name())) {
 	cCoauthor::clear_data_pool();
 	cCoauthor::clear_attrib_pool();
 }
@@ -489,14 +489,14 @@ cReconfigurator_Coauthor::cReconfigurator_Coauthor ( const map < const cRecord *
  * attribute.
  */
 
-void cReconfigurator_Coauthor :: reconfigure ( const cRecord * p ) const {
+void cReconfigurator_Coauthor :: reconfigure ( const Record * p ) const {
 	static const string dot = ".";
-	static const unsigned int firstnameindex = cRecord::get_index_by_name(cFirstname::static_get_class_name());
-	static const unsigned int lastnameindex = cRecord::get_index_by_name(cLastname::static_get_class_name());
+	static const unsigned int firstnameindex = Record::get_index_by_name(cFirstname::static_get_class_name());
+	static const unsigned int lastnameindex = Record::get_index_by_name(cLastname::static_get_class_name());
 	static const cString_Extract_FirstWord firstname_extracter;
 	static const cString_Remove_Space lastname_extracter;
 
-	map < const cRecord *, cGroup_Value, cSort_by_attrib >::const_iterator cpm;
+	map < const Record *, cGroup_Value, cSort_by_attrib >::const_iterator cpm;
 	cCoauthor temp;
 
 	cpm = reference_pointer->find( p);
@@ -535,20 +535,20 @@ fetch_ratio(const vector < unsigned int > & ratio_to_lookup,
 }
 
 
-std::pair<const cRecord *, double> 
-disambiguate_by_set (const cRecord * key1,
+std::pair<const Record *, double> 
+disambiguate_by_set (const Record * key1,
                      const cGroup_Value & match1,
                      const double cohesion1,
-                     const cRecord * key2,
+                     const Record * key2,
                      const cGroup_Value & match2,
                      const double cohesion2,
                      const double prior,
                      const cRatios & ratio,  const double mutual_threshold ) {
 
-	static const unsigned int firstname_index = cRecord::get_similarity_index_by_name(cFirstname::static_get_class_name());
-	static const unsigned int midname_index = cRecord::get_similarity_index_by_name(cMiddlename::static_get_class_name());
-	static const unsigned int lastname_index = cRecord::get_similarity_index_by_name(cLastname::static_get_class_name());
-	static const unsigned int country_index = cRecord::get_index_by_name(cCountry::static_get_class_name());
+	static const unsigned int firstname_index = Record::get_similarity_index_by_name(cFirstname::static_get_class_name());
+	static const unsigned int midname_index = Record::get_similarity_index_by_name(cMiddlename::static_get_class_name());
+	static const unsigned int lastname_index = Record::get_similarity_index_by_name(cLastname::static_get_class_name());
+	static const unsigned int country_index = Record::get_index_by_name(cCountry::static_get_class_name());
 	static const bool country_check = true;
 
 
@@ -559,7 +559,7 @@ disambiguate_by_set (const cRecord * key1,
 			const Attribute * p1 = key1->get_attrib_pointer_by_index(country_index);
 			const Attribute * p2 = key2->get_attrib_pointer_by_index(country_index);
 			if ( p1 != p2 && p1->is_informative() && p2->is_informative() )
-				return std::pair<const cRecord *, double> (NULL, 0);
+				return std::pair<const Record *, double> (NULL, 0);
 		}
 
 
@@ -567,7 +567,7 @@ disambiguate_by_set (const cRecord * key1,
 		const double screen_r = fetch_ratio(screen_sp, ratio.get_ratios_map());
 		const double screen_p = 1.0 / ( 1.0 + ( 1.0 - prior )/ prior / screen_r );
 		if ( screen_p < 0.3 || screen_sp.at(firstname_index) == 0 || screen_sp.at(midname_index) == 0 || screen_sp.at(lastname_index) == 0 )
-			return std::pair<const cRecord *, double> (NULL, 0);
+			return std::pair<const Record *, double> (NULL, 0);
 	}
 	const bool partial_match_mode = true;
 
@@ -600,14 +600,14 @@ disambiguate_by_set (const cRecord * key1,
 				const Attribute * p1 = (*p)->get_attrib_pointer_by_index(country_index);
 				const Attribute * p2 = (*q)->get_attrib_pointer_by_index(country_index);
 				if ( p1 != p2 && p1->is_informative() && p2->is_informative() )
-					return std::pair<const cRecord *, double> (NULL, 0);
+					return std::pair<const Record *, double> (NULL, 0);
 			}
 
 
 
 			vector< unsigned int > tempsp = (*p)->record_compare(* *q);
 			if ( tempsp.at(firstname_index) == 0 || tempsp.at(midname_index) == 0 || tempsp.at(lastname_index) == 0 )
-				return std::pair<const cRecord *, double> (NULL, 0);
+				return std::pair<const Record *, double> (NULL, 0);
 
 
 			double r_value = fetch_ratio(tempsp, ratio.get_ratios_map());
@@ -644,9 +644,9 @@ disambiguate_by_set (const cRecord * key1,
 		throw cException_Invalid_Probability("Cohesion value error.");
 
 	if ( partial_match_mode && probs_average < threshold )
-		return std::pair<const cRecord *, double> (NULL, probs_average);
+		return std::pair<const Record *, double> (NULL, probs_average);
 	if ( ( ! partial_match_mode ) && interactive_average < threshold )
-		return std::pair<const cRecord *, double> (NULL, interactive_average);
+		return std::pair<const Record *, double> (NULL, interactive_average);
 
 
 	double inter = 0;
@@ -659,7 +659,7 @@ disambiguate_by_set (const cRecord * key1,
 								+ cohesion2 * match2_size * ( match2_size - 1 )
 								+ 2.0 * inter ) / ( match1_size + match2_size) / (match1_size + match2_size - 1 );
 	//ATTENSION: RETURN A NON-NULL POINTER TO TELL IT IS A MERGE. NEED TO FIND A REPRESENTATIVE IN THE MERGE PART.
-	return std::pair<const cRecord *, double>( key1, probability );
+	return std::pair<const Record *, double>( key1, probability );
 
 }
 
@@ -700,7 +700,7 @@ copyfile(const char * target, const char * source) {
  */
 
 bool
-fetch_records_from_txt(list <cRecord> & source, const char * txt_file, const vector<string> &requested_columns) {
+fetch_records_from_txt(list <Record> & source, const char * txt_file, const vector<string> &requested_columns) {
 
 	std::ifstream::sync_with_stdio(false);
 	const char * delim = ",";	// this deliminator should never occur in the data.
@@ -752,7 +752,7 @@ fetch_records_from_txt(list <cRecord> & source, const char * txt_file, const vec
 	}
 
 
-	cRecord::column_names = requested_columns;
+	Record::column_names = requested_columns;
 	Attribute ** pointer_array = new Attribute *[num_cols];
 
 	pos = prev_pos = 0;
@@ -761,30 +761,30 @@ fetch_records_from_txt(list <cRecord> & source, const char * txt_file, const vec
         std::cout << "num_cols: " << num_cols << std::endl;
 	for ( unsigned int i = 0; i < num_cols; ++i ) {
 
-		const int pos_in_query = Attribute::position_in_registry(cRecord::column_names[i]);
+		const int pos_in_query = Attribute::position_in_registry(Record::column_names[i]);
 std::cout << "pos_in_query: " << pos_in_query << std::endl;
-std::cout << "cRecord::column_names[i]: " << cRecord::column_names[i] << std::endl;
+std::cout << "Record::column_names[i]: " << Record::column_names[i] << std::endl;
 		if ( pos_in_query == -1 ) {
 			for ( unsigned int j = 0; j < i; ++j )
 				delete pointer_array[j];
 			delete [] pointer_array;
-			throw cException_ColumnName_Not_Found(cRecord::column_names[i].c_str());
+			throw cException_ColumnName_Not_Found(Record::column_names[i].c_str());
 		}
 		else {
-			pointer_array[i] = create_attribute_instance ( cRecord::column_names[i].c_str() );
+			pointer_array[i] = create_attribute_instance ( Record::column_names[i].c_str() );
                 }
  
 #if 0
-		if ( cRecord::column_names[i] == cLongitude::class_name ) {
+		if ( Record::column_names[i] == cLongitude::class_name ) {
 			cLatitude::interactive_column_indice_in_query.push_back(i);
 		}
-		else if ( cRecord::column_names[i] == cStreet::class_name ) {
+		else if ( Record::column_names[i] == cStreet::class_name ) {
 			cLatitude::interactive_column_indice_in_query.push_back(i);
 		}
-		else if ( cRecord::column_names[i] == cCountry::class_name ) {
+		else if ( Record::column_names[i] == cCountry::class_name ) {
 			cLatitude::interactive_column_indice_in_query.push_back(i);
 		}
-		else if ( cRecord::column_names[i] == cAsgNum::class_name ) {
+		else if ( Record::column_names[i] == cAsgNum::class_name ) {
 			cAssignee::interactive_column_indice_in_query.push_back(i);
 		}
 #endif
@@ -801,7 +801,7 @@ std::cout << "pointer_array[i]->get_attrib_group(): " << pointer_array[i]->get_a
 
 	// always do this for all the attribute classes
 	for ( unsigned int i = 0; i < num_cols; ++i ) {
-		pointer_array[i]->check_interactive_consistency(cRecord::column_names);
+		pointer_array[i]->check_interactive_consistency(Record::column_names);
         }
 
 	std::cout << "Involved attributes are: ";
@@ -857,7 +857,7 @@ std::cout << "pointer_array[i]->get_attrib_group(): " << pointer_array[i]->get_a
 			temp_vec_attrib.push_back(pAttrib);
 		}
 
-		cRecord temprec(temp_vec_attrib);
+		Record temprec(temp_vec_attrib);
 		source.push_back( temprec );
 
 		++size;
@@ -866,17 +866,17 @@ std::cout << "pointer_array[i]->get_attrib_group(): " << pointer_array[i]->get_a
 	}
 	std::cout << std::endl;
 	std::cout << size << " records have been fetched from "<< txt_file << std::endl;
-	cRecord::sample_record_pointer = & source.front();
+	Record::sample_record_pointer = & source.front();
 
 	for ( unsigned int i = 0; i < num_cols; ++i )
 		delete pointer_array[i];
 	delete [] pointer_array;
 
-	for ( list< cRecord>::iterator ci = source.begin(); ci != source.end(); ++ci )
+	for ( list< Record>::iterator ci = source.begin(); ci != source.end(); ++ci )
 		ci->reconfigure_record_for_interactives();
 
 	std::cout << "Sample Record:---------" << std::endl;
-	cRecord::sample_record_pointer->print();
+	Record::sample_record_pointer->print();
 	std::cout << "-----------------" << std::endl;
 
 	return true;
@@ -970,30 +970,30 @@ create_attribute_instance ( const string & id ) {
 
 
 const 
-cRecord_Reconfigurator * generate_interactive_reconfigurator( const Attribute * pAttrib) {
+Record_Reconfigurator * generate_interactive_reconfigurator( const Attribute * pAttrib) {
 
 	vector <string > linked_attribs (pAttrib->get_interactive_class_names());
 	string my_name = pAttrib->get_class_name();
 	//ATTENTION: OBJECT IS ON HEAP.
-	const cRecord_Reconfigurator * preconfig = new cReconfigurator_Interactives( my_name, linked_attribs );
+	const Record_Reconfigurator * preconfig = new cReconfigurator_Interactives( my_name, linked_attribs );
 	return preconfig;
 }
 
 
 void 
-reconfigure_interactives (const cRecord_Reconfigurator * pc,
-                          const cRecord * pRec) {
+reconfigure_interactives (const Record_Reconfigurator * pc,
+                          const Record * pRec) {
 
 	pc->reconfigure(pRec);
 }
 
 
 void 
-cAssignee::configure_assignee( const list < const cRecord *> & recs) {
+cAssignee::configure_assignee( const list < const Record *> & recs) {
 
-	static const unsigned int asgnumidx = cRecord::get_index_by_name(cAsgNum::static_get_class_name());
+	static const unsigned int asgnumidx = Record::get_index_by_name(cAsgNum::static_get_class_name());
 
-	for ( list< const cRecord *>::const_iterator p = recs.begin(); p != recs.end(); ++p ) {
+	for ( list< const Record *>::const_iterator p = recs.begin(); p != recs.end(); ++p ) {
 		const cAsgNum * pasgnum = dynamic_cast < const cAsgNum *> ( (*p)->get_attrib_pointer_by_index(asgnumidx) );
 		if ( ! pasgnum ) {
 			throw cException_Other("Cannot perform dynamic cast to cAsgNum.");
@@ -1006,15 +1006,15 @@ cAssignee::configure_assignee( const list < const cRecord *> & recs) {
 
 
 void 
-build_patent_tree(map < const cRecord *, cGroup_Value, cSort_by_attrib > & patent_tree,
-                        const list < const cRecord * > & all_rec_pointers ) {
+build_patent_tree(map < const Record *, cGroup_Value, cSort_by_attrib > & patent_tree,
+                        const list < const Record * > & all_rec_pointers ) {
 
-	map < const cRecord *, cGroup_Value, cSort_by_attrib >::iterator ppatentmap;
-	for ( list < const cRecord * >::const_iterator p = all_rec_pointers.begin(); p != all_rec_pointers.end(); ++p ) {
+	map < const Record *, cGroup_Value, cSort_by_attrib >::iterator ppatentmap;
+	for ( list < const Record * >::const_iterator p = all_rec_pointers.begin(); p != all_rec_pointers.end(); ++p ) {
 		ppatentmap = patent_tree.find(*p);
 		if ( ppatentmap == patent_tree.end() ) {
 			cGroup_Value temp ( 1, *p);
-			patent_tree.insert( std::pair < const cRecord *, cGroup_Value > (*p, temp) );
+			patent_tree.insert( std::pair < const Record *, cGroup_Value > (*p, temp) );
 		}
 		else {
 			ppatentmap->second.push_back(*p);
@@ -1024,11 +1024,11 @@ build_patent_tree(map < const cRecord *, cGroup_Value, cSort_by_attrib > & paten
 
 
 void 
-build_patent_tree(map < const cRecord *, cGroup_Value, cSort_by_attrib > & patent_tree,
-                  const list < cRecord > & all_records ) {
+build_patent_tree(map < const Record *, cGroup_Value, cSort_by_attrib > & patent_tree,
+                  const list < Record > & all_records ) {
 
-	list < const cRecord *> all_pointers;
-	for ( list < cRecord >::const_iterator p = all_records.begin(); p != all_records.end(); ++p )
+	list < const Record *> all_pointers;
+	for ( list < Record >::const_iterator p = all_records.begin(); p != all_records.end(); ++p )
 		all_pointers.push_back(&(*p));
 	build_patent_tree(patent_tree, all_pointers);
 }

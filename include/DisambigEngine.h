@@ -28,8 +28,8 @@ using std::set;
 //asgdetail consists of assignee number and its patent counts.
 typedef std::pair<string, unsigned int> asgdetail;
 
-// cGroup_Value is a list of const cRecord pointers. This definition will be used throughout the whole project.
-typedef list<const cRecord*> cGroup_Value;
+// cGroup_Value is a list of const Record pointers. This definition will be used throughout the whole project.
+typedef list<const Record*> cGroup_Value;
 
 // forward diclarations
 class cBlocking_Operation_By_Coauthors;
