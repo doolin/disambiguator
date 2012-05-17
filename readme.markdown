@@ -15,7 +15,7 @@ numbers for patents, but does not uniquely identify inventors.
 
 ## Documentation 
 
-The main manual is located here: `doc/manual.pdf`.
+The main manual is located here: [`doc/manual.pdf`](doc/manual.pdf).
 
 
 ## Handy links
