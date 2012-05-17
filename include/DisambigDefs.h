@@ -33,14 +33,12 @@ using std::set;
 
 class cRecord;
 class cRecord_Reconfigurator;
-void cRecord_update_active_similarity_names();
 class Attribute;
-class cRecord_Reconfigurator;
+
+void cRecord_update_active_similarity_names();
 const cRecord_Reconfigurator * generate_interactive_reconfigurator( const Attribute * pAttrib);
 void reconfigure_interactives ( const cRecord_Reconfigurator * pc, const cRecord * pRec);
 
-
-class Attribute;
 
 #include "exceptions.h"
 #include "attribute.h"
