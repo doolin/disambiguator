@@ -698,38 +698,41 @@ copyfile(const char * target, const char * source) {
  */
 
 bool
-fetch_records_from_txt(list <Record> & source, const char * txt_file, const vector<string> &requested_columns) {
+fetch_records_from_txt(list <Record> & source,
+                       const char * txt_file,
+                       const vector<string> &requested_columns) {
 
     std::ifstream::sync_with_stdio(false);
     const char * delim = ",";    // this deliminator should never occur in the data.
     const unsigned int delim_size = strlen(delim);
-    std::ifstream infile(txt_file);
-    if ( ! infile.good()) {
+    std::ifstream instream(txt_file);
+
+    if (!instream.good()) {
         throw cException_File_Not_Found(txt_file);
     }
-    string filedata;
-    //getline(infile, filedata);
-    //if ( filedata != raw_txt_authenticator )
+
+    string line;
+    //getline(instream, line);
+    //if ( line != raw_txt_authenticator )
     //    throw cException_File_Not_Found("Specified file is not a valid one.");
- 
-        //std::cout << "requested_columns.size: " << requested_columns.size << std::endl; 
-        std::cout << "requested_columns[0]: " << requested_columns[0] << std::endl; 
+    //std::cout << "requested_columns.size: " << requested_columns.size << std::endl; 
+    std::cout << "requested_columns[0]: " << requested_columns[0] << std::endl; 
 
     vector <string> total_col_names;
-    getline(infile, filedata);
+    getline(instream, line);
     register size_t pos, prev_pos;
     pos = prev_pos = 0;
 
     while (  pos != string::npos){
-        pos = filedata.find(delim, prev_pos);
+        pos = line.find(delim, prev_pos);
         string columnname;
         if ( pos != string::npos )
-            columnname = filedata.substr( prev_pos, pos - prev_pos);
+            columnname = line.substr( prev_pos, pos - prev_pos);
         else
-            columnname = filedata.substr( prev_pos );
+            columnname = line.substr( prev_pos );
         total_col_names.push_back(columnname);
         prev_pos = pos + delim_size;
-                std::cout << "columnname: " << columnname << std::endl;
+        std::cout << "columnname: " << columnname << std::endl;
     }
 
     Attribute::register_class_names(requested_columns);
@@ -757,23 +760,22 @@ fetch_records_from_txt(list <Record> & source, const char * txt_file, const vect
     Attribute ** pointer_array = new Attribute *[num_cols];
 
     pos = prev_pos = 0;
-
     unsigned int position_in_ratios = 0;
-        std::cout << "num_cols: " << num_cols << std::endl;
+
     for ( unsigned int i = 0; i < num_cols; ++i ) {
 
         const int pos_in_query = Attribute::position_in_registry(Record::column_names[i]);
-std::cout << "pos_in_query: " << pos_in_query << std::endl;
-std::cout << "Record::column_names[i]: " << Record::column_names[i] << std::endl;
+        std::cout << "pos_in_query: " << pos_in_query << std::endl;
+        std::cout << "Record::column_names[i]: " << Record::column_names[i] << std::endl;
+
         if ( pos_in_query == -1 ) {
             for ( unsigned int j = 0; j < i; ++j )
                 delete pointer_array[j];
             delete [] pointer_array;
             throw cException_ColumnName_Not_Found(Record::column_names[i].c_str());
-        }
-        else {
+        } else {
             pointer_array[i] = create_attribute_instance ( Record::column_names[i].c_str() );
-                }
+        }
  
 #if 0
         if ( Record::column_names[i] == cLongitude::class_name ) {
@@ -790,20 +792,19 @@ std::cout << "Record::column_names[i]: " << Record::column_names[i] << std::endl
         }
 #endif
 
-std::cout << "i: " << i << std::endl;
-// If this crashes, will need to add code in the function `create_attribute_instance`
+        // If this crashes, will need to add code in the function `create_attribute_instance`
         if ( pointer_array[i]->get_attrib_group() != string("None") ) {
-std::cout << "pointer_array[i]->get_attrib_group(): " << pointer_array[i]->get_attrib_group() << std::endl;
+            std::cout << "pointer_array[i]->get_attrib_group(): " << pointer_array[i]->get_attrib_group() << std::endl;
             ++position_in_ratios;
-                }
+        }
     }
 
-        std::cout << std::endl;
+    std::cout << std::endl;
 
     // always do this for all the attribute classes
     for ( unsigned int i = 0; i < num_cols; ++i ) {
         pointer_array[i]->check_interactive_consistency(Record::column_names);
-        }
+    }
 
     std::cout << "Involved attributes are: ";
     for ( unsigned int i = 0; i < num_cols; ++i )
@@ -832,12 +833,15 @@ std::cout << "pointer_array[i]->get_attrib_group(): " << pointer_array[i]->get_a
     vector <const Attribute *> temp_vec_attrib;
     //vector <const Attribute *> Latitude_interactive_attribute_pointers;
 
-    // Extracts characters from istream (infile) and stores them 
-    // into a string (filedata) until a delimitation character is found.
+    // Extracts characters from ifstream (instream) and stores them 
+    // into a string (line) until a delimitation character is found.
     // In this case, since a delimiter isn't given, it's assumed to be \n.
-    while (getline(infile, filedata) ) {
+    std::cout << "Reading input data file..." << std::endl;
+    while (getline(instream, line) ) {
 
-        // .clear is an stl method, calls all destructors
+        std::cout << "line: " << line << std::endl;
+
+        // vector.clear is an stl method, calls all destructors
         temp_vec_attrib.clear();
 
         // num_cols is obtained around Line 736 above
@@ -849,25 +853,26 @@ std::cout << "pointer_array[i]->get_attrib_group(): " << pointer_array[i]->get_a
             pos = prev_pos = 0;
 
             // requested_column_indice is vector<unsigned int> defined
-            // around Line 738 above
-            while ( column_location++ != requested_column_indice.at(i) ) {
-                pos = filedata.find(delim, prev_pos);
+            // around Line 738 above, see vector.at
+            while (column_location++ != requested_column_indice.at(i)) {
+                // See string.find: http://www.cplusplus.com/reference/string/string/find/
+                pos = line.find(delim, prev_pos);
                 // delim_size is defined above Line ~705
                 prev_pos = pos + delim_size;
             }
-            // Get a link to the .find method.
-            pos = filedata.find(delim, prev_pos);
+            pos = line.find(delim, prev_pos);
 
             // Find a link to string::npos
             if ( pos == string::npos ) {
-                // Find a link to .size for whatever type filedata is
-                if ( prev_pos != filedata.size() )
+                // Find a link to .size for whatever type line is
+                if ( prev_pos != line.size() )
                     // Link to the substr method
-                    string_cache[i] = filedata.substr(prev_pos);
+                    string_cache[i] = line.substr(prev_pos);
                 else
                     string_cache[i] = "";
             } else {
-                string_cache[i] = filedata.substr(prev_pos, pos - prev_pos);
+                // This looks where the actual value is parsed
+                string_cache[i] = line.substr(prev_pos, pos - prev_pos);
             }
 
             // Link to the reset_data method
@@ -898,6 +903,8 @@ std::cout << "pointer_array[i]->get_attrib_group(): " << pointer_array[i]->get_a
     std::cout << "Sample Record:---------" << std::endl;
     Record::sample_record_pointer->print();
     std::cout << "-----------------" << std::endl;
+
+    //exit(0);
 
     return true;
 }
