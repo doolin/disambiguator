@@ -724,6 +724,8 @@ fetch_records_from_txt(list <Record> & source,
     pos = prev_pos = 0;
 
     while (  pos != string::npos){
+        std::cout << "pos " << pos << std::endl;
+        std::cout << "string::npos " << std::string::npos << std::endl;
         pos = line.find(delim, prev_pos);
         string columnname;
         if ( pos != string::npos )

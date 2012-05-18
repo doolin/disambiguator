@@ -132,25 +132,37 @@ public:
  *      ONLY ADD NEW OBJECTS AND CHANGE THE POINTER THROUGH EXISTING INTERFACE, SINCE REFERENCE-COUNTING IS IMPLEMENTED.
  */
 
-//====================================================================
+
 class Attribute {
+
 private:
     friend class Record;
     friend void attrib_merge ( list < const Attribute **> & l1, list < const Attribute **> & l2 );
     static vector <string> Derived_Class_Name_Registry;
     virtual void reconfigure_for_interactives( const Record * pRec) const {};
+
 protected:
+
+    // get the data. should only be used within derived classes. Implemented in child classes.
     virtual vector < const string * > & get_data_modifiable() = 0;
+
     virtual const Attribute * attrib_merge ( const Attribute & rhs) const { return NULL;};
+
 public:
     virtual unsigned int compare(const Attribute & rhs) const = 0 ;
     virtual bool split_string(const char* );    //can be overridden if necessary.
     Attribute (const char * inputstring ) {}
     virtual bool operator == ( const Attribute & rhs) const { return this == &rhs ;}
-    void reset_data(const char * inputstring) { get_data_modifiable().clear(); /*data_count.clear(); */ split_string(inputstring);}
+
+    void reset_data(const char * inputstring) {
+        get_data_modifiable().clear(); /*data_count.clear(); */
+        split_string(inputstring);
+    }
+
     virtual const Attribute*  config_interactive (const vector <const Attribute *> &inputvec ) const { throw cException_No_Interactives(get_class_name().c_str()); return NULL;};
     virtual const vector <const string*> & get_data() const = 0;
     virtual const vector <const Attribute *> & get_interactive_vector() const { throw cException_No_Interactives(get_class_name().c_str()); };
+
     virtual const string & get_class_name() const = 0;
     virtual bool is_comparator_activated() const = 0;
     // critical for using base pointers to create and copy derived class
@@ -162,10 +174,12 @@ public:
     virtual const string & get_attrib_group() const = 0;
     virtual void check_interactive_consistency(const vector <string> & query_columns) = 0;
     virtual unsigned int get_attrib_max_value() const { throw cException_Invalid_Function(get_class_name().c_str());};
-    virtual int exact_compare( const Attribute & rhs ) const { return -1; } // -1 means no exact_compare. 0 = not the same 1= exact same
+    // -1 means no exact_compare. 0 = not the same 1= exact same
+    virtual int exact_compare( const Attribute & rhs ) const { return -1; }
     virtual const string * add_string( const string & str ) const = 0;
 
     virtual bool operator < ( const Attribute & rhs ) const = 0;
+
     virtual bool is_informative() const {
         if (  get_data().empty() || get_data().at(0)->empty() )
             return false;
@@ -188,12 +202,13 @@ public:
 
 /*
  * template <Concreate Class Name> Attribute_Intermediary and Attribute_Basic.
- * This is the first/second layer child class of Attribute, implementing data pooling and other fundamental concrete class specific methods.
- * Data pooling is implemented using binary trees in STL, i.e., std::set and std::map, in order for fast search, insertion and deletion.
- * If any other second layer abstract or concrete attribute class is added in the future, it is supposed to inherit from this Attribute_Intermediary class.
+ * This is the first/second layer child class of Attribute, implementing data pooling
+ * and other fundamental concrete class specific methods.
+ * Data pooling is implemented using binary trees in STL, i.e.,
+ * std::set and std::map, in order for fast search, insertion and deletion.
+ * If any other second layer abstract or concrete attribute class is added in
+ * the future, it is supposed to inherit from this Attribute_Intermediary class.
  * See examples below.
- *
- *
  *
  *
  * Private:
@@ -212,7 +227,9 @@ public:
  *         static pthread_mutex_t attrib_pool_count_lock: mutex of attrib_pool that synchronize modification of reference-counting.
  *
  *
- *
+ */
+
+/*
  *    Protected:
  *    Public:
  *        static void clear_data_pool(): clear the data pool. Only use it when a whole class will be rebuilt.
@@ -229,6 +246,9 @@ public:
  *        static const unsigned int get_interactive_column_number(): get the number of interactive columns with the current class.
  *        static void static_check_interactive_consistency( const vector <string> & query_columns): check and set the static member interactive_column_indice_in_query;
  *        void check_interactive_consistency(const vector <string> & query_columns): polymorphic version of the above function.
+ */
+
+/*
  *        bool has_checked_interactive_consistency(): check if the class interactive consistency is checked.
  *        static bool is_enabled(): check if the class is enabled for use.
  *        static void enable(): enable the class.
@@ -252,6 +272,7 @@ public:
 
 template <typename Derived>
 class Attribute_Basic: public Attribute {
+
 private:
     static const string class_name;    // an implementation is required for each class in the cpp file.
     //static unsigned int column_index_in_query;
@@ -262,6 +283,7 @@ private:
     static bool bool_is_enabled;
     static bool bool_comparator_activated;
     static const string attrib_group;    //attribute group used for ratios purpose;
+
 public:
 
     Attribute_Basic (const char * source = NULL ): Attribute(source) {}
@@ -294,6 +316,7 @@ public:
     //static void enable() { bool_is_enabled = true;}
     static bool static_is_comparator_activated() {return bool_comparator_activated;}
     bool is_comparator_activated() const { return bool_comparator_activated;}
+
     static void static_activate_comparator() {
         if ( attrib_group == INERT_ATTRIB_GROUP_IDENTIFIER )
             return;
@@ -302,6 +325,7 @@ public:
         std::cout << static_get_class_name() << " comparison is active now." << std::endl;
         Record_update_active_similarity_names() ;
     }
+
     static void static_deactivate_comparator() {
         if ( attrib_group == INERT_ATTRIB_GROUP_IDENTIFIER )
             return;
@@ -328,10 +352,12 @@ public:
     }
     static const string & static_get_attrib_group() { return attrib_group; };
     const string & get_attrib_group() const { return attrib_group;}
+
     static vector < string > static_get_interactive_column_names() {
         vector < string > res ( interactive_column_names, interactive_column_names + num_of_interactive_columns);
         return res;
     }
+
     vector < string > get_interactive_class_names() const {
         return static_get_interactive_column_names();
     }
@@ -342,6 +368,7 @@ public:
 template <typename Derived>
 class Attribute_Intermediary : public Attribute_Basic < Derived > {
     friend bool fetch_records_from_txt(list <Record> & source, const char * txt_file, const vector<string> &requested_columns);
+
 private:
     static set < string > data_pool;
     static map < Derived, int > attrib_pool;
@@ -421,9 +448,6 @@ public:
         return static_add_attrib(alias, 1);
     }
 
-
-
-
     static const string * static_add_string ( const string & str ) {
         register set< string >::iterator p = data_pool.find(str);
         if ( p == data_pool.end() ) {
@@ -431,6 +455,7 @@ public:
         }
         return &(*p);
     }
+
     static const string * static_find_string ( const string & str ) {
         register set< string >::iterator p = data_pool.find(str);
         if ( p == data_pool.end() ) {
@@ -476,10 +501,10 @@ public:
     const Attribute * reduce_attrib(unsigned int n) const {
         return static_reduce_attrib( dynamic_cast< const Derived &> (*this), n);
     }
+
     const Attribute * add_attrib( unsigned int n ) const {
         return static_add_attrib( dynamic_cast< const Derived &> (*this), n);
     }
-
 
 };
 
@@ -495,7 +520,6 @@ public:
  *         const vector < const string * > & get_data() const: override the base function and throw an error,
  *             indicating that this function should be forbidden for this class and its child classes.
  */
-
 template < typename AttribType >
 class Attribute_Set_Intermediary : public Attribute_Intermediary<AttribType> {
 private:
@@ -505,6 +529,7 @@ protected:
 public:
     const vector < const string * > & get_data() const { throw cException_Invalid_Function("Function Disabled"); }
 };
+
 
 /*
  * Attribute_Vector_Intermediary:
@@ -517,9 +542,6 @@ public:
  *         const vector < const string * > & get_data() const: for external call.
  *         bool operator < ( const Attribute & rhs ) const: sorting function used in map/set only. should not call explicitly.
  */
-
-
-
 template < typename AttribType >
 class Attribute_Vector_Intermediary: public Attribute_Intermediary<AttribType> {
     friend class Attribute;
@@ -658,19 +680,24 @@ public:
 
 /*
  * template < Concrete Attribute Class Name > Attribute_Single_Mode:
- * This is the second layer of the inheritance hierarchy, specifically designed for those attributes which have only one useful piece of information,
+ * This is the second layer of the inheritance hierarchy, specifically
+ * designed for those attributes which have only one useful piece of information,
  * and whose comparison function is only comparing such information between two attributes.
  * The information stored in the class is usually read-only, unless necessary to change.
  * Typical classes of such mode include firtname, lastname, assignee, unique_record_id, city, etc.
  *
  * Public:
- *         unsigned int compare(const Attribute & right_hand_side) const: Default Jaro-Winkler comparison between the strings. Scoring is user-defined, so feel free to override.
- *         bool split_string(const char* inputdata): read input string, do some preparations (edition and pooling) and save in the object.
+ *    unsigned int compare(const Attribute & right_hand_side) const:
+ *      Default Jaro-Winkler comparison between the strings. Scoring is user-defined, so feel free to override.
+ *    bool split_string(const char* inputdata):
+ *      read input string, do some preparations (edition and pooling) and save in the object.
  */
 
 template < typename AttribType >
 class Attribute_Single_Mode : public Attribute_Vector_Intermediary<AttribType> {
+
 public:
+
     unsigned int compare(const Attribute & right_hand_side) const {
         // ALWAYS CHECK THE ACTIVITY OF COMPARISON FUNCTION !!
         if ( ! this->is_comparator_activated () )
@@ -685,6 +712,7 @@ public:
             res = this->get_attrib_max_value();
         return res;
     }
+
     bool split_string(const char* inputdata){
         this->get_data_modifiable().clear();
         string temp(inputdata);
@@ -885,56 +913,63 @@ template <typename ConcreteType, typename PooledDataType> bool Attribute_Interac
 template <typename ConcreteType, typename PooledDataType> std::auto_ptr < PooledDataType > Attribute_Interactive_Mode<ConcreteType, PooledDataType>::stat_pdata;
 
 
-/*
- * DisambigCustomizedDefs.h
- *
- *  Created on: Apr 5, 2011
- *      Author: ysun
- */
-
 
 /*
- * For each concrete class, if it can be one of the components in the similarity profile, whether its comparator is activated or not,
- * a "STATIC CONST UNSIGNED INT" member, namely max_value, should be declared and defined in the concrete class. At the same time,
- * the virtual function get_attrib_max_value() const has to be overridden, with comparator activity check inside.
+ * For each concrete class, if it can be one of the components in the
+ * similarity profile, whether its comparator is activated or not,
+ * a "STATIC CONST UNSIGNED INT" member, namely max_value, should be
+ * declared and defined in the concrete class. At the same time,
+ * the virtual function get_attrib_max_value() const has to be
+ * overridden, with comparator activity check inside.
  *
- * Each concrete class should also provide a default constructor ( which is actually very simple ).
+ * Each concrete class should also provide a default constructor
+ * (which is actually very simple).
  */
 
 
 /*
  * IMPORTANT:
- * FOR EACH CONCRETE CLASS, IF ITS STATIC MEMBER IS DIFFERENT FROM DEFAULT, A TEMPLATE SPECIALIZATION MUST BE DECLARED BEFORE THE DEFAULT IS
+ * FOR EACH CONCRETE CLASS, IF ITS STATIC MEMBER IS DIFFERENT FROM DEFAULT,
+ * A TEMPLATE SPECIALIZATION MUST BE DECLARED BEFORE THE DEFAULT IS
  * DECLARED AND DEFINED. AFTER THAT, THE SPECIALIZED DEFINITION SHOULD APPEAR IN THE CPP FILE.
- * For example, the attrib group of cFirstname is "Personal" instead of the default "NONE". In this case, the specialized declaration must be made
- * before the general default declaration. i.e.
+ * For example, the attrib group of cFirstname is "Personal" instead
+ * of the default "NONE". In this case, the specialized declaration must be made
+ * before the general default declaration. i.e.,
  * template <> const string Attribute_Intermediary<cFirstname>::attrib_group;
  * appears before:
  * template <typename Derived> const string Attribute_Intermediary<Derived>::attrib_group = INERT_ATTRIB_GROUP_IDENTIFIER;
  * And then in the cpp file, there is:
  * template <> const string Attribute_Intermediary<cFirstname>::attrib_group = "Personal";
  *
- *
  * See more information and example in the end of this file.
  */
 
 
 class cFirstname : public Attribute_Single_Mode <cFirstname> {
-private:
+
+  private:
   static unsigned int previous_truncation;
   static unsigned int current_truncation;
- public:
-  static void set_truncation( const unsigned int prev, const unsigned int cur ) { previous_truncation = prev; current_truncation = cur; }
+
+  public:
+
+    static void set_truncation(const unsigned int prev, const unsigned int cur) {
+        previous_truncation = prev;
+        current_truncation = cur;
+    }
+
     //static const unsigned int max_value = Jaro_Wrinkler_Max;
     static const unsigned int max_value = 4;
 
     cFirstname(const char * source = NULL) {}
     bool split_string(const char*);        //override because some class-specific splitting is involved.
+
     unsigned int get_attrib_max_value() const {
         if ( ! is_comparator_activated() )
             Attribute::get_attrib_max_value();
         return max_value;
     }
+
     //override the base class to enable the functionality of the function.
     int exact_compare( const Attribute & rhs ) const { return this == & rhs; }
     unsigned int compare(const Attribute & right_hand_side) const ;
@@ -1152,6 +1187,7 @@ public:
     cGYear(const char * source = NULL ){}
     //SHOULD NOT OVERRIDE THE COMPARISON FUNCTION SINCE LONGITUDE IS NOT BEING COMPARED. IT IS WITH THE LATITUDE COMPARISION.
 };
+
 class cCity: public Attribute_Single_Mode <cCity> {
 public:
     cCity(const char * source = NULL ) {}
@@ -1165,9 +1201,6 @@ public:
     cPatent( const char * source = NULL){};
 };
 
-
-
-//=======
 
 // template static variables.
 // ALL THE FOLLOWING TEMPLATE MEMBER ARE DEFAULT VALUES.
@@ -1210,7 +1243,5 @@ template <> const unsigned int Attribute_Basic<cAssignee>::num_of_interactive_co
 template <> const unsigned int Attribute_Basic<cLatitude >::num_of_interactive_columns;
 template <> const unsigned int Attribute_Basic<cLongitude >::num_of_interactive_columns;
 template <typename Derived> const unsigned int Attribute_Basic<Derived>::num_of_interactive_columns = 0;
-
-
 
 #endif /* PATENT_ATTRIBUTE_H */
