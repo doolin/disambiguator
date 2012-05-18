@@ -828,25 +828,28 @@ std::cout << "pointer_array[i]->get_attrib_group(): " << pointer_array[i]->get_a
     const Attribute * pAttrib;
     vector <const Attribute *> temp_vec_attrib;
     vector <const Attribute *> Latitude_interactive_attribute_pointers;
+
     while (getline(infile, filedata) ) {
+
         temp_vec_attrib.clear();
 
-
         for ( unsigned int i = 0; i < num_cols ; ++i ) {
+
             unsigned int column_location = 0;
             pos = prev_pos = 0;
+
             while ( column_location++ != requested_column_indice.at(i) ) {
                 pos = filedata.find(delim, prev_pos);
                 prev_pos = pos + delim_size;
             }
             pos = filedata.find(delim, prev_pos);
+
             if ( pos == string::npos ) {
                 if ( prev_pos != filedata.size() )
                     string_cache[i] = filedata.substr(prev_pos);
                 else
                     string_cache[i] = "";
-            }
-            else {
+            } else {
                 string_cache[i] = filedata.substr(prev_pos, pos - prev_pos);
             }
 
