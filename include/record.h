@@ -96,6 +96,7 @@ public:
     const Attribute * const & get_attrib_pointer_by_index(const unsigned int i) const {return vector_pdata.at(i);} //return a reference is very important, because the content can be changed.
     const vector < const Attribute*> & get_attrib_vector () const { return vector_pdata;}
     void print( std::ostream & os ) const;
+
     void print() const; //{ this->print(std::cout);}
     static const vector < string > & get_column_names() { return column_names;}
     unsigned int informative_attributes() const;
