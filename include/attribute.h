@@ -925,140 +925,140 @@ private:
   static unsigned int current_truncation;
  public:
   static void set_truncation( const unsigned int prev, const unsigned int cur ) { previous_truncation = prev; current_truncation = cur; }
-	//static const unsigned int max_value = Jaro_Wrinkler_Max;
-	static const unsigned int max_value = 4;
+    //static const unsigned int max_value = Jaro_Wrinkler_Max;
+    static const unsigned int max_value = 4;
 
-	cFirstname(const char * source = NULL) {}
-	bool split_string(const char*);		//override because some class-specific splitting is involved.
-	unsigned int get_attrib_max_value() const {
-		if ( ! is_comparator_activated() )
-			Attribute::get_attrib_max_value();
-		return max_value;
-	}
-	//override the base class to enable the functionality of the function.
-	int exact_compare( const Attribute & rhs ) const { return this == & rhs; }
-	unsigned int compare(const Attribute & right_hand_side) const ;
+    cFirstname(const char * source = NULL) {}
+    bool split_string(const char*);        //override because some class-specific splitting is involved.
+    unsigned int get_attrib_max_value() const {
+        if ( ! is_comparator_activated() )
+            Attribute::get_attrib_max_value();
+        return max_value;
+    }
+    //override the base class to enable the functionality of the function.
+    int exact_compare( const Attribute & rhs ) const { return this == & rhs; }
+    unsigned int compare(const Attribute & right_hand_side) const ;
 };
 
 
 class cLastname : public Attribute_Single_Mode <cLastname> {
 public:
-	static const unsigned int max_value = Jaro_Wrinkler_Max;
+    static const unsigned int max_value = Jaro_Wrinkler_Max;
 
-	cLastname(const char * source = NULL ) {}
-	unsigned int get_attrib_max_value() const {
-		if ( ! is_comparator_activated() )
-			Attribute::get_attrib_max_value();
-		return max_value;
-	}
-	int exact_compare( const Attribute & rhs ) const { return this == & rhs; }
+    cLastname(const char * source = NULL ) {}
+    unsigned int get_attrib_max_value() const {
+        if ( ! is_comparator_activated() )
+            Attribute::get_attrib_max_value();
+        return max_value;
+    }
+    int exact_compare( const Attribute & rhs ) const { return this == & rhs; }
 };
 
 class cMiddlename : public Attribute_Single_Mode <cMiddlename> {
 public:
-	static const unsigned int max_value = 3;
+    static const unsigned int max_value = 3;
 
-	cMiddlename(const char * source = NULL ) {}
-	unsigned int compare(const Attribute & rhs) const;		//override to allow customization.
-	bool split_string(const char*);
-	unsigned int get_attrib_max_value() const {
-		if ( ! is_comparator_activated() )
-			Attribute::get_attrib_max_value();
-		return max_value;
-	}
-	int exact_compare( const Attribute & rhs ) const { return this == & rhs; }
+    cMiddlename(const char * source = NULL ) {}
+    unsigned int compare(const Attribute & rhs) const;        //override to allow customization.
+    bool split_string(const char*);
+    unsigned int get_attrib_max_value() const {
+        if ( ! is_comparator_activated() )
+            Attribute::get_attrib_max_value();
+        return max_value;
+    }
+    int exact_compare( const Attribute & rhs ) const { return this == & rhs; }
 };
 
 class cLatitude_Data : public Attribute_Single_Mode<cLatitude_Data> {};
 
 class cLatitude : public Attribute_Interactive_Mode <cLatitude, cLatitude_Data> {
 private:
-	static const unsigned int max_value = 5;
+    static const unsigned int max_value = 5;
 public:
-	cLatitude(const char * source = NULL ) {}
-	unsigned int compare(const Attribute & rhs) const;	//override to customize
-	unsigned int get_attrib_max_value() const {
-		if ( ! is_comparator_activated() )
-			Attribute::get_attrib_max_value();
-		return max_value;
-	}
+    cLatitude(const char * source = NULL ) {}
+    unsigned int compare(const Attribute & rhs) const;    //override to customize
+    unsigned int get_attrib_max_value() const {
+        if ( ! is_comparator_activated() )
+            Attribute::get_attrib_max_value();
+        return max_value;
+    }
 };
 
 class cLongitude_Data : public Attribute_Single_Mode<cLongitude_Data> {};
 
 class cLongitude: public Attribute_Interactive_Mode <cLongitude, cLongitude_Data > {
 private:
-	static const unsigned int max_value = 1;
+    static const unsigned int max_value = 1;
 public:
-	cLongitude(const char * source = NULL ) {}
-	unsigned int compare(const Attribute & rhs) const;	//override to customize
-	unsigned int get_attrib_max_value() const {
-		if ( ! is_comparator_activated() )
-			Attribute::get_attrib_max_value();
-		return max_value;
-	}
+    cLongitude(const char * source = NULL ) {}
+    unsigned int compare(const Attribute & rhs) const;    //override to customize
+    unsigned int get_attrib_max_value() const {
+        if ( ! is_comparator_activated() )
+            Attribute::get_attrib_max_value();
+        return max_value;
+    }
 };
 
 class cStreet: public Attribute_Single_Mode <cStreet> {
 public:
-	cStreet(const char * source = NULL) {}
-	//SHOULD NOT OVERRIDE THE COMPARISON FUNCTION SINCE Street IS NOT BEING COMPARED either. IT IS WITH THE LATITUDE COMPARISION.
+    cStreet(const char * source = NULL) {}
+    //SHOULD NOT OVERRIDE THE COMPARISON FUNCTION SINCE Street IS NOT BEING COMPARED either. IT IS WITH THE LATITUDE COMPARISION.
 
 };
 
 // Modeled after the Street class
 class cState: public Attribute_Single_Mode <cState> {
 public:
-	cState(const char * source = NULL) {}
+    cState(const char * source = NULL) {}
 };
 
 // Modeled after the Street class
 class cZipcode: public Attribute_Single_Mode <cZipcode> {
 public:
-	cZipcode(const char * source = NULL) {}
+    cZipcode(const char * source = NULL) {}
 };
 
 // Modeled after the Street class
 /*
 class cAppDateStr: public Attribute_Single_Mode <cAppDateStr> {
 public:
-	cAppDateStr(const char * source = NULL) {}
+    cAppDateStr(const char * source = NULL) {}
 };
 */
 
 class cAppDate: public Attribute_Single_Mode <cAppDate> {
 public:
-	cAppDate(const char * source = NULL) {}
+    cAppDate(const char * source = NULL) {}
 };
 
 // Modeled after the Street class
 class cInvSeq: public Attribute_Single_Mode <cInvSeq> {
 public:
-	cInvSeq(const char * source = NULL) {}
+    cInvSeq(const char * source = NULL) {}
 };
 
 // Modeled after the Street class
 class cinvnum_N: public Attribute_Single_Mode <cinvnum_N> {
 public:
-	cinvnum_N(const char * source = NULL) {}
+    cinvnum_N(const char * source = NULL) {}
 };
 
 class cinvnum: public Attribute_Single_Mode <cinvnum> {
 public:
-	cinvnum(const char * source = NULL) {}
+    cinvnum(const char * source = NULL) {}
 };
 
 class cCountry: public Attribute_Single_Mode <cCountry> {
 public:
-	static unsigned int const max_value = 2;
-	cCountry(const char * source = NULL ) {}
-	unsigned int get_attrib_max_value() const {
-		if ( ! is_comparator_activated() )
-			Attribute::get_attrib_max_value();
-		return max_value;
-	}
-	int exact_compare( const Attribute & rhs ) const { return this == & rhs; }
-	unsigned int compare(const Attribute & right_hand_side) const;
+    static unsigned int const max_value = 2;
+    cCountry(const char * source = NULL ) {}
+    unsigned int get_attrib_max_value() const {
+        if ( ! is_comparator_activated() )
+            Attribute::get_attrib_max_value();
+        return max_value;
+    }
+    int exact_compare( const Attribute & rhs ) const { return this == & rhs; }
+    unsigned int compare(const Attribute & right_hand_side) const;
 
 };
 
@@ -1066,40 +1066,40 @@ public:
 // cClass and cCoauthor are in set_mode, not single_mode
 class cClass: public Attribute_Set_Mode < cClass > {
 public:
-	static unsigned int const max_value = 4;
+    static unsigned int const max_value = 4;
 
-	unsigned int get_attrib_max_value() const {
-		if ( ! is_comparator_activated() )
-			Attribute::get_attrib_max_value();
-		return max_value;
-	}
-	//unsigned int compare(const Attribute & rhs) const;
+    unsigned int get_attrib_max_value() const {
+        if ( ! is_comparator_activated() )
+            Attribute::get_attrib_max_value();
+        return max_value;
+    }
+    //unsigned int compare(const Attribute & rhs) const;
 };
 
 //the second way to measure class. literally the same as cClass except for the comparison function.
 class cClass_M2 : public Attribute_Set_Mode < cClass_M2 > {
 public:
-	static const unsigned int max_value = 4;
+    static const unsigned int max_value = 4;
 
-	unsigned int get_attrib_max_value() const {
-		if ( ! is_comparator_activated() )
-			Attribute::get_attrib_max_value();
-		return max_value;
-	}
-	unsigned int compare(const Attribute & right_hand_side) const;
+    unsigned int get_attrib_max_value() const {
+        if ( ! is_comparator_activated() )
+            Attribute::get_attrib_max_value();
+        return max_value;
+    }
+    unsigned int compare(const Attribute & right_hand_side) const;
 };
 
 
 class cCoauthor : public Attribute_Set_Mode < cCoauthor >  {
-	friend class cReconfigurator_Coauthor;
+    friend class cReconfigurator_Coauthor;
 public:
-	static unsigned int const max_value = 6;
+    static unsigned int const max_value = 6;
 
-	unsigned int get_attrib_max_value() const {
-		if ( ! is_comparator_activated() )
-			Attribute::get_attrib_max_value();
-		return max_value;
-	}
+    unsigned int get_attrib_max_value() const {
+        if ( ! is_comparator_activated() )
+            Attribute::get_attrib_max_value();
+        return max_value;
+    }
 };
 
 class cAsgNum;
@@ -1107,62 +1107,62 @@ class cAssignee_Data : public Attribute_Single_Mode < cAssignee_Data > {};
 
 class cAssignee : public Attribute_Interactive_Mode <cAssignee, cAssignee_Data> {
 public:
-	static const unsigned int max_value = 6;
+    static const unsigned int max_value = 6;
 private:
-	//static const map<string, std::pair<string, unsigned int>  > * assignee_tree_pointer; // this is a static membmer used in the comparison function.
-	static map < const cAsgNum*, unsigned int > asgnum2count_tree;
-	static bool is_ready;
+    //static const map<string, std::pair<string, unsigned int>  > * assignee_tree_pointer; // this is a static membmer used in the comparison function.
+    static map < const cAsgNum*, unsigned int > asgnum2count_tree;
+    static bool is_ready;
 public:
-	cAssignee(const char * source = NULL ) {}
-	unsigned int compare(const Attribute & rhs) const;
-	//static void set_assignee_tree_pointer(const map<string, std::pair<string, unsigned int>  >& asgtree) {assignee_tree_pointer = & asgtree;}
-	static void configure_assignee( const list <const Record *> & );
-	unsigned int get_attrib_max_value() const {
-		if ( ! is_comparator_activated() )
-			Attribute::get_attrib_max_value();
-		return max_value;
-	}
-	int exact_compare( const Attribute & rhs ) const { return this == & rhs; }
+    cAssignee(const char * source = NULL ) {}
+    unsigned int compare(const Attribute & rhs) const;
+    //static void set_assignee_tree_pointer(const map<string, std::pair<string, unsigned int>  >& asgtree) {assignee_tree_pointer = & asgtree;}
+    static void configure_assignee( const list <const Record *> & );
+    unsigned int get_attrib_max_value() const {
+        if ( ! is_comparator_activated() )
+            Attribute::get_attrib_max_value();
+        return max_value;
+    }
+    int exact_compare( const Attribute & rhs ) const { return this == & rhs; }
 };
 
 class cAsgNum : public Attribute_Single_Mode<cAsgNum> {
 public:
-	cAsgNum(const char * source = NULL ){}
+    cAsgNum(const char * source = NULL ){}
 };
 
 class cUnique_Record_ID : public Attribute_Single_Mode <cUnique_Record_ID> {
 public:
-	cUnique_Record_ID(const char * source = NULL ){}
+    cUnique_Record_ID(const char * source = NULL ){}
 };
 
 class cApplyYear: public Attribute_Single_Mode<cApplyYear> {
 public:
-	cApplyYear(const char * source = NULL ){}
-	//SHOULD NOT OVERRIDE THE COMPARISON FUNCTION SINCE LONGITUDE IS NOT BEING COMPARED. IT IS WITH THE LATITUDE COMPARISION.
+    cApplyYear(const char * source = NULL ){}
+    //SHOULD NOT OVERRIDE THE COMPARISON FUNCTION SINCE LONGITUDE IS NOT BEING COMPARED. IT IS WITH THE LATITUDE COMPARISION.
 };
 
 class cAppYear: public Attribute_Single_Mode<cAppYear> {
 public:
-	cAppYear(const char * source = NULL ){}
-	//SHOULD NOT OVERRIDE THE COMPARISON FUNCTION SINCE LONGITUDE IS NOT BEING COMPARED. IT IS WITH THE LATITUDE COMPARISION.
+    cAppYear(const char * source = NULL ){}
+    //SHOULD NOT OVERRIDE THE COMPARISON FUNCTION SINCE LONGITUDE IS NOT BEING COMPARED. IT IS WITH THE LATITUDE COMPARISION.
 };
 
 class cGYear: public Attribute_Single_Mode<cGYear> {
 public:
-	cGYear(const char * source = NULL ){}
-	//SHOULD NOT OVERRIDE THE COMPARISON FUNCTION SINCE LONGITUDE IS NOT BEING COMPARED. IT IS WITH THE LATITUDE COMPARISION.
+    cGYear(const char * source = NULL ){}
+    //SHOULD NOT OVERRIDE THE COMPARISON FUNCTION SINCE LONGITUDE IS NOT BEING COMPARED. IT IS WITH THE LATITUDE COMPARISION.
 };
 class cCity: public Attribute_Single_Mode <cCity> {
 public:
-	cCity(const char * source = NULL ) {}
-	//SHOULD NOT OVERRIDE THE COMPARISON FUNCTION SINCE LONGITUDE IS NOT BEING COMPARED. IT IS WITH THE LATITUDE COMPARISION.
-	bool split_string(const char*);
-	int exact_compare( const Attribute & rhs ) const { return this == & rhs; }
+    cCity(const char * source = NULL ) {}
+    //SHOULD NOT OVERRIDE THE COMPARISON FUNCTION SINCE LONGITUDE IS NOT BEING COMPARED. IT IS WITH THE LATITUDE COMPARISION.
+    bool split_string(const char*);
+    int exact_compare( const Attribute & rhs ) const { return this == & rhs; }
 };
 
 class cPatent: public Attribute_Single_Mode <cPatent> {
 public:
-	cPatent( const char * source = NULL){};
+    cPatent( const char * source = NULL){};
 };
 
 
