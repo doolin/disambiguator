@@ -719,6 +719,7 @@ fetch_records_from_txt(list <Record> & source, const char * txt_file, const vect
     getline(infile, filedata);
     register size_t pos, prev_pos;
     pos = prev_pos = 0;
+
     while (  pos != string::npos){
         pos = filedata.find(delim, prev_pos);
         string columnname;
@@ -730,10 +731,12 @@ fetch_records_from_txt(list <Record> & source, const char * txt_file, const vect
         prev_pos = pos + delim_size;
                 std::cout << "columnname: " << columnname << std::endl;
     }
+
     Attribute::register_class_names(requested_columns);
     const unsigned int num_cols = requested_columns.size();
-        std::cout << "num_cols: " << num_cols << std::endl;
+    std::cout << "num_cols: " << num_cols << std::endl;
     vector < unsigned int > requested_column_indice;
+
     for ( unsigned int i = 0; i < num_cols; ++i ) {
         unsigned int j;
         for (  j = 0; j < total_col_names.size(); ++j ) {
@@ -827,25 +830,39 @@ std::cout << "pointer_array[i]->get_attrib_group(): " << pointer_array[i]->get_a
     const unsigned int base  =  100000;
     const Attribute * pAttrib;
     vector <const Attribute *> temp_vec_attrib;
-    vector <const Attribute *> Latitude_interactive_attribute_pointers;
+    //vector <const Attribute *> Latitude_interactive_attribute_pointers;
 
+    // Extracts characters from istream (infile) and stores them 
+    // into a string (filedata) until a delimitation character is found.
+    // In this case, since a delimiter isn't given, it's assumed to be \n.
     while (getline(infile, filedata) ) {
 
+        // .clear is an stl method, calls all destructors
         temp_vec_attrib.clear();
 
+        // num_cols is obtained around Line 736 above
         for ( unsigned int i = 0; i < num_cols ; ++i ) {
 
+            // What does column_location point at?
             unsigned int column_location = 0;
+            // Given the second iteration, what does prev_pos point at?
             pos = prev_pos = 0;
 
+            // requested_column_indice is vector<unsigned int> defined
+            // around Line 738 above
             while ( column_location++ != requested_column_indice.at(i) ) {
                 pos = filedata.find(delim, prev_pos);
+                // delim_size is defined above Line ~705
                 prev_pos = pos + delim_size;
             }
+            // Get a link to the .find method.
             pos = filedata.find(delim, prev_pos);
 
+            // Find a link to string::npos
             if ( pos == string::npos ) {
+                // Find a link to .size for whatever type filedata is
                 if ( prev_pos != filedata.size() )
+                    // Link to the substr method
                     string_cache[i] = filedata.substr(prev_pos);
                 else
                     string_cache[i] = "";
@@ -853,7 +870,9 @@ std::cout << "pointer_array[i]->get_attrib_group(): " << pointer_array[i]->get_a
                 string_cache[i] = filedata.substr(prev_pos, pos - prev_pos);
             }
 
+            // Link to the reset_data method
             pointer_array[i]->reset_data(string_cache[i].c_str());
+            // Link to the clone method
             pAttrib = pointer_array[i]->clone();    //HERE CREATED NEW CLASS INSTANCES.
             temp_vec_attrib.push_back(pAttrib);
         }
