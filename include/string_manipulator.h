@@ -120,19 +120,19 @@ public:
 
 
  *  stobj.set_truncater(-6, 2, true) : starting position = -6, extraction length = 2,
- * direction = forward.
+ *  direction = forward.
  *  stobj.manipulate ("JOHNSON") returns "OH";
 
  *  stobj.set_truncater(-6, 2, false) : starting position = -6, extraction length = 2,
- * direction = backward.
+ *  direction = backward.
  *  stobj.manipulate ("JOHNSON") returns "HO";
 
  *  stobj.set_truncater(4, 3, false) : starting position = 4, extraction length = 4,
- * direction = backward.
+ *  direction = backward.
  *  stobj.manipulate ("JOHNSON") returns "SNH";
 
  *  stobj.set_truncater(4, 0, false) : starting position = 4, extraction length = 0,
- * direction = backward.  --- read the Warning part.
+ *  direction = backward.  --- read the Warning part.
  *  stobj.manipulate ("JOHNSON") returns "";
  *
  */

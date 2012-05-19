@@ -78,11 +78,30 @@ public:
     }
 
   }
- 
+
+  void collapse_and_truncate() {
+
+    StringNoSpaceTruncate stobj;
+
+    {
+      stobj.set_truncater(-6, 2, true);
+      std::string johnson = stobj.manipulate("JOHN SON");
+      CPPUNIT_ASSERT(johnson == string("OH"));
+    }
+
+    {
+      stobj.set_truncater(-6, 2, true);
+      std::string johnson = stobj.manipulate(" JOHN SON ");
+      CPPUNIT_ASSERT(johnson == string("OH"));
+    }
+
+  }
+  
   void runTest() {
     CPPUNIT_ASSERT( 1  == 1 );
     remove_space();
     truncate();
+    collapse_and_truncate();
   }
 };
 
