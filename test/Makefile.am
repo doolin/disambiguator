@@ -2,7 +2,7 @@
 INCLUDES = ../include
 #LIBS = ../src
 
-TESTS = distest idtest typedefs record blocking attribute
+TESTS = distest idtest typedefs record blocking attribute stringmanipulator
 bin_PROGRAMS = $(TESTS)
 
 distest_SOURCES = test_initial.cpp
@@ -33,4 +33,9 @@ blocking_SOURCES = test_blocking.cpp
 blocking_CPPFLAGS = $(CPPUNIT_CFLAGS) -I$(INCLUDES)
 blocking_LDFLAGS = $(CPPUNIT_LIBS)  #-ldl
 blocking_LDADD = -L../src -ldisambiguation $(CPPUNIT_LIBS)
+
+stringmanipulator_SOURCES = test_string_manipulator.cpp
+stringmanipulator_CPPFLAGS = $(CPPUNIT_CFLAGS) -I$(INCLUDES)
+stringmanipulator_LDFLAGS = $(CPPUNIT_LIBS)  #-ldl
+stringmanipulator_LDADD = -L../src -ldisambiguation $(CPPUNIT_LIBS)
 
