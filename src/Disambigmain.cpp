@@ -166,7 +166,7 @@ int BlockingConfiguration::config_blocking( const char * filename, const string 
 	std::cout << std::endl;
 
 
-	vector < const cString_Manipulator *> pstring_oper;
+	vector < const StringManipulator *> pstring_oper;
 	vector < string > columns_for_blocking;
 	vector < unsigned int > data_indice_for_blocking;
 	for ( vector < BlockingConfiguration::cBlockingDetail >::const_iterator p = BlockingConfiguration::BlockingConfig.begin();
@@ -580,7 +580,7 @@ int Full_Disambiguation( const char * EngineConfigFile, const char * BlockingCon
 
 				//presort_columns.push_back(cClass::static_get_class_name());
 
-				const vector < const cString_Manipulator *> presort_strman( presort_columns.size(), &operator_no_change);
+				const vector < const StringManipulator *> presort_strman( presort_columns.size(), &operator_no_change);
 				const vector < unsigned int > presort_data_indice( presort_columns.size(), 0);
 
 				const cBlocking_Operation_Multiple_Column_Manipulate presort_blocker(presort_strman, presort_columns, presort_data_indice);

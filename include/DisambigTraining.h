@@ -114,10 +114,10 @@ protected:
 	map<string, cGroup_Value > blocking_data;
 	map < const Record *, const string *> record2blockingstring;
 	const vector <string> blocking_column_names;
-	const vector<const cString_Manipulator*> string_manipulator_pointers;
+	const vector<const StringManipulator*> string_manipulator_pointers;
 
 public:
-	explicit cBlocking(const list<const Record *> & psource, const vector<string> & blocking_column_names, const vector<const cString_Manipulator*>& pmanipulators, const string & unique_identifier );
+	explicit cBlocking(const list<const Record *> & psource, const vector<string> & blocking_column_names, const vector<const StringManipulator*>& pmanipulators, const string & unique_identifier );
 	const map<string, cGroup_Value > & get_block_map() const {return blocking_data;}
 };
 
@@ -141,19 +141,19 @@ private:
 		return  ( outer != datarange.end() && inner != datarange.end() &&  inner != outer );
 	}
 public:
-	typedef unsigned int(cBlocking_For_Training::*pFunc)(const string & block_id, const vector <unsigned int> & equal_indice, const vector<const cString_Manipulator*>& pmanipulators_equal,
-															const vector <unsigned int> &nonequal_indice, const vector<const cString_Manipulator*>& pmanipulators_nonequal, const bool is_firstround);
+	typedef unsigned int(cBlocking_For_Training::*pFunc)(const string & block_id, const vector <unsigned int> & equal_indice, const vector<const StringManipulator*>& pmanipulators_equal,
+															const vector <unsigned int> &nonequal_indice, const vector<const StringManipulator*>& pmanipulators_nonequal, const bool is_firstround);
 
 	explicit cBlocking_For_Training( const list < const Record *> & source, const vector<string> & blocking_column_names,
-									const vector<const cString_Manipulator*>& pmanipulators, const string & unique_identifier, const unsigned int qt);
-	unsigned int create_xset01_on_block(const string & block_id, const vector <unsigned int> & equal_indice, const vector<const cString_Manipulator*>& pmanipulators_equal,
-										const vector <unsigned int> &nonequal_indice, const vector<const cString_Manipulator*>& pmanipulators_nonequal, const bool is_firstround);
-	unsigned int create_tset05_on_block(const string & block_id, const vector <unsigned int> & equal_indice, const vector<const cString_Manipulator*>& pmanipulators_equal,
-											const vector <unsigned int> &nonequal_indice, const vector<const cString_Manipulator*>& pmanipulators_nonequal, const bool is_firstround);
-	unsigned int create_xset03_on_block(const string & block_id, const vector <unsigned int> & equal_indice, const vector<const cString_Manipulator*>& pmanipulators_equal,
-											const vector <unsigned int> &nonequal_indice, const vector<const cString_Manipulator*>& pmanipulators_nonequal, const bool is_firstround);
-	unsigned int create_set(pFunc mf, const vector <string> & equal_indice_names, const vector<const cString_Manipulator*>& pmanipulators_equal,
-									const vector <string> & nonequal_indice_names, const vector<const cString_Manipulator*>& pmanipulators_nonequal );
+									const vector<const StringManipulator*>& pmanipulators, const string & unique_identifier, const unsigned int qt);
+	unsigned int create_xset01_on_block(const string & block_id, const vector <unsigned int> & equal_indice, const vector<const StringManipulator*>& pmanipulators_equal,
+										const vector <unsigned int> &nonequal_indice, const vector<const StringManipulator*>& pmanipulators_nonequal, const bool is_firstround);
+	unsigned int create_tset05_on_block(const string & block_id, const vector <unsigned int> & equal_indice, const vector<const StringManipulator*>& pmanipulators_equal,
+											const vector <unsigned int> &nonequal_indice, const vector<const StringManipulator*>& pmanipulators_nonequal, const bool is_firstround);
+	unsigned int create_xset03_on_block(const string & block_id, const vector <unsigned int> & equal_indice, const vector<const StringManipulator*>& pmanipulators_equal,
+											const vector <unsigned int> &nonequal_indice, const vector<const StringManipulator*>& pmanipulators_nonequal, const bool is_firstround);
+	unsigned int create_set(pFunc mf, const vector <string> & equal_indice_names, const vector<const StringManipulator*>& pmanipulators_equal,
+									const vector <string> & nonequal_indice_names, const vector<const StringManipulator*>& pmanipulators_nonequal );
 	void print (std::ostream & os, const string & unique_record_id_name ) const;
 	void reset(const unsigned int num_cols);
 
@@ -164,15 +164,15 @@ private:
   map<string, cGroup_Value> ::iterator *piter;
   cBlocking_For_Training::pFunc func;
   const vector < string > & m_equal_indice_names;
-  const vector < const cString_Manipulator * > & m_pstringcontrol_equal;
+  const vector < const StringManipulator * > & m_pstringcontrol_equal;
   const vector < string > & m_non_equal_indice_names;
-  const vector < const cString_Manipulator * > & m_pstringcontrol_nonequal;
+  const vector < const StringManipulator * > & m_pstringcontrol_nonequal;
 
   static pthread_mutex_t iter_mutex;
  public:
   explicit cWorker_For_Training ( map < string, cGroup_Value>::iterator *inputiter, const cBlocking_For_Training::pFunc inputfun,
-				  const vector < string > & equal_indice_names, const vector < const cString_Manipulator * > & pmanipulators_equal, 
-				  const vector < string > & nonequal_indice_names, const vector < const cString_Manipulator * > & pmanipulators_nonequal )
+				  const vector < string > & equal_indice_names, const vector < const StringManipulator * > & pmanipulators_equal, 
+				  const vector < string > & nonequal_indice_names, const vector < const StringManipulator * > & pmanipulators_nonequal )
     : piter( inputiter ), func(inputfun), m_equal_indice_names(equal_indice_names), m_pstringcontrol_equal(pmanipulators_equal),
     m_non_equal_indice_names( nonequal_indice_names ), m_pstringcontrol_nonequal(pmanipulators_nonequal) {};
   ~cWorker_For_Training() {};

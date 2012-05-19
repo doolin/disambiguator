@@ -117,10 +117,10 @@ public:
  */
 class cBlocking_Operation_Column_Manipulate: public cBlocking_Operation {
 private:
-	const cString_Manipulator & sm;
+	const StringManipulator & sm;
 	const unsigned int column_index;
 public:
-	explicit cBlocking_Operation_Column_Manipulate(const cString_Manipulator & inputsm, const string & colname)
+	explicit cBlocking_Operation_Column_Manipulate(const StringManipulator & inputsm, const string & colname)
 			: sm(inputsm), column_index(Record::get_index_by_name(colname)) { infoless = delim;}
 	string extract_blocking_info(const Record * p) const {return sm.manipulate( * p->get_data_by_index(column_index).at(0));}
 	string extract_column_info ( const Record * p, unsigned int flag ) const { return extract_blocking_info(p);}
@@ -133,17 +133,17 @@ public:
  * This is a subclass of cBlocking_Operation, which extracts information from several columns and returns a block specifier string.
  *
  * Private:
- * 		vector < const cString_Manipulator * > vsm: the vector of string manipulator pointers.
+ * 		vector < const StringManipulator * > vsm: the vector of string manipulator pointers.
  * 		vector < unsigned int > indice: the vector of column indice from which the manipulators extract information, respectively.
  * 		vector < const unsigned int * > pdata_indice: the vector of the const interger pointers indicating the positions of data in the data vector in Attribute on which the extractions take place.
  *
  * Public:
- * 	cBlocking_Operation_Multiple_Column_Manipulate (const vector < const cString_Manipulator * > & inputvsm, const vector<string> & columnnames, const vector < unsigned int > & di )
+ * 	cBlocking_Operation_Multiple_Column_Manipulate (const vector < const StringManipulator * > & inputvsm, const vector<string> & columnnames, const vector < unsigned int > & di )
  * 		: This is a constructor of the class. inputvsm = the vector of string manipulator pointers
  * 			columnnames = the vector of strings which reprensents the name of columns that the extractions will be applied on, respectively.
  * 			di = the vector of indice in the Attribute::data, which will serve as the source string pointers.
  * 			NOTE: di SHOULD NOT BE DESTRUCTED BEFORE THE cBlocking_Operation_Multiple_Column_Manipulate object is discarded.
- * cBlocking_Operation_Multiple_Column_Manipulate (const cString_Manipulator * const* pinputvsm, const string * pcolumnnames, const unsigned int  * pdi, const unsigned int num_col ):
+ * cBlocking_Operation_Multiple_Column_Manipulate (const StringManipulator * const* pinputvsm, const string * pcolumnnames, const unsigned int  * pdi, const unsigned int num_col ):
  * 			This is another constructor of the class object. pinputvsm = pointer of the string manipulator pointers array
  * 			pcolumnnames = pointer of the strings array. pdi = pointer of the Attribute::data indice array. num_col = number of involed columns.
  * 			NOTE: pdi SHOULD NOT BE DESTRUCTED BEFORE THE cBlocking_Operation_Multiple_Column_Manipulate object is discarded.
@@ -158,7 +158,7 @@ public:
  * cString_NoSpace_Truncate nstobj; // create a space removal and string truncation string manipulator
  * nstobj.set_truncater(2, 4, true); // set the nstobj to truncate strings in the way such that the truncation starts from the 3rd char
  * 									// and grabs 4 chars (if exists) from the forward direction. ie. nstobj.manipulate("EXAMPLES") returns "AMPL"
- * vector < const cString_Manipulator * > vec_strman;	//initialize a string manipulator pointer vector
+ * vector < const StringManipulator * > vec_strman;	//initialize a string manipulator pointer vector
  * vec_strman.push_back( &rsobj );
  * vec_strman.push_back( &rsobj );
  * vec_strman.push_back( & nstobj ); // the vector now has 3 elements.
@@ -208,20 +208,20 @@ public:
 
 class cBlocking_Operation_Multiple_Column_Manipulate : public cBlocking_Operation {
 private:
-	vector < const cString_Manipulator * > vsm;
+	vector < const StringManipulator * > vsm;
 	vector < unsigned int > indice;
 	vector < string > attributes_names;
 	vector < unsigned int > pdata_indice;
 
 public:
-	cBlocking_Operation_Multiple_Column_Manipulate (const vector < const cString_Manipulator * > & inputvsm, const vector<string> & columnnames, const vector < unsigned int > & di );
-	cBlocking_Operation_Multiple_Column_Manipulate (const cString_Manipulator * const* pinputvsm, const string * pcolumnnames, const unsigned int  * pdi, const unsigned int num_col );
+	cBlocking_Operation_Multiple_Column_Manipulate (const vector < const StringManipulator * > & inputvsm, const vector<string> & columnnames, const vector < unsigned int > & di );
+	cBlocking_Operation_Multiple_Column_Manipulate (const StringManipulator * const* pinputvsm, const string * pcolumnnames, const unsigned int  * pdi, const unsigned int num_col );
 	string extract_blocking_info(const Record * p) const;
 	string extract_column_info ( const Record * p, unsigned int flag ) const;
 	unsigned int num_involved_columns() const { return vsm.size();}
 	void reset_data_indice( const vector < unsigned int > & indice );
 	const vector < string > & get_blocking_attribute_names() const { return attributes_names;}
-	const vector < const cString_Manipulator * > & get_blocking_string_manipulators() const { return vsm;}
+	const vector < const StringManipulator * > & get_blocking_string_manipulators() const { return vsm;}
 };
 
 class cCluster_Info;	//forward declaration.

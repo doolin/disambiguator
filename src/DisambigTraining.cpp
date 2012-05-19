@@ -14,7 +14,7 @@ extern "C" {
 
 cBlocking::cBlocking (const list<const Record *> & psource,
 						const vector<string> & blocking_column_names,
-						const vector<const cString_Manipulator*>& pmanipulators,
+						const vector<const StringManipulator*>& pmanipulators,
 						const string & unique_identifier)
 					: blocking_column_names(blocking_column_names), string_manipulator_pointers(pmanipulators){
 
@@ -67,7 +67,7 @@ cBlocking::cBlocking (const list<const Record *> & psource,
 }
 
 cBlocking_For_Training::cBlocking_For_Training( const list < const Record *> & source, const vector<string> & blocking_column_names,
-									const vector<const cString_Manipulator*>& pmanipulators, const string & unique_identifier, const unsigned int qt)
+									const vector<const StringManipulator*>& pmanipulators, const string & unique_identifier, const unsigned int qt)
 				: cBlocking ( source, blocking_column_names, pmanipulators, unique_identifier ), total_quota(qt) {
 	reset(blocking_column_names.size());
 }
@@ -135,9 +135,9 @@ void cBlocking_For_Training::print (std::ostream & os, const string & unique_rec
 
 unsigned int cBlocking_For_Training::create_xset01_on_block(const string & block_id,
 											 const vector <unsigned int> & equal_indice,
-											 const vector<const cString_Manipulator*>& pmanipulators_equal,
+											 const vector<const StringManipulator*>& pmanipulators_equal,
 											 const vector <unsigned int> &nonequal_indice,
-											 const vector<const cString_Manipulator*>& pmanipulators_nonequal,
+											 const vector<const StringManipulator*>& pmanipulators_nonequal,
 											 const bool is_firstround) {
 	map < string, cGroup_Value >::const_iterator pmap = blocking_data.find(block_id);
 	if ( pmap == blocking_data.end() )
@@ -280,9 +280,9 @@ unsigned int cBlocking_For_Training::create_xset01_on_block(const string & block
 
 unsigned int cBlocking_For_Training::create_tset05_on_block(const string & block_id,
 											 const vector <unsigned int> & equal_indice,
-											 const vector<const cString_Manipulator*>& pmanipulators_equal,
+											 const vector<const StringManipulator*>& pmanipulators_equal,
 											 const vector <unsigned int> &nonequal_indice,
-											 const vector<const cString_Manipulator*>& pmanipulators_nonequal,
+											 const vector<const StringManipulator*>& pmanipulators_nonequal,
 											 const bool is_firstround) {
 	map < string, cGroup_Value>::const_iterator pmap = blocking_data.find(block_id);
 	if ( pmap == blocking_data.end() )
@@ -382,9 +382,9 @@ unsigned int cBlocking_For_Training::create_tset05_on_block(const string & block
 
 unsigned int cBlocking_For_Training::create_set(pFunc mf,
 								 const vector <string> & equal_indice_names,
-								 const vector<const cString_Manipulator*>& pmanipulators_equal,
+								 const vector<const StringManipulator*>& pmanipulators_equal,
 								 const vector <string> &nonequal_indice_names,
-								 const vector<const cString_Manipulator*>& pmanipulators_nonequal) {
+								 const vector<const StringManipulator*>& pmanipulators_nonequal) {
 	if ( was_used )
 		throw cException_Other("This block has been used before. Cannot be used anymore.");
 	if ( equal_indice_names.size() != pmanipulators_equal.size() )
@@ -481,7 +481,7 @@ void find_rare_names_v2(const vector < cGroup_Value * > &vec_pdest, const list< 
 	const unsigned int num_columns_for_blocking = sizeof(blocks)/sizeof(string);
 	const vector <string> blocking_columns(blocks, blocks + num_columns_for_blocking);
 	const cString_Remain_Same do_not_change;
-	const vector <const cString_Manipulator *> blocking_operator_pointers( num_columns_for_blocking, &do_not_change);
+	const vector <const StringManipulator *> blocking_operator_pointers( num_columns_for_blocking, &do_not_change);
 	cBlocking fullname(source, blocking_columns, blocking_operator_pointers, cUnique_Record_ID::static_get_class_name());
 
 
@@ -671,9 +671,9 @@ unsigned int create_xset03(list <pointer_pairs> &results, 	const list <const Rec
 
 unsigned int cBlocking_For_Training::create_xset03_on_block(const string & block_id,
 											 const vector <unsigned int> & equal_indice,
-											 const vector<const cString_Manipulator*>& pmanipulators_equal,
+											 const vector<const StringManipulator*>& pmanipulators_equal,
 											 const vector <unsigned int> &nonequal_indice,
-											 const vector<const cString_Manipulator*>& pmanipulators_nonequal,
+											 const vector<const StringManipulator*>& pmanipulators_nonequal,
 											 const bool is_firstround) {
 	map < string, cGroup_Value >::const_iterator pmap = blocking_data.find(block_id);
 	if ( pmap == blocking_data.end() )
@@ -761,7 +761,7 @@ unsigned int create_xset01(list <pointer_pairs> &results, const list <const Reco
 	const unsigned int base = 100000;
 	cString_Remain_Same operator_no_change;
 	const vector <string> blocking_column_names(1, cPatent::static_get_class_name());
-	const vector < const cString_Manipulator*> pman(1, &operator_no_change);
+	const vector < const StringManipulator*> pman(1, &operator_no_change);
 	//const unsigned int fnidx = Record::get_index_by_name(cFirstname::static_get_class_name());
 	//const unsigned int lnidx = Record::get_index_by_name(cLastname::static_get_class_name());
 	cBlocking bl( source, blocking_column_names, pman, cPatent::static_get_class_name());

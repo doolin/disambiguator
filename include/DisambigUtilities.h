@@ -17,16 +17,16 @@ using std::string;
 using std::map;
 
 class Record;
-class cString_Manipulator;
+class StringManipulator;
 class cCluster_Set;
 class cRatios;
 
 
 bool make_changable_training_sets_by_patent(const list <const Record*> & record_pointers, const vector<string >& blocking_column_names,
-						const vector < const cString_Manipulator *> & pstring_oper, const unsigned int limit, const vector <string> & training_filenames);
+						const vector < const StringManipulator *> & pstring_oper, const unsigned int limit, const vector <string> & training_filenames);
 bool make_stable_training_sets_by_personal ( const list <Record> & all_records, const unsigned int limit, const vector <string> & training_filenames);
 bool make_changable_training_sets_by_assignee(const list <const Record*> & record_pointers, const vector<string >& blocking_column_names,
-						const vector < const cString_Manipulator *> & pstring_oper, const unsigned int limit, const vector <string> & training_filenames);
+						const vector < const StringManipulator *> & pstring_oper, const unsigned int limit, const vector <string> & training_filenames);
 int unique_inventors_per_period ( unsigned int starting_year, unsigned int interval, const char * wholedatabase, const char * disambigresult, const char * outputfile);
 void one_step_prostprocess( const list < Record > & all_records, const char * last_disambig_result, const char * outputfile);
 string remove_headtail_space( const string & s );

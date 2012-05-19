@@ -30,7 +30,7 @@ using std::set;
  * class. Look at the header file for more information.
  */
 cBlocking_Operation_Multiple_Column_Manipulate::cBlocking_Operation_Multiple_Column_Manipulate (
-    const vector < const cString_Manipulator * > & inputvsm, 
+    const vector < const StringManipulator * > & inputvsm, 
     const vector<string> & columnnames, 
     const vector < unsigned int > & di ) : vsm(inputvsm), attributes_names(columnnames) {
 
@@ -43,7 +43,7 @@ cBlocking_Operation_Multiple_Column_Manipulate::cBlocking_Operation_Multiple_Col
     }
 }
 
-cBlocking_Operation_Multiple_Column_Manipulate::cBlocking_Operation_Multiple_Column_Manipulate (const cString_Manipulator * const* pinputvsm, const string * pcolumnnames, const unsigned int  * pdi, const unsigned int num_col ) {
+cBlocking_Operation_Multiple_Column_Manipulate::cBlocking_Operation_Multiple_Column_Manipulate (const StringManipulator * const* pinputvsm, const string * pcolumnnames, const unsigned int  * pdi, const unsigned int num_col ) {
 
     for ( unsigned int i = 0; i < num_col; ++i ) {
         vsm.push_back(*pinputvsm++);
@@ -58,7 +58,7 @@ cBlocking_Operation_Multiple_Column_Manipulate::cBlocking_Operation_Multiple_Col
  * Aim: to extract blocking information from a record pointer and 
  * returns its blocking id string.
  * 
- * Algorithm: call the polymorphic methods by cString_Manipulator 
+ * Algorithm: call the polymorphic methods by StringManipulator 
  * pointers to create strings, and concatenate them.
  */
 string 
