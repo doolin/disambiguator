@@ -18,7 +18,7 @@ public:
   void remove_space() {
     std::string input("THIS IS AN   EXAMPLE  ");
     std::string target("THISISANEXAMPLE");
-    cString_Remove_Space * rc = new cString_Remove_Space();
+    StringRemoveSpace * rc = new StringRemoveSpace();
     std::string result = rc->manipulate(input);
     CPPUNIT_ASSERT(result == target);
     delete rc;

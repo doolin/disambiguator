@@ -25,7 +25,7 @@ using std::set;
  */
 
 string
-cString_Truncate::manipulate( const string & inputstring ) const {
+StringTruncate::manipulate( const string & inputstring ) const {
 
     if ( ! is_usable )
         throw cException_Blocking_Disabled("String Truncation not activated yet.");
@@ -50,7 +50,7 @@ cString_Truncate::manipulate( const string & inputstring ) const {
         source = &inputstring.at( begin + inputstring.size() );
     else {
         delete [] p;
-        throw cString_Truncate::cException_String_Truncation(inputstring.c_str());
+        throw StringTruncate::cException_String_Truncation(inputstring.c_str());
     }
 
     if ( is_forward) {
@@ -107,7 +107,7 @@ ExtractInitials::manipulate( const string & inputstring ) const {
  * Algorithm: STL string operations.
  */
 string 
-cString_Extract_FirstWord::manipulate( const string & inputstring ) const {
+StringExtractFirstWord::manipulate( const string & inputstring ) const {
 
     string res = inputstring.substr(0, inputstring.find(delimiter, 0));
     return res;

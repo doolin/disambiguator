@@ -22,7 +22,7 @@ namespace BlockingConfiguration {
 		unsigned int m_nchar;
 		bool m_isforward;
 		cBlockingDetail()  {
-			m_psm  = new cString_NoSpace_Truncate ;
+			m_psm  = new StringNoSpaceTruncate ;
 		}
 		cBlockingDetail ( const cBlockingDetail & rhs ) {
 			m_psm = rhs.m_psm->clone();

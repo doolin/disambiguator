@@ -155,7 +155,7 @@ public:
  * Example:
  *
  * StringRemoveSpace rsobj; //create a space removal string manipulator
- * cString_NoSpace_Truncate nstobj; // create a space removal and string truncation string manipulator
+ * StringNoSpaceTruncate nstobj; // create a space removal and string truncation string manipulator
  * nstobj.set_truncater(2, 4, true); // set the nstobj to truncate strings in the way such that the truncation starts from the 3rd char
  * 									// and grabs 4 chars (if exists) from the forward direction. ie. nstobj.manipulate("EXAMPLES") returns "AMPL"
  * vector < const StringManipulator * > vec_strman;	//initialize a string manipulator pointer vector

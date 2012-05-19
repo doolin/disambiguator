@@ -176,7 +176,7 @@ int BlockingConfiguration::config_blocking( const char * filename, const string 
 		columns_for_blocking.push_back(p->m_columnname);
 		data_indice_for_blocking.push_back(p->m_dataindex);
 
-		cString_Truncate * q = dynamic_cast< cString_Truncate *>(p->m_psm);
+		StringTruncate * q = dynamic_cast< StringTruncate *>(p->m_psm);
 		if ( q == NULL ) {
 			std::cout << "------> ATTENTION: STRING OPERATOR OF " << p->m_columnname << " CANNOT BE DYNAMICALLY CAST. SKIP THIS OPERATION." << std::endl;
 		}

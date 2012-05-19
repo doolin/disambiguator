@@ -9,7 +9,7 @@
  *     - StringRemainSame
  *     - StringRemoveSpace
  *     - StringTruncate
- *         -- cString_NoSpace_Truncate
+ *         -- StringNoSpaceTruncate
  *     - ExtractInitials
  *     - StringExtractFirstWord
  *
@@ -27,7 +27,8 @@
  *
  */
 
-class StringManipulator{
+class StringManipulator {
+
 private:
 
 public:
@@ -39,18 +40,18 @@ public:
     virtual StringManipulator * clone () const = 0;
 };
 
+
 /*
  * StringRemainSame:
  * As is indicated by the name, this class returns the raw string it obtains.
  *
  */
-
 class StringRemainSame : public StringManipulator {
+
 private:
     StringManipulator * clone () const { return new StringRemainSame(*this);}
 public:
     string manipulate(const string & inputstring ) const { return inputstring;}
-
 };
 
 
@@ -60,8 +61,8 @@ public:
  * i.e. Input = "THIS IS AN   EXAMPLE  ". Return value = "THISISANEXAMPLE".
  *
  */
-
 class StringRemoveSpace : public StringManipulator {
+
 private:
     static const char delimiter = ' ';
     StringManipulator * clone () const { return new StringRemoveSpace(*this);}
@@ -73,6 +74,7 @@ public:
     };
     explicit StringRemoveSpace(){};
 };
+
 
 /*
  * StringTruncate:
@@ -131,9 +133,8 @@ public:
  *  stobj.manipulate ("JOHNSON") returns "";
  *
  */
-
-
 class StringTruncate : public StringManipulator {
+
 private:
     int begin;
     unsigned int nchar;
@@ -157,17 +158,18 @@ public:
     string manipulate( const string & inputstring ) const;
 };
 
+
 /*
- * cString_NoSpace_Truncate:
+ * StringNoSpaceTruncate:
  * The functionality of the class is similar to the above StringTruncate.
  * The only difference is that it removes space first and then truncates as directed.
  *
  */
+class StringNoSpaceTruncate : public StringTruncate {
 
-class cString_NoSpace_Truncate: public StringTruncate {
 private:
     const StringRemoveSpace ns;
-    StringManipulator * clone () const { return new cString_NoSpace_Truncate(*this);}
+    StringManipulator * clone () const { return new StringNoSpaceTruncate(*this);}
 public:
     string manipulate ( const string & inputstring ) const {
         string temp = ns.manipulate(inputstring);
@@ -185,8 +187,8 @@ public:
  * eiobj.manipulate("THIS IS AN EXAMPLE, YOU KNOW.") returns "EYK".
  *
  */
-
 class ExtractInitials : public StringManipulator {
+
 private:
     const unsigned int starting_word;
     static const char delimiter = ' ';
@@ -204,8 +206,8 @@ public:
  * StringExtractFirstWord sefobj;
  * sefobj.manipulate("THOMAS DAVID ANDERSON") returns "THOMAS"
  */
-
 class StringExtractFirstWord : public StringManipulator {
+
 private:
     static const char delimiter = ' ';
     StringManipulator * clone () const { return new StringExtractFirstWord(*this);}
