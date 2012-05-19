@@ -16,6 +16,12 @@ class StringManipulatorTest : public CppUnit::TestCase {
 public: 
   StringManipulatorTest( std::string name ) : CppUnit::TestCase( name ) {}
 
+  // Postpone this until understanding what it does.
+  // Mark it as will not fix in Trac
+  void remain_same() {
+    StringRemainSame rs();
+  }
+
   void remove_space() {
     std::string input("THIS IS AN   EXAMPLE  ");
     std::string target("THISISANEXAMPLE");
@@ -96,12 +102,28 @@ public:
     }
 
   }
+
+  void extract_initials() {
+
+    ExtractInitials eiobj(3);
+    std::string result = eiobj.manipulate("THIS IS AN EXAMPLE, YOU KNOW.");
+    CPPUNIT_ASSERT(result == string("EYK"));
+  }
+
+  void extract_first_word() {
+
+    StringExtractFirstWord sefobj;
+    std::string thomas = sefobj.manipulate("THOMAS DAVID ANDERSON");
+    CPPUNIT_ASSERT(thomas == std::string("THOMAS"));
+  }
   
   void runTest() {
-    CPPUNIT_ASSERT( 1  == 1 );
+    remain_same();
     remove_space();
     truncate();
     collapse_and_truncate();
+    extract_initials();
+    extract_first_word();
   }
 };
 
