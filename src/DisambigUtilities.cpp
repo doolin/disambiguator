@@ -38,7 +38,7 @@ make_changable_training_sets_by_patent(const list <const Record*> & record_point
 	const string uid_identifier = cUnique_Record_ID::static_get_class_name();
 	cBlocking_For_Training bft (record_pointers, blocking_column_names, pstring_oper, uid_identifier, limit);
 
-	cString_Remain_Same donotchange;
+	StringRemainSame donotchange;
 	vector <const StringManipulator*> t_extract_equal, t_extract_nonequal, x_extract_equal, x_extract_nonequal;
 	x_extract_equal.push_back(& donotchange);
 	x_extract_nonequal.push_back(& donotchange);

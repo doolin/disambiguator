@@ -480,7 +480,7 @@ void find_rare_names_v2(const vector < cGroup_Value * > &vec_pdest, const list< 
 
 	const unsigned int num_columns_for_blocking = sizeof(blocks)/sizeof(string);
 	const vector <string> blocking_columns(blocks, blocks + num_columns_for_blocking);
-	const cString_Remain_Same do_not_change;
+	const StringRemainSame do_not_change;
 	const vector <const StringManipulator *> blocking_operator_pointers( num_columns_for_blocking, &do_not_change);
 	cBlocking fullname(source, blocking_columns, blocking_operator_pointers, cUnique_Record_ID::static_get_class_name());
 
@@ -759,7 +759,7 @@ unsigned int create_xset01(list <pointer_pairs> &results, const list <const Reco
 	results.clear();
 	unsigned int count = 0;
 	const unsigned int base = 100000;
-	cString_Remain_Same operator_no_change;
+	StringRemainSame operator_no_change;
 	const vector <string> blocking_column_names(1, cPatent::static_get_class_name());
 	const vector < const StringManipulator*> pman(1, &operator_no_change);
 	//const unsigned int fnidx = Record::get_index_by_name(cFirstname::static_get_class_name());

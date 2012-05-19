@@ -6,7 +6,7 @@
 
 /*
  * StringManipulator:
- *     - cString_Remain_Same
+ *     - StringRemainSame
  *     - cString_Remove_Space
  *     - cString_Truncate
  *         -- cString_NoSpace_Truncate
@@ -40,14 +40,14 @@ public:
 };
 
 /*
- * cString_Remain_Same:
+ * StringRemainSame:
  * As is indicated by the name, this class returns the raw string it obtains.
  *
  */
 
-class cString_Remain_Same : public StringManipulator {
+class StringRemainSame : public StringManipulator {
 private:
-    StringManipulator * clone () const { return new cString_Remain_Same(*this);}
+    StringManipulator * clone () const { return new StringRemainSame(*this);}
 public:
     string manipulate(const string & inputstring ) const { return inputstring;}
 

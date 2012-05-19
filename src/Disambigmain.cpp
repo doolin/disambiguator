@@ -570,7 +570,7 @@ int Full_Disambiguation( const char * EngineConfigFile, const char * BlockingCon
 			case 1:
 			{
 				vector <string> presort_columns;
-				cString_Remain_Same operator_no_change;
+				StringRemainSame operator_no_change;
 				presort_columns.push_back(cFirstname::static_get_class_name());
 				presort_columns.push_back(cLastname::static_get_class_name());
 				presort_columns.push_back(cAssignee::static_get_class_name());
