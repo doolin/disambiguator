@@ -104,9 +104,9 @@ public:
  * This is a subclass of cBlocking_Operation. Usage of the class is described in its base class.
  *
  * Example:
- * const cString_Truncate stobj (0, 3, true);
+ * const StringTruncate stobj (0, 3, true);
  * cBlocking_Operation_Column_Manipulate bocmobj ( stobj, cLastname::get_class_name() );
- * 		// set up a bocmobj instance of cBlocking_Operation_Column_Manipulate, which takes a cString_Truncate object as the string manipulater,
+ * 		// set up a bocmobj instance of cBlocking_Operation_Column_Manipulate, which takes a StringTruncate object as the string manipulater,
  * 		// and applies the string manipulation on the "Last name" column.
  * Assuming a record recobj: Firstname = "JOHN", lastname = "FLEMING", patent = "1234Q", Country = "CA", ... ...
  * bocmobj.extract_blocking_info( & recobj ) returns "FLE";

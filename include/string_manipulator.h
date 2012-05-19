@@ -8,10 +8,10 @@
  * StringManipulator:
  *     - StringRemainSame
  *     - StringRemoveSpace
- *     - cString_Truncate
+ *     - StringTruncate
  *         -- cString_NoSpace_Truncate
  *     - ExtractInitials
- *     - cString_Extract_FirstWord
+ *     - StringExtractFirstWord
  *
  * StringManipulator is a hierarchy of of string operation functors.
  * The reason to create such hierarchy is to allow polymorphism.
@@ -75,7 +75,7 @@ public:
 };
 
 /*
- * cString_Truncate:
+ * StringTruncate:
  * This class is more often used for string operation.
  * Understanding of the member is desirable.
  *
@@ -97,14 +97,14 @@ public:
  *
  *
  * Public:
- *     explicit cString_Truncate(): default constructor.
+ *     explicit StringTruncate(): default constructor.
  *  void set_truncater( const int inputbegin, const unsigned int inputnchar,
  * const bool inputforward): configure the object.
  *  string manipulate( const string & inputstring ) const:
  * implementation of the extraction operation. Defined in cpp file.
  *
  * Example:
- *  cString_Truncate stobj; //created an instance
+ *  StringTruncate stobj; //created an instance
  *  stobj.set_truncater(0, 5, true) : starting position = 0
  * (head of the string), extraction length = 5, direction = forward.
  *  stobj.manipulate ("ERIC") returns "ERIC".
@@ -133,7 +133,7 @@ public:
  */
 
 
-class cString_Truncate: public StringManipulator {
+class StringTruncate : public StringManipulator {
 private:
     int begin;
     unsigned int nchar;
@@ -144,9 +144,9 @@ private:
     public:
         cException_String_Truncation (const char * errmsg) : cAbstract_Exception(errmsg) {};
     };
-    StringManipulator * clone () const { return new cString_Truncate(*this);}
+    StringManipulator * clone () const { return new StringTruncate(*this);}
 public:
-    explicit cString_Truncate(): is_usable (false) {};
+    explicit StringTruncate(): is_usable (false) {};
     void set_truncater( const int inputbegin, const unsigned int inputnchar,
                         const bool inputforward) {
         begin = inputbegin;
@@ -159,19 +159,19 @@ public:
 
 /*
  * cString_NoSpace_Truncate:
- * The functionality of the class is similar to the above cString_Truncate.
+ * The functionality of the class is similar to the above StringTruncate.
  * The only difference is that it removes space first and then truncates as directed.
  *
  */
 
-class cString_NoSpace_Truncate: public cString_Truncate {
+class cString_NoSpace_Truncate: public StringTruncate {
 private:
     const StringRemoveSpace ns;
     StringManipulator * clone () const { return new cString_NoSpace_Truncate(*this);}
 public:
     string manipulate ( const string & inputstring ) const {
         string temp = ns.manipulate(inputstring);
-        return cString_Truncate::manipulate(temp);
+        return StringTruncate::manipulate(temp);
     }
 };
 
@@ -198,17 +198,17 @@ public:
 
 
 /*
- * cString_Extract_FirstWord:
+ * StringExtractFirstWord:
  * Extract the first word of the input string.
  *
- * cString_Extract_FirstWord sefobj;
+ * StringExtractFirstWord sefobj;
  * sefobj.manipulate("THOMAS DAVID ANDERSON") returns "THOMAS"
  */
 
-class cString_Extract_FirstWord : public StringManipulator {
+class StringExtractFirstWord : public StringManipulator {
 private:
     static const char delimiter = ' ';
-    StringManipulator * clone () const { return new cString_Extract_FirstWord(*this);}
+    StringManipulator * clone () const { return new StringExtractFirstWord(*this);}
 public:
     string manipulate (const string & inputstring ) const;
 };
