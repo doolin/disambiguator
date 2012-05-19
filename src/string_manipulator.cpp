@@ -78,7 +78,7 @@ const string cBlocking_Operation::delim = "##";
  * Algorithm: simple string manipulation in C.
  */
 string 
-cExtract_Initials::manipulate( const string & inputstring ) const {
+ExtractInitials::manipulate( const string & inputstring ) const {
 
     size_t pos, prev_pos;
     pos = prev_pos = 0;

@@ -10,7 +10,7 @@
  *     - StringRemoveSpace
  *     - cString_Truncate
  *         -- cString_NoSpace_Truncate
- *     - cExtract_Initials
+ *     - ExtractInitials
  *     - cString_Extract_FirstWord
  *
  * StringManipulator is a hierarchy of of string operation functors.
@@ -177,23 +177,23 @@ public:
 
 
 /*
- * cExtract_Initials:
+ * ExtractInitials:
  * Extract the initials from the string, starting from the (starting_word)th word.
  *
  * Example:
- * cExtract_Initials eiobj(3);    //create an instance eiobj, setting the starting_word = 3;
+ * ExtractInitials eiobj(3);    //create an instance eiobj, setting the starting_word = 3;
  * eiobj.manipulate("THIS IS AN EXAMPLE, YOU KNOW.") returns "EYK".
  *
  */
 
-class cExtract_Initials : public StringManipulator {
+class ExtractInitials : public StringManipulator {
 private:
     const unsigned int starting_word;
     static const char delimiter = ' ';
-    StringManipulator * clone () const { return new cExtract_Initials(*this);}
+    StringManipulator * clone () const { return new ExtractInitials(*this);}
 public:
     string manipulate (const string & inputstring ) const;
-    explicit cExtract_Initials (const unsigned int start ): starting_word(start) {};
+    explicit ExtractInitials (const unsigned int start ): starting_word(start) {};
 };
 
 
