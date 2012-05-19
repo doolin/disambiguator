@@ -1,3 +1,4 @@
+*.swp
 experiments/*
 stamp-h1
 install-sh

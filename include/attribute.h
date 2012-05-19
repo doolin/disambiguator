@@ -90,13 +90,20 @@ public:
  *            3. cLatitude
  *            3. cLongitude
  *            3. cAssignee
- *
- *    This is the base abstract class of all concrete attributes. Interfaces are designed, but the implementations are generally left for child classes.
- *    Usually the pointer of Attribute class is used, in order to achieve customized behaviors for each concrete classes ( Polymorphism ).
- *    The hierarchy of inheritance is shown above. Any newly introduced concrete class should choose one mode to inherit.
- *  Most concrete attributes fall into the template classes, so it is convenient to simply choose one of the mode and inherit it when a
- *  concrete class is introduced.
- *    All the concrete classes are declared in the file "DisambigCustomizedDefs.h" and implemented in "DisambigCustomizedDefs.cpp".
+ */
+
+/*
+ * This is the base abstract class of all concrete attributes.
+ * Interfaces are designed, but the implementations are generally left for child classes.
+ * Usually the pointer of Attribute class is used, in order to achieve
+ * customized behaviors for each concrete classes ( Polymorphism ).
+ * The hierarchy of inheritance is shown above. Any newly introduced
+ * concrete class should choose one mode to inherit.
+ * Most concrete attributes fall into the template classes, so it
+ * is convenient to simply choose one of the mode and inherit it when a
+ * concrete class is introduced.
+ * All the concrete classes are declared in the file "DisambigCustomizedDefs.h"
+ * and implemented in "DisambigCustomizedDefs.cpp".
  *
  *
  *    Member Functions:
@@ -105,7 +112,14 @@ public:
  *        2. virtual const Attribute * attrib_merge ( const Attribute & rhs) const: get the attribute pointer into which the two attributes are supposed to merge
  *    Public:
  *        3. virtual unsigned int compare(const Attribute & rhs) const = 0 ; Comparison function between two attributes to get a similarity score. Should be inplemented by child classes.
- *        4. virtual bool split_string(const char* ); This function reads external data and stores into the "data". Each template has a default implementation, but should be overidden if necessary.
+ *
+ * virtual bool split_string(const char* );
+ * This function reads external data and stores into the "data".
+ * Each template has a default implementation, but should be
+ * overidden if necessary.
+ */
+
+/* 
  *        5. virtual bool operator == ( const Attribute & rhs) const: exact comparison between two attributes. Has a default implementation but overidable.
  *        6. void reset_data(const char * inputstring): reset the attribute based on the inputstring. calls the polymorphic "split_string" function.
  *        7. virtual void config_interactive (const vector <const Attribute *> &inputvec ): handles the attribute with other linked ones. Returns the pointer of a configured attribute. Default implementation is throwing an error. Overide if necessary.
@@ -631,6 +645,7 @@ public:
             throw;
         }
     }
+
     bool split_string(const char* inputdata) {
         try {
             Attribute::split_string(inputdata);
@@ -649,6 +664,7 @@ public:
         //this->get_data_modifiable().insert(this->get_data_modifiable().begin(), this->add_string(raw));
         return true;
     }
+
     bool operator < ( const Attribute & rhs ) const { return this->attrib_set < dynamic_cast< const AttribType & >(rhs).attrib_set;}
 
     void print( std::ostream & os ) const {
