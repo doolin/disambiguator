@@ -396,7 +396,7 @@ void cReconfigurator_Coauthor :: reconfigure ( const Record * p ) const {
     static const unsigned int firstnameindex = Record::get_index_by_name(cFirstname::static_get_class_name());
     static const unsigned int lastnameindex = Record::get_index_by_name(cLastname::static_get_class_name());
     static const cString_Extract_FirstWord firstname_extracter;
-    static const cString_Remove_Space lastname_extracter;
+    static const StringRemoveSpace lastname_extracter;
 
     map < const Record *, cGroup_Value, cSort_by_attrib >::const_iterator cpm;
     cCoauthor temp;

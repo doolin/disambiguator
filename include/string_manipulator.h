@@ -7,7 +7,7 @@
 /*
  * StringManipulator:
  *     - StringRemainSame
- *     - cString_Remove_Space
+ *     - StringRemoveSpace
  *     - cString_Truncate
  *         -- cString_NoSpace_Truncate
  *     - cExtract_Initials
@@ -55,23 +55,23 @@ public:
 
 
 /*
- * cString_Remove_Space:
+ * StringRemoveSpace:
  * This class remove all the white spaces of the input string and returns a cleaned one.
  * i.e. Input = "THIS IS AN   EXAMPLE  ". Return value = "THISISANEXAMPLE".
  *
  */
 
-class cString_Remove_Space : public StringManipulator {
+class StringRemoveSpace : public StringManipulator {
 private:
     static const char delimiter = ' ';
-    StringManipulator * clone () const { return new cString_Remove_Space(*this);}
+    StringManipulator * clone () const { return new StringRemoveSpace(*this);}
 public:
     string manipulate( const string & inputstring ) const {
         string result = inputstring;
         result.erase(std::remove_if (result.begin(), result.end(), ::isspace), result.end() );
         return result;
     };
-    explicit cString_Remove_Space(){};
+    explicit StringRemoveSpace(){};
 };
 
 /*
@@ -166,7 +166,7 @@ public:
 
 class cString_NoSpace_Truncate: public cString_Truncate {
 private:
-    const cString_Remove_Space ns;
+    const StringRemoveSpace ns;
     StringManipulator * clone () const { return new cString_NoSpace_Truncate(*this);}
 public:
     string manipulate ( const string & inputstring ) const {

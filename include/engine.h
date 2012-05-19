@@ -154,7 +154,7 @@ public:
  *
  * Example:
  *
- * cString_Remove_Space rsobj; //create a space removal string manipulator
+ * StringRemoveSpace rsobj; //create a space removal string manipulator
  * cString_NoSpace_Truncate nstobj; // create a space removal and string truncation string manipulator
  * nstobj.set_truncater(2, 4, true); // set the nstobj to truncate strings in the way such that the truncation starts from the 3rd char
  * 									// and grabs 4 chars (if exists) from the forward direction. ie. nstobj.manipulate("EXAMPLES") returns "AMPL"
@@ -331,7 +331,7 @@ public:
  * 		const unsigned int middlename_index: index of middle name column in the record vector
  * 		const unsigned int lastname_index: index of last name column in the record vector
  * 		vector < string > east_asian: string of east asian country ids.
- * 		const cString_Remove_Space rmvsp: a sring manipulator. Perhaps not used here.
+ * 		const StringRemoveSpace rmvsp: a sring manipulator. Perhaps not used here.
  *
  * Public:
  * 		cReconfigurator_AsianNames(): constructor
@@ -380,7 +380,7 @@ private:
 	const unsigned int middlename_index;
 	const unsigned int lastname_index;
 	vector < string > east_asian;
-	const cString_Remove_Space rmvsp;
+	const StringRemoveSpace rmvsp;
 public:
 	cReconfigurator_AsianNames();
 	void reconfigure( const Record * ) const;
