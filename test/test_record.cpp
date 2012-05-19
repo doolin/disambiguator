@@ -15,7 +15,18 @@ public:
   RecordTest( std::string name ) : CppUnit::TestCase( name ) {}
 
   void attribute_record() {
-    const cFirstname * firstname = new cFirstname();
+    cFirstname * firstname  = new cFirstname("Foobar");
+    std::string tmp("bar");
+ 
+    firstname->reset_data(tmp.c_str());
+    const Attribute * pAttrib;
+
+    pAttrib = firstname->clone();
+
+    vector <const Attribute *> temp_vec_attrib;
+    temp_vec_attrib.push_back(pAttrib);
+    Record tmprec(temp_vec_attrib);
+
     //Record(const vector <const Attribute *> & input_vec);
     //const std::vector <const Attribute *> input_vec;
     //input_vec.push_back(firstname);
