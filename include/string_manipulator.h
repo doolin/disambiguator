@@ -107,12 +107,15 @@ public:
  *
  * Example:
  *  StringTruncate stobj; //created an instance
+
  *  stobj.set_truncater(0, 5, true) : starting position = 0
- * (head of the string), extraction length = 5, direction = forward.
+ *  (head of the string), extraction length = 5, direction = forward.
  *  stobj.manipulate ("ERIC") returns "ERIC".
  *  stobj.manipulate ("JOHNSON") returns "JOHNS";
+
+
  *  stobj.set_truncater(0, 0, true) : starting position = 0 (head of the string), 
-         extraction length = full length, direction = forward.
+ *  extraction length = full length, direction = forward.
  *  stobj.manipulate ("JOHNSON") returns "JOHNSON";
 
 
@@ -146,6 +149,7 @@ private:
         cException_String_Truncation (const char * errmsg) : cAbstract_Exception(errmsg) {};
     };
     StringManipulator * clone () const { return new StringTruncate(*this);}
+
 public:
     explicit StringTruncate(): is_usable (false) {};
     void set_truncater( const int inputbegin, const unsigned int inputnchar,
