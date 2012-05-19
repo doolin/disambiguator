@@ -2,6 +2,7 @@
 #ifndef PATENT_STRING_MANIPULATOR_H
 #define PATENT_STRING_MANIPULATOR_H
 
+#include <string>
 
 /*
  * cString_Manipulator:
@@ -24,6 +25,9 @@ class cString_Manipulator{
 private:
 
 public:
+	// Not the right way to do this. See, for example:
+	// http://steve-yegge.blogspot.com/2006/03/execution-in-kingdom-of-nouns.html
+	// Substitute "manipulate" for "execute" or "run" and there you have it.
 	virtual string manipulate(const string & inputstring) const = 0;
 	virtual ~cString_Manipulator() {};
 	virtual cString_Manipulator * clone () const = 0;
@@ -75,7 +79,9 @@ public:
  * bool is_forward: indicating the direction to truncation. true = forward ( left to right ), false = backward ( right to left )
  * bool is_usable: internal data of the class. false = the object is not prepared yet. true = ready to use.
  *
- *
+ */
+
+/*
  * WARNING: A COMBINATION OF NCHAR = 0 AND IS_FORWARD = FALSE WILL RETURN AN EMPTY STRING.
  *
  *
@@ -89,8 +95,11 @@ public:
  *  stobj.set_truncater(0, 5, true) : starting position = 0 (head of the string), extraction length = 5, direction = forward.
  *  stobj.manipulate ("ERIC") returns "ERIC".
  *  stobj.manipulate ("JOHNSON") returns "JOHNS";
- *  stobj.set_truncater(0, 0, true) : starting position = 0 (head of the string), extraction length = full length, direction = forward.
+ *  stobj.set_truncater(0, 0, true) : starting position = 0 (head of the string), 
+         extraction length = full length, direction = forward.
  *  stobj.manipulate ("JOHNSON") returns "JOHNSON";
+
+
  *  stobj.set_truncater(-6, 2, true) : starting position = -6, extraction length = 2, direction = forward.
  *  stobj.manipulate ("JOHNSON") returns "OH";
  *  stobj.set_truncater(-6, 2, false) : starting position = -6, extraction length = 2, direction = backward.
