@@ -1,15 +1,11 @@
-/*
- * txt2sqlite3.cpp
- *
- *  Created on: Mar 25, 2011
- *      Author: ysun
- */
 
-#include "txt2sqlite3.h"
 #include <iostream>
 #include <fstream>
 #include <cstring>
 #include <map>
+
+#include "txt2sqlite3.h"
+
 using std::string;
 using std::map;
 
@@ -17,13 +13,16 @@ static const char * primary_delim = "###";
 static const char * secondary_delim = ",";
 
 
-int main( const int argc, const char * argv[] ) {
+int 
+main( const int argc, const char * argv[] ) {
 
     if ( argc != 6 ) {
         std::cout << "Invalid number of parameters. Should be 5 parameters." << std::endl;
-        std::cout << "Usage: ./txt2sqlite3 target.sqlite3 tablename source.txt UNIQUE_RECORD_COLUMN_NAME UNIQUE_INVENTOR_COLUMN_NAME" << std::endl
-                << " ----------> dump the source.txt into target.sqlite3.table with unique_record_id = UNIQUE_RECORD_COLUMN_NAME" << std::endl
-                    <<    "  and unique_inventor_id = UNIQUE_INVENTOR_COLUMN_NAME." << std::endl;
+        std::cout << "Usage: ./txt2sqlite3 target.sqlite3 tablename source.txt "
+                  << "UNIQUE_RECORD_COLUMN_NAME UNIQUE_INVENTOR_COLUMN_NAME" << std::endl
+                  << " ----------> dump the source.txt into target.sqlite3.table with "
+                  << "unique_record_id = UNIQUE_RECORD_COLUMN_NAME" << std::endl
+                  <<    "  and unique_inventor_id = UNIQUE_INVENTOR_COLUMN_NAME." << std::endl;
         return 1;
     }
 
@@ -35,17 +34,22 @@ int main( const int argc, const char * argv[] ) {
 
     stepwise_add_column(targetsqlite3, tablename , sourcetxt, unique_record_id, unique_inventor_id);
 
-
     return 0;
 }
 
 
-bool stepwise_add_column ( const char * sqlite3_target, const char * tablename, const char * txt_source, const string & unique_record_name, const string & unique_inventor_name) {
-
+bool 
+stepwise_add_column (const char * sqlite3_target,
+                     const char * tablename,
+                     const char * txt_source,
+                     const string & unique_record_name,
+                     const string & unique_inventor_name) {
 
     sqlite3* pDB;
     int sqlres;
-    std::cout << "Dumping " << txt_source << " to file << " << sqlite3_target << " >>, tablename << " << tablename << " >> ......" << std::endl;
+    std::cout << "Dumping " << txt_source << " to file << "
+              << sqlite3_target << " >>, tablename << " << tablename
+              << " >> ......" << std::endl;
 
 
     sqlres = sqlite3_open_v2(sqlite3_target,&pDB,SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE ,NULL);
@@ -121,14 +125,16 @@ bool stepwise_add_column ( const char * sqlite3_target, const char * tablename, 
 
     sprintf( buffer, "CREATE TABLE %s ( %s) ;", tablename, unique_record_name.c_str());
     sqlres = sqlite3_exec(pDB, buffer, NULL, NULL, NULL);
+
     if ( SQLITE_OK != sqlres ) {
         //std::cout  << tablename << " already exists."<< std::endl;
         //return 2;
-    }
-    else {
+    } else {
+
         std::cout << tablename << " is created." << std::endl;
         sprintf ( buffer, "INSERT INTO %s VALUES (@KEY);", tablename );
         sqlres = sqlite3_prepare_v2(pDB,  buffer, -1, &statement, NULL);
+
         if ( sqlres != SQLITE_OK ) {
             std::cout << "Statement preparation error: " << buffer << std::endl;
             std::cout << "Maybe the table name is invalid." << std::endl;
@@ -136,7 +142,7 @@ bool stepwise_add_column ( const char * sqlite3_target, const char * tablename, 
         }
 
         sqlite3_exec(pDB, "BEGIN TRANSACTION;", NULL, NULL, NULL);
-        for ( map<string, string>::const_iterator cpm = update_dict.begin(); cpm != update_dict.end(); ++cpm) {
+        for (map<string, string>::const_iterator cpm = update_dict.begin(); cpm != update_dict.end(); ++cpm) {
             sqlite3_bind_text(statement, 1, cpm->first.c_str(), -1, SQLITE_TRANSIENT);
 
             sqlres = sqlite3_step(statement);
@@ -155,18 +161,23 @@ bool stepwise_add_column ( const char * sqlite3_target, const char * tablename, 
     }
 
 
-    sprintf(buffer, "CREATE UNIQUE INDEX IF NOT EXISTS index_%s_on_%s ON %s(%s) ;", unique_record_name.c_str(), tablename, tablename, unique_record_name.c_str() );
+    sprintf(buffer, "CREATE UNIQUE INDEX IF NOT EXISTS index_%s_on_%s ON %s(%s) ;",
+            unique_record_name.c_str(), tablename, tablename, unique_record_name.c_str() );
     sqlres = sqlite3_exec(pDB, buffer, NULL, NULL, NULL);
+
     if ( SQLITE_OK != sqlres ) {
         std::cout << "Column " << unique_record_name << " does not exist. Adding column ..........   ";
         sprintf(buffer, "ALTER TABLE %s ADD COLUMN %s ;", tablename, unique_record_name.c_str() );
         sqlres = sqlite3_exec(pDB, buffer, NULL, NULL, NULL);
+
         if ( SQLITE_OK != sqlres ) {
             std::cout <<  std::endl << " Error in adding column " << unique_record_name << std::endl;
             return 2;
         }
+
         std::cout << "Done." << std::endl;
-        sprintf(buffer, "CREATE INDEX IF NOT EXISTS index_%s_on_%s ON %s(%s) ;", unique_record_name.c_str(), tablename, tablename, unique_record_name.c_str() );
+        sprintf(buffer, "CREATE INDEX IF NOT EXISTS index_%s_on_%s ON %s(%s) ;",
+                unique_record_name.c_str(), tablename, tablename, unique_record_name.c_str() );
         sqlres = sqlite3_exec(pDB, buffer, NULL, NULL, NULL);
         if ( SQLITE_OK != sqlres ) {
             std::cout <<  " Error in adding index " << unique_record_name << std::endl;
@@ -175,19 +186,23 @@ bool stepwise_add_column ( const char * sqlite3_target, const char * tablename, 
     }
 
     sprintf(buffer, "SELECT %s from %s; ", unique_inventor_name.c_str(), tablename);
-    //sprintf(buffer, "CREATE INDEX IF NOT EXISTS index_%s_on_%s ON %s(%s) ;", unique_inventor_name.c_str(), tablename, tablename, unique_inventor_name.c_str() );
+    //sprintf(buffer, "CREATE INDEX IF NOT EXISTS index_%s_on_%s ON %s(%s) ;",
+    //        unique_inventor_name.c_str(), tablename, tablename, unique_inventor_name.c_str() );
     sqlres = sqlite3_exec(pDB, buffer, NULL, NULL, NULL);
+
     if ( SQLITE_OK != sqlres ) {
         std::cout << "Column " << unique_inventor_name << " does not exist. Adding column ..........   ";
         sprintf(buffer, "ALTER TABLE %s ADD COLUMN %s ;", tablename, unique_inventor_name.c_str() );
         sqlres = sqlite3_exec(pDB, buffer, NULL, NULL, NULL);
+
         if ( SQLITE_OK != sqlres ) {
             std::cout << std::endl << " Error in adding column " << unique_inventor_name << std::endl;
             return 2;
         }
         std::cout << "Done." << std::endl;
         /*
-        sprintf(buffer, "CREATE INDEX IF NOT EXISTS index_%s_on_%s ON %s(%s) ;", unique_inventor_name.c_str(), tablename, tablename, unique_inventor_name.c_str() );
+        sprintf(buffer, "CREATE INDEX IF NOT EXISTS index_%s_on_%s ON %s(%s) ;",
+                unique_inventor_name.c_str(), tablename, tablename, unique_inventor_name.c_str() );
         sqlres = sqlite3_exec(pDB, buffer, NULL, NULL, NULL);
         if ( SQLITE_OK != sqlres ) {
             std::cout <<  " Error in adding index " << unique_inventor_name << std::endl;
@@ -197,7 +212,8 @@ bool stepwise_add_column ( const char * sqlite3_target, const char * tablename, 
     }
 
 
-    sprintf(buffer, "UPDATE %s set %s = @VAL WHERE %s = @KEY;", tablename, unique_inventor_name.c_str(), unique_record_name.c_str());
+    sprintf(buffer, "UPDATE %s set %s = @VAL WHERE %s = @KEY;",
+            tablename, unique_inventor_name.c_str(), unique_record_name.c_str());
     sqlres = sqlite3_prepare_v2(pDB,  buffer, -1, &statement, NULL);
     if ( sqlres != SQLITE_OK ) {
         std::cout << "Statement preparation error: " << buffer << std::endl;
