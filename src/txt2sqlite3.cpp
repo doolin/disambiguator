@@ -13,6 +13,8 @@ using std::map;
 // TODO: Get rid of this later
 const unsigned int base = 100000;
 
+typedef map<string, string> Dictionary;
+
 bool
 build_pragmas(sqlite3 * pDB) {
 
@@ -37,7 +39,7 @@ build_pragmas(sqlite3 * pDB) {
 
 bool
 read_results(const char * txt_source,
-             map < string, string > & update_dict) {
+             Dictionary & update_dict) {
 
     std::ifstream instream(txt_source);
     static const char * primary_delim = "###";
@@ -60,7 +62,7 @@ read_results(const char * txt_source,
             prev_pos = pos + primary_delim_size;
 
             while ( ( pos = line.find(secondary_delim, prev_pos) )!= string::npos){
-                map < string, string >::iterator pm;
+                Dictionary::iterator pm;
                 string keystring = line.substr( prev_pos, pos - prev_pos);
                 pm = update_dict.find(keystring);
                 if ( pm != update_dict.end() ) {
@@ -99,8 +101,6 @@ stepwise_add_column (const char * sqlite3_target,
 
     sqlres = sqlite3_open_v2(sqlite3_target, &pDB,
              SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL);
-
-
     // See http://www.cplusplus.com/reference/iostream/ios/good/
     // and implement a check_result() function.
     if (SQLITE_OK != sqlres ) {
@@ -112,7 +112,8 @@ stepwise_add_column (const char * sqlite3_target,
     // the results. We'll fill it with values from the text
     // file created by the disambiguation, then write those
     // values into an sqlite database for convenience.
-    map < string, string > update_dict;
+    //map < string, string > update_dict;
+    Dictionary update_dict;
     // sync_with_stdio is static; we'll set it here for symmetry
     // with the reset a few lines below.
     std::ifstream::sync_with_stdio(false);
@@ -127,7 +128,7 @@ stepwise_add_column (const char * sqlite3_target,
     
     const unsigned int buff_size = 512;
     char buffer[buff_size];
-    sqlite3_stmt *statement;
+    sqlite3_stmt * statement;
 
 
     sprintf( buffer, "CREATE TABLE %s ( %s) ;", tablename, unique_record_name.c_str());
@@ -152,7 +153,8 @@ stepwise_add_column (const char * sqlite3_target,
 
         unsigned int count = 0;
         sqlite3_exec(pDB, "BEGIN TRANSACTION;", NULL, NULL, NULL);
-        for (map<string, string>::const_iterator cpm = update_dict.begin(); cpm != update_dict.end(); ++cpm) {
+        //for (map<string, string>::const_iterator cpm = update_dict.begin(); cpm != update_dict.end(); ++cpm) {
+        for (Dictionary::const_iterator cpm = update_dict.begin(); cpm != update_dict.end(); ++cpm) {
             sqlite3_bind_text(statement, 1, cpm->first.c_str(), -1, SQLITE_TRANSIENT);
 
             sqlres = sqlite3_step(statement);
@@ -244,7 +246,8 @@ stepwise_add_column (const char * sqlite3_target,
 
     sqlite3_exec(pDB, "BEGIN TRANSACTION;", NULL, NULL, NULL);
     unsigned int count = 0;
-    for ( map<string, string>::const_iterator cpm = update_dict.begin(); cpm != update_dict.end(); ++cpm) {
+    //for ( map<string, string>::const_iterator cpm = update_dict.begin(); cpm != update_dict.end(); ++cpm) {
+    for (Dictionary::const_iterator cpm = update_dict.begin(); cpm != update_dict.end(); ++cpm) {
 
         sqlite3_bind_text(statement, 2, cpm->first.c_str(), -1, SQLITE_TRANSIENT);
         sqlite3_bind_text(statement, 1, cpm->second.c_str(), -1, SQLITE_TRANSIENT);
