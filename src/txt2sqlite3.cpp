@@ -86,6 +86,49 @@ read_results(const char * txt_source,
 
 
 bool
+load_table(sqlite3 * pDB, const string & inventor,
+           const string & record, const char * tablename, Dictionary & update_dict) {
+
+    const unsigned int buff_size = 512;
+    char buffer[buff_size];
+    sqlite3_stmt * statement;
+
+    sprintf(buffer, "UPDATE %s set %s = @VAL WHERE %s = @KEY;",
+            tablename, inventor.c_str(), record.c_str());
+    int sqlres = sqlite3_prepare_v2(pDB, buffer, -1, &statement, NULL);
+
+    // All of these need to be moved to a check_result function,
+    // and errors handled with the sqlite error codes.
+    if ( sqlres != SQLITE_OK ) {
+        std::cout << "Statement preparation error: " << buffer << std::endl;
+        std::cout << "Maybe the table name is invalid." << std::endl;
+        return false;
+    }
+
+    sqlite3_exec(pDB, "BEGIN TRANSACTION;", NULL, NULL, NULL);
+    unsigned int count = 0;
+    for (Dictionary::const_iterator cpm = update_dict.begin(); cpm != update_dict.end(); ++cpm) {
+
+        sqlite3_bind_text(statement, 2, cpm->first.c_str(), -1, SQLITE_TRANSIENT);
+        sqlite3_bind_text(statement, 1, cpm->second.c_str(), -1, SQLITE_TRANSIENT);
+
+        sqlres = sqlite3_step(statement);
+        if ( sqlres != SQLITE_DONE ) {
+            std::cout << "Statement step error." << std::endl;
+            return false;
+        }
+        sqlite3_clear_bindings(statement);
+        sqlite3_reset(statement);
+        ++count;
+        if ( count % base == 0 )
+            std::cout << count << " records has been updated. " << std::endl;
+    }
+    sqlite3_exec(pDB, "END TRANSACTION;", NULL, NULL, NULL);
+    sqlite3_finalize(statement);
+}
+
+
+bool
 stepwise_add_column (const char * sqlite3_target,
                      const char * tablename,
                      const char * txt_source,
@@ -127,21 +170,23 @@ stepwise_add_column (const char * sqlite3_target,
     // TODO: Explain why we need PRAGMAs
     build_pragmas(pDB);    
 
+    // ^^^^^^^^^^^^^^ above is clean ^^^^^^^^^^
+
+    // Refactor all of this first, into table creation or something
     const unsigned int buff_size = 512;
     char buffer[buff_size];
     sqlite3_stmt * statement;
 
-
     sprintf( buffer, "CREATE TABLE %s ( %s) ;", tablename, unique_record_name.c_str());
     sqlres = sqlite3_exec(pDB, buffer, NULL, NULL, NULL);
-
 
     if ( SQLITE_OK != sqlres ) {
         //std::cout  << tablename << " already exists."<< std::endl;
         //return 2;
+    std::cout << "After else block..." << std::endl;
     } else {
 
-	//// TODO: Factor this out into its own function
+	//// TODO: Factor this out into its own function second
         std::cout << tablename << " is created." << std::endl;
         sprintf ( buffer, "INSERT INTO %s VALUES (@KEY);", tablename );
         sqlres = sqlite3_prepare_v2(pDB,  buffer, -1, &statement, NULL);
@@ -171,9 +216,13 @@ stepwise_add_column (const char * sqlite3_target,
         }
         sqlite3_exec(pDB, "END TRANSACTION;", NULL, NULL, NULL);
         std::cout << tablename << " is initialized." << std::endl;
-	//// End refactor
+	//// End second refactor
     }
+    std::cout << "Before finalize..." << std::endl;
     sqlite3_finalize(statement);
+    std::cout << "After finalize..." << std::endl;
+    // End first refactor
+
 
     /// Refactor into index creation function
     sprintf(buffer, "CREATE UNIQUE INDEX IF NOT EXISTS index_%s_on_%s ON %s(%s) ;",
@@ -199,10 +248,10 @@ stepwise_add_column (const char * sqlite3_target,
             return 3;
         }
     }
-    /// End refactor
+    /// End index refactor
 
 
-    // Probably refactor this one as well
+    // Column refactor
     sprintf(buffer, "SELECT %s from %s; ", unique_inventor_name.c_str(), tablename);
     //sprintf(buffer, "CREATE INDEX IF NOT EXISTS index_%s_on_%s ON %s(%s) ;",
     //        unique_inventor_name.c_str(), tablename, tablename, unique_inventor_name.c_str() );
@@ -220,6 +269,7 @@ stepwise_add_column (const char * sqlite3_target,
             return 2;
         }
         std::cout << "Done." << std::endl;
+
         /*
         sprintf(buffer, "CREATE INDEX IF NOT EXISTS index_%s_on_%s ON %s(%s) ;",
                 unique_inventor_name.c_str(), tablename, tablename, unique_inventor_name.c_str() );
@@ -230,45 +280,11 @@ stepwise_add_column (const char * sqlite3_target,
         }
         */
     }
-    // End of refactor
+    // End of column refactor
+ 
 
+    load_table(pDB, unique_inventor_name, unique_record_name, tablename, update_dict);
 
-    sqlite3_stmt * statement1;
-
-    sprintf(buffer, "UPDATE %s set %s = @VAL WHERE %s = @KEY;",
-            tablename, unique_inventor_name.c_str(), unique_record_name.c_str());
-    sqlres = sqlite3_prepare_v2(pDB,  buffer, -1, &statement1, NULL);
-
-    // All of these need to be moved to a check_result function,
-    // and errors handled with the sqlite error codes.
-    if ( sqlres != SQLITE_OK ) {
-        std::cout << "Statement preparation error: " << buffer << std::endl;
-        std::cout << "Maybe the table name is invalid." << std::endl;
-        return false;
-    }
-
-    sqlite3_exec(pDB, "BEGIN TRANSACTION;", NULL, NULL, NULL);
-    unsigned int count = 0;
-    //for ( map<string, string>::const_iterator cpm = update_dict.begin(); cpm != update_dict.end(); ++cpm) {
-    for (Dictionary::const_iterator cpm = update_dict.begin(); cpm != update_dict.end(); ++cpm) {
-
-        sqlite3_bind_text(statement1, 2, cpm->first.c_str(), -1, SQLITE_TRANSIENT);
-        sqlite3_bind_text(statement1, 1, cpm->second.c_str(), -1, SQLITE_TRANSIENT);
-
-        sqlres = sqlite3_step(statement1);
-        if ( sqlres != SQLITE_DONE ) {
-            std::cout << "Statement step error." << std::endl;
-            return false;
-        }
-        sqlite3_clear_bindings(statement1);
-        sqlite3_reset(statement1);
-        ++count;
-        if ( count % base == 0 )
-            std::cout << count << " records has been updated. " << std::endl;
-    }
-    sqlite3_exec(pDB, "END TRANSACTION;", NULL, NULL, NULL);
-
-    sqlite3_finalize(statement1);
     sqlite3_close(pDB);
 
     std::cout << "Dumping complete. " << std::endl;
