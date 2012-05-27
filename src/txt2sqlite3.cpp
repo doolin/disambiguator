@@ -1,4 +1,5 @@
 
+#include <stdlib.h>
 #include <iostream>
 #include <fstream>
 #include <cstring>
@@ -11,31 +12,6 @@ using std::map;
 
 static const char * primary_delim = "###";
 static const char * secondary_delim = ",";
-
-
-int 
-main( const int argc, const char * argv[] ) {
-
-    if ( argc != 6 ) {
-        std::cout << "Invalid number of parameters. Should be 5 parameters." << std::endl;
-        std::cout << "Usage: ./txt2sqlite3 target.sqlite3 tablename source.txt "
-                  << "UNIQUE_RECORD_COLUMN_NAME UNIQUE_INVENTOR_COLUMN_NAME" << std::endl
-                  << " ----------> dump the source.txt into target.sqlite3.table with "
-                  << "unique_record_id = UNIQUE_RECORD_COLUMN_NAME" << std::endl
-                  <<    "  and unique_inventor_id = UNIQUE_INVENTOR_COLUMN_NAME." << std::endl;
-        return 1;
-    }
-
-    const char * targetsqlite3 = argv[1];
-    const char * tablename = argv[2];
-    const char * sourcetxt = argv[3];
-    const string unique_record_id ( argv[4]);
-    const string unique_inventor_id( argv[5]);
-
-    stepwise_add_column(targetsqlite3, tablename , sourcetxt, unique_record_id, unique_inventor_id);
-
-    return 0;
-}
 
 
 bool 
@@ -247,4 +223,36 @@ stepwise_add_column (const char * sqlite3_target,
 
     std::cout << "Dumping complete. " << std::endl;
     return true;
+}
+
+
+void
+usage(const int argc) {
+
+  if (argc != 6) {
+
+    std::cout << "Invalid number of parameters. Should be 5 parameters." << std::endl;
+    std::cout << "Usage: ./txt2sqlite3 target.sqlite3 tablename source.txt "
+              << "UNIQUE_RECORD_COLUMN_NAME UNIQUE_INVENTOR_COLUMN_NAME" << std::endl
+              << " ----------> dump the source.txt into target.sqlite3.table with "
+              << "unique_record_id = UNIQUE_RECORD_COLUMN_NAME" << std::endl
+              <<    "  and unique_inventor_id = UNIQUE_INVENTOR_COLUMN_NAME." << std::endl;
+    exit(1);
+  }
+
+
+}
+
+int
+main( const int argc, const char * argv[] ) {
+
+    const char * targetsqlite3 = argv[1];
+    const char * tablename = argv[2];
+    const char * sourcetxt = argv[3];
+    const string unique_record_id ( argv[4]);
+    const string unique_inventor_id( argv[5]);
+
+    stepwise_add_column(targetsqlite3, tablename , sourcetxt, unique_record_id, unique_inventor_id);
+
+    return 0;
 }
