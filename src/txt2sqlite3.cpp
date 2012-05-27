@@ -17,12 +17,13 @@ static const char * secondary_delim = ",";
 bool
 build_pragmas(sqlite3 * pDB) {
 
-    const string commands [] = {"PRAGMA synchronous = OFF;",
-                                "PRAGMA cache_size = 8000; ",
-                                "PRAGMA temp_store = MEMORY; ",
-                                "PRAGMA journal_mode = MEMORY; ",
-                                "PRAGMA page_size = 8192; "
-                                };
+    const string commands [] = {
+        "PRAGMA synchronous = OFF;",
+        "PRAGMA cache_size = 8000; ",
+        "PRAGMA temp_store = MEMORY; ",
+        "PRAGMA journal_mode = MEMORY; ",
+        "PRAGMA page_size = 8192; "
+    };
 
     for ( unsigned int i = 0; i < sizeof(commands)/sizeof(string); ++i ) {
         int sqlres = sqlite3_exec(pDB, commands[i].c_str(), NULL, NULL, NULL);
@@ -42,7 +43,7 @@ stepwise_add_column (const char * sqlite3_target,
                      const string & unique_record_name,
                      const string & unique_inventor_name) {
 
-    sqlite3* pDB;
+    sqlite3 * pDB;
     int sqlres;
     std::cout << "Dumping " << txt_source << " to file << "
               << sqlite3_target << " >>, tablename << " << tablename
@@ -50,6 +51,7 @@ stepwise_add_column (const char * sqlite3_target,
 
 
     sqlres = sqlite3_open_v2(sqlite3_target,&pDB,SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE ,NULL);
+
     if (SQLITE_OK != sqlres ) {
         std::cout << "SQL DB open error." <<sqlres<< std::endl;
         return false;
