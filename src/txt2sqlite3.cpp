@@ -58,27 +58,28 @@ stepwise_add_column (const char * sqlite3_target,
     }
 
     std::ifstream::sync_with_stdio(false);
-    std::ifstream infile(txt_source);
+    std::ifstream instream(txt_source);
     const unsigned int primary_delim_size = strlen(primary_delim);
     const unsigned int secondary_delim_size = strlen(secondary_delim);
     map < string, string > update_dict;
     map < string, string >::iterator pm;
 
-    if (infile.good()) {
-        string filedata;
+    if (instream.good()) {
+
+        string line;
         register size_t pos, prev_pos;
-        while ( getline(infile, filedata)) {
+
+        while ( getline(instream, line)) {
             pos = prev_pos = 0;
-            pos = filedata.find(primary_delim, prev_pos);
-            string valuestring = filedata.substr( prev_pos, pos - prev_pos);
+            pos = line.find(primary_delim, prev_pos);
+            string valuestring = line.substr( prev_pos, pos - prev_pos);
             prev_pos = pos + primary_delim_size;
 
-            pos = filedata.find(primary_delim, prev_pos);
+            pos = line.find(primary_delim, prev_pos);
             prev_pos = pos + primary_delim_size;
 
-
-            while ( ( pos = filedata.find(secondary_delim, prev_pos) )!= string::npos){
-                string keystring = filedata.substr( prev_pos, pos - prev_pos);
+            while ( ( pos = line.find(secondary_delim, prev_pos) )!= string::npos){
+                string keystring = line.substr( prev_pos, pos - prev_pos);
                 pm = update_dict.find(keystring);
                 if ( pm != update_dict.end() ) {
                     std::cout << "Duplicate records: " << keystring << std::endl;
@@ -88,12 +89,14 @@ stepwise_add_column (const char * sqlite3_target,
                 prev_pos = pos + secondary_delim_size;
             }
         }
+
         std::cout << txt_source << " is ready to be dumped into "<< sqlite3_target << std::endl;
-    }
-    else {
+
+    } else {
         std::cout << "File not found: " << txt_source << std::endl;
         return false;
     }
+
     std::ifstream::sync_with_stdio(true);
 
     const unsigned int base = 100000;
