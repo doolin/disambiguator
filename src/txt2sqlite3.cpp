@@ -32,6 +32,7 @@ build_pragmas(sqlite3 * pDB) {
     }
 }
 
+
 static const char * primary_delim = "###";
 static const char * secondary_delim = ",";
 
@@ -99,11 +100,12 @@ stepwise_add_column (const char * sqlite3_target,
 	// This is crazy! The message reported back needs to be extracted
 	// from perror (or whatever stl uses), and not "File not found."
 	// .good() is a member of iostream, it's not file method.
+	// See for more information http://www.cplusplus.com/reference/iostream/ios/good/
         std::cout << "File not found: " << txt_source << std::endl;
         return false;
     }
+//////////////  End of refactor
 
-//////////////  
 
     // TODO: Get rid of the sync, use one or the other, it's simpler.
     std::ifstream::sync_with_stdio(true);
@@ -184,6 +186,8 @@ stepwise_add_column (const char * sqlite3_target,
     }
     /// End refactor
 
+
+    // Probably refactor this one as well
     sprintf(buffer, "SELECT %s from %s; ", unique_inventor_name.c_str(), tablename);
     //sprintf(buffer, "CREATE INDEX IF NOT EXISTS index_%s_on_%s ON %s(%s) ;",
     //        unique_inventor_name.c_str(), tablename, tablename, unique_inventor_name.c_str() );
@@ -209,22 +213,25 @@ stepwise_add_column (const char * sqlite3_target,
         }
         */
     }
+    // End of refactor
 
 
     sprintf(buffer, "UPDATE %s set %s = @VAL WHERE %s = @KEY;",
             tablename, unique_inventor_name.c_str(), unique_record_name.c_str());
     sqlres = sqlite3_prepare_v2(pDB,  buffer, -1, &statement, NULL);
+
+    // All of these need to be moved to a check_result function,
+    // and errors handled with the sqlite error codes.
     if ( sqlres != SQLITE_OK ) {
         std::cout << "Statement preparation error: " << buffer << std::endl;
         std::cout << "Maybe the table name is invalid." << std::endl;
         return false;
     }
 
-    //char *zSQL;
     count = 0;
-
     sqlite3_exec(pDB, "BEGIN TRANSACTION;", NULL, NULL, NULL);
     for ( map<string, string>::const_iterator cpm = update_dict.begin(); cpm != update_dict.end(); ++cpm) {
+
         sqlite3_bind_text(statement, 2, cpm->first.c_str(), -1, SQLITE_TRANSIENT);
         sqlite3_bind_text(statement, 1, cpm->second.c_str(), -1, SQLITE_TRANSIENT);
 
