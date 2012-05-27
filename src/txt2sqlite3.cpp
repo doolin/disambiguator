@@ -33,9 +33,6 @@ build_pragmas(sqlite3 * pDB) {
 }
 
 
-static const char * primary_delim = "###";
-static const char * secondary_delim = ",";
-
 
 bool 
 stepwise_add_column (const char * sqlite3_target,
@@ -67,6 +64,9 @@ stepwise_add_column (const char * sqlite3_target,
 
     std::ifstream::sync_with_stdio(false);
     std::ifstream instream(txt_source);
+
+    static const char * primary_delim = "###";
+    static const char * secondary_delim = ",";
     const unsigned int primary_delim_size = strlen(primary_delim);
     const unsigned int secondary_delim_size = strlen(secondary_delim);
 
@@ -196,6 +196,8 @@ stepwise_add_column (const char * sqlite3_target,
     //        unique_inventor_name.c_str(), tablename, tablename, unique_inventor_name.c_str() );
     sqlres = sqlite3_exec(pDB, buffer, NULL, NULL, NULL);
 
+    // This is essentially exception logic, very brittle.
+    // TODO: Rewrite the logic to test first.
     if ( SQLITE_OK != sqlres ) {
         std::cout << "Column " << unique_inventor_name << " does not exist. Adding column ..........   ";
         sprintf(buffer, "ALTER TABLE %s ADD COLUMN %s ;", tablename, unique_inventor_name.c_str() );
