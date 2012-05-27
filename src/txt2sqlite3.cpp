@@ -12,6 +12,7 @@ using std::map;
 
 // TODO: Get rid of this later
 const unsigned int base = 100000;
+const unsigned int buff_size = 512;
 
 typedef map<string, string> Dictionary;
 
@@ -37,9 +38,89 @@ build_pragmas(sqlite3 * pDB) {
 }
 
 
-void
-build_table() {
+bool
+build_table(sqlite3 * pDB, const string & unique_record_name,
+            const char * tablename, Dictionary & update_dict) {
 
+    char buffer[buff_size];
+
+    sprintf( buffer, "CREATE TABLE %s ( %s) ;", tablename, unique_record_name.c_str());
+    // When build_pragma runs, it does something with the pDB such
+    // that when the table name exists, stuff is skipped. The previous
+    // didn't do this, it always "worked" correctly.
+    int sqlres = sqlite3_exec(pDB, buffer, NULL, NULL, NULL);
+
+    if ( SQLITE_OK != sqlres ) {
+        std::cout  << tablename << " already exists."<< std::endl;
+        //return 2; // Do something more interesting here...
+    } else {
+
+	//// TODO: Factor this out into its own function second
+        sqlite3_stmt * statement;
+        std::cout << tablename << " is created." << std::endl;
+        sprintf ( buffer, "INSERT INTO %s VALUES (@KEY);", tablename );
+        sqlres = sqlite3_prepare_v2(pDB, buffer, -1, &statement, NULL);
+
+        if (sqlres != SQLITE_OK) {
+            std::cout << "Statement preparation error: " << buffer << std::endl;
+            std::cout << "Maybe the table name is invalid." << std::endl;
+            return false;
+        }
+
+        unsigned int count = 0;
+        sqlite3_exec(pDB, "BEGIN TRANSACTION;", NULL, NULL, NULL);
+        for (Dictionary::const_iterator cpm = update_dict.begin(); cpm != update_dict.end(); ++cpm) {
+            sqlite3_bind_text(statement, 1, cpm->first.c_str(), -1, SQLITE_TRANSIENT);
+
+            sqlres = sqlite3_step(statement);
+            if ( sqlres != SQLITE_DONE ) {
+                std::cout << "Statement step error." << std::endl;
+                return false;
+            }
+            sqlite3_clear_bindings(statement);
+            sqlite3_reset(statement);
+            ++count;
+            if ( count % base == 0 )
+                std::cout << count << " records has been initialized. " << std::endl;
+        }
+        sqlite3_exec(pDB, "END TRANSACTION;", NULL, NULL, NULL);
+        std::cout << tablename << " is initialized." << std::endl;
+	//// End second refactor
+        sqlite3_finalize(statement);
+    }
+}
+
+
+bool
+build_index(sqlite3 * pDB, const string & unique_record_name,
+            const char * tablename) {
+
+    /// Refactor into index creation function
+    char buffer[buff_size];
+    sprintf(buffer, "CREATE UNIQUE INDEX IF NOT EXISTS index_%s_on_%s ON %s(%s) ;",
+            unique_record_name.c_str(), tablename, tablename, unique_record_name.c_str() );
+    int sqlres = sqlite3_exec(pDB, buffer, NULL, NULL, NULL);
+
+    if ( SQLITE_OK != sqlres ) {
+        std::cout << "Column " << unique_record_name << " does not exist. Adding column ..........   ";
+        sprintf(buffer, "ALTER TABLE %s ADD COLUMN %s ;", tablename, unique_record_name.c_str() );
+        sqlres = sqlite3_exec(pDB, buffer, NULL, NULL, NULL);
+
+        if ( SQLITE_OK != sqlres ) {
+            std::cout <<  std::endl << " Error in adding column " << unique_record_name << std::endl;
+            return 2;
+        }
+
+        std::cout << "Done." << std::endl;
+        sprintf(buffer, "CREATE INDEX IF NOT EXISTS index_%s_on_%s ON %s(%s) ;",
+                unique_record_name.c_str(), tablename, tablename, unique_record_name.c_str() );
+        sqlres = sqlite3_exec(pDB, buffer, NULL, NULL, NULL);
+        if ( SQLITE_OK != sqlres ) {
+            std::cout <<  " Error in adding index " << unique_record_name << std::endl;
+            return 3;
+        }
+    }
+    /// End index refactor
 }
 
 
@@ -95,7 +176,6 @@ bool
 load_table(sqlite3 * pDB, const string & inventor,
            const string & record, const char * tablename, Dictionary & update_dict) {
 
-    const unsigned int buff_size = 512;
     char buffer[buff_size];
     sqlite3_stmt * statement;
 
@@ -166,6 +246,8 @@ stepwise_add_column (const char * sqlite3_target,
 
     // sync_with_stdio is static; we'll set it here for symmetry
     // with the reset a few lines below.
+    // This call should probably go first in this function,
+    // before initializing the db.
     std::ifstream::sync_with_stdio(false);
     bool result_val = read_results(txt_source, update_dict);
     if (result_val == false) return false;
@@ -178,89 +260,13 @@ stepwise_add_column (const char * sqlite3_target,
     // already present
     build_pragmas(pDB);    
 
-    build_table();
+    build_table(pDB, unique_record_name, tablename, update_dict);
 
-    ////////////////// Refactor all of this first, into table creation or something
-    const unsigned int buff_size = 512;
-    char buffer[buff_size];
-    //sqlite3_stmt * statement;
-
-    sprintf( buffer, "CREATE TABLE %s ( %s) ;", tablename, unique_record_name.c_str());
-    // When build_pragma runs, it does something with the pDB such
-    // that when the table name exists, stuff is skipped. The previous
-    // didn't do this, it always "worked" correctly.
-    sqlres = sqlite3_exec(pDB, buffer, NULL, NULL, NULL);
-
-    if ( SQLITE_OK != sqlres ) {
-        std::cout  << tablename << " already exists."<< std::endl;
-        //return 2; // Do something more interesting here...
-    } else {
-
-	//// TODO: Factor this out into its own function second
-        sqlite3_stmt * statement;
-        std::cout << tablename << " is created." << std::endl;
-        sprintf ( buffer, "INSERT INTO %s VALUES (@KEY);", tablename );
-        sqlres = sqlite3_prepare_v2(pDB, buffer, -1, &statement, NULL);
-
-        if (sqlres != SQLITE_OK) {
-            std::cout << "Statement preparation error: " << buffer << std::endl;
-            std::cout << "Maybe the table name is invalid." << std::endl;
-            return false;
-        }
-
-        unsigned int count = 0;
-        sqlite3_exec(pDB, "BEGIN TRANSACTION;", NULL, NULL, NULL);
-        //for (map<string, string>::const_iterator cpm = update_dict.begin(); cpm != update_dict.end(); ++cpm) {
-        for (Dictionary::const_iterator cpm = update_dict.begin(); cpm != update_dict.end(); ++cpm) {
-            sqlite3_bind_text(statement, 1, cpm->first.c_str(), -1, SQLITE_TRANSIENT);
-
-            sqlres = sqlite3_step(statement);
-            if ( sqlres != SQLITE_DONE ) {
-                std::cout << "Statement step error." << std::endl;
-                return false;
-            }
-            sqlite3_clear_bindings(statement);
-            sqlite3_reset(statement);
-            ++count;
-            if ( count % base == 0 )
-                std::cout << count << " records has been initialized. " << std::endl;
-        }
-        sqlite3_exec(pDB, "END TRANSACTION;", NULL, NULL, NULL);
-        std::cout << tablename << " is initialized." << std::endl;
-	//// End second refactor
-        sqlite3_finalize(statement);
-    }
-    /////////////// End first refactor
-
-
-    /// Refactor into index creation function
-    sprintf(buffer, "CREATE UNIQUE INDEX IF NOT EXISTS index_%s_on_%s ON %s(%s) ;",
-            unique_record_name.c_str(), tablename, tablename, unique_record_name.c_str() );
-    sqlres = sqlite3_exec(pDB, buffer, NULL, NULL, NULL);
-
-    if ( SQLITE_OK != sqlres ) {
-        std::cout << "Column " << unique_record_name << " does not exist. Adding column ..........   ";
-        sprintf(buffer, "ALTER TABLE %s ADD COLUMN %s ;", tablename, unique_record_name.c_str() );
-        sqlres = sqlite3_exec(pDB, buffer, NULL, NULL, NULL);
-
-        if ( SQLITE_OK != sqlres ) {
-            std::cout <<  std::endl << " Error in adding column " << unique_record_name << std::endl;
-            return 2;
-        }
-
-        std::cout << "Done." << std::endl;
-        sprintf(buffer, "CREATE INDEX IF NOT EXISTS index_%s_on_%s ON %s(%s) ;",
-                unique_record_name.c_str(), tablename, tablename, unique_record_name.c_str() );
-        sqlres = sqlite3_exec(pDB, buffer, NULL, NULL, NULL);
-        if ( SQLITE_OK != sqlres ) {
-            std::cout <<  " Error in adding index " << unique_record_name << std::endl;
-            return 3;
-        }
-    }
-    /// End index refactor
+    build_index(pDB, unique_record_name, tablename);
 
 
     // Column refactor
+    char buffer[buff_size];
     sprintf(buffer, "SELECT %s from %s; ", unique_inventor_name.c_str(), tablename);
     //sprintf(buffer, "CREATE INDEX IF NOT EXISTS index_%s_on_%s ON %s(%s) ;",
     //        unique_inventor_name.c_str(), tablename, tablename, unique_inventor_name.c_str() );
