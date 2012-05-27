@@ -76,13 +76,7 @@ stepwise_add_column (const char * sqlite3_target,
     const unsigned int base = 100000;
     unsigned int count = 0;
 
-
-
-    const unsigned int buff_size = 512;
-    char buffer[buff_size];
-    sqlite3_stmt *statement;
-
-    const string commands [] = { "PRAGMA synchronous = OFF;",
+    const string commands [] = {"PRAGMA synchronous = OFF;",
                                 "PRAGMA cache_size = 8000; ",
                                 "PRAGMA temp_store = MEMORY; ",
                                 "PRAGMA journal_mode = MEMORY; ",
@@ -97,6 +91,10 @@ stepwise_add_column (const char * sqlite3_target,
             std::cout << "Success: ";
         std::cout << commands[i] << std::endl;
     }
+
+    const unsigned int buff_size = 512;
+    char buffer[buff_size];
+    sqlite3_stmt *statement;
 
 
     sprintf( buffer, "CREATE TABLE %s ( %s) ;", tablename, unique_record_name.c_str());
