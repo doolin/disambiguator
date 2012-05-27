@@ -14,6 +14,27 @@ static const char * primary_delim = "###";
 static const char * secondary_delim = ",";
 
 
+bool
+build_pragmas(sqlite3 * pDB) {
+
+    const string commands [] = {"PRAGMA synchronous = OFF;",
+                                "PRAGMA cache_size = 8000; ",
+                                "PRAGMA temp_store = MEMORY; ",
+                                "PRAGMA journal_mode = MEMORY; ",
+                                "PRAGMA page_size = 8192; "
+                                };
+
+    for ( unsigned int i = 0; i < sizeof(commands)/sizeof(string); ++i ) {
+        int sqlres = sqlite3_exec(pDB, commands[i].c_str(), NULL, NULL, NULL);
+        if ( SQLITE_OK != sqlres )
+            std::cout << "Failed: ";
+        else
+            std::cout << "Success: ";
+        std::cout << commands[i] << std::endl;
+    }
+}
+
+
 bool 
 stepwise_add_column (const char * sqlite3_target,
                      const char * tablename,
@@ -76,22 +97,8 @@ stepwise_add_column (const char * sqlite3_target,
     const unsigned int base = 100000;
     unsigned int count = 0;
 
-    const string commands [] = {"PRAGMA synchronous = OFF;",
-                                "PRAGMA cache_size = 8000; ",
-                                "PRAGMA temp_store = MEMORY; ",
-                                "PRAGMA journal_mode = MEMORY; ",
-                                "PRAGMA page_size = 8192; "
-                                };
-
-    for ( unsigned int i = 0; i < sizeof(commands)/sizeof(string); ++i ) {
-        sqlres = sqlite3_exec(pDB, commands[i].c_str(), NULL, NULL, NULL);
-        if ( SQLITE_OK != sqlres )
-            std::cout << "Failed: ";
-        else
-            std::cout << "Success: ";
-        std::cout << commands[i] << std::endl;
-    }
-
+    build_pragmas(pDB);    
+    
     const unsigned int buff_size = 512;
     char buffer[buff_size];
     sqlite3_stmt *statement;
