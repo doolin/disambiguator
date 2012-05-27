@@ -53,13 +53,16 @@ stepwise_add_column (const char * sqlite3_target,
 
     sqlres = sqlite3_open_v2(sqlite3_target,&pDB,SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE ,NULL);
 
+
+    // See http://www.cplusplus.com/reference/iostream/ios/good/
+    // and implement a check_result() function.
     if (SQLITE_OK != sqlres ) {
         std::cout << "SQL DB open error." <<sqlres<< std::endl;
         return false;
     }
 
 
-/////////  Probably most of this can be factored out.
+    /////////  Probably most of this can be factored out.
     map < string, string > update_dict;
 
     std::ifstream::sync_with_stdio(false);
@@ -104,7 +107,7 @@ stepwise_add_column (const char * sqlite3_target,
         std::cout << "File not found: " << txt_source << std::endl;
         return false;
     }
-//////////////  End of refactor
+    //////////////  End of refactor
 
 
     // TODO: Get rid of the sync, use one or the other, it's simpler.
@@ -269,9 +272,8 @@ usage(const int argc) {
               <<    "  and unique_inventor_id = UNIQUE_INVENTOR_COLUMN_NAME." << std::endl;
     exit(1);
   }
-
-
 }
+
 
 int
 main( const int argc, const char * argv[] ) {
@@ -281,6 +283,8 @@ main( const int argc, const char * argv[] ) {
     const char * sourcetxt = argv[3];
     const string unique_record_id ( argv[4]);
     const string unique_inventor_id( argv[5]);
+
+    usage(argc);
 
     stepwise_add_column(targetsqlite3, tablename , sourcetxt, unique_record_id, unique_inventor_id);
 
