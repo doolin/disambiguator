@@ -34,7 +34,7 @@ bin_PROGRAMS = disambiguate txt2sqlite3
 disambiguate_SOURCES = main.cpp 
 disambiguate_CPPFLAGS = -O0 -pg  -Wall -fno-inline $(INCLUDES) -DIL_STD -L/usr/local/lib -DNDEBUG -w -finstrument-functions-exclude-file-list=iostream.h,string.h,vector.h
 #disambiguate_LDFLAGS = -L$(CPLEXLIB) -lilocplex -lcplex -L$(CONCERTLIB) -lconcert
-disambiguate_LDFLAGS = -pg -a -O0
+disambiguate_LDFLAGS = -pg  -O0
 disambiguate_LDADD = libdisambiguation.a -L$(CPLEXLIB) -lilocplex -lcplex -L$(CONCERTLIB) -lconcert
 #disambiguate_LDADD   = ilocplex
 
