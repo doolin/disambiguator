@@ -59,12 +59,12 @@ stepwise_add_column (const char * sqlite3_target,
 
 
 /////////  Probably most of this can be factored out.
+    map < string, string > update_dict;
+
     std::ifstream::sync_with_stdio(false);
     std::ifstream instream(txt_source);
     const unsigned int primary_delim_size = strlen(primary_delim);
     const unsigned int secondary_delim_size = strlen(secondary_delim);
-    map < string, string > update_dict;
-    map < string, string >::iterator pm;
 
     if (instream.good()) {
 
@@ -81,6 +81,7 @@ stepwise_add_column (const char * sqlite3_target,
             prev_pos = pos + primary_delim_size;
 
             while ( ( pos = line.find(secondary_delim, prev_pos) )!= string::npos){
+                map < string, string >::iterator pm;
                 string keystring = line.substr( prev_pos, pos - prev_pos);
                 pm = update_dict.find(keystring);
                 if ( pm != update_dict.end() ) {
