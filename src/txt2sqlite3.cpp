@@ -10,9 +10,6 @@
 using std::string;
 using std::map;
 
-static const char * primary_delim = "###";
-static const char * secondary_delim = ",";
-
 
 bool
 build_pragmas(sqlite3 * pDB) {
@@ -34,6 +31,9 @@ build_pragmas(sqlite3 * pDB) {
         std::cout << commands[i] << std::endl;
     }
 }
+
+static const char * primary_delim = "###";
+static const char * secondary_delim = ",";
 
 
 bool 
@@ -57,6 +57,8 @@ stepwise_add_column (const char * sqlite3_target,
         return false;
     }
 
+
+/////////  Probably most of this can be factored out.
     std::ifstream::sync_with_stdio(false);
     std::ifstream instream(txt_source);
     const unsigned int primary_delim_size = strlen(primary_delim);
@@ -93,10 +95,16 @@ stepwise_add_column (const char * sqlite3_target,
         std::cout << txt_source << " is ready to be dumped into "<< sqlite3_target << std::endl;
 
     } else {
+	// This is crazy! The message reported back needs to be extracted
+	// from perror (or whatever stl uses), and not "File not found."
+	// .good() is a member of iostream, it's not file method.
         std::cout << "File not found: " << txt_source << std::endl;
         return false;
     }
 
+//////////////  
+
+    // TODO: Get rid of the sync, use one or the other, it's simpler.
     std::ifstream::sync_with_stdio(true);
 
     const unsigned int base = 100000;
@@ -117,6 +125,7 @@ stepwise_add_column (const char * sqlite3_target,
         //return 2;
     } else {
 
+	//// TODO: Factor this out into its own function
         std::cout << tablename << " is created." << std::endl;
         sprintf ( buffer, "INSERT INTO %s VALUES (@KEY);", tablename );
         sqlres = sqlite3_prepare_v2(pDB,  buffer, -1, &statement, NULL);
@@ -144,9 +153,11 @@ stepwise_add_column (const char * sqlite3_target,
         }
         sqlite3_exec(pDB, "END TRANSACTION;", NULL, NULL, NULL);
         std::cout << tablename << " is initialized." << std::endl;
+	//// End refactor
     }
 
 
+    /// Refactor into index creation function
     sprintf(buffer, "CREATE UNIQUE INDEX IF NOT EXISTS index_%s_on_%s ON %s(%s) ;",
             unique_record_name.c_str(), tablename, tablename, unique_record_name.c_str() );
     sqlres = sqlite3_exec(pDB, buffer, NULL, NULL, NULL);
@@ -170,6 +181,7 @@ stepwise_add_column (const char * sqlite3_target,
             return 3;
         }
     }
+    /// End refactor
 
     sprintf(buffer, "SELECT %s from %s; ", unique_inventor_name.c_str(), tablename);
     //sprintf(buffer, "CREATE INDEX IF NOT EXISTS index_%s_on_%s ON %s(%s) ;",
@@ -226,8 +238,8 @@ stepwise_add_column (const char * sqlite3_target,
         if ( count % base == 0 )
             std::cout << count << " records has been updated. " << std::endl;
     }
-
     sqlite3_exec(pDB, "END TRANSACTION;", NULL, NULL, NULL);
+
     sqlite3_finalize(statement);
     sqlite3_close(pDB);
 
