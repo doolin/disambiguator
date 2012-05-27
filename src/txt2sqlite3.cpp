@@ -125,6 +125,13 @@ build_index(sqlite3 * pDB, const string & unique_record_name,
 
 
 bool
+build_column(sqlite3 * pDB, const string & unique_record_name,
+             const char * tablename) {
+
+}
+
+
+bool
 read_results(const char * txt_source,
              Dictionary & update_dict) {
 
@@ -264,6 +271,8 @@ stepwise_add_column (const char * sqlite3_target,
 
     build_index(pDB, unique_record_name, tablename);
 
+    build_column(pDB, unique_record_name, tablename);
+
 
     // Column refactor
     char buffer[buff_size];
@@ -297,7 +306,6 @@ stepwise_add_column (const char * sqlite3_target,
         */
     }
     // End of column refactor
- 
 
     load_table(pDB, unique_inventor_name, unique_record_name, tablename, update_dict);
     sqlite3_close(pDB);
