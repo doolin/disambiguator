@@ -15,7 +15,7 @@ const unsigned int base = 100000;
 
 typedef map<string, string> Dictionary;
 
-bool
+void
 build_pragmas(sqlite3 * pDB) {
 
     const string commands [] = {
@@ -26,7 +26,7 @@ build_pragmas(sqlite3 * pDB) {
         "PRAGMA page_size = 8192; "
     };
 
-    for ( unsigned int i = 0; i < sizeof(commands)/sizeof(string); ++i ) {
+    for (unsigned int i = 0; i < sizeof(commands)/sizeof(string); ++i) {
         int sqlres = sqlite3_exec(pDB, commands[i].c_str(), NULL, NULL, NULL);
         if ( SQLITE_OK != sqlres )
             std::cout << "Failed: ";
@@ -34,6 +34,12 @@ build_pragmas(sqlite3 * pDB) {
             std::cout << "Success: ";
         std::cout << commands[i] << std::endl;
     }
+}
+
+
+void
+build_table() {
+
 }
 
 
@@ -52,7 +58,7 @@ read_results(const char * txt_source,
         string line;
         register size_t pos, prev_pos;
 
-        while ( getline(instream, line)) {
+        while (getline(instream, line)) {
             pos = prev_pos = 0;
             pos = line.find(primary_delim, prev_pos);
             string valuestring = line.substr( prev_pos, pos - prev_pos);
@@ -61,11 +67,11 @@ read_results(const char * txt_source,
             pos = line.find(primary_delim, prev_pos);
             prev_pos = pos + primary_delim_size;
 
-            while ( ( pos = line.find(secondary_delim, prev_pos) )!= string::npos){
+            while ((pos = line.find(secondary_delim, prev_pos)) != string::npos) {
                 Dictionary::iterator pm;
                 string keystring = line.substr( prev_pos, pos - prev_pos);
                 pm = update_dict.find(keystring);
-                if ( pm != update_dict.end() ) {
+                if (pm != update_dict.end() ) {
                     std::cout << "Duplicate records: " << keystring << std::endl;
                     return false;
                 }
@@ -168,30 +174,35 @@ stepwise_add_column (const char * sqlite3_target,
     std::ifstream::sync_with_stdio(true);
 
     // TODO: Explain why we need PRAGMAs
+    // FIXME: currently induces segfault below if db is
+    // already present
     build_pragmas(pDB);    
 
-    // ^^^^^^^^^^^^^^ above is clean ^^^^^^^^^^
+    build_table();
 
-    // Refactor all of this first, into table creation or something
+    ////////////////// Refactor all of this first, into table creation or something
     const unsigned int buff_size = 512;
     char buffer[buff_size];
-    sqlite3_stmt * statement;
+    //sqlite3_stmt * statement;
 
     sprintf( buffer, "CREATE TABLE %s ( %s) ;", tablename, unique_record_name.c_str());
+    // When build_pragma runs, it does something with the pDB such
+    // that when the table name exists, stuff is skipped. The previous
+    // didn't do this, it always "worked" correctly.
     sqlres = sqlite3_exec(pDB, buffer, NULL, NULL, NULL);
 
     if ( SQLITE_OK != sqlres ) {
-        //std::cout  << tablename << " already exists."<< std::endl;
-        //return 2;
-    std::cout << "After else block..." << std::endl;
+        std::cout  << tablename << " already exists."<< std::endl;
+        //return 2; // Do something more interesting here...
     } else {
 
 	//// TODO: Factor this out into its own function second
+        sqlite3_stmt * statement;
         std::cout << tablename << " is created." << std::endl;
         sprintf ( buffer, "INSERT INTO %s VALUES (@KEY);", tablename );
-        sqlres = sqlite3_prepare_v2(pDB,  buffer, -1, &statement, NULL);
+        sqlres = sqlite3_prepare_v2(pDB, buffer, -1, &statement, NULL);
 
-        if ( sqlres != SQLITE_OK ) {
+        if (sqlres != SQLITE_OK) {
             std::cout << "Statement preparation error: " << buffer << std::endl;
             std::cout << "Maybe the table name is invalid." << std::endl;
             return false;
@@ -217,11 +228,9 @@ stepwise_add_column (const char * sqlite3_target,
         sqlite3_exec(pDB, "END TRANSACTION;", NULL, NULL, NULL);
         std::cout << tablename << " is initialized." << std::endl;
 	//// End second refactor
+        sqlite3_finalize(statement);
     }
-    std::cout << "Before finalize..." << std::endl;
-    sqlite3_finalize(statement);
-    std::cout << "After finalize..." << std::endl;
-    // End first refactor
+    /////////////// End first refactor
 
 
     /// Refactor into index creation function
@@ -275,7 +284,8 @@ stepwise_add_column (const char * sqlite3_target,
                 unique_inventor_name.c_str(), tablename, tablename, unique_inventor_name.c_str() );
         sqlres = sqlite3_exec(pDB, buffer, NULL, NULL, NULL);
         if ( SQLITE_OK != sqlres ) {
-            std::cout <<  " Error in adding index " << unique_inventor_name << std::endl;
+            std::cout <<  " Error in adding index "
+                      << unique_inventor_name << std::endl;
             return 3;
         }
         */
@@ -284,9 +294,7 @@ stepwise_add_column (const char * sqlite3_target,
  
 
     load_table(pDB, unique_inventor_name, unique_record_name, tablename, update_dict);
-
     sqlite3_close(pDB);
-
     std::cout << "Dumping complete. " << std::endl;
     return true;
 }
@@ -311,11 +319,11 @@ usage(const int argc) {
 int
 main( const int argc, const char * argv[] ) {
 
-    const char * targetsqlite3 = argv[1];
-    const char * tablename = argv[2];
-    const char * sourcetxt = argv[3];
-    const string unique_record_id ( argv[4]);
-    const string unique_inventor_id( argv[5]);
+    const char * targetsqlite3     = argv[1];
+    const char * tablename         = argv[2];
+    const char * sourcetxt         = argv[3];
+    const string unique_record_id   (argv[4]);
+    const string unique_inventor_id (argv[5]);
 
     usage(argc);
 
