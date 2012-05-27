@@ -114,6 +114,7 @@ stepwise_add_column (const char * sqlite3_target,
     // values into an sqlite database for convenience.
     //map < string, string > update_dict;
     Dictionary update_dict;
+
     // sync_with_stdio is static; we'll set it here for symmetry
     // with the reset a few lines below.
     std::ifstream::sync_with_stdio(false);
@@ -123,9 +124,9 @@ stepwise_add_column (const char * sqlite3_target,
     // TODO: Get rid of the sync, use one or the other, it's simpler.
     std::ifstream::sync_with_stdio(true);
 
-
+    // TODO: Explain why we need PRAGMAs
     build_pragmas(pDB);    
-    
+
     const unsigned int buff_size = 512;
     char buffer[buff_size];
     sqlite3_stmt * statement;
@@ -172,7 +173,7 @@ stepwise_add_column (const char * sqlite3_target,
         std::cout << tablename << " is initialized." << std::endl;
 	//// End refactor
     }
-
+    sqlite3_finalize(statement);
 
     /// Refactor into index creation function
     sprintf(buffer, "CREATE UNIQUE INDEX IF NOT EXISTS index_%s_on_%s ON %s(%s) ;",
@@ -232,9 +233,11 @@ stepwise_add_column (const char * sqlite3_target,
     // End of refactor
 
 
+    sqlite3_stmt * statement1;
+
     sprintf(buffer, "UPDATE %s set %s = @VAL WHERE %s = @KEY;",
             tablename, unique_inventor_name.c_str(), unique_record_name.c_str());
-    sqlres = sqlite3_prepare_v2(pDB,  buffer, -1, &statement, NULL);
+    sqlres = sqlite3_prepare_v2(pDB,  buffer, -1, &statement1, NULL);
 
     // All of these need to be moved to a check_result function,
     // and errors handled with the sqlite error codes.
@@ -249,23 +252,23 @@ stepwise_add_column (const char * sqlite3_target,
     //for ( map<string, string>::const_iterator cpm = update_dict.begin(); cpm != update_dict.end(); ++cpm) {
     for (Dictionary::const_iterator cpm = update_dict.begin(); cpm != update_dict.end(); ++cpm) {
 
-        sqlite3_bind_text(statement, 2, cpm->first.c_str(), -1, SQLITE_TRANSIENT);
-        sqlite3_bind_text(statement, 1, cpm->second.c_str(), -1, SQLITE_TRANSIENT);
+        sqlite3_bind_text(statement1, 2, cpm->first.c_str(), -1, SQLITE_TRANSIENT);
+        sqlite3_bind_text(statement1, 1, cpm->second.c_str(), -1, SQLITE_TRANSIENT);
 
-        sqlres = sqlite3_step(statement);
+        sqlres = sqlite3_step(statement1);
         if ( sqlres != SQLITE_DONE ) {
             std::cout << "Statement step error." << std::endl;
             return false;
         }
-        sqlite3_clear_bindings(statement);
-        sqlite3_reset(statement);
+        sqlite3_clear_bindings(statement1);
+        sqlite3_reset(statement1);
         ++count;
         if ( count % base == 0 )
             std::cout << count << " records has been updated. " << std::endl;
     }
     sqlite3_exec(pDB, "END TRANSACTION;", NULL, NULL, NULL);
 
-    sqlite3_finalize(statement);
+    sqlite3_finalize(statement1);
     sqlite3_close(pDB);
 
     std::cout << "Dumping complete. " << std::endl;
