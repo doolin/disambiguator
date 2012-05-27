@@ -8,7 +8,8 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
-#include "DisambigDefs.h"
+
+#include "attribute.h"
 #include "DisambigEngine.h"
 #include "DisambigFileOper.h"
 #include "DisambigRatios.h"
@@ -165,7 +166,7 @@ int BlockingConfiguration::config_blocking( const char * filename, const string 
 	std::cout << std::endl;
 
 
-	vector < const cString_Manipulator *> pstring_oper;
+	vector < const StringManipulator *> pstring_oper;
 	vector < string > columns_for_blocking;
 	vector < unsigned int > data_indice_for_blocking;
 	for ( vector < BlockingConfiguration::cBlockingDetail >::const_iterator p = BlockingConfiguration::BlockingConfig.begin();
@@ -175,7 +176,7 @@ int BlockingConfiguration::config_blocking( const char * filename, const string 
 		columns_for_blocking.push_back(p->m_columnname);
 		data_indice_for_blocking.push_back(p->m_dataindex);
 
-		cString_Truncate * q = dynamic_cast< cString_Truncate *>(p->m_psm);
+		StringTruncate * q = dynamic_cast< StringTruncate *>(p->m_psm);
 		if ( q == NULL ) {
 			std::cout << "------> ATTENTION: STRING OPERATOR OF " << p->m_columnname << " CANNOT BE DYNAMICALLY CAST. SKIP THIS OPERATION." << std::endl;
 		}
@@ -401,18 +402,18 @@ disambiguate_main(std::string & engineconf, std::string & blockingconf) {
 			throw cException_Other("Out-of-cluster density output file error.");
 		if ( ! EngineConfiguration::config_engine(enginefile.c_str(), std::cout ) )
 			throw cException_Other("Engine Configuration is not complete!");
-		list <cRecord> all_records;
+		list <Record> all_records;
 		const vector <string> column_vec = EngineConfiguration::involved_columns;
 		bool is_success = fetch_records_from_txt(all_records, EngineConfiguration::source_csv_file.c_str(), column_vec);
 		if (not is_success) return 1;
-		map <string, const cRecord *> uid_dict;
+		map <string, const Record *> uid_dict;
 		const string uid_identifier = cUnique_Record_ID::static_get_class_name();
 		create_btree_uid2record_pointer(uid_dict, all_records, uid_identifier);
-		map < const cRecord *, cGroup_Value, cSort_by_attrib > patent_tree(cPatent::static_get_class_name());
+		map < const Record *, cGroup_Value, cSort_by_attrib > patent_tree(cPatent::static_get_class_name());
 		build_patent_tree(  patent_tree , all_records ) ;
 		cCluster::set_reference_patent_tree_pointer( patent_tree);
-		list < const cRecord *> all_rec_pointers;
-		for ( list<cRecord>::const_iterator p = all_records.begin(); p != all_records.end(); ++p )
+		list < const Record *> all_rec_pointers;
+		for ( list<Record>::const_iterator p = all_records.begin(); p != all_records.end(); ++p )
 			all_rec_pointers.push_back(&(*p));
 		cAssignee::configure_assignee(all_rec_pointers);
 
@@ -458,7 +459,7 @@ int Full_Disambiguation( const char * EngineConfigFile, const char * BlockingCon
 	const unsigned int starting_round = EngineConfiguration::starting_round;
 
 
-	list <cRecord> all_records;
+	list <Record> all_records;
 	char filename2[buff_size];
 	sprintf(filename2, "%s", EngineConfiguration::source_csv_file.c_str());
 	bool is_success = fetch_records_from_txt(all_records, filename2, column_vec);
@@ -466,8 +467,8 @@ int Full_Disambiguation( const char * EngineConfigFile, const char * BlockingCon
 
         std::cout << "Passed reading in csv data..." << std::endl;
 
-	list < const cRecord *> all_rec_pointers;
-	for ( list<cRecord>::const_iterator p = all_records.begin(); p != all_records.end(); ++p )
+	list < const Record *> all_rec_pointers;
+	for ( list<Record>::const_iterator p = all_records.begin(); p != all_records.end(); ++p )
 		all_rec_pointers.push_back(&(*p));
 	cAssignee::configure_assignee(all_rec_pointers);
 
@@ -483,14 +484,14 @@ int Full_Disambiguation( const char * EngineConfigFile, const char * BlockingCon
 
         std::cout << "Stable training sets made..." << std::endl;
 
-	map <string, const cRecord *> uid_dict;
+	map <string, const Record *> uid_dict;
 	const string uid_identifier = cUnique_Record_ID::static_get_class_name();
 	create_btree_uid2record_pointer(uid_dict, all_records, uid_identifier);
 
 	//train patent info
 	cRatioComponent patentinfo(uid_dict, string("Patent") );
 
-	list < const cRecord * > record_pointers;
+	list < const Record * > record_pointers;
 
 	bool matching_mode = true;
 
@@ -558,7 +559,7 @@ int Full_Disambiguation( const char * EngineConfigFile, const char * BlockingCon
 		//if ( ! BlockingConfiguration::config_blocking(BlockingConfigFile, module_name) )
 		//	throw cException_Other("Blocking Configuration is not complete!");
 
-		cRecord::activate_comparators_by_name(BlockingConfiguration::active_similarity_attributes);
+		Record::activate_comparators_by_name(BlockingConfiguration::active_similarity_attributes);
 		//now training
 		//match.output_list(record_pointers);
 
@@ -569,7 +570,7 @@ int Full_Disambiguation( const char * EngineConfigFile, const char * BlockingCon
 			case 1:
 			{
 				vector <string> presort_columns;
-				cString_Remain_Same operator_no_change;
+				StringRemainSame operator_no_change;
 				presort_columns.push_back(cFirstname::static_get_class_name());
 				presort_columns.push_back(cLastname::static_get_class_name());
 				presort_columns.push_back(cAssignee::static_get_class_name());
@@ -579,7 +580,7 @@ int Full_Disambiguation( const char * EngineConfigFile, const char * BlockingCon
 
 				//presort_columns.push_back(cClass::static_get_class_name());
 
-				const vector < const cString_Manipulator *> presort_strman( presort_columns.size(), &operator_no_change);
+				const vector < const StringManipulator *> presort_strman( presort_columns.size(), &operator_no_change);
 				const vector < unsigned int > presort_data_indice( presort_columns.size(), 0);
 
 				const cBlocking_Operation_Multiple_Column_Manipulate presort_blocker(presort_strman, presort_columns, presort_data_indice);
@@ -635,7 +636,7 @@ int Full_Disambiguation( const char * EngineConfigFile, const char * BlockingCon
 
 		cCluster::set_ratiomap_pointer(*ratio_pointer);
 		// now disambiguate
-		cRecord::clean_member_attrib_pool();
+		Record::clean_member_attrib_pool();
 
 		match.disambiguate(*ratio_pointer, num_threads, debug_block_file, prior_save_file);
 

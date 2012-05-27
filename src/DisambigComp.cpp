@@ -504,51 +504,64 @@ int countrycmp(const string & country1, const string & country2 ) {
 	return score;
 }
 
-int classcmp(const string &class1, const string& class2 ){
-    return ( class1 == class2 )? 1 : 0;
-}
 
-int coauthorcmp(const string &coauthor1, const string& coauthor2 ){
-    return ( coauthor1 == coauthor2 )? 1 : 0;
-}
+int
+classcmp(const string & class1, const string & class2) {
 
-int asgcmp(const string & asg1, const string & asg2, const map<string, std::pair<string, unsigned int> > * const asg_table_pointer){
-	map<string, std::pair<string, unsigned int> >::const_iterator p1, p2;
-	p1 = asg_table_pointer->find(asg1);
-	p2 = asg_table_pointer->find(asg2);
-
-	if ( p1 == asg_table_pointer->end() || p2 == asg_table_pointer->end() ) {
-		std::cout << "Error: either assignee is not found in the assignee tree. "<< asg1 << " or " << asg2 << std::endl;
-		throw std::runtime_error("Assignee comparison error.");
-	}
-	int score = 0;
-	if ( p1->second.first == p2->second.first && p1->second.first.size() > 3 ) {
-		score = Jaro_Wrinkler_Max;
-		if ( p1->second.second < 100 || p2->second.second < 100)
-			score += 1;
-		//else if ( p1->second.second < 1000 || p2->second.second < 1000 )
-		//	score += 1;
-	}
-	else {
-		score = jwcmp(asg1, asg2);
-	}
-	return score;
+    return (class1 == class2 ) ? 1 : 0;
 }
 
 
-int asgcmp ( const string & s1, const string &s2) {
-	if ( s1.empty() || s2.empty() )
-		return 1;
+int 
+coauthorcmp(const string & coauthor1, const string & coauthor2) {
 
-	double cmpres = strcmp95_modified(s1.c_str(), s2.c_str());
-	if ( cmpres > 0.9 )
-		return 4;
-	else if ( cmpres > 0.8 )
-		return 3;
-	else if ( cmpres > 0.7 )
-		return 2;
-	else
-		return 0;
+    return (coauthor1 == coauthor2) ? 1 : 0;
+}
+
+
+int
+asgcmp(const string & asg1, const string & asg2,
+       const map<string, std::pair<string, unsigned int> > * const asg_table_pointer) {
+
+    map<string, std::pair<string, unsigned int> >::const_iterator p1, p2;
+    p1 = asg_table_pointer->find(asg1);
+    p2 = asg_table_pointer->find(asg2);
+
+    if ( p1 == asg_table_pointer->end() || p2 == asg_table_pointer->end() ) {
+        std::cout << "Error: either assignee is not found in the assignee tree. "<< asg1 << " or " << asg2 << std::endl;
+        throw std::runtime_error("Assignee comparison error.");
+    }
+
+    int score = 0;
+    if ( p1->second.first == p2->second.first && p1->second.first.size() > 3 ) {
+        score = Jaro_Wrinkler_Max;
+        if ( p1->second.second < 100 || p2->second.second < 100)
+            score += 1;
+        //else if ( p1->second.second < 1000 || p2->second.second < 1000 )
+        //    score += 1;
+    }
+    else {
+        score = jwcmp(asg1, asg2);
+    }
+    return score;
+}
+
+
+int
+asgcmp (const string & s1, const string &s2) {
+
+    if ( s1.empty() || s2.empty() ) return 1;
+
+    double cmpres = strcmp95_modified(s1.c_str(), s2.c_str());
+
+    if ( cmpres > 0.9 )
+        return 4;
+    else if ( cmpres > 0.8 )
+        return 3;
+    else if ( cmpres > 0.7 )
+        return 2;
+    else
+        return 0;
 }
 
 

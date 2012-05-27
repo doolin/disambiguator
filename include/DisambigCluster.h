@@ -11,7 +11,7 @@
 #include <iostream>
 #include <map>
 #include <set>
-#include "DisambigDefs.h"
+#include "attribute.h"
 #include <fstream>
 #include <pthread.h>
 #include "Threading.h"
@@ -23,7 +23,7 @@ using std::map;
 
 
 //forward declaration
-class cRecord;
+class Record;
 class cRatios;
 
 /*
@@ -33,7 +33,7 @@ class cRatios;
  * process, and exporting the results to an external file that can be used for the next run.
  *
  * Private:
- * 		const map <string, const cRecord*> * const uid2record_pointer: the binary tree map. Key = string of unique record id
+ * 		const map <string, const Record*> * const uid2record_pointer: the binary tree map. Key = string of unique record id
  * 																		Value = the record pointer whose unique record id is the Key.
  * 		const bool is_matching: a boolean indicating the status of the "this" object. Now it is always set to true.
  * 								However, for future expandability, the variable is still kept.
@@ -80,11 +80,11 @@ class cRatios;
  *
  *		void reset_blocking(const cBlocking_Operation & blocker, const char * const past_comparision_file):
  *				Read the data from the specified file, and use the blocker to create blocks. A necessary step for disambiguation.
- *		void preliminary_consolidation(const cBlocking_Operation & blocker, const list < const cRecord *> & all_rec_list):
+ *		void preliminary_consolidation(const cBlocking_Operation & blocker, const list < const Record *> & all_rec_list):
  *				A preliminary consolidation step. Put all the records with identical blocking string together in same clusters.
  *				In practice, it is used to group records with exact firstname, middlename, lastname, assignee, city, country together.
- *		cCluster_Info(const map <string, const cRecord*> & input_uid2record, const bool input_is_matching , const bool aum , const bool debug ):
- *				Constructor of a class object. input_uid2record = map of unique record id string to its cRecord object pointer.
+ *		cCluster_Info(const map <string, const Record*> & input_uid2record, const bool input_is_matching , const bool aum , const bool debug ):
+ *				Constructor of a class object. input_uid2record = map of unique record id string to its Record object pointer.
  *				input_is_matching = whether the object reads a match file. Always set to true unless new functionalities are added.
  *				aum = frequency adjust mode: on or off. debug = debug mode: on or off.
  *		void disambiguate(const cRatios & ratiosmap, const unsigned int num_threads, const char * const debug_block_file, const char * const prior_to_save):
@@ -104,10 +104,10 @@ class cRatios;
  *	Example of Use:
  *
  *	const cBlocking_Operation * pblocker;
- *	const map < string, const cRecord * > *puid_dict;
+ *	const map < string, const Record * > *puid_dict;
  *	//... ...
  *	//Here creates a concrete object of cBlocking_Operation subclass, and assigns the address to pblocker.
- *	//Here creates a map of string of unique record id to const cRecord pointer, and assigns to puid_dict.
+ *	//Here creates a map of string of unique record id to const Record pointer, and assigns to puid_dict.
  *	//... ...
  *	bool is_matching = true;
  *	bool frequency_adjust_mode = true;
@@ -146,7 +146,7 @@ class cRatios;
 class cCluster_Info {
 	friend class cWorker_For_Disambiguation;
 public:
-	typedef set<const cRecord *> recordset;
+	typedef set<const Record *> recordset;
 	typedef list < cCluster > cRecGroup;
 
 	friend bool disambiguate_wrapper(const map<string, cCluster_Info::cRecGroup>::iterator & p,cCluster_Info & cluster,
@@ -154,7 +154,7 @@ public:
 
 private:
 
-	const map <string, const cRecord*> * const uid2record_pointer;
+	const map <string, const Record*> * const uid2record_pointer;
 	const bool is_matching;
 	unsigned int total_num;
 
@@ -199,8 +199,8 @@ public:
 
 	void output_current_comparision_info(const char * const outputfile ) const;
 	void reset_blocking(const cBlocking_Operation & blocker, const char * const past_comparision_file);
-	void preliminary_consolidation(const cBlocking_Operation & blocker, const list < const cRecord *> & all_rec_list);
-	cCluster_Info(const map <string, const cRecord*> & input_uid2record, const bool input_is_matching , const bool aum , const bool debug );
+	void preliminary_consolidation(const cBlocking_Operation & blocker, const list < const Record *> & all_rec_list);
+	cCluster_Info(const map <string, const Record*> & input_uid2record, const bool input_is_matching , const bool aum , const bool debug );
 	void disambiguate(const cRatios & ratiosmap, const unsigned int num_threads, const char * const debug_block_file, const char * const prior_to_save);
 	~cCluster_Info() {}
 	const map < string, cRecGroup> & get_cluster_map () const {return cluster_by_block;}

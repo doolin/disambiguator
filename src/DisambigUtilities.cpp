@@ -6,7 +6,7 @@
  */
 
 #include "DisambigUtilities.h"
-#include "DisambigDefs.h"
+#include "attribute.h"
 #include "DisambigEngine.h"
 #include "DisambigFileOper.h"
 #include "DisambigRatios.h"
@@ -16,9 +16,9 @@
 
 
 bool
-make_changable_training_sets_by_patent(const list <const cRecord*> & record_pointers,
+make_changable_training_sets_by_patent(const list <const Record*> & record_pointers,
                                        const vector<string >& blocking_column_names,
-                                       const vector < const cString_Manipulator *> & pstring_oper,
+                                       const vector < const StringManipulator *> & pstring_oper,
                                        const unsigned int limit,
                                        const vector <string> & training_filenames) {
 
@@ -38,8 +38,8 @@ make_changable_training_sets_by_patent(const list <const cRecord*> & record_poin
 	const string uid_identifier = cUnique_Record_ID::static_get_class_name();
 	cBlocking_For_Training bft (record_pointers, blocking_column_names, pstring_oper, uid_identifier, limit);
 
-	cString_Remain_Same donotchange;
-	vector <const cString_Manipulator*> t_extract_equal, t_extract_nonequal, x_extract_equal, x_extract_nonequal;
+	StringRemainSame donotchange;
+	vector <const StringManipulator*> t_extract_equal, t_extract_nonequal, x_extract_equal, x_extract_nonequal;
 	x_extract_equal.push_back(& donotchange);
 	x_extract_nonequal.push_back(& donotchange);
 	x_extract_nonequal.push_back(&donotchange);
@@ -93,7 +93,7 @@ make_changable_training_sets_by_patent(const list <const cRecord*> & record_poin
 
 
 bool 
-make_stable_training_sets_by_personal(const list <cRecord> & all_records,
+make_stable_training_sets_by_personal(const list <Record> & all_records,
                                       const unsigned int limit,
                                       const vector <string> & training_filenames) {
 
@@ -111,8 +111,8 @@ make_stable_training_sets_by_personal(const list <cRecord> & all_records,
 	rare_pointer_vec.push_back(&rare_lastname_set);
 	const vector< const cGroup_Value * > const_rare_pointer_vec(rare_pointer_vec.begin(), rare_pointer_vec.end());
 
-	list < const cRecord*> record_pointers;
-	for ( list<cRecord>::const_iterator p = all_records.begin(); p != all_records.end(); ++p )
+	list < const Record*> record_pointers;
+	for ( list<Record>::const_iterator p = all_records.begin(); p != all_records.end(); ++p )
 		record_pointers.push_back(&(*p));
 
 	find_rare_names_v2(rare_pointer_vec, record_pointers);
@@ -152,43 +152,43 @@ make_stable_training_sets_by_personal(const list <cRecord> & all_records,
 
 
 
-std::pair < const cRecord *, set < const cRecord * > > 
+std::pair < const Record *, set < const Record * > > 
 ones_temporal_unique_coauthors (const cCluster & record_cluster,
-                                const map < const cRecord *, 
-                                const cRecord *> & complete_uid2uinv,
-                                const map < const cRecord *, cGroup_Value, cSort_by_attrib > & complete_patent_tree,
+                                const map < const Record *, 
+                                const Record *> & complete_uid2uinv,
+                                const map < const Record *, cGroup_Value, cSort_by_attrib > & complete_patent_tree,
                                 const unsigned int begin_year, 
                                 const unsigned int end_year, 
                                 const unsigned int year_index ) {
 
 	//[ begin_year, end_year )
 
-	const cRecord * ret1 = NULL;
-	set < const cRecord * > ret2;
+	const Record * ret1 = NULL;
+	set < const Record * > ret2;
 
 	const cGroup_Value & same_author = record_cluster.get_fellows();
 
 	cGroup_Value qualified_same_author;
 	for ( cGroup_Value::const_iterator psa = same_author.begin(); psa != same_author.end(); ++psa ) {
 		//check year range
-		const cAttribute * pAttrib = (*psa)->get_attrib_pointer_by_index(year_index);
+		const Attribute * pAttrib = (*psa)->get_attrib_pointer_by_index(year_index);
 		const unsigned int checkyear = atoi (pAttrib->get_data().at(0)->c_str());
 		if ( checkyear >= begin_year && checkyear < end_year )
 			qualified_same_author.push_back(*psa);
 		//end of year range check
 	}
 	for ( cGroup_Value::const_iterator pqsa = qualified_same_author.begin(); pqsa != qualified_same_author.end(); ++pqsa) {
-		const map < const cRecord *, cGroup_Value, cSort_by_attrib >::const_iterator tempi = complete_patent_tree.find(*pqsa);
+		const map < const Record *, cGroup_Value, cSort_by_attrib >::const_iterator tempi = complete_patent_tree.find(*pqsa);
 		if ( tempi == complete_patent_tree.end() )
 			throw cException_Other("patent not in patent tree.");
 		const cGroup_Value & coauthor_per_patent = tempi->second;
 		for ( cGroup_Value::const_iterator pp = coauthor_per_patent.begin(); pp != coauthor_per_patent.end(); ++pp ) {
 			if ( *pp == *pqsa)
 				continue;
-			map < const cRecord *, const cRecord *>::const_iterator tempi2 = complete_uid2uinv.find(*pp);
+			map < const Record *, const Record *>::const_iterator tempi2 = complete_uid2uinv.find(*pp);
 			if ( tempi2 == complete_uid2uinv.end() )
 				throw cException_Other("uid not in uid tree.");
-			const cRecord * inv = tempi2->second;
+			const Record * inv = tempi2->second;
 			//finally, got it.
 			ret2.insert(inv);
 		}
@@ -196,25 +196,25 @@ ones_temporal_unique_coauthors (const cCluster & record_cluster,
 	if ( ! qualified_same_author.empty())
 		ret1 = qualified_same_author.front();
 
-	return std::pair < const cRecord * ,set < const cRecord * > >(ret1, ret2);
+	return std::pair < const Record * ,set < const Record * > >(ret1, ret2);
 
 }
 
 
 void 
-one_step_prostprocess(const list < cRecord > & all_records, 
+one_step_prostprocess(const list < Record > & all_records, 
                       const char * last_disambig_result, 
                       const char * outputfile) {
 
-	map <string, const cRecord *> uid_dict;
+	map <string, const Record *> uid_dict;
 	const string uid_identifier = cUnique_Record_ID::static_get_class_name();
 	create_btree_uid2record_pointer(uid_dict, all_records, uid_identifier);
-	map < const cRecord *, cGroup_Value, cSort_by_attrib > patent_tree(cSort_by_attrib(cPatent::static_get_class_name()));
+	map < const Record *, cGroup_Value, cSort_by_attrib > patent_tree(cSort_by_attrib(cPatent::static_get_class_name()));
 	build_patent_tree(  patent_tree , all_records );
 	cCluster_Set cs;
 	//cs.convert_from_ClusterInfo(&match);
 	cs.read_from_file(last_disambig_result, uid_dict);
-	map < const cRecord *, const cRecord *> uid2uinv;
+	map < const Record *, const Record *> uid2uinv;
 	const list < cCluster > & full_list = cs.get_set();
 	for ( list < cCluster >::const_iterator t = full_list.begin(); t != full_list.end(); ++t )
 		t->add_uid2uinv(uid2uinv);
@@ -253,10 +253,10 @@ out_of_cluster_density(const cCluster_Set & upper,
                        const cCluster_Set & lower,
                        const cRatios & ratio, std::ofstream & ofile ) {
 
-	static const unsigned int uid_index = cRecord::get_index_by_name(cUnique_Record_ID::static_get_class_name());
+	static const unsigned int uid_index = Record::get_index_by_name(cUnique_Record_ID::static_get_class_name());
 	const unsigned int base = 100000;
 	std:: cout << "Processing out-of-cluster density ... ..." << std::endl;
-	map < const cRecord *, const cRecord *> upper_uid2uinv;
+	map < const Record *, const Record *> upper_uid2uinv;
 	const list < cCluster > & full_list = upper.get_set();
 	for ( list < cCluster >::const_iterator t = full_list.begin(); t != full_list.end(); ++t )
 		t->add_uid2uinv(upper_uid2uinv);
@@ -270,12 +270,12 @@ out_of_cluster_density(const cCluster_Set & upper,
 		const cGroup_Value & members = plower->get_fellows();
 		const unsigned int member_size = members.size();
 		//get prior values first
-		map < const cRecord *, int > small_cluster_counts;
+		map < const Record *, int > small_cluster_counts;
 		for ( cGroup_Value::const_iterator pm = members.begin(); pm != members.end(); ++pm) {
-			map < const cRecord *, const cRecord *> ::const_iterator puinv = upper_uid2uinv.find( *pm);
+			map < const Record *, const Record *> ::const_iterator puinv = upper_uid2uinv.find( *pm);
 			if ( puinv == upper_uid2uinv.end() )
 				throw cException_Other("Outer of cluster density: cannot find unique record id.");
-			const cRecord * const inv = puinv->second;
+			const Record * const inv = puinv->second;
 			++small_cluster_counts[inv];
 		}
 		if ( small_cluster_counts.empty() )
@@ -285,7 +285,7 @@ out_of_cluster_density(const cCluster_Set & upper,
 
 
 		double prior = 0;
-		for (map < const cRecord *, int >::const_iterator q = small_cluster_counts.begin(); q != small_cluster_counts.end(); ++q ) {
+		for (map < const Record *, int >::const_iterator q = small_cluster_counts.begin(); q != small_cluster_counts.end(); ++q ) {
 			prior += 1.0 * (q->second) * ( q->second - 1)/ member_size / ( member_size - 1);
 		}
 		if ( prior >= 1 )
@@ -300,10 +300,10 @@ out_of_cluster_density(const cCluster_Set & upper,
 		unsigned int cnt = 0;
 		double sum_prob = 0;
 		for ( cGroup_Value::const_iterator pmouter = members.begin(); pmouter != members.end(); ++pmouter) {
-			const cRecord * const outerinv = upper_uid2uinv.find( *pmouter)->second;
+			const Record * const outerinv = upper_uid2uinv.find( *pmouter)->second;
 			cGroup_Value::const_iterator pminner = pmouter;
 			for ( ++ pminner; pminner != members.end(); ++pminner) {
-				const cRecord * const innerinv = upper_uid2uinv.find( *pminner)->second;
+				const Record * const innerinv = upper_uid2uinv.find( *pminner)->second;
 				if ( outerinv == innerinv )
 					continue;
 				else {
@@ -323,7 +323,7 @@ out_of_cluster_density(const cCluster_Set & upper,
 			const string & key = * plower->get_cluster_head().m_delegate->get_attrib_pointer_by_index(uid_index)->get_data().at(0);
 			const double value = sum_prob / cnt;
 			ofile << key <<" : " << value << ": ";
-			for ( map < const cRecord *, int >::const_iterator pc = small_cluster_counts.begin(); pc != small_cluster_counts.end(); ++pc ) {
+			for ( map < const Record *, int >::const_iterator pc = small_cluster_counts.begin(); pc != small_cluster_counts.end(); ++pc ) {
 				const string & ms = * pc->first->get_attrib_pointer_by_index(uid_index)->get_data().at(0);
 				ofile << ms << " , ";
 			}
