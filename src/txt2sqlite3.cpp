@@ -33,38 +33,11 @@ build_pragmas(sqlite3 * pDB) {
 }
 
 
+bool
+read_results(const char * txt_source,
+             map < string, string > & update_dict) {
 
-bool 
-stepwise_add_column (const char * sqlite3_target,
-                     const char * tablename,
-                     const char * txt_source,
-                     const string & unique_record_name,
-                     const string & unique_inventor_name) {
-
-    sqlite3 * pDB;
-    int sqlres;
-    std::cout << "Dumping " << txt_source << " to file << "
-              << sqlite3_target << " >>, tablename << " << tablename
-              << " >> ......" << std::endl;
-
-
-    sqlres = sqlite3_open_v2(sqlite3_target,&pDB,SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE ,NULL);
-
-
-    // See http://www.cplusplus.com/reference/iostream/ios/good/
-    // and implement a check_result() function.
-    if (SQLITE_OK != sqlres ) {
-        std::cout << "SQL DB open error." <<sqlres<< std::endl;
-        return false;
-    }
-
-
-    /////////  Probably most of this can be factored out.
-    map < string, string > update_dict;
-
-    std::ifstream::sync_with_stdio(false);
     std::ifstream instream(txt_source);
-
     static const char * primary_delim = "###";
     static const char * secondary_delim = ",";
     const unsigned int primary_delim_size = strlen(primary_delim);
@@ -97,8 +70,6 @@ stepwise_add_column (const char * sqlite3_target,
             }
         }
 
-        std::cout << txt_source << " is ready to be dumped into "<< sqlite3_target << std::endl;
-
     } else {
 	// This is crazy! The message reported back needs to be extracted
 	// from perror (or whatever stl uses), and not "File not found."
@@ -109,6 +80,39 @@ stepwise_add_column (const char * sqlite3_target,
     }
     //////////////  End of refactor
 
+}
+
+bool
+stepwise_add_column (const char * sqlite3_target,
+                     const char * tablename,
+                     const char * txt_source,
+                     const string & unique_record_name,
+                     const string & unique_inventor_name) {
+
+    sqlite3 * pDB;
+    int sqlres;
+    std::cout << "Dumping " << txt_source << " to file << "
+              << sqlite3_target << " >>, tablename << " << tablename
+              << " >> ......" << std::endl;
+
+
+    sqlres = sqlite3_open_v2(sqlite3_target, &pDB,
+             SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL);
+
+
+    // See http://www.cplusplus.com/reference/iostream/ios/good/
+    // and implement a check_result() function.
+    if (SQLITE_OK != sqlres ) {
+        std::cout << "SQL DB open error." <<sqlres<< std::endl;
+        return false;
+    }
+
+
+    /////////  Probably most of this can be factored out.
+    map < string, string > update_dict;
+    std::ifstream::sync_with_stdio(false);
+    bool result_val = read_results(txt_source, update_dict);
+    if (result_val == false) return false;
 
     // TODO: Get rid of the sync, use one or the other, it's simpler.
     std::ifstream::sync_with_stdio(true);
