@@ -125,9 +125,39 @@ build_index(sqlite3 * pDB, const string & unique_record_name,
 
 
 bool
-build_column(sqlite3 * pDB, const string & unique_record_name,
+build_column(sqlite3 * pDB, const string & unique_inventor_name,
              const char * tablename) {
 
+    char buffer[buff_size];
+    sprintf(buffer, "SELECT %s from %s; ", unique_inventor_name.c_str(), tablename);
+    //sprintf(buffer, "CREATE INDEX IF NOT EXISTS index_%s_on_%s ON %s(%s) ;",
+    //        unique_inventor_name.c_str(), tablename, tablename, unique_inventor_name.c_str() );
+    int sqlres = sqlite3_exec(pDB, buffer, NULL, NULL, NULL);
+
+    // This is essentially exception logic, very brittle.
+    // TODO: Rewrite the logic to test first.
+    if ( SQLITE_OK != sqlres ) {
+        std::cout << "Column " << unique_inventor_name << " does not exist. Adding column ..........   ";
+        sprintf(buffer, "ALTER TABLE %s ADD COLUMN %s ;", tablename, unique_inventor_name.c_str() );
+        sqlres = sqlite3_exec(pDB, buffer, NULL, NULL, NULL);
+
+        if ( SQLITE_OK != sqlres ) {
+            std::cout << std::endl << " Error in adding column " << unique_inventor_name << std::endl;
+            return 2;
+        }
+        std::cout << "Done." << std::endl;
+
+        /*
+        sprintf(buffer, "CREATE INDEX IF NOT EXISTS index_%s_on_%s ON %s(%s) ;",
+                unique_inventor_name.c_str(), tablename, tablename, unique_inventor_name.c_str() );
+        sqlres = sqlite3_exec(pDB, buffer, NULL, NULL, NULL);
+        if ( SQLITE_OK != sqlres ) {
+            std::cout <<  " Error in adding index "
+                      << unique_inventor_name << std::endl;
+            return 3;
+        }
+        */
+    }
 }
 
 
@@ -271,41 +301,7 @@ stepwise_add_column (const char * sqlite3_target,
 
     build_index(pDB, unique_record_name, tablename);
 
-    build_column(pDB, unique_record_name, tablename);
-
-
-    // Column refactor
-    char buffer[buff_size];
-    sprintf(buffer, "SELECT %s from %s; ", unique_inventor_name.c_str(), tablename);
-    //sprintf(buffer, "CREATE INDEX IF NOT EXISTS index_%s_on_%s ON %s(%s) ;",
-    //        unique_inventor_name.c_str(), tablename, tablename, unique_inventor_name.c_str() );
-    sqlres = sqlite3_exec(pDB, buffer, NULL, NULL, NULL);
-
-    // This is essentially exception logic, very brittle.
-    // TODO: Rewrite the logic to test first.
-    if ( SQLITE_OK != sqlres ) {
-        std::cout << "Column " << unique_inventor_name << " does not exist. Adding column ..........   ";
-        sprintf(buffer, "ALTER TABLE %s ADD COLUMN %s ;", tablename, unique_inventor_name.c_str() );
-        sqlres = sqlite3_exec(pDB, buffer, NULL, NULL, NULL);
-
-        if ( SQLITE_OK != sqlres ) {
-            std::cout << std::endl << " Error in adding column " << unique_inventor_name << std::endl;
-            return 2;
-        }
-        std::cout << "Done." << std::endl;
-
-        /*
-        sprintf(buffer, "CREATE INDEX IF NOT EXISTS index_%s_on_%s ON %s(%s) ;",
-                unique_inventor_name.c_str(), tablename, tablename, unique_inventor_name.c_str() );
-        sqlres = sqlite3_exec(pDB, buffer, NULL, NULL, NULL);
-        if ( SQLITE_OK != sqlres ) {
-            std::cout <<  " Error in adding index "
-                      << unique_inventor_name << std::endl;
-            return 3;
-        }
-        */
-    }
-    // End of column refactor
+    build_column(pDB, unique_inventor_name, tablename);
 
     load_table(pDB, unique_inventor_name, unique_record_name, tablename, update_dict);
     sqlite3_close(pDB);
