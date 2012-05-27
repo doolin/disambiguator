@@ -10,6 +10,8 @@
 using std::string;
 using std::map;
 
+// TODO: Get rid of this later
+const unsigned int base = 100000;
 
 bool
 build_pragmas(sqlite3 * pDB) {
@@ -78,9 +80,8 @@ read_results(const char * txt_source,
         std::cout << "File not found: " << txt_source << std::endl;
         return false;
     }
-    //////////////  End of refactor
-
 }
+
 
 bool
 stepwise_add_column (const char * sqlite3_target,
@@ -107,9 +108,13 @@ stepwise_add_column (const char * sqlite3_target,
         return false;
     }
 
-
-    /////////  Probably most of this can be factored out.
+    // update_dict is our main data structure for handling
+    // the results. We'll fill it with values from the text
+    // file created by the disambiguation, then write those
+    // values into an sqlite database for convenience.
     map < string, string > update_dict;
+    // sync_with_stdio is static; we'll set it here for symmetry
+    // with the reset a few lines below.
     std::ifstream::sync_with_stdio(false);
     bool result_val = read_results(txt_source, update_dict);
     if (result_val == false) return false;
@@ -117,8 +122,6 @@ stepwise_add_column (const char * sqlite3_target,
     // TODO: Get rid of the sync, use one or the other, it's simpler.
     std::ifstream::sync_with_stdio(true);
 
-    const unsigned int base = 100000;
-    unsigned int count = 0;
 
     build_pragmas(pDB);    
     
@@ -129,6 +132,7 @@ stepwise_add_column (const char * sqlite3_target,
 
     sprintf( buffer, "CREATE TABLE %s ( %s) ;", tablename, unique_record_name.c_str());
     sqlres = sqlite3_exec(pDB, buffer, NULL, NULL, NULL);
+
 
     if ( SQLITE_OK != sqlres ) {
         //std::cout  << tablename << " already exists."<< std::endl;
@@ -146,6 +150,7 @@ stepwise_add_column (const char * sqlite3_target,
             return false;
         }
 
+        unsigned int count = 0;
         sqlite3_exec(pDB, "BEGIN TRANSACTION;", NULL, NULL, NULL);
         for (map<string, string>::const_iterator cpm = update_dict.begin(); cpm != update_dict.end(); ++cpm) {
             sqlite3_bind_text(statement, 1, cpm->first.c_str(), -1, SQLITE_TRANSIENT);
@@ -237,8 +242,8 @@ stepwise_add_column (const char * sqlite3_target,
         return false;
     }
 
-    count = 0;
     sqlite3_exec(pDB, "BEGIN TRANSACTION;", NULL, NULL, NULL);
+    unsigned int count = 0;
     for ( map<string, string>::const_iterator cpm = update_dict.begin(); cpm != update_dict.end(); ++cpm) {
 
         sqlite3_bind_text(statement, 2, cpm->first.c_str(), -1, SQLITE_TRANSIENT);
