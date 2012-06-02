@@ -10,7 +10,7 @@
 #include "comparators.h"
 
 extern "C" {
-	#include "strcmp95.h"
+    #include "strcmp95.h"
 }
 
 using std::list;
@@ -20,59 +20,59 @@ using std::list;
 template <typename Tp, typename Functor>
 vector <Tp> Longest_Common_Subsequence_Incontinuous(const vector <Tp> & s1, const vector <Tp> &s2, const Functor & func) {
 
-	static const vector < Tp > emptyresult;
+    static const vector < Tp > emptyresult;
     if(s1.empty()||s2.empty())
         return emptyresult;
     const int m=s1.size()+1;
     const int n=s2.size()+1;
-	vector <int> row(n, 0);
-	vector < vector <int> > lcs(m, row);
+    vector <int> row(n, 0);
+    vector < vector <int> > lcs(m, row);
     //int lcs[100][100];
     int i,j;
     for(i=0;i<m;i++)
         for(j=0;j<n;j++)
             lcs[i][j]=0;
-	
-	
+    
+    
     for(i=1;i<m;i++) {
         for(j=1;j<n;j++)
         {
             //if(s1[i-1]==s2[j-1])
-			if ( func( s1[i-1], s2[j-1] ) )
+            if ( func( s1[i-1], s2[j-1] ) )
                 lcs[i][j]=lcs[i-1][j-1]+1;
             else
                 lcs[i][j]=lcs[i-1][j]>=lcs[i][j-1]?lcs[i-1][j]:lcs[i][j-1];//get the upper or lefter max value
         }
     }
-	i=m-2;
-	j=n-2;
-	list < Tp > ss;
-	while(i!=-1 && j!=-1)
-	{
-		//if(s1[i]==s2[j])
-		if ( func( s1[i], s2[j] ) )
-		{
-			ss.push_front(s1[i]);
-			i--;
-			j--;
-		}
-		else
-		{
-			if(lcs[i+1][j+1]==lcs[i][j])
-			{
-				i--;
-				j--;
-			}
-			else
-			{
-				if(lcs[i][j+1]>=lcs[i+1][j])
-					i--;
-				else
-					j--;
-			}
-		}
-	}
-	
+    i=m-2;
+    j=n-2;
+    list < Tp > ss;
+    while(i!=-1 && j!=-1)
+    {
+        //if(s1[i]==s2[j])
+        if ( func( s1[i], s2[j] ) )
+        {
+            ss.push_front(s1[i]);
+            i--;
+            j--;
+        }
+        else
+        {
+            if(lcs[i+1][j+1]==lcs[i][j])
+            {
+                i--;
+                j--;
+            }
+            else
+            {
+                if(lcs[i][j+1]>=lcs[i+1][j])
+                    i--;
+                else
+                    j--;
+            }
+        }
+    }
+    
     vector < Tp > ans (ss.begin(), ss.end());
     return ans;
 }
@@ -80,7 +80,7 @@ vector <Tp> Longest_Common_Subsequence_Incontinuous(const vector <Tp> & s1, cons
 
 template <typename Tp, typename Functor>
 vector <Tp> Longest_Common_Subsequence_Continuous(const vector <Tp> & s1, const vector <Tp> &s2, const Functor & func) {
-	static const vector < Tp > emptyresult;
+    static const vector < Tp > emptyresult;
     if (s1.empty() || s2.empty() )
         return emptyresult;
 
@@ -92,28 +92,28 @@ vector <Tp> Longest_Common_Subsequence_Continuous(const vector <Tp> & s1, const 
     maxj = 0 ;
     max = 0;
     for( i = 0; i < n ; ++i )   {
-		  for( j = m - 1 ; j >= 0 ; --j )   {
-			  if( func (s2[i], s1[j] ) )   {
-				  if ( i == 0 || j == 0 )
-					  c[j] = 1;
-				  else
-					  c[j] = c[j-1] + 1;
-			  }
-			  else
-				  c[j]=0;
-			  if( c[j] > max )   {
-				  max = c[j];
-				  maxj = j;
-			  }
-		  }
+          for( j = m - 1 ; j >= 0 ; --j )   {
+              if( func (s2[i], s1[j] ) )   {
+                  if ( i == 0 || j == 0 )
+                      c[j] = 1;
+                  else
+                      c[j] = c[j-1] + 1;
+              }
+              else
+                  c[j]=0;
+              if( c[j] > max )   {
+                  max = c[j];
+                  maxj = j;
+              }
+          }
     }
 
     if( max == 0 )
-    	return emptyresult;
+        return emptyresult;
     vector <Tp> ss ( emptyresult);
-	for( j = maxj - max + 1; j <= maxj ; ++j )
-		ss.push_back( s1[j] );
-	return ss;
+    for( j = maxj - max + 1; j <= maxj ; ++j )
+        ss.push_back( s1[j] );
+    return ss;
 }
 
 
@@ -128,19 +128,19 @@ cSentence_JWComparator:: operator()(const string * ps1, const string * ps2) cons
 char * 
 extract_initials(char * dest, const char * source) {
 
-	if ( source == NULL || dest == NULL )
-		return NULL;
-	char * ret = dest;
-	static const char delim = ' ';
-	while ( *source != '\0') {
-		while ( *source == delim )
-			++source;
-		*dest++ = *source;
-		while ( *source != delim && *source != '\0' )
-			++source;
-	}
-	*dest = '\0';
-	return ret;
+    if ( source == NULL || dest == NULL )
+        return NULL;
+    char * ret = dest;
+    static const char delim = ' ';
+    while ( *source != '\0') {
+        while ( *source == delim )
+            ++source;
+        *dest++ = *source;
+        while ( *source != delim && *source != '\0' )
+            ++source;
+    }
+    *dest = '\0';
+    return ret;
 };
 
 
@@ -177,144 +177,144 @@ jwcmp_old(const string & str1, const string& str2){
     size_t pos1, prev_pos1, pos2, prev_pos2;
     pos1 = prev_pos1 = 0;
     num_tok1 = 0;
-	do {
-		tok_score = 0;
-		pos1 = str1.find(delim, prev_pos1);
-		string temp1 = str1.substr(prev_pos1, pos1 - prev_pos1);
-		tok_len1 = temp1.size();
-		num_tok1 += (tok_len1 > 1);
+    do {
+        tok_score = 0;
+        pos1 = str1.find(delim, prev_pos1);
+        string temp1 = str1.substr(prev_pos1, pos1 - prev_pos1);
+        tok_len1 = temp1.size();
+        num_tok1 += (tok_len1 > 1);
 
-		pos2 = prev_pos2 = 0;
-		num_tok2 = 0;
-		do {
-			pos2 = str2.find(delim, prev_pos2);
-			string temp2 = str2.substr(prev_pos2, pos2 - prev_pos2);
-			tok_len2 = temp2.size();
-			num_tok2 += (tok_len2 > 1);
-			tok_score = max_val<int>(tok_score,
-					((min_val<int>(tok_len1, tok_len2) <= 1) ? 0 : strcmp95_modified(temp1.c_str(), temp2.c_str())));
+        pos2 = prev_pos2 = 0;
+        num_tok2 = 0;
+        do {
+            pos2 = str2.find(delim, prev_pos2);
+            string temp2 = str2.substr(prev_pos2, pos2 - prev_pos2);
+            tok_len2 = temp2.size();
+            num_tok2 += (tok_len2 > 1);
+            tok_score = max_val<int>(tok_score,
+                    ((min_val<int>(tok_len1, tok_len2) <= 1) ? 0 : strcmp95_modified(temp1.c_str(), temp2.c_str())));
 
-			prev_pos2 = pos2 + delim_size;
-		} while ( pos2!= string::npos);
-		score += (tok_score > threshold);
+            prev_pos2 = pos2 + delim_size;
+        } while ( pos2!= string::npos);
+        score += (tok_score > threshold);
 
-		prev_pos1 = pos1 + delim_size;
-	} while ( pos1!= string::npos);
+        prev_pos1 = pos1 + delim_size;
+    } while ( pos1!= string::npos);
 
-	int min_num_tok = min_val<int>(num_tok1, num_tok2);
-	double myres = ( min_num_tok == 0) ? 0 : score/min_num_tok;
-	int is_same_len = (num_tok1 == num_tok2) ? 1 : 0;
-	return( 2*(myres >= 0.33) + (myres >= 0.66) + (myres > 0.99) + (myres > 0.99 && min_num_tok >= 2) + (myres > 0.99 && is_same_len));
+    int min_num_tok = min_val<int>(num_tok1, num_tok2);
+    double myres = ( min_num_tok == 0) ? 0 : score/min_num_tok;
+    int is_same_len = (num_tok1 == num_tok2) ? 1 : 0;
+    return( 2*(myres >= 0.33) + (myres >= 0.66) + (myres > 0.99) + (myres > 0.99 && min_num_tok >= 2) + (myres > 0.99 && is_same_len));
 
 }
 
 int jwcmp(const string & str1, const string& str2) {
-	if ( str1.empty() || str2.empty() )
-		return 0;
-	double cmpres = strcmp95_modified(str1.c_str(), str2.c_str());
-	register int score = 0;
-	if ( cmpres > 0.7 )
-		++score;
-	if ( cmpres > 0.8 )
-		++score;
-	if ( cmpres > 0.9 )
-		++score;
-	if ( cmpres > 0.95 )
-		++score;
-	if ( cmpres > 0.99 )
-		++score;
-	
-	return score;
+    if ( str1.empty() || str2.empty() )
+        return 0;
+    double cmpres = strcmp95_modified(str1.c_str(), str2.c_str());
+    register int score = 0;
+    if ( cmpres > 0.7 )
+        ++score;
+    if ( cmpres > 0.8 )
+        ++score;
+    if ( cmpres > 0.9 )
+        ++score;
+    if ( cmpres > 0.95 )
+        ++score;
+    if ( cmpres > 0.99 )
+        ++score;
+    
+    return score;
 }
 
 int midnamecmp_old(const string & str1, const string & str2 ){
 
-	const char * delim = " ";
-	const unsigned int delim_size = strlen(delim);
-	int num_names_1 = 0, num_names_2 = 0;
-	double matches = 0;
-	size_t pos1, prev_pos1, pos2, prev_pos2;
-	pos1 = prev_pos1 = 0;
-	while ( ( pos1 = str1.find(delim, prev_pos1)) != string::npos ) {
-		++ num_names_1;
-		pos2 = prev_pos2 = 0;
-		while ( ( pos2 = str2.find(delim, prev_pos2)) != string::npos ) {
-			++num_names_2;
-			if ( str1.at(pos1 + delim_size) == str2.at(pos2 + delim_size) )
-				matches += 1;
-			prev_pos2 = pos2 + delim_size;
-		}
-		prev_pos1 = pos1 + delim_size;
-	}
+    const char * delim = " ";
+    const unsigned int delim_size = strlen(delim);
+    int num_names_1 = 0, num_names_2 = 0;
+    double matches = 0;
+    size_t pos1, prev_pos1, pos2, prev_pos2;
+    pos1 = prev_pos1 = 0;
+    while ( ( pos1 = str1.find(delim, prev_pos1)) != string::npos ) {
+        ++ num_names_1;
+        pos2 = prev_pos2 = 0;
+        while ( ( pos2 = str2.find(delim, prev_pos2)) != string::npos ) {
+            ++num_names_2;
+            if ( str1.at(pos1 + delim_size) == str2.at(pos2 + delim_size) )
+                matches += 1;
+            prev_pos2 = pos2 + delim_size;
+        }
+        prev_pos1 = pos1 + delim_size;
+    }
 
-	int min_num =  min_val<int>(num_names_1, num_names_2);
-	int missing = ( min_num == 0 )? 1:0 ;
-	double raw = missing? 0: matches/min_num ;
-	return (missing + 2*(raw > 0.33) + (raw > 0.67) + (raw > 0.99));
+    int min_num =  min_val<int>(num_names_1, num_names_2);
+    int missing = ( min_num == 0 )? 1:0 ;
+    double raw = missing? 0: matches/min_num ;
+    return (missing + 2*(raw > 0.33) + (raw > 0.67) + (raw > 0.99));
 }
 
 int midnamecmp_old2(const string & str1, const string & str2 ){
-	
-	static std::equal_to<char> char_compare;
-	/*
-	const char * delim = " ";
-	const unsigned int delim_size = strlen(delim);
+    
+    static std::equal_to<char> char_compare;
+    /*
+    const char * delim = " ";
+    const unsigned int delim_size = strlen(delim);
 
-	size_t pos, prev_pos;
-	pos = prev_pos = 0;
-	vector < char > vec1, vec2;
-	while ( ( pos = str1.find(delim, prev_pos)) != string::npos ) {
-		prev_pos = pos + delim_size;
-		vec1.push_back(str1.at(prev_pos));
-	}
-	pos = prev_pos = 0;
-	while ( ( pos = str2.find(delim, prev_pos)) != string::npos ) {
-		prev_pos = pos + delim_size;
-		vec2.push_back(str2.at(prev_pos));
-	}
-	 */
-	const vector < char > vec1(str1.begin(), str1.end() );
-	const vector < char > vec2(str2.begin(), str2.end() );
-	
-	if ( vec1.empty() && vec2.empty() )
-		return 2;
+    size_t pos, prev_pos;
+    pos = prev_pos = 0;
+    vector < char > vec1, vec2;
+    while ( ( pos = str1.find(delim, prev_pos)) != string::npos ) {
+        prev_pos = pos + delim_size;
+        vec1.push_back(str1.at(prev_pos));
+    }
+    pos = prev_pos = 0;
+    while ( ( pos = str2.find(delim, prev_pos)) != string::npos ) {
+        prev_pos = pos + delim_size;
+        vec2.push_back(str2.at(prev_pos));
+    }
+     */
+    const vector < char > vec1(str1.begin(), str1.end() );
+    const vector < char > vec2(str2.begin(), str2.end() );
+    
+    if ( vec1.empty() && vec2.empty() )
+        return 2;
 
-	if ( vec1.empty() || vec2.empty() )
-		return 1;
-	
-	int score;
-	const int matches = Longest_Common_Subsequence_Continuous<char, std::equal_to<char> >(vec1, vec2, char_compare).size();
+    if ( vec1.empty() || vec2.empty() )
+        return 1;
+    
+    int score;
+    const int matches = Longest_Common_Subsequence_Continuous<char, std::equal_to<char> >(vec1, vec2, char_compare).size();
 
-	if ( matches == min_val<int>(str1.size(), str2.size() ) )
-		score = 3;
-	else
-		score = 0;
-		
-	return score;
+    if ( matches == min_val<int>(str1.size(), str2.size() ) )
+        score = 3;
+    else
+        score = 0;
+        
+    return score;
 }
 
 int midnamecmp ( const string & s1, const string & s2) {
-	if ( s1.empty() && s2.empty() )
-		return 2;
+    if ( s1.empty() && s2.empty() )
+        return 2;
 
-	if ( s1.empty() || s2.empty() )
-		return 1;
+    if ( s1.empty() || s2.empty() )
+        return 1;
 
-	const char * p1 = s1.c_str();
-	const char * p2 = s2.c_str();
+    const char * p1 = s1.c_str();
+    const char * p2 = s2.c_str();
 
-	while ( *p1 != '\0' && *p2 != '\0') {
-		if ( *p1++ != * p2++)
-			return 0;
-	}
-	return 3;
+    while ( *p1 != '\0' && *p2 != '\0') {
+        if ( *p1++ != * p2++)
+            return 0;
+    }
+    return 3;
 }
 
 
 
 int distcmp(const string & inputlat1, const string & inputlon1, const string & inputctry1, const char * inputstreet1,
-			const string & inputlat2, const string & inputlon2, const string & inputctry2, const char * inputstreet2 ){
-	/*
+            const string & inputlat2, const string & inputlon2, const string & inputctry2, const char * inputstreet2 ){
+    /*
 //    printf("DISTCOMP:\n");
     // Extreme points of contiguous 48
     double northernmost=4938;
@@ -351,8 +351,8 @@ int distcmp(const string & inputlat1, const string & inputlon1, const string & i
                2*(dist < 100) + (dist < 75) + (dist < 50) + (dist < 10);
     */
 
-	static const double R = 3963.0; //radius of the earth is 6378.1km = 3963 miles
-	static const double DEG2RAD = 5729.58;
+    static const double R = 3963.0; //radius of the earth is 6378.1km = 3963 miles
+    static const double DEG2RAD = 5729.58;
     static const double northernmost = 4938;
     static const double southernmost = 2454;
     static const double easternmost = -6695;
@@ -365,11 +365,11 @@ int distcmp(const string & inputlat1, const string & inputlon1, const string & i
 
     const double missing_val = 0.0001;
     int missing = ( ( fabs(lat1) < missing_val && fabs(lon1) < missing_val ) ||
-    				( fabs(lat2) < missing_val && fabs(lon2) < missing_val) ) ? 1 : 0;
-    int in_us = ( 	lat1 < northernmost && lat1 > southernmost &&
-    				lon1 < easternmost && lon1 > westernmost &&
-    				lat2 < northernmost && lat2 > southernmost &&
-    				lon2 < easternmost && lon2 > westernmost ) ? 1 : 0;
+                    ( fabs(lat2) < missing_val && fabs(lon2) < missing_val) ) ? 1 : 0;
+    int in_us = (     lat1 < northernmost && lat1 > southernmost &&
+                    lon1 < easternmost && lon1 > westernmost &&
+                    lat2 < northernmost && lat2 > southernmost &&
+                    lon2 < easternmost && lon2 > westernmost ) ? 1 : 0;
 
     const double radlat1 = lat1/DEG2RAD;
     const double radlon1 = lon1/DEG2RAD;
@@ -416,12 +416,12 @@ int distcmp(const string & inputlat1, const string & inputlon1, const string & i
 
 
 int latloncmp(const string & inputlat1, const string & inputlon1,
-				const string & inputlat2, const string & inputlon2 ){
+                const string & inputlat2, const string & inputlon2 ){
 
-	static const double R = 3963.0; //radius of the earth is 6378.1km = 3963 miles
-	static const double pi = 3.1415926;
-	//rad = degree * pi / 180
-	static const double DEG2RAD = pi / 180 ;
+    static const double R = 3963.0; //radius of the earth is 6378.1km = 3963 miles
+    static const double pi = 3.1415926;
+    //rad = degree * pi / 180
+    static const double DEG2RAD = pi / 180 ;
 
     const double lat1 = atof(inputlat1.c_str());
     const double lon1 = atof(inputlon1.c_str());
@@ -430,10 +430,10 @@ int latloncmp(const string & inputlat1, const string & inputlon1,
 
     const double missing_val = 0.0001;
     int missing = ( ( fabs(lat1) < missing_val && fabs(lon1) < missing_val ) ||
-    				( fabs(lat2) < missing_val && fabs(lon2) < missing_val) ) ? 1 : 0;
+                    ( fabs(lat2) < missing_val && fabs(lon2) < missing_val) ) ? 1 : 0;
 
     if ( missing )
-    	return 1;
+        return 1;
 
     const double radlat1 = lat1 * DEG2RAD;
     const double radlon1 = lon1 * DEG2RAD;
@@ -470,15 +470,15 @@ int latloncmp(const string & inputlat1, const string & inputlon1,
 
 
     if ( dist < 1.0 )
-    	return 5;
+        return 5;
     else if ( dist < 10 )
-    	return 4;
+        return 4;
     else if ( dist < 25)
-    	return 3;
+        return 3;
     else if ( dist < 50 )
-    	return 2;
+        return 2;
     else
-    	return 1;
+        return 1;
 
 }
 
@@ -488,14 +488,14 @@ int streetcmp(const string& inputstreet1, const string& inputstreet2) {
 }
 
 int countrycmp(const string & country1, const string & country2 ) {
-	static const string US_label ("US");
-	int score = 0;
-	if ( country1 == country2 ) {
-		++score;
-		if ( country1 == US_label)
-			++score;
-	}
-	return score;
+    static const string US_label ("US");
+    int score = 0;
+    if ( country1 == country2 ) {
+        ++score;
+        if ( country1 == US_label)
+            ++score;
+    }
+    return score;
 }
 
 
