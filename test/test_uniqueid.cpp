@@ -8,7 +8,6 @@
 
 #include <DisambigEngine.h>
 #include <DisambigCluster.h>
-//#include <comparators.h>
 #include <attribute.h>
 #include <DisambigEngine.h>
 #include <DisambigFileOper.h>
@@ -17,7 +16,6 @@
 #include <DisambigPostProcess.h>
 #include <DisambigRatios.h>
 #include <DisambigTraining.h>
-#include <DisambigUtilities.h>
 #include <strcmp95.h>
 #include <Threading.h>
 #include <txt2sqlite3.h>

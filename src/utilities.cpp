@@ -5,7 +5,7 @@
  *      Author: ysun
  */
 
-#include "DisambigUtilities.h"
+#include "utilities.h"
 #include "attribute.h"
 #include "DisambigEngine.h"
 #include "DisambigFileOper.h"

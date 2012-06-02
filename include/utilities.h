@@ -1,12 +1,6 @@
-/*
- * DisambigUtilities.h
- *
- *  Created on: May 11, 2011
- *      Author: ysun
- */
 
-#ifndef DISAMBIGUTILITIES_H_
-#define DISAMBIGUTILITIES_H_
+#ifndef PATENT_UTILITIES_H
+#define PATENT_UTILITIES_H
 #include <vector>
 #include <list>
 #include <string>
@@ -33,4 +27,4 @@ string remove_headtail_space( const string & s );
 void out_of_cluster_density( const cCluster_Set & upper, const cCluster_Set & lower, const cRatios & ratio, std::ofstream & ofile );
 
 
-#endif /* DISAMBIGUTILITIES_H_ */
+#endif /* PATENT_UTILITIES_H */

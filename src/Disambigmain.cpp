@@ -16,7 +16,7 @@
 #include "DisambigTraining.h"
 #include "DisambigCluster.h"
 #include "DisambigPostProcess.h"
-#include "DisambigUtilities.h"
+#include "utilities.h"
 #include <cmath>
 #include <cstring>
 using std::list;

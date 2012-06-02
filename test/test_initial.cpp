@@ -12,10 +12,10 @@ public:
   int value;
 };
 
-class InitialTest : public CppUnit::TestCase { 
-public: 
+class InitialTest : public CppUnit::TestCase {
+public:
   InitialTest( std::string name ) : CppUnit::TestCase( name ) {}
- 
+
   void runTest() {
     Initial * i = new Initial();
     CPPUNIT_ASSERT( i->value  == 1 );

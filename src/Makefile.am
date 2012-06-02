@@ -21,7 +21,7 @@ noinst_LIBRARIES = libdisambiguation.a
 libdisambiguation_a_SOURCES = Disambigmain.cpp DisambigCluster.cpp comparators.cpp attribute.cpp \
                               DisambigEngine.cpp DisambigFileOper.cpp DisambigNewCluster.cpp \
                               DisambigPostProcess.cpp DisambigRatios.cpp DisambigRatioSmoothing.cpp \
-                              DisambigTraining.cpp DisambigUtilities.cpp Threading.cpp strcmp95.c record.cpp \
+                              DisambigTraining.cpp utilities.cpp Threading.cpp strcmp95.c record.cpp \
                               string_manipulator.cpp
 libdisambiguation_a_CPPFLAGS = -O0 -pg  -Wall -fno-inline $(INCLUDES) -DIL_STD -L/usr/local/lib -DNDEBUG -w
 
