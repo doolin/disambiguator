@@ -428,7 +428,16 @@ distcmp(const string & inputlat1, const string & inputlon1, const string & input
 
 }
 
-
+/**
+ * This function should take float arguments, because floats are
+ * supplied in the schema. Somewhere, they are being turned into
+ * strings, then have to be turned back into floats here.
+ * Also, 0 lat, 0 lon is a viable location, in the Gulf of
+ * Guinea in fact. This function should not imply that
+ * the distance is "missing." Also, given this is computing a
+ * distance, having anything other than zero returned for
+ * 0 distance is really disturbing.
+ */
 int
 latloncmp(const string & inputlat1, const string & inputlon1,
           const string & inputlat2, const string & inputlon2 ) {

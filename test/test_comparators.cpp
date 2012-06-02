@@ -14,6 +14,20 @@ class ComparatorsTest : public CppUnit::TestCase {
 public:
   ComparatorsTest(std::string name) : CppUnit::TestCase(name) {}
 
+ /**
+  * This is insane to have a distance measure
+  * which returns anything other than zero for
+  * zero distance. See comments in source code.
+  */
+  void test_zero() {
+    string lat1("0.0");
+    string lon1("0.0");
+    string lat2("0.0");
+    string lon2("0.0");
+    int distance = latloncmp(lat1, lon1, lat2, lon2);
+    CPPUNIT_ASSERT(distance == 1);
+  }
+
   void test_latloncmp() {
     string lat1("38.38");
     string lon1("102.102");
@@ -33,8 +47,10 @@ public:
 int
 main(int argc, char ** argv) {
 
-  ComparatorsTest * at = new ComparatorsTest(std::string("initial test"));
-  at->runTest();
-  delete at;
+  ComparatorsTest * ct = new ComparatorsTest(std::string("initial test"));
+  ct->runTest();
+  ct->test_latloncmp();
+  ct->test_zero();
+  delete ct;
   return 0;
 }
