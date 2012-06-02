@@ -147,12 +147,14 @@ bool Thread::getThreadScope()
 void Thread::setThreadPriority(int priority)
 {
     pthread_attr_getschedparam(&attr, &param);
-    param.__sched_priority = priority;
+    //param.__sched_priority = priority;
+    param.sched_priority = priority;
     pthread_attr_setschedparam(&attr, &param);
 }
 
 int Thread::getThreadPriority()
 {
     pthread_attr_getschedparam(&attr, &param);
-    return param.__sched_priority;
+    //return param.__sched_priority;
+    return param.sched_priority;
 }

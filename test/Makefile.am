@@ -1,7 +1,8 @@
 
-INCLUDES = -I../include
+INCLUDES = -I../include -I/opt/local/include
 
-LDADD = ../src/libdisambiguation.a
+LDADD = ../src/libdisambiguation.a 
+AM_LDFLAGS = $(shell cppunit-config --libs)
 
 
 TESTS = distest idtest typedefs record blocking attribute stringmanipulator
