@@ -1,9 +1,3 @@
-/*
- * DisambigUtilities.cpp
- *
- *  Created on: May 11, 2011
- *      Author: ysun
- */
 
 #include "utilities.h"
 #include "attribute.h"
@@ -177,6 +171,7 @@ ones_temporal_unique_coauthors (const cCluster & record_cluster,
             qualified_same_author.push_back(*psa);
         //end of year range check
     }
+
     for ( cGroup_Value::const_iterator pqsa = qualified_same_author.begin(); pqsa != qualified_same_author.end(); ++pqsa) {
         const map < const Record *, cGroup_Value, cSort_by_attrib >::const_iterator tempi = complete_patent_tree.find(*pqsa);
         if ( tempi == complete_patent_tree.end() )
@@ -193,6 +188,7 @@ ones_temporal_unique_coauthors (const cCluster & record_cluster,
             ret2.insert(inv);
         }
     }
+
     if ( ! qualified_same_author.empty())
         ret1 = qualified_same_author.front();
 
@@ -216,8 +212,10 @@ one_step_prostprocess(const list < Record > & all_records,
     cs.read_from_file(last_disambig_result, uid_dict);
     map < const Record *, const Record *> uid2uinv;
     const list < cCluster > & full_list = cs.get_set();
+
     for ( list < cCluster >::const_iterator t = full_list.begin(); t != full_list.end(); ++t )
         t->add_uid2uinv(uid2uinv);
+
     const char * suffix = ".pplog";
     const string logfile = string(outputfile) + suffix ;
     //post_polish( cs, blocker_coauthor.get_uid2uinv_tree(), blocker_coauthor.get_patent_tree(), logfile);
@@ -226,7 +224,7 @@ one_step_prostprocess(const list < Record > & all_records,
 }
 
 
-string 
+string
 remove_headtail_space(const string & s) {
 
     string::const_iterator istart = s.begin() , iend = s.end();
@@ -235,8 +233,8 @@ remove_headtail_space(const string & s) {
             break;
         ++istart;
     }
-    while( iend != istart )
-    {
+
+    while( iend != istart ) {
         --iend;
         if( *iend != ' ' ) {
             ++iend;
@@ -258,6 +256,7 @@ out_of_cluster_density(const cCluster_Set & upper,
     std:: cout << "Processing out-of-cluster density ... ..." << std::endl;
     map < const Record *, const Record *> upper_uid2uinv;
     const list < cCluster > & full_list = upper.get_set();
+
     for ( list < cCluster >::const_iterator t = full_list.begin(); t != full_list.end(); ++t )
         t->add_uid2uinv(upper_uid2uinv);
 
@@ -316,10 +315,10 @@ out_of_cluster_density(const cCluster_Set & upper,
                 }
             }
         }
+
         if ( cnt == 0 ) {
             throw cException_Other("Cluster has only one sub-cluster.");
-        }
-        else {
+        } else {
             const string & key = * plower->get_cluster_head().m_delegate->get_attrib_pointer_by_index(uid_index)->get_data().at(0);
             const double value = sum_prob / cnt;
             ofile << key <<" : " << value << ": ";
