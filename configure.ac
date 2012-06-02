@@ -19,16 +19,22 @@ AC_PROG_CC
 # Checks for libraries.
 # FIXME: Replace `main' with a function in `-lboost_unit_test_framework':
 AC_CHECK_LIB([boost_unit_test_framework], [main])
+
 # FIXME: Replace `main' with a function in `-lconcert':
 AC_CHECK_LIB([concert], [main])
+
 # FIXME: Replace `main' with a function in `-lcplex':
 AC_CHECK_LIB([cplex], [main])
+
 # FIXME: Replace `main' with a function in `-lilocplex':
 AC_CHECK_LIB([ilocplex], [main])
+
 # FIXME: Replace `main' with a function in `-lm':
 AC_CHECK_LIB([m], [main])
+
 # FIXME: Replace `main' with a function in `-lpthread':
 AC_CHECK_LIB([pthread], [main])
+
 # FIXME: Replace `main' with a function in `-lsqlite3':
 AC_CHECK_LIB([sqlite3], [main])
 
@@ -37,6 +43,8 @@ AC_CHECK_LIB([cppunit], [main])
 
 # Checks for header files.
 AC_CHECK_HEADERS([string.h unistd.h])
+
+AC_CHECK_HEADERS([ilocplex.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
