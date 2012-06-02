@@ -8,7 +8,7 @@
 
 #include <DisambigEngine.h>
 #include <DisambigCluster.h>
-#include <DisambigComp.h>
+//#include <comparators.h>
 #include <attribute.h>
 #include <DisambigEngine.h>
 #include <DisambigFileOper.h>

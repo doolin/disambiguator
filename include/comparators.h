@@ -1,12 +1,5 @@
-/*
- * DisambigComp.h
- *
- *  Created on: Dec 9, 2010
- *      Author: ysun
- */
-
-#ifndef DISAMBIGCOMP_H_
-#define DISAMBIGCOMP_H_
+#ifndef PATENT_COMPARATORS_H
+#define PATENT_COMPARATORS_H
 
 #include <iostream>
 #include <string>
@@ -83,4 +76,4 @@ unsigned int num_common_elements ( const Iter1 & p1begin, const Iter1 & p1e ,
 	return cnt;
 }
 
-#endif /* DISAMBIGCOMP_H_ */
+#endif /* PATENT_COMPARATORS_H */

@@ -33,7 +33,7 @@ void reconfigure_interactives ( const Record_Reconfigurator * pc, const Record *
 
 
 #include "exceptions.h"
-#include "DisambigComp.h"
+#include "comparators.h"
 
 
 /*

@@ -1,11 +1,3 @@
-/**
- * DisambigComp.cpp
- *
- * Created on: Dec 9, 2010
- * Author: ysun
- */
-
-#include "DisambigComp.h"
 #include <cmath>
 #include <cstring>
 #include <cstdlib>
@@ -14,6 +6,8 @@
 #include <list>
 #include <functional>
 #include <stdexcept>
+
+#include "comparators.h"
 
 extern "C" {
 	#include "strcmp95.h"
