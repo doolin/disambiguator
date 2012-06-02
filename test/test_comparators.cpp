@@ -4,7 +4,7 @@
 #include <cppunit/extensions/TestFactory.h>
 #include <cppunit/TestCase.h>
 #include <string>
-
+using std::string;
 
 #include <comparators.h>
 
@@ -14,10 +14,13 @@ class ComparatorsTest : public CppUnit::TestCase {
 public:
   ComparatorsTest(std::string name) : CppUnit::TestCase(name) {}
 
-  void delete_attribute() {
-    //Comparators * c = new Comparators();
-    //cFirstname * c = new cFirstname();
-    //delete a;
+  void test_latloncmp() {
+    string lat1("38.38");
+    string lon1("102.102");
+    string lat2("38.38");
+    string lon2("102.102");
+    int distance = latloncmp(lat1, lon1, lat2, lon2);
+    CPPUNIT_ASSERT(distance == 5);
   }
 
   void runTest() {
