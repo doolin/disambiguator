@@ -1,3 +1,4 @@
+
 #include <cmath>
 #include <cstring>
 #include <cstdlib>
@@ -32,8 +33,8 @@ vector <Tp> Longest_Common_Subsequence_Incontinuous(const vector <Tp> & s1, cons
     for(i=0;i<m;i++)
         for(j=0;j<n;j++)
             lcs[i][j]=0;
-    
-    
+
+
     for(i=1;i<m;i++) {
         for(j=1;j<n;j++)
         {
@@ -72,7 +73,7 @@ vector <Tp> Longest_Common_Subsequence_Incontinuous(const vector <Tp> & s1, cons
             }
         }
     }
-    
+
     vector < Tp > ans (ss.begin(), ss.end());
     return ans;
 }
@@ -118,14 +119,14 @@ vector <Tp> Longest_Common_Subsequence_Continuous(const vector <Tp> & s1, const 
 
 
 inline bool
-cSentence_JWComparator:: operator()(const string * ps1, const string * ps2) const {
+cSentence_JWComparator::operator()(const string * ps1, const string * ps2) const {
 
     const double compres = strcmp95_modified(ps1->c_str(), ps2->c_str());
     return compres > threshold;
 };
 
 
-char * 
+char *
 extract_initials(char * dest, const char * source) {
 
     if ( source == NULL || dest == NULL )
@@ -145,7 +146,8 @@ extract_initials(char * dest, const char * source) {
 
 
 int
-nospacecmp(const char* str1, const char* str2){
+nospacecmp(const char* str1, const char* str2) {
+
     const char *c1, *c2;
     const char delim = ' ';
     for(c1 = str1, c2=str2; (*c1 != '\0') && (*c2 != '\0'); ++c1, ++c2 ){
@@ -160,7 +162,8 @@ nospacecmp(const char* str1, const char* str2){
 
 
 int
-jwcmp_old(const string & str1, const string& str2){
+jwcmp_old(const string & str1, const string& str2) {
+
     const char *delim= " ";
     const unsigned int delim_size = strlen(delim);
     const double threshold  = 0.95;
@@ -208,9 +211,13 @@ jwcmp_old(const string & str1, const string& str2){
 
 }
 
-int jwcmp(const string & str1, const string& str2) {
+
+int
+jwcmp(const string & str1, const string& str2) {
+
     if ( str1.empty() || str2.empty() )
         return 0;
+
     double cmpres = strcmp95_modified(str1.c_str(), str2.c_str());
     register int score = 0;
     if ( cmpres > 0.7 )
@@ -223,11 +230,13 @@ int jwcmp(const string & str1, const string& str2) {
         ++score;
     if ( cmpres > 0.99 )
         ++score;
-    
+
     return score;
 }
 
-int midnamecmp_old(const string & str1, const string & str2 ){
+
+int
+midnamecmp_old(const string & str1, const string & str2 ) {
 
     const char * delim = " ";
     const unsigned int delim_size = strlen(delim);
@@ -253,8 +262,10 @@ int midnamecmp_old(const string & str1, const string & str2 ){
     return (missing + 2*(raw > 0.33) + (raw > 0.67) + (raw > 0.99));
 }
 
-int midnamecmp_old2(const string & str1, const string & str2 ){
-    
+
+int
+midnamecmp_old2(const string & str1, const string & str2 ) {
+
     static std::equal_to<char> char_compare;
     /*
     const char * delim = " ";
@@ -275,13 +286,13 @@ int midnamecmp_old2(const string & str1, const string & str2 ){
      */
     const vector < char > vec1(str1.begin(), str1.end() );
     const vector < char > vec2(str2.begin(), str2.end() );
-    
+
     if ( vec1.empty() && vec2.empty() )
         return 2;
 
     if ( vec1.empty() || vec2.empty() )
         return 1;
-    
+
     int score;
     const int matches = Longest_Common_Subsequence_Continuous<char, std::equal_to<char> >(vec1, vec2, char_compare).size();
 
@@ -289,11 +300,14 @@ int midnamecmp_old2(const string & str1, const string & str2 ){
         score = 3;
     else
         score = 0;
-        
+
     return score;
 }
 
-int midnamecmp ( const string & s1, const string & s2) {
+
+int
+midnamecmp (const string & s1, const string & s2) {
+
     if ( s1.empty() && s2.empty() )
         return 2;
 
@@ -311,9 +325,10 @@ int midnamecmp ( const string & s1, const string & s2) {
 }
 
 
+int
+distcmp(const string & inputlat1, const string & inputlon1, const string & inputctry1, const char * inputstreet1,
+        const string & inputlat2, const string & inputlon2, const string & inputctry2, const char * inputstreet2) {
 
-int distcmp(const string & inputlat1, const string & inputlon1, const string & inputctry1, const char * inputstreet1,
-            const string & inputlat2, const string & inputlon2, const string & inputctry2, const char * inputstreet2 ){
     /*
 //    printf("DISTCOMP:\n");
     // Extreme points of contiguous 48
@@ -414,9 +429,9 @@ int distcmp(const string & inputlat1, const string & inputlon1, const string & i
 }
 
 
-
-int latloncmp(const string & inputlat1, const string & inputlon1,
-                const string & inputlat2, const string & inputlon2 ){
+int
+latloncmp(const string & inputlat1, const string & inputlon1,
+          const string & inputlat2, const string & inputlon2 ) {
 
     static const double R = 3963.0; //radius of the earth is 6378.1km = 3963 miles
     static const double pi = 3.1415926;
@@ -479,15 +494,21 @@ int latloncmp(const string & inputlat1, const string & inputlon1,
         return 2;
     else
         return 1;
-
 }
 
-int streetcmp(const string& inputstreet1, const string& inputstreet2) {
-    int streetmatch = ( inputstreet1.size() != 0 && inputstreet2.size() != 0 && (inputstreet1 == inputstreet2 )) ? 1 : 0;
+
+int
+streetcmp(const string & inputstreet1, const string & inputstreet2) {
+
+    int streetmatch = ( inputstreet1.size() != 0 && inputstreet2.size() != 0 
+        && (inputstreet1 == inputstreet2 )) ? 1 : 0;
     return streetmatch;
 }
 
-int countrycmp(const string & country1, const string & country2 ) {
+
+int
+countrycmp(const string & country1, const string & country2 ) {
+
     static const string US_label ("US");
     int score = 0;
     if ( country1 == country2 ) {
@@ -506,7 +527,7 @@ classcmp(const string & class1, const string & class2) {
 }
 
 
-int 
+int
 coauthorcmp(const string & coauthor1, const string & coauthor2) {
 
     return (coauthor1 == coauthor2) ? 1 : 0;
@@ -567,7 +588,7 @@ asgcmp_to_test(const vector <string> & asg1,
     map<string, std::pair<string, unsigned int> >::const_iterator p1, p2;
     p1 = asg_table_pointer->find(asg1.at(0));
     p2 = asg_table_pointer->find(asg2.at(0));
-    
+
     if ( p1 == asg_table_pointer->end() || p2 == asg_table_pointer->end() ) {
         std::cout << "Error: either assignee is not found in the assignee tree. "
                   << asg1.at(0) << " or " << asg2.at(0) << std::endl;
@@ -591,13 +612,13 @@ asgcmp_to_test(const vector <string> & asg1,
 
         for ( ++q1; q1 != asg1.end(); ++q1 )
             vec_asg1.push_back(&(*q1));
-        
+
         vector < const string * > vec_asg2;
         vector < string >::const_iterator q2 = asg2.begin();
 
         for ( ++q2; q2 != asg2.end(); ++q2 )
             vec_asg2.push_back(&(*q2));
-        
+
         score = Longest_Common_Subsequence_Incontinuous <const string *, cSentence_JWComparator>(vec_asg1, vec_asg2, sjw).size();
     }
     return score;
