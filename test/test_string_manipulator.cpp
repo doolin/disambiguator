@@ -44,7 +44,6 @@ public:
       std::string eric = stobj.manipulate ("ERIC");
       CPPUNIT_ASSERT(eric == string("ERIC"));
       std::string johnson = stobj.manipulate ("JOHNSON");
-      //std::cout << johnson << std::endl;
       CPPUNIT_ASSERT(johnson == string("JOHNS"));
     }
 
@@ -65,21 +64,18 @@ public:
     {
       stobj.set_truncater(-5, 2, false);
       std::string johnson = stobj.manipulate("JOHNSON");
-      //std::cout << johnson << std::endl;
       CPPUNIT_ASSERT(johnson == string("HO"));
     }
 
     {
       stobj.set_truncater(4, 3, false);
       std::string johnson = stobj.manipulate("JOHNSON");
-      //std::cout << johnson << std::endl;
       CPPUNIT_ASSERT(johnson == string("SNH"));
     }
 
     {
       stobj.set_truncater(4, 0, false);
       std::string johnson = stobj.manipulate("JOHNSON");
-      //std::cout << johnson << std::endl;
       CPPUNIT_ASSERT(johnson == string(""));
     }
 
