@@ -173,6 +173,7 @@ class StringNoSpaceTruncate : public StringTruncate {
 
 private:
     const StringRemoveSpace ns;
+    //StringRemoveSpace ns;
     StringManipulator * clone () const { return new StringNoSpaceTruncate(*this);}
 public:
     string manipulate ( const string & inputstring ) const {

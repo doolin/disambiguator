@@ -431,7 +431,9 @@ public:
 
     static const Derived * static_reduce_attrib( const Derived & d , const unsigned int n) {
         pthread_rwlock_rdlock ( & attrib_pool_structure_lock);
-        register typename map < Derived, int >::iterator p = attrib_pool.find( d );
+        // cppcheck complains about declaring register.
+        //register typename map < Derived, int >::iterator p = attrib_pool.find( d );
+        typename map < Derived, int >::iterator p = attrib_pool.find( d );
         const bool is_end = ( p == attrib_pool.end() );
         pthread_rwlock_unlock (& attrib_pool_structure_lock);
         if ( is_end ) {
@@ -463,7 +465,9 @@ public:
     }
 
     static const string * static_add_string ( const string & str ) {
-        register set< string >::iterator p = data_pool.find(str);
+
+        //register set< string >::iterator p = data_pool.find(str);
+        set< string >::iterator p = data_pool.find(str);
         if ( p == data_pool.end() ) {
             p = data_pool.insert(str).first;
         }
@@ -471,7 +475,10 @@ public:
     }
 
     static const string * static_find_string ( const string & str ) {
-        register set< string >::iterator p = data_pool.find(str);
+
+        // -Wextra complains about register declaration
+        //register set< string >::iterator p = data_pool.find(str);
+        set< string >::iterator p = data_pool.find(str);
         if ( p == data_pool.end() ) {
             return NULL;
         }
