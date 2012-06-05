@@ -1,6 +1,7 @@
 
 INCLUDES = -I../include -I/opt/local/include
 
+AM_CPPFLAGS = -Wall -Wextra  -Wno-unused-parameter -Wno-uninitialized
 LDADD = ../src/libdisambiguation.a 
 AM_LDFLAGS = $(shell cppunit-config --libs)
 

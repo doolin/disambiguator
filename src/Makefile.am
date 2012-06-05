@@ -23,7 +23,7 @@ libdisambiguation_a_SOURCES = Disambigmain.cpp DisambigCluster.cpp comparators.c
                               DisambigPostProcess.cpp DisambigRatios.cpp DisambigRatioSmoothing.cpp \
                               DisambigTraining.cpp utilities.cpp Threading.cpp strcmp95.c record.cpp \
                               string_manipulator.cpp
-libdisambiguation_a_CPPFLAGS = -O0 -pg  -Wall -fno-inline $(INCLUDES) -DIL_STD -L/usr/local/lib -DNDEBUG -w
+libdisambiguation_a_CPPFLAGS = -O0 -pg  -Wall -Wextra -fno-inline $(INCLUDES) -DIL_STD -L/usr/local/lib -DNDEBUG -w
 
 #disambiguate_CPPFLAGS = -O0 -g -Wall -fno-inline $(INCLUDES) -DIL_STD -L/usr/local/lib -DNDEBUG -w
 #disambiguate_LDFLAGS = -L$(CPLEXLIB) -lilocplex -lcplex -L$(CONCERTLIB) -lconcert
@@ -32,7 +32,7 @@ libdisambiguation_a_CPPFLAGS = -O0 -pg  -Wall -fno-inline $(INCLUDES) -DIL_STD -
 
 bin_PROGRAMS = disambiguate txt2sqlite3
 disambiguate_SOURCES = main.cpp 
-disambiguate_CPPFLAGS = -O0 -pg  -Wall -fno-inline $(INCLUDES) -DIL_STD -L/usr/local/lib #-DNDEBUG -w -finstrument-functions-exclude-file-list=iostream.h,string.h,vector.h
+disambiguate_CPPFLAGS = -O0 -pg  -Wall -Wextra -fno-inline $(INCLUDES) -DIL_STD -L/usr/local/lib #-DNDEBUG -w -finstrument-functions-exclude-file-list=iostream.h,string.h,vector.h
 #disambiguate_LDFLAGS = -L$(CPLEXLIB) -lilocplex -lcplex -L$(CONCERTLIB) -lconcert
 disambiguate_LDFLAGS = -pg  -O0
 disambiguate_LDADD = libdisambiguation.a # -L$(CPLEXLIB) -lilocplex -lcplex -L$(CONCERTLIB) -lconcert
