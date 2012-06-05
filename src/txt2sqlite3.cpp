@@ -88,6 +88,7 @@ build_table(sqlite3 * pDB, const string & unique_record_name,
 	//// End second refactor
         sqlite3_finalize(statement);
     }
+    return true;
 }
 
 
@@ -121,6 +122,7 @@ build_index(sqlite3 * pDB, const string & unique_record_name,
         }
     }
     /// End index refactor
+    return true;
 }
 
 
@@ -158,6 +160,7 @@ build_column(sqlite3 * pDB, const string & unique_inventor_name,
         }
         */
     }
+    return true;
 }
 
 
@@ -206,6 +209,7 @@ read_results(const char * txt_source,
         std::cout << "File not found: " << txt_source << std::endl;
         return false;
     }
+    return true;
 }
 
 
@@ -248,6 +252,7 @@ load_table(sqlite3 * pDB, const string & inventor,
     }
     sqlite3_exec(pDB, "END TRANSACTION;", NULL, NULL, NULL);
     sqlite3_finalize(statement);
+    return true;
 }
 
 
