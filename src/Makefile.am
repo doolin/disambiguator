@@ -6,6 +6,7 @@ CC=gcc
 #CFLAGS=-O3 -pg -Wall -I/usr/local/include -L/usr/local/lib
 # Debugging
 
+CPPFLAGS = -Wall -Wextra 
 
 OOQPINCLUDEDIR=/usr/local/include/ooqp
 ILOGINSTALLDIR=/home/ysun/ILOG/CPLEX_Studio_AcademicResearch122
