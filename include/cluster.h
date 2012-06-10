@@ -11,10 +11,11 @@
 #include <iostream>
 #include <map>
 #include <set>
-#include "attribute.h"
 #include <fstream>
 #include <pthread.h>
 #include "Threading.h"
+
+#include "attribute.h"
 #include "DisambigNewCluster.h"
 
 using std::string;
@@ -26,7 +27,7 @@ using std::map;
 class Record;
 class cRatios;
 
-/*
+/**
  * cCluster_Info:
  * This class is a key class for the whole disambiguation.
  *
@@ -175,22 +176,37 @@ class cRatios;
  *            output current comparison results to a file.
  *
  *        void reset_blocking(const cBlocking_Operation & blocker, const char * const past_comparision_file):
- *            Read the data from the specified file, and use the blocker to create blocks. A necessary step for disambiguation.
+ *            Read the data from the specified file, and use the blocker to
+ *            create blocks. A necessary step for disambiguation.
  *
  *        void preliminary_consolidation(const cBlocking_Operation & blocker, const list < const Record *> & all_rec_list):
- *                A preliminary consolidation step. Put all the records with identical blocking string together in same clusters.
- *                In practice, it is used to group records with exact firstname, middlename, lastname, assignee, city, country together.
+ *                A preliminary consolidation step. Put all the records with identical blocking
+ *                string together in same clusters. In practice, it is used to group records
+ *                with exact firstname, middlename, lastname, assignee, city, country together.
  *
- *        cCluster_Info(const map <string, const Record*> & input_uid2record, const bool input_is_matching , const bool aum , const bool debug ):
- *                Constructor of a class object. input_uid2record = map of unique record id string to its Record object pointer.
- *                input_is_matching = whether the object reads a match file. Always set to true unless new functionalities are added.
- *                aum = frequency adjust mode: on or off. debug = debug mode: on or off.
+ *        cCluster_Info(const map <string, const Record*> & input_uid2record,
+ *                      const bool input_is_matching,
+ *                      const bool aum,
+ *                      const bool debug):
+ *                Constructor of a class object.
+ *                input_uid2record = map of unique record id string to its Record object pointer.
+ *                input_is_matching = whether the object reads a match file.
+ *                Always set to true unless new functionalities are added.
+ *                aum = frequency adjust mode: on or off.
+ *                debug = debug mode: on or off.
  *
- *        void disambiguate(const cRatios & ratiosmap, const unsigned int num_threads, const char * const debug_block_file, const char * const prior_to_save):
- *                The function that starts the disambiguation. ratiosmap = a cRatios object.
- *                num_threads = number of threads. For maximum performance it is recommended to be number of CPUs in the machine.
- *                debug_block_file = the file from which specific blocking ids are read and set active. If it is an invalid file, it is ignored.
- *                prior_to_save = the file to which the priori probability history of each block will be saved. Perfect for analysis and debugging.
+ *        void disambiguate(const cRatios & ratiosmap,
+ *                          const unsigned int num_threads,
+ *                          const char * const debug_block_file,
+ *                          const char * const prior_to_save):
+ *                The function that starts the disambiguation.
+ *                ratiosmap = a cRatios object.
+ *                num_threads = number of threads. For maximum performance it is recommended
+ *                to be number of CPUs in the machine.
+ *                debug_block_file = the file from which specific blocking ids are read and
+ *                set active. If it is an invalid file, it is ignored.
+ *                prior_to_save = the file to which the priori probability history of each
+ *                block will be saved. Perfect for analysis and debugging.
  */
 
 /*
@@ -242,8 +258,8 @@ class cRatios;
  *    //Here create a cRatio object, do enough preparations for the object, and then assign pratio to the object.
  *    //This should include training steps.
  *    //......
- *    const char * debug_file = "invalid_file.txt";        //this file can be invalid and should be empty if a whole disambiguation is expected.
- *    const char * prior_history = "prior_history_r4.txt";    //this file will be created if not exists.
+ *    const char * debug_file = "invalid_file.txt";  //this file can be invalid and should be empty if a whole disambiguation is expected.
+ *    const char * prior_history = "prior_history_r4.txt";  //this file will be created if not exists.
  *    CIobj.disambiguate( *pratio, number_of_threads, debug_file, prior_history );    //this command starts the disambiguation.
  *    //It should take a several hours to run the disambiguation, so waiting...
  *    //......
@@ -354,14 +370,14 @@ public:
 };
 
 
-/*
+/**
  * cWorker_For_Disambiguation:
  * This class is a threading subclass to achieve multithreading in Linux systems.
  * It is used in cCluster_Info::disambiguate function.
  * It is unnecessary to understanding the detail. The only thing necessary to know is the constructor.
  *
  * Private:
- *         map < string, cCluster_Info::cRecGroup >::iterator * ppdisambiged: the pointer to an iterator that is a cursor of progress of disambiguation.
+ *        map < string, cCluster_Info::cRecGroup >::iterator * ppdisambiged: the pointer to an iterator that is a cursor of progress of disambiguation.
  *        const cRatios * pratios: the pointer to a cRatio object.
  *        cCluster_Info & cluster_ref: the reference of a cCluster_Info object that is actually the source.
  *        static pthread_mutex_t iter_lock: a mutex to synchronize the cursor.
@@ -376,7 +392,6 @@ public:
  *        static unsigned int get_count(): return the variable "count".
  *
  */
-
 class cWorker_For_Disambiguation : public Thread {
 
 private:
