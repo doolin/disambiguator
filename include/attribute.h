@@ -1149,7 +1149,7 @@ public:
 
 
 class cCoauthor : public Attribute_Set_Mode < cCoauthor >  {
-    friend class cReconfigurator_Coauthor;
+    friend class Reconfigurator_Coauthor;
 public:
     static unsigned int const max_value = 6;
 

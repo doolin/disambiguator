@@ -520,9 +520,9 @@ int Full_Disambiguation( const char * EngineConfigFile, const char * BlockingCon
 
 	//Reconfigure
 	std::cout << "Reconfiguring ..." << std::endl;
-	const cReconfigurator_AsianNames corrector_asiannames;
+	const Reconfigurator_AsianNames corrector_asiannames;
 	std::for_each(all_rec_pointers.begin(), all_rec_pointers.end(), corrector_asiannames);
-	cReconfigurator_Coauthor corrector_coauthor ( blocker_coauthor.get_patent_tree());
+	Reconfigurator_Coauthor corrector_coauthor ( blocker_coauthor.get_patent_tree());
 	std::for_each(all_rec_pointers.begin(), all_rec_pointers.end(), corrector_coauthor);
 
 	std::cout << "Reconfiguration done." << std::endl;

@@ -1,13 +1,13 @@
 
 
-// Record_Reconfigurator classes
+#include "record.h"
 
 
 /**
  * Record_Reconfigurator
- *     - cReconfigurator_AsianNames
- *     - cReconfigurator_Latitude_Interactives
- *     - cReconfigurator_Coauthor
+ *     - Reconfigurator_AsianNames
+ *     - Reconfigurator_Latitude_Interactives
+ *     - Reconfigurator_Coauthor
  *
  * The record reconfigurator hierarchy is used to modify
  * the data after initial loading from text files.
@@ -31,7 +31,7 @@ public:
 
 
 /**
- * cReconfigurator_AsianNames:
+ * Reconfigurator_AsianNames:
  * This class is specifically designed for east asian names. Generally,
  * east asian names do not have middle names. For example,
  * "MING LIANG.ZHANG" of China has the first name as "MING LIANG"
@@ -52,7 +52,7 @@ public:
  *         const StringRemoveSpace rmvsp: a sring manipulator. Perhaps not used here.
  *
  * Public:
- *         cReconfigurator_AsianNames(): constructor
+ *         Reconfigurator_AsianNames(): constructor
  *         void reconfigure( const Record * ) const: virtual function.
  *
  *
@@ -73,8 +73,8 @@ public:
  *         3.2 pfirstname->data[1] points to "ZHANG"
  *
  *  By applying the reconfiguration through:
- *  cReconfigurator_AsianNames rcfgobj; //create a reconfigurator object.
- *  rcfgobj ( & recobj ); // rcfgobj is a cReconfigurator_AsianNames object
+ *  Reconfigurator_AsianNames rcfgobj; //create a reconfigurator object.
+ *  rcfgobj ( & recobj ); // rcfgobj is a Reconfigurator_AsianNames object
  *  We now have:
  *
  *  After reconfiguration:
@@ -91,7 +91,7 @@ public:
  *         3.2 pfirstname->data[1] points to "ZHANG"
  *
  */
-class cReconfigurator_AsianNames : public Record_Reconfigurator {
+class Reconfigurator_AsianNames : public Record_Reconfigurator {
 
 private:
     const unsigned int country_index;
@@ -102,14 +102,14 @@ private:
     const StringRemoveSpace rmvsp;
 
 public:
-    cReconfigurator_AsianNames();
+    Reconfigurator_AsianNames();
     void reconfigure( const Record * ) const;
 };
 
 
 
 /**
- * cReconfigurator_Interactives:
+ * Reconfigurator_Interactives:
  * This class is used to modify the objects to connect with its associated other Attribute objects.
  *
  * Example:
@@ -117,23 +117,23 @@ public:
  * links.push_back("Longitude");
  * links.push_back("Street");
  * links.push_back("Country");
- * cReconfigurator_Interactives obj ("Latitude", links);    // get an instance
+ * Reconfigurator_Interactives obj ("Latitude", links);    // get an instance
  * obj ( & recobj );    // internal modification is done.
  * obj.reconfigure ( & recobj ); //the same as above;
  */
-class cReconfigurator_Interactives: public Record_Reconfigurator {
+class Reconfigurator_Interactives: public Record_Reconfigurator {
 
 private:
     unsigned int my_index;
     vector < unsigned int > relevant_indice;
 public:
-    cReconfigurator_Interactives(const string & my_name, const vector <string> & relevant_attributes);
+    Reconfigurator_Interactives(const string & my_name, const vector <string> & relevant_attributes);
     void reconfigure ( const Record *) const;
 };
 
 
 /**
- * cReconfigurator_Coauthor:
+ * Reconfigurator_Coauthor:
  * This class is primarily used to clean the data obtained from loading from the Coauthor column.
  * Since our coauthor column is not clean enough ( with some legacy expression ), this reconfigurator discards the information from
  * the loaded coauthor column and builds a clean one.
@@ -144,7 +144,7 @@ public:
  *         const unsigned int coauthor_index: the index of the coauthor column in many columns.
  *
  * Public:
- *         cReconfigurator_Coauthor ( const map < const Record *, cGroup_Value, cSort_by_attrib > & patent_authors):
+ *         Reconfigurator_Coauthor ( const map < const Record *, cGroup_Value, cSort_by_attrib > & patent_authors):
  *             create a class object through a patent tree ( which is usually from a cBlocking_Operation_By_Coauthor object ).
  *         void reconfigure ( const Record * ) const: virtual function.
  *
@@ -153,18 +153,18 @@ public:
  * list < const Record * > complete; // create a complete list of Record objects
  * Do something to fill in the list;
  * cBlocking_Operation_By_Coauthor bobcobj( complete, 1 ); // create a cBlocking_Operation_By_Coauthor object.
- * cReconfigurator_Coauthor rcobj ( bobcobj.get_patent_tree() );    //create an object of coauthor reconfigurator. This also wipes everything of the whole coauthor column!!
+ * Reconfigurator_Coauthor rcobj ( bobcobj.get_patent_tree() );    //create an object of coauthor reconfigurator. This also wipes everything of the whole coauthor column!!
  * std::for_each ( complete.begin(), complete.end(), rcobj ); // this rebuilds the coauthor for each patent.
  *
  *
  */
-class cReconfigurator_Coauthor : public Record_Reconfigurator {
+class Reconfigurator_Coauthor : public Record_Reconfigurator {
 
 private:
     const map < const Record *, cGroup_Value, cSort_by_attrib > * reference_pointer;
     const unsigned int coauthor_index;
 public:
-    cReconfigurator_Coauthor ( const map < const Record *, cGroup_Value, cSort_by_attrib > & patent_authors);
+    Reconfigurator_Coauthor ( const map < const Record *, cGroup_Value, cSort_by_attrib > & patent_authors);
     void reconfigure ( const Record * ) const;
 };
 
