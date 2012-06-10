@@ -1,14 +1,7 @@
-/*
- *  DisambigRatios.h
- *
- *
- *  Created by Ye Sun on 10-12-27.
- *  Copyright 2010 Ye Sun@Harvard. All rights reserved.
- *
- */
 
-#ifndef _DISAMBIG_RATIOS_H_
-#define _DISAMBIG_RATIOS_H_
+#ifndef PATENT_RATIOS_H
+#define PATENT_RATIOS_H
+
 #include <iostream>
 #include <map>
 #include <set>
@@ -22,28 +15,27 @@ using std::set;
 using std::map;
 
 
-/*
- * The classes associated with ratios are relatively hard to understand yet very important.
- */
-//typedef vector < unsigned int > SimilarityProfile;
 
-
-/*
+/**
  * cMonotonic_Similarity_Compare:
- * For two given similarity profiles, it only compares the scores at a certain position.
- * This class should ONLY serve as a comparison functor for associated containers, i.e., map or set.
+ *
+ * For two given similarity profiles, it only compares the
+ * scores at a certain position.
+ *
+ * This class should ONLY serve as a comparison functor
+ * for associated containers, i.e., map or set.
  *
  * Private:
  * 		unsigned int compare_entry: the position of interest.
+ *
  * Public:
  * 		bool operator() ( const SimilarityProfile * p1, const SimilarityProfile * p2 ) const:
  * 			to compare the two similarity profiles at the position of compare_entry.
  * 		cMonotonic_Similarity_Compare( const unsigned int entry): constructor
  * 		void reset_entry( const unsigned int entry): reset the variable compare_entry to the input entry.
- *
- *
  */
 struct cMonotonic_Similarity_Compare {
+
 private:
 	unsigned int compare_entry;
 public:
@@ -55,36 +47,46 @@ public:
 };
 
 
-/*
+/**
  * MonotonicSet:
  * members in this set is sorted by a given similarity entry in an ascending way.
  */
 typedef set< const SimilarityProfile *, cMonotonic_Similarity_Compare> MonotonicSet;
 
 
-/*
+/**
  * cSimilarity_With_Monotonicity_Dimension:
- * This class wraps a similarity profile for a map or set structure. The primary purpose of the class
- * is to allow comparison of similarity profiles skipping a certain entry in the profile.
+ *
+ * This class wraps a similarity profile for a map or
+ * set structure. The primary purpose of the class
+ * is to allow comparison of similarity profiles
+ * skipping a certain entry in the profile.
  *
  * Private:
  * 		const SimilarityProfile * psim: pointer to a similarity profile.
- * 		unsigned int monotonic_dimension: an entry in which comparison of similarity profiles will skip.
+ *
+ * 		unsigned int monotonic_dimension: an entry in which
+ * 		comparison of similarity profiles will skip.
+ *
  * 		bool compare_without_primary( const SimilarityProfile * p1, const SimilarityProfile * p2 ) const:
  * 			compare the similarity profiles in all dimensions except the "monotonic_dimension" dimension.
+ *
  * Public:
  *		bool operator < ( const cSimilarity_With_Monotonicity_Dimension & rhs) const:
  *			comparison function that is used only in map/set.
+ *
  *		const unsigned int get_monotonic_dimension() const: return the monotunic_dimension
+ *
  *		cSimilarity_With_Monotonicity_Dimension( const SimilarityProfile * p, const unsigned int dm ):
  *				constructor.
  *
  * Use of the above classes is primarily in the DisambigRatioSmoothing.cpp.
- * It is not expected to have a very solid understanding of the above classes, unless smoothing, interpolation
- * and extrapolation of similarity profiles are supposed to change.
- *
+ * It is not expected to have a very solid understanding of the above
+ * classes, unless smoothing, interpolation and extrapolation of
+ * similarity profiles are supposed to change.
  */
 struct cSimilarity_With_Monotonicity_Dimension {
+
 private:
 	const SimilarityProfile * psim;
 	unsigned int monotonic_dimension;
@@ -99,9 +101,7 @@ public:
 
 
 
-//=================================================
-
-/*
+/**
  * cRatioComponent:
  * This class is used as intermediate steps to finalize a cRatio object. In the current engine, a complete similarity
  * profile is composed of two parts, and each part has several components:
@@ -140,8 +140,8 @@ public:
  * 			constructor. uid_tree = map of unique record id string to its record pointer. groupname = attribute group name.
  *
  */
-
 class cRatioComponent {
+
 	class cException_Partial_SP_Missing : public cAbstract_Exception {
 	public:
 		cException_Partial_SP_Missing(const char* errmsg): cAbstract_Exception(errmsg){};
@@ -188,6 +188,7 @@ public:
 
 
 class cRatios {
+
 private:
 	map < vector <unsigned int>, double, cSimilarity_Compare > final_ratios;
 	vector < string > attrib_names;
@@ -219,6 +220,4 @@ public:
 
 vector < unsigned int > get_max_similarity(const vector < string > & attrib_names) ;
 
-
-
-#endif
+#endif /* PATENT_RATIOS_H */
