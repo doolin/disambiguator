@@ -1,9 +1,3 @@
-/*
- * DisambigCluster.cpp
- *
- *  Created on: Jan 12, 2011
- *      Author: ysun
- */
 
 #include "cluster.h"
 #include "DisambigEngine.h"
@@ -40,11 +34,11 @@ cCluster_Info::cCluster_Info(const map <string, const Record*> & input_uid2recor
 } ;
 
 
-/*
- * Aim: return the list of clusters by the pointer of blocking id string.
+/**
+ * @return the list of clusters by the pointer of blocking id string.
  */
-const cCluster_Info::cRecGroup & 
-cCluster_Info::get_comparision_map(const string* bid) const {
+const cCluster_Info::cRecGroup &
+cCluster_Info::get_comparision_map(const string * bid) const {
 
     map < string, cRecGroup >::const_iterator q = cluster_by_block.find(*bid);
     if ( q == cluster_by_block.end())
@@ -53,10 +47,12 @@ cCluster_Info::get_comparision_map(const string* bid) const {
 }
 
 
-/*
- * Aim: return the list of clusters by the pointer of blocking id string.
+/**
+ * @return the list of clusters by the pointer of blocking id string.
  */
-cCluster_Info::cRecGroup & cCluster_Info::get_comparision_map(const string* bid) {
+cCluster_Info::cRecGroup &
+cCluster_Info::get_comparision_map(const string * bid) {
+
     map < string, cRecGroup >::iterator q = cluster_by_block.find(*bid);
     if ( q == cluster_by_block.end())
         throw cException_Attribute_Not_In_Tree(bid->c_str());
@@ -64,12 +60,16 @@ cCluster_Info::cRecGroup & cCluster_Info::get_comparision_map(const string* bid)
 }
 
 
-/*
+/**
  * Aim: to check the consistency of a cCluster_Info object
- * Algorithm: sum up the number of records after disambiguation and compare it with that before disambiguation.
- *             It is a very crude consistency check, and the functionality can be expanded if necessary.
+ * Algorithm: sum up the number of records after disambiguation and
+ * compare it with that before disambiguation.
+ * It is a very crude consistency check, and the functionality
+ * can be expanded if necessary.
  */
-bool cCluster_Info::is_consistent() const {
+bool
+cCluster_Info::is_consistent() const {
+
     unsigned int temp_total = 0;
     for ( map < string, cRecGroup >::const_iterator cp = cluster_by_block.begin(); cp != cluster_by_block.end(); ++cp ) {
         for ( cRecGroup::const_iterator cq = cp->second.begin(); cq != cp ->second.end(); ++ cq ) {
@@ -81,7 +81,8 @@ bool cCluster_Info::is_consistent() const {
     return true;
 }
 
-/*
+
+/**
  * Aim: read the previous disambiguation results into the cCluster_Info object, and block them by "blocker"
  * Algorithm:
  *         The records saved in the file are in the form of:
@@ -100,8 +101,8 @@ bool cCluster_Info::is_consistent() const {
  *
  *         Finally, use the variable "column_stat" to reset "min_occurrence" and "max_occurence".
  */
-
-void cCluster_Info::retrieve_last_comparision_info ( const cBlocking_Operation & blocker, const char * const past_comparision_file) {
+void
+cCluster_Info::retrieve_last_comparision_info ( const cBlocking_Operation & blocker, const char * const past_comparision_file) {
 
     try {
         const unsigned int num_columns = blocker.num_involved_columns();
@@ -215,6 +216,7 @@ void cCluster_Info::retrieve_last_comparision_info ( const cBlocking_Operation &
             throw cException_File_Not_Found(past_comparision_file);
         }
     }
+
     catch ( const cException_Attribute_Not_In_Tree & except) {
         std::cout << " Current Unique-identifier Binary Tree, having "<< uid2record_pointer->size()
         << " elements, is not complete! " << std::endl;
@@ -226,13 +228,15 @@ void cCluster_Info::retrieve_last_comparision_info ( const cBlocking_Operation &
 }
 
 
-/*
- * Aim: to read the previous disambiguation results and configure them to conform to the new blocking mechanism.
- * Algorithm: call the retrieve_last comparison_info function. Afterwards, reconfigure the middle names. Then count
- *             the total number of records and save it.
- *
+/**
+ * Aim: to read the previous disambiguation results and configure
+ * them to conform to the new blocking mechanism.
+ * Algorithm: call the retrieve_last comparison_info function.
+ * Afterwards, reconfigure the middle names. Then count
+ * the total number of records and save it.
  */
-void cCluster_Info::reset_blocking(const cBlocking_Operation & blocker, const char * const past_comparision_file) {
+void
+cCluster_Info::reset_blocking(const cBlocking_Operation & blocker, const char * const past_comparision_file) {
 
     total_num = 0;
     useless = blocker.get_useless_string();
@@ -244,17 +248,23 @@ void cCluster_Info::reset_blocking(const cBlocking_Operation & blocker, const ch
                 cp->change_mid_name();
         }
     }
+
     for ( map <string, cRecGroup>::const_iterator p  = cluster_by_block.begin(); p != cluster_by_block.end(); ++p ) {
         for ( cRecGroup::const_iterator cp = p->second.begin(); cp != p->second.end(); ++cp )
             total_num += cp->get_fellows().size();
     }
 }
 
-/*
- * Aim: to consolidate records which have the same blocking id together. It should be a very strict consolidation, so
- *         the blocker should be very strict.
+
+/**
+ * Aim: to consolidate records which have the same blocking id together.
+ * It should be a very strict consolidation, so
+ * the blocker should be very strict.
  */
-void cCluster_Info::preliminary_consolidation(const cBlocking_Operation & blocker, const list < const Record *> & all_rec_list) {
+void
+cCluster_Info::preliminary_consolidation(const cBlocking_Operation & blocker,
+                                         const list < const Record *> & all_rec_list) {
+
     std::cout << "Preliminary consolidation ... ..." << std::endl;
     total_num = 0;
     cluster_by_block.clear();
@@ -286,34 +296,39 @@ void cCluster_Info::preliminary_consolidation(const cBlocking_Operation & blocke
         for ( cRecGroup::const_iterator cp = p->second.begin(); cp != p->second.end(); ++cp )
             total_num += cp->get_fellows().size();
     }
-
 }
 
-/*
+
+/**
  * Aim: to output "*this" cCluster_Info to an external file.
  */
+void
+cCluster_Info::output_current_comparision_info(const char * const outputfile ) const {
 
-void cCluster_Info::output_current_comparision_info( const char * const outputfile ) const {
     std::ofstream of (outputfile);
     std::cout << "Dumping to " << outputfile << std::endl;
     print(of);
     std::cout << outputfile << " has been created or updated. "<< std::endl;
 }
 
-/*
+
+/**
  * Aim: to output "*this" cCluster_Info to an ostream object. Callable internally only.
  * Algorithm: for each cluster, output: cluster delegate###cohesion###member1,member2,member3,...
- *             where ### is the the primary delimiter and , is the secondary delimiter.
+ * where ### is the the primary delimiter and , is the secondary delimiter.
  *
  */
+void
+cCluster_Info::print(std::ostream & os) const {
 
-void cCluster_Info::print(std::ostream & os) const {
     if ( is_matching && (! is_consistent() ))
         throw cException_Duplicate_Attribute_In_Tree("Not Consistent!");
+
     std::ostream::sync_with_stdio(false);
     const string & uid_name = cUnique_Record_ID::static_get_class_name();
     const unsigned int uid_index = Record::get_index_by_name(uid_name);
     static const cException_Vector_Data except(uid_name.c_str());
+
     for ( map <string, cRecGroup >::const_iterator q = cluster_by_block.begin(); q != cluster_by_block.end(); ++q ) {
         for ( cRecGroup::const_iterator p = q->second.begin(); p != q->second.end(); ++p ) {
             const Attribute * key_pattrib = p->get_cluster_head().m_delegate->get_attrib_pointer_by_index(uid_index);
@@ -336,14 +351,16 @@ void cCluster_Info::print(std::ostream & os) const {
     }
 }
 
-/*
+
+/**
  * Aim: to set the activity for certain blocks, according to the input file.
  * Algorithm: read the data from the input file, convert them to blocking id strings, and set the corresponding blocks
  *             to be active. Others remain inactive. If the input file is invalid or empty, all the blocks will be set active.
  *
  */
+unsigned int
+cCluster_Info::reset_block_activity( const char * const filename ) {
 
-unsigned int cCluster_Info::reset_block_activity( const char * const filename ) {
     const char * const delim = cCluster_Info::secondary_delim;
     unsigned int cnt = 0;
     std::cout << "Resetting block activity for debug purpose in accordance with file " << filename << " ...  " << std::endl;
@@ -387,13 +404,14 @@ unsigned int cCluster_Info::reset_block_activity( const char * const filename ) 
     return cnt;
 }
 
-/*
+
+/**
  * Aim: set up the prior value for all the blocks.
  * Algorithm: if in debug mode, only configure the relevant blocks. Otherwise, configure all the blocks.
  *         NOTE: the actual determination of priori values is by the function "get_prior_value".
  */
-
 void cCluster_Info::config_prior()  {
+
     prior_data.clear();
 
     std::cout << "Creating prior values ..." << std::endl;
@@ -401,6 +419,7 @@ void cCluster_Info::config_prior()  {
     map < const string *, bool >::const_iterator pmdebug;
     list <double> empty_list;
     map < const string *, list<double> >::iterator pp;
+
     for ( map<string, cRecGroup >::const_iterator cpm = cluster_by_block.begin(); cpm != cluster_by_block.end(); ++ cpm) {
         if ( block_activity.empty())
             break;
@@ -422,11 +441,13 @@ void cCluster_Info::config_prior()  {
     std::cout << "Prior values map is created." << std::endl;
 }
 
-/*
+
+/**
  * Aim: to output the prior values of each block to an external file. This is perfect for both analysis and debugging.
  */
+void
+cCluster_Info::output_prior_value( const char * const outputfile ) const {
 
-void cCluster_Info::output_prior_value( const char * const outputfile ) const {
     std::ofstream of(outputfile);
     for ( map<const string *, list<double> >::const_iterator p = prior_data.begin(); p != prior_data.end(); ++p ) {
         of << *(p->first) << " : ";
@@ -437,7 +458,8 @@ void cCluster_Info::output_prior_value( const char * const outputfile ) const {
     std::cout << "Prior values are saved in " << outputfile << std::endl;
 }
 
-/*
+
+/**
  * Aim: the determine the priori probability for a certain block, given its name and its components.
  * Algorithm: according to the definition of prior values, it is "the probability of match given two records that are
  * randomly selected within the block". We believe records in the same cluster to be a match, and those in different clusters
@@ -450,7 +472,9 @@ void cCluster_Info::output_prior_value( const char * const outputfile ) const {
  * Those commented-out notes are legacy codes of adjustment, for reference purpose only.
  *
  */
-double cCluster_Info::get_prior_value( const string & block_identifier, const list <cCluster> & rg ) {
+double
+cCluster_Info::get_prior_value( const string & block_identifier, const list <cCluster> & rg ) {
+
     static const double prior_max = 0.95;
     static const double prior_default = 1e-6;
     //attention. the uninvolved index is subject to the blocking configuration.
@@ -464,6 +488,7 @@ double cCluster_Info::get_prior_value( const string & block_identifier, const li
     }
     double numerator = 0;
     unsigned int tt = 0;
+
     for ( list<cCluster>::const_iterator q = rg.begin(); q != rg.end(); ++q ) {
         const unsigned int c = q->get_fellows().size();
         numerator += 1.0 * c * ( c - 1 );
@@ -474,8 +499,10 @@ double cCluster_Info::get_prior_value( const string & block_identifier, const li
     }
 
     double denominator = 1.0 * tt * ( tt - 1 );
+
     if ( denominator == 0 )
         denominator = 1e10;
+
     double prior = numerator / denominator ;
 
     if ( prior == 0 )
@@ -487,6 +514,7 @@ double cCluster_Info::get_prior_value( const string & block_identifier, const li
     unsigned int seq = 0;
     double final_factor = 0.0;
     vector <double> factor_history;
+
     while ( true ) {
         pos = block_identifier.find(cBlocking_Operation::delim, prev_pos );
         if ( pos == string::npos )
@@ -552,21 +580,22 @@ double cCluster_Info::get_prior_value( const string & block_identifier, const li
 }
 
 
-/*
+/**
  * Aim: to start the disambiguation.
  * Algorithm: create several thread workers and multi-thread the process.
  */
+void
+cCluster_Info::disambiguate(const cRatios & ratio, const unsigned int num_threads, const char * const debug_block_file, const char * const prior_to_save) {
 
-void cCluster_Info::disambiguate(const cRatios & ratio, const unsigned int num_threads, const char * const debug_block_file, const char * const prior_to_save) {
     if ( is_matching_cluster() != true )
         throw cException_Cluster_Error("Wrong type of clusters for disambiguation.");
+
     if ( this->thresholds.empty() )
         throw cException_Cluster_Error("Thresholds have not been set up yet.");
 
     unsigned int size_to_disambig = this->reset_block_activity(debug_block_file);
 
     config_prior();
-
 
     std::cout << "Starting disambiguation ... ..." << std::endl;
     cRecGroup emptyone;
@@ -596,6 +625,7 @@ void cCluster_Info::disambiguate(const cRatios & ratio, const unsigned int num_t
 
     unsigned int max_inventor = 0;
     const cCluster * pmax = NULL;
+
     for ( map < string, cRecGroup >::const_iterator p = cluster_by_block.begin(); p != cluster_by_block.end(); ++p ) {
         const cRecGroup & galias = p->second;
         for ( cRecGroup::const_iterator q = galias.begin(); q != galias.end(); ++q ) {
@@ -606,6 +636,7 @@ void cCluster_Info::disambiguate(const cRatios & ratio, const unsigned int num_t
             }
         }
     }
+
     const unsigned int fi = Record::get_index_by_name(cFirstname::static_get_class_name());
     const unsigned int li = Record::get_index_by_name(cLastname::static_get_class_name());
     const unsigned int ui = Record::get_index_by_name(cUnique_Record_ID::static_get_class_name());
@@ -617,7 +648,7 @@ void cCluster_Info::disambiguate(const cRatios & ratio, const unsigned int num_t
 }
 
 
-/*
+/**
  * Aim: thread worker of disambiguation.
  * Algorithm:
  * Given the address of the cursor ( iterator ) of the disambiguation progress, save the cursor locally and
@@ -625,7 +656,8 @@ void cCluster_Info::disambiguate(const cRatios & ratio, const unsigned int num_t
  * the disambiguated record number.
  * PAY ATTENTION TO THE SYNCRONIZATION!
  */
-void cWorker_For_Disambiguation::run() {
+void
+cWorker_For_Disambiguation::run() {
     const unsigned int base = 10000;
     map < string, cCluster_Info::cRecGroup >::iterator pthis;
     while ( true) {
@@ -649,12 +681,14 @@ void cWorker_For_Disambiguation::run() {
     }
 }
 
-/*
+
+/**
  * Aim: a function that controls the loop of disambiguation for a certain block. Used in cWorker_For_Disambiguation.
  */
-
-bool disambiguate_wrapper(const map<string, cCluster_Info::cRecGroup>::iterator & p,cCluster_Info & cluster,
+bool
+disambiguate_wrapper(const map<string, cCluster_Info::cRecGroup>::iterator & p,cCluster_Info & cluster,
                             const cRatios & ratio ) {
+
     const string * pst = &p->first;
     if ( p->first == cluster.get_useless_string() ) {
         std::cout << "Block Without Any Infomation Tag: " << p->first << " Size = " << p->second.size() << "----------SKIPPED."<< std::endl;
@@ -684,24 +718,30 @@ bool disambiguate_wrapper(const map<string, cCluster_Info::cRecGroup>::iterator 
         }
     }
     return true;
-
 }
 
-/*
+
+/**
  * Aim: set the thresholds for overall disambiguation.
  */
-const vector < double > & cCluster_Info::set_thresholds ( const vector < double > & input ) {
+const vector < double > &
+cCluster_Info::set_thresholds ( const vector < double > & input ) {
+
     this->thresholds =  input;
     return this->thresholds;
 }
 
-/*
+
+/**
  * Aim: to disambiguate clusters within a given block. Probably also update the prior values.
  * Algorithm: call the cCluster::disambiguate method and, if necessary, the cCluster::merge method.
  */
-
-unsigned int cCluster_Info:: disambiguate_by_block ( cRecGroup & to_be_disambiged_group,  list <double> & prior_list,
-                            const cRatios & ratio, const string * const bid, const double threshold ) {
+unsigned int
+cCluster_Info::disambiguate_by_block(cRecGroup & to_be_disambiged_group,
+                                     list <double> & prior_list,
+                                     const cRatios & ratio,
+                                     const string * const bid,
+                                     const double threshold ) {
 
     const bool should_update_prior = false;
     cRecGroup::iterator first_iter, second_iter;
