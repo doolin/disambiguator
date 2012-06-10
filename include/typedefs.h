@@ -12,4 +12,8 @@ typedef std::vector<std::string> Label;
 // cleaned up and refactored more.
 typedef std::vector < unsigned int > SimilarityProfile;
 
+//asgdetail consists of assignee number and its patent counts.
+typedef std::pair<std::string, unsigned int> asgdetail;
+
+
 #endif /* PATENT_TYPEDEFS_H */

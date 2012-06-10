@@ -10,6 +10,8 @@
 #include <set>
 #include <algorithm>
 
+#include "typedefs.h"
+
 #include "record.h"
 #include "Threading.h"
 

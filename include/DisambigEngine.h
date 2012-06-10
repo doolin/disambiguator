@@ -25,16 +25,20 @@ using std::vector;
 using std::map;
 using std::set;
 
-//asgdetail consists of assignee number and its patent counts.
-typedef std::pair<string, unsigned int> asgdetail;
+// forward declarations
+//class cBlocking_Operation_By_Coauthors;
 
-// cGroup_Value is a list of const Record pointers. This definition will be used throughout the whole project.
-typedef list<const Record*> cGroup_Value;
 
-// forward diclarations
-class cBlocking_Operation_By_Coauthors;
+// cGroup_Value is a list of const Record pointers.
+// This definition will be used throughout the whole project.
+// TODO: This is ludicrous that Record can be used in a typedef
+// before it's defined in its header file below. This means
+// there is some header include somewhere which is doing
+// the include as a side effect.
+typedef std::list<const Record * > cGroup_Value;
 
 #include "record.h"
 #include "engine.h"
+
 
 #endif /* DISAMBIGENGINE_H_ */
