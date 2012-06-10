@@ -56,7 +56,7 @@ public:
 
 #include "string_manipulator.h"
 
-//==========================================================
+// Blocking_Operation classes
 
 /*
  * cBlocking_Operation
@@ -294,6 +294,9 @@ public:
 
 };
 
+
+
+// Record_Reconfigurator classes
 
 /*
  * Record_Reconfigurator
