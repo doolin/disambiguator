@@ -33,7 +33,9 @@ public:
 	cCluster_Set () {}
 	~cCluster_Set() {}
 	void output_results( const char * ) const;
-	void read_from_file ( const char * filename, const map <string, const Record*> & uid_tree);
+
+	void read_from_file (const char * filename,
+                       const map <string, const Record*> & uid_tree);
 };
 
 void post_polish( cCluster_Set & m, map < const Record *, const Record *> & uid2uinv,
