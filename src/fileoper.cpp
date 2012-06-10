@@ -2,7 +2,7 @@
 #include <fstream>
 #include <cstring>
 
-#include "DisambigFileOper.h"
+#include "fileoper.h"
 #include "DisambigEngine.h"
 #include "DisambigCluster.h"
 

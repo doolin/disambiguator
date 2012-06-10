@@ -7,7 +7,7 @@
 
 #include "DisambigEngine.h"
 #include "attribute.h"
-#include "DisambigFileOper.h"
+#include "fileoper.h"
 #include "DisambigCluster.h"
 #include "DisambigRatios.h"
 #include "DisambigNewCluster.h"

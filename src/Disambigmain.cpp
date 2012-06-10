@@ -11,7 +11,7 @@
 
 #include "attribute.h"
 #include "DisambigEngine.h"
-#include "DisambigFileOper.h"
+#include "fileoper.h"
 #include "DisambigRatios.h"
 #include "DisambigTraining.h"
 #include "DisambigCluster.h"

@@ -8,7 +8,7 @@
 #include "DisambigPostProcess.h"
 
 #include "DisambigCluster.h"
-#include "DisambigFileOper.h"
+#include "fileoper.h"
 
 extern "C" {
 	# include "strcmp95.h"

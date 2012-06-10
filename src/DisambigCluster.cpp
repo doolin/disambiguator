@@ -7,7 +7,7 @@
 
 #include "DisambigCluster.h"
 #include "DisambigEngine.h"
-#include "DisambigFileOper.h"
+#include "fileoper.h"
 #include "DisambigRatios.h"
 #include "DisambigNewCluster.h"
 extern "C" {
