@@ -1,14 +1,10 @@
-/*
- * DisambigTraining.cpp
- *
- *  Created on: Jan 6, 2011
- *      Author: ysun
- */
 
-#include "DisambigTraining.h"
 #include <fstream>
+
+#include "training.h"
+
 extern "C" {
-#include "strcmp95.h"
+  #include "strcmp95.h"
 }
 
 

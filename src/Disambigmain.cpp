@@ -1,24 +1,20 @@
-/*
- * Disambigmain.cpp
- *
- *  Created on: Dec 7, 2010
- *      Author: ysun
- */
 
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
 
+#include <cmath>
+#include <cstring>
+
 #include "attribute.h"
 #include "DisambigEngine.h"
 #include "fileoper.h"
 #include "DisambigRatios.h"
-#include "DisambigTraining.h"
+#include "training.h"
 #include "cluster.h"
 #include "DisambigPostProcess.h"
 #include "utilities.h"
-#include <cmath>
-#include <cstring>
+
 using std::list;
 using std::string;
 #include "Disambigmain.h"

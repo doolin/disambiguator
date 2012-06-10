@@ -4,7 +4,7 @@
 #include "DisambigEngine.h"
 #include "fileoper.h"
 #include "DisambigRatios.h"
-#include "DisambigTraining.h"
+#include "training.h"
 #include "cluster.h"
 #include "DisambigPostProcess.h"
 
