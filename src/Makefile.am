@@ -23,7 +23,7 @@ libdisambiguation_a_SOURCES = Disambigmain.cpp cluster.cpp comparators.cpp attri
                               engine.cpp fileoper.cpp blocking_operation.cpp DisambigNewCluster.cpp \
                               DisambigPostProcess.cpp DisambigRatios.cpp DisambigRatioSmoothing.cpp \
                               DisambigTraining.cpp utilities.cpp Threading.cpp strcmp95.c record.cpp \
-                              string_manipulator.cpp
+                              string_manipulator.cpp record_reconfigurator.cpp
 libdisambiguation_a_CPPFLAGS = -O0 -pg  -Wall -Wextra -fno-inline $(INCLUDES) -DIL_STD -L/usr/local/lib -DNDEBUG -w
 
 #disambiguate_CPPFLAGS = -O0 -g -Wall -fno-inline $(INCLUDES) -DIL_STD -L/usr/local/lib -DNDEBUG -w
