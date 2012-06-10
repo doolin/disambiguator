@@ -138,6 +138,7 @@ cBlocking_Operation_By_Coauthors::cBlocking_Operation_By_Coauthors(const list < 
  */
 void
 cBlocking_Operation_By_Coauthors::build_patent_tree(const list < const Record * > & all_rec_pointers) {
+
     map < const Record *, cGroup_Value, cSort_by_attrib >::iterator ppatentmap;
     for ( list < const Record * >::const_iterator p = all_rec_pointers.begin(); p != all_rec_pointers.end(); ++p ) {
         ppatentmap = patent_tree.find(*p);
@@ -165,7 +166,9 @@ cBlocking_Operation_By_Coauthors::build_patent_tree(const list < const Record * 
  *                 End for
  *            uinv2count is updated in the same way.
  */
-void cBlocking_Operation_By_Coauthors::build_uid2uinv_tree( const cCluster_Info & cluster )  {
+void
+cBlocking_Operation_By_Coauthors::build_uid2uinv_tree(const cCluster_Info & cluster) {
+
     uinv2count_tree.clear();
     uid2uinv_tree.clear();
     unsigned int count = 0;
@@ -213,6 +216,7 @@ cGroup_Value cBlocking_Operation_By_Coauthors::get_topN_coauthors(const Record *
     unsigned int cnt = 0;
 
     for (cGroup_Value::const_iterator p = list_alias.begin(); p != list_alias.end(); ++p) {
+
         if ( *p == prec )
             continue;
 
@@ -251,7 +255,6 @@ cGroup_Value cBlocking_Operation_By_Coauthors::get_topN_coauthors(const Record *
     for ( map < unsigned int, cGroup_Value>::const_reverse_iterator rp = occurrence_map.rbegin(); rp != occurrence_map.rend(); ++rp )
         ans.insert(ans.end(), rp->second.begin(), rp->second.end());
     return ans;
-
 }
 
 
