@@ -5,7 +5,7 @@
  *      Author: ysun
  */
 
-#include "DisambigPostProcess.h"
+#include "postprocess.h"
 
 #include "cluster.h"
 #include "fileoper.h"

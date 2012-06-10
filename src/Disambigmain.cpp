@@ -12,7 +12,7 @@
 #include "ratios.h"
 #include "training.h"
 #include "cluster.h"
-#include "DisambigPostProcess.h"
+#include "postprocess.h"
 #include "utilities.h"
 
 using std::list;
