@@ -8,20 +8,36 @@
  *     - cBlocking_Operation_Column_Manipulate
  *     - cBlocking_Operation_Multiple_Column_Manipulate
  *
- * cBlocking_Operation reads data from a const Record pointer, and extract information to create a string which represents the blocking id to which the record belongs.
- *
+ * cBlocking_Operation reads data from a const Record pointer,
+ * and extract information to create a string which represents
+ * the blocking id to which the record belongs.
+ */
+
+/*
  * Protected:
- *         string infoless: this string represents the string that has delimiters ONLY. i.e. no useful information at all.
- *                         Usually, the variable is changed by concrete subclasses.
  *
+ *         string infoless:
+ *             this string represents the string that has delimiters ONLY.
+ *             i.e. no useful information at all.
+ *             Usually, the variable is changed by concrete subclasses.
+ */
+
+/*
  * Public:
- *         const string & get_useless_string () const: returns the infoless string.
- *         static const string delim: the separator between columns. Defined in cpp file. Will be used by other modules.
- *         virtual string extract_blocking_info(const Record *) const = 0: pure virtual function to extract information from a Record pointer.
- *         virtual string extract_column_info ( const Record *, unsigned int flag ) const:
- *                 virtual function that extract information from the (flag)th column.
- *      virtual unsigned int num_involved_columns() const: return number of columns that the extraction operates on.
  *
+ *         const string & get_useless_string () const: returns the infoless string.
+ *
+ *         static const string delim: the separator between columns. Defined in cpp file. Will be used by other modules.
+ *
+ *         virtual string extract_blocking_info(const Record *) const = 0: pure virtual function to extract information from a Record pointer.
+ *
+ *         virtual string extract_column_info ( const Record *, unsigned int flag ) const:
+ *            virtual function that extract information from the (flag)th column.
+ *
+ *         virtual unsigned int num_involved_columns() const: return number of columns that the extraction operates on.
+ */
+
+/*
  * Example:
  *         Record recobj: firstname = "JACK", lastname = "SMITH", patent = "12345A"
  *         if cBlocking_Operation::delim == "###", then
@@ -32,10 +48,12 @@
  *             get_useless_string() returns "######".
  *
  */
-
 class cBlocking_Operation {
+
+
 protected:
     string infoless;
+
 public:
     const string & get_useless_string () const { return infoless;}
     static const string delim;
@@ -64,6 +82,7 @@ public:
  *
  */
 class cBlocking_Operation_Column_Manipulate: public cBlocking_Operation {
+
 private:
     const StringManipulator & sm;
     const unsigned int column_index;
@@ -153,8 +172,8 @@ public:
  *
  *
  */
-
 class cBlocking_Operation_Multiple_Column_Manipulate : public cBlocking_Operation {
+
 private:
     vector < const StringManipulator * > vsm;
     vector < unsigned int > indice;
@@ -176,7 +195,7 @@ class cCluster_Info;    //forward declaration.
 
 
 
-/*
+/**
  * cBlocking_Operation_By_Coauthor:
  * This is a subclass of cBlocking_Operation. It was used to find the top N unique inventors' names of a given record.
  * Although it is not used any more for blocking, it does, however, provide other functionalities such as :
@@ -184,7 +203,9 @@ class cCluster_Info;    //forward declaration.
  * 2. map unique record id to unique inventor id. This can be regarded as an expression of result of disambiguation.
  * 3. map unique inventor id to number of records (patents) that the inventor holds.
  * Therefore, this class is actually working beyond its original design purpose. And one should be familiar with the class members.
- *
+ */
+
+/*
  * Private:
  *         map < const Record *, cGroup_Value, cSort_by_attrib > patent_tree: a binary tree to sort records by patent information.
  *                 key = const Record pointer, value = list < const Record * >, comparison function = an object of cSort_by_attrib, which includes the column information.
@@ -196,7 +217,9 @@ class cCluster_Info;    //forward declaration.
  *                NOTE THAT the comparison function for the tree is determined in the constructor.
  *        cGroup_Value get_topN_coauthors( const Record * pRec, const unsigned int topN) const:
  *                find the top N most prolific coauthors of the input pRec record pointer, and return a list of const Record pointers.
- *
+ */
+
+/*
  * Public:
  *        cBlocking_Operation_By_Coauthors(const list < const Record * > & allrec, const cCluster_Info& cluster, const unsigned int coauthors):
  *                initialize a class object. allrec = a complete list of const Record pointers.
@@ -209,7 +232,9 @@ class cCluster_Info;    //forward declaration.
  *        map < const Record *, const Record * > & get_uid2uinv_tree(): get the reference of the unique record id to unique inventor id tree.
  *                                                                        NOTE: the referenced tree is not const so it is modifiable.
  *
- *
+ */
+
+/*
  * Example:
  *
  * list < const Record * > complete_list;    //initialize a list
@@ -223,6 +248,7 @@ class cCluster_Info;    //forward declaration.
  *
  */
 class cBlocking_Operation_By_Coauthors : public cBlocking_Operation {
+
 private:
     map < const Record *, cGroup_Value, cSort_by_attrib > patent_tree;
     map < const Record *, const Record * > uid2uinv_tree;

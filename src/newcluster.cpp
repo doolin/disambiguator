@@ -11,8 +11,10 @@ const map < const Record *, cGroup_Value, cSort_by_attrib > * cCluster::referenc
  */
 cCluster::cCluster(const cCluster_Head & info, const cGroup_Value & fellows)
 		: m_info(info), m_fellows(fellows), m_mergeable(true), m_usable(true) {
+
 	if ( NULL == reference_pointer )
 		throw cException_Other("Critical Error: Patent tree reference pointer is not set yet.");
+
 	this->first_patent_year = invalid_year;
 	this->last_patent_year = invalid_year;
 	this->update_year_range();
@@ -21,10 +23,13 @@ cCluster::cCluster(const cCluster_Head & info, const cGroup_Value & fellows)
 
 
 /**
- * Aim: merge the mergee object into "*this", with the new cluster head = info ( Actually only the cohesion is used,
- * 		because the delegate will be reset by find_representative).
- * Algorithm: put the mergee's members into "*this" object, and set mergee's signal to false.
- * 				And then call find_representative.
+ * Aim: merge the mergee object into "*this", with the new cluster
+ * head = info ( Actually only the cohesion is used,
+ * because the delegate will be reset by find_representative).
+ *
+ * Algorithm: put the mergee's members into "*this" object,
+ * and set mergee's signal to false.
+ * And then call find_representative.
  */
 void
 cCluster::merge(cCluster & mergee, const cCluster_Head & info) {
@@ -61,6 +66,7 @@ cCluster::merge(cCluster & mergee, const cCluster_Head & info) {
 	mergee.m_mergeable = false;
 }
 
+
 /**
  * Aim: To change the pointer to abbreviated middle names to the full names.
  *
@@ -74,11 +80,11 @@ cCluster::merge(cCluster & mergee, const cCluster_Head & info) {
  * NOT take place. This is because it is very risky, as we have no
  * information about the real middle name.
  */
-
 void
 cCluster::change_mid_name()  {
 
-	// The folowing step actually changes the raw data. Changes the abbreviated middlename to a longer one if possible.
+	// The folowing step actually changes the raw data. Changes the
+  // abbreviated middlename to a longer one if possible.
 	if ( ! cMiddlename::is_enabled() )
 		return;
 
@@ -255,15 +261,18 @@ cCluster::self_repair() {
 
 /**
  * Aim: to find a representative/delegate for a cluster.
- * Algorithm: for each specified column, build a binary map of const Attribute pointer -> unsigned int ( as a counter).
- * 			Then traverse the whole cluster and fill in the counter. Finally, get the most frequent.
  *
+ * Algorithm: for each specified column, build a binary map of
+ * const Attribute pointer -> unsigned int ( as a counter).
+ * Then traverse the whole cluster and fill in the counter.
+ * Finally, get the most frequent.
  */
 void
 cCluster::find_representative()  {
 
 	static const string useful_columns[] = { cFirstname::static_get_class_name(), cMiddlename::static_get_class_name(), cLastname::static_get_class_name(),
 											cLatitude::static_get_class_name(), cAssignee::static_get_class_name(), cCity::static_get_class_name(), cCountry::static_get_class_name()};
+
 	static const unsigned int nc = sizeof(useful_columns)/sizeof(string);
 	vector < map < const Attribute *, unsigned int > > tracer( nc );
 	vector < unsigned int > indice;
@@ -307,8 +316,8 @@ cCluster::find_representative()  {
 	}
 
 	this->m_info.m_delegate = mp;
-
 }
+
 
 void
 cCluster::update_year_range() {
