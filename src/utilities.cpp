@@ -5,7 +5,7 @@
 #include "fileoper.h"
 #include "DisambigRatios.h"
 #include "DisambigTraining.h"
-#include "DisambigCluster.h"
+#include "cluster.h"
 #include "DisambigPostProcess.h"
 
 

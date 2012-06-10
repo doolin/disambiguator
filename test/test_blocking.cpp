@@ -7,7 +7,7 @@
 #include <vector>
 
 #include <DisambigEngine.h>
-#include <DisambigCluster.h>
+//#include <DisambigCluster.h>
 #include <attribute.h>
 #include <DisambigEngine.h>
 //#include <DisambigFileOper.h>

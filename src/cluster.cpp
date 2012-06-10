@@ -5,7 +5,7 @@
  *      Author: ysun
  */
 
-#include "DisambigCluster.h"
+#include "cluster.h"
 #include "DisambigEngine.h"
 #include "fileoper.h"
 #include "DisambigRatios.h"

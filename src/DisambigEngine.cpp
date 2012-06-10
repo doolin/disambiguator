@@ -8,7 +8,7 @@
 #include "DisambigEngine.h"
 #include "attribute.h"
 //#include "DisambigFileOper.h"
-#include "DisambigCluster.h"
+#include "cluster.h"
 #include "DisambigRatios.h"
 #include "DisambigNewCluster.h"
 #include <algorithm>

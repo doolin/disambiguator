@@ -7,7 +7,7 @@
 
 #include "DisambigPostProcess.h"
 
-#include "DisambigCluster.h"
+#include "cluster.h"
 #include "fileoper.h"
 
 extern "C" {

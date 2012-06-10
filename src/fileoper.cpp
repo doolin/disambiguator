@@ -4,7 +4,7 @@
 
 #include "fileoper.h"
 #include "DisambigEngine.h"
-#include "DisambigCluster.h"
+#include "cluster.h"
 
 
 const Record *

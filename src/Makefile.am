@@ -19,7 +19,7 @@ CONCERTLIB=$(ILOGINSTALLDIR)/concert/lib/x86-64_sles10_4.1/static_pic
 INCLUDES = -I/usr/local/include -I$(CPLEXINCLUDE) -I$(CONCERTINCLUDE) -I../include
 
 noinst_LIBRARIES = libdisambiguation.a
-libdisambiguation_a_SOURCES = Disambigmain.cpp DisambigCluster.cpp comparators.cpp attribute.cpp \
+libdisambiguation_a_SOURCES = Disambigmain.cpp cluster.cpp comparators.cpp attribute.cpp \
                               DisambigEngine.cpp fileoper.cpp DisambigNewCluster.cpp \
                               DisambigPostProcess.cpp DisambigRatios.cpp DisambigRatioSmoothing.cpp \
                               DisambigTraining.cpp utilities.cpp Threading.cpp strcmp95.c record.cpp \
