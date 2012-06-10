@@ -1,5 +1,5 @@
-#ifndef _DISAMBIG_FILE_OPERATIONS_H_
-#define _DISAMBIG_FILE_OPERATIONS_H_
+#ifndef PATENT_FILEOPER_H
+#define PATENT_FILEOPER_H
 
 #include <iostream>
 #include <map>
@@ -27,4 +27,4 @@ bool           dump_match                          (const char * sqlite3_target,
                                                     const string & unique_record_name,
                                                     const string & unique_inventor_name);
 
-#endif
+#endif /* PATENT_FILEOPER_H */
