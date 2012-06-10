@@ -25,10 +25,14 @@ cCluster_Set & cCluster_Set::convert_from_ClusterInfo( const cCluster_Info * ps)
 }
 #endif
 
-void find_associated_nodes(const cCluster & center, const map < const Record *, const Record *> & uid2uinv,
-                            const map < const Record *, cGroup_Value, cSort_by_attrib > & patent_tree,
-                            set < const Record * > & associated_delegates) {
+
+void
+find_associated_nodes(const cCluster & center, const map < const Record *, const Record *> & uid2uinv,
+                      const map < const Record *, cGroup_Value, cSort_by_attrib > & patent_tree,
+                      set < const Record * > & associated_delegates) {
+
     associated_delegates.clear();
+
     for ( cGroup_Value::const_iterator p = center.get_fellows().begin(); p != center.get_fellows().end(); ++p ) {
         map < const Record *, cGroup_Value, cSort_by_attrib >::const_iterator ipat = patent_tree.find(*p);
         if ( ipat == patent_tree.end() ) {
@@ -52,9 +56,13 @@ void find_associated_nodes(const cCluster & center, const map < const Record *, 
     }
 }
 
-void post_polish( cCluster_Set & m, map < const Record *, const Record *> & uid2uinv,
-                    const map < const Record *, cGroup_Value, cSort_by_attrib > & patent_tree,
-                    const string & logfile) {
+
+void
+post_polish(cCluster_Set & m, map < const Record *,
+            const Record *> & uid2uinv,
+            const map < const Record *, cGroup_Value, cSort_by_attrib > & patent_tree,
+            const string & logfile) {
+
     std::cout << "Starting post processing ... ..." << std::endl;
     set < const Record *> linkages;
     const double normal_threshold = 0.95;
@@ -70,25 +78,21 @@ void post_polish( cCluster_Set & m, map < const Record *, const Record *> & uid2
     std::ofstream pplog(logfile.c_str());
     std::cout << "Saving post processing log to " << logfile << " ... ..." << std::endl;
 
-    /*
+   /*
     const unsigned int mi = Record::get_index_by_name(cMiddlename::static_get_class_name());
-
-
     vector < unsigned int > indice;
     indice.push_back(fi);
     indice.push_back(mi);
     indice.push_back(li);
-
     vector < unsigned int > compres;
+    */
 
-     */
     const unsigned int base = 1000;
     unsigned int cnt = 0;
 
-
-
     map < const Record *,  Cluster_Container::iterator > record2cluster;
     map < const Record *, Cluster_Container::iterator >::const_iterator z;
+
     for ( Cluster_Container ::iterator p = m.get_modifiable_set().begin(); p != m.get_modifiable_set().end(); ++p ) {
         record2cluster.insert( std::pair < const Record *, Cluster_Container::iterator > (p->get_cluster_head().m_delegate, p ) );
     }
@@ -256,12 +260,13 @@ void post_polish( cCluster_Set & m, map < const Record *, const Record *> & uid2
         }
     } while ( round_cnt != cnt );
 
-
     std::cout << cnt << " records have been polished." << std::endl;
-
 }
 
-void cCluster_Set::output_results( const char * dest_file) const {
+
+void
+cCluster_Set::output_results( const char * dest_file) const {
+
     std::cout << "Writing to " << dest_file << " ... ...";
     std::ostream::sync_with_stdio(false);
     const string & uid_name = cUnique_Record_ID::static_get_class_name();
@@ -289,12 +294,17 @@ void cCluster_Set::output_results( const char * dest_file) const {
     std::cout << "Done." << std::endl;
 }
 
-void cCluster_Set::read_from_file( const char * filename, const map <string, const Record*> & uid_tree) {
+
+void
+cCluster_Set::read_from_file(const char * filename,
+                             const map <string, const Record*> & uid_tree) {
+
     unsigned int count = 0;
     const unsigned int base = 100000;
     const unsigned int primary_delim_size = strlen(cCluster_Info::primary_delim);
     const unsigned int secondary_delim_size = strlen(cCluster_Info::secondary_delim);
     std::ifstream infile ( filename);
+
     if (infile.good()) {
         string filedata;
         while ( getline(infile, filedata)) {
@@ -335,5 +345,4 @@ void cCluster_Set::read_from_file( const char * filename, const map <string, con
         throw cException_File_Not_Found(filename);
     }
 }
-
 

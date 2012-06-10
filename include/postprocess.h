@@ -1,14 +1,10 @@
-/*
- * DisambigMisc.h
- *
- *  Created on: Feb 5, 2011
- *      Author: ysun
- */
 
-#ifndef DISAMBIGMISC_H_
-#define DISAMBIGMISC_H_
+#ifndef PATENT_POSTPROCESS_H
+#define PATENT_POSTPROCESS_H
+
 #include "newcluster.h"
 
+// forward declaration
 class cCluster_Info;
 
 struct cSort_For_Cluster {
@@ -23,9 +19,11 @@ typedef list < cCluster > Cluster_Container;
 
 
 class cCluster_Set {
+
 private:
     Cluster_Container consolidated;
     cCluster_Set ( const cCluster_Set &);
+
 public:
     //cCluster_Set & convert_from_ClusterInfo( const cCluster_Info * );
     const Cluster_Container & get_set() const {return consolidated;}
@@ -38,9 +36,10 @@ public:
                        const map <string, const Record*> & uid_tree);
 };
 
-void post_polish( cCluster_Set & m, map < const Record *, const Record *> & uid2uinv,
-                      const map < const Record *, cGroup_Value, cSort_by_attrib > & patent_tree,
-                      const string & logfile);
+void post_polish(cCluster_Set & m,
+                 map < const Record *, const Record *> & uid2uinv,
+                 const map < const Record *, cGroup_Value, cSort_by_attrib > & patent_tree,
+                 const string & logfile);
 
 
 
@@ -48,4 +47,4 @@ void post_polish( cCluster_Set & m, map < const Record *, const Record *> & uid2
 
 
 
-#endif /* DISAMBIGMISC_H_ */
+#endif /* PATENT_POSTPROCESS_H */
