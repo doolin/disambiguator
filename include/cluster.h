@@ -10,7 +10,7 @@
 #include "Threading.h"
 
 #include "attribute.h"
-#include "DisambigNewCluster.h"
+#include "newcluster.h"
 
 using std::string;
 using std::set;

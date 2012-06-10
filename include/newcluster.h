@@ -1,33 +1,27 @@
-/*
- * DisambigNewCluster.h
- *
- *  Created on: Feb 7, 2011
- *      Author: ysun
- *
- *
- *  This file contains definitions of cCluster, or a group of unique record id that actually ( not necessarily true ) belong
- *  to a unique inventor.
- *
- */
 
-#ifndef DISAMBIGNEWCLUSTER_H_
-#define DISAMBIGNEWCLUSTER_H_
+#ifndef PATENT_NEWCLUSTER_H
+#define PATENT_NEWCLUSTER_H
 
 #include "DisambigEngine.h"
 
-/*
+/**
  * cCluster_Head:
  * This class contains two pieces of information about a cluster: its delegate and its cohesion.
+ *
  * Public:
- * 		const Record * m_delegate: the delegate (representative) of a cluster. Usually this pointer contains the most frequently occurring information.
- * 		double m_cohesion: the cohesion of a cluster, meaning the probability for the members of the cluster to be of the same inventor.
+ *
+ * 		const Record * m_delegate: the delegate (representative) of a cluster.
+ * 		Usually this pointer contains the most frequently occurring information.
+ *
+ * 		double m_cohesion: the cohesion of a cluster, meaning the probability
+ * 		for the members of the cluster to be of the same inventor.
  *
  * 		cCluster_Head(const Record * const p, const double c): constructor
  * 		cCluster_Head ( const cCluster_Head & rhs): copy constructor
  *
  */
-
 class cCluster_Head {
+
 public:
 	const Record * m_delegate;
 	double m_cohesion;
@@ -35,7 +29,8 @@ public:
 	cCluster_Head ( const cCluster_Head & rhs): m_delegate(rhs.m_delegate), m_cohesion(rhs.m_cohesion) {}
 };
 
-/*
+
+/**
  * cCluster:
  * This class objects are the molecules of disambiguation, while Record objects are atoms of disambiguation.
  * Each cluster contains a cluster_head, a list of members, and some other
@@ -43,6 +38,7 @@ public:
  * starts from smallest clusters that contain only one record, and ends with clusters that contain some amount of records.
  *
  * Private:
+ *
  *		cCluster_Head m_info: cluster head of the cluster, including the delegate and the cohesion of the cluster.
  *		cGroup_Value m_fellows: the list of members of the cluster.
  *		bool m_mergeable: a boolean, indicating "*this" cluster has been merged into others or not.
@@ -53,7 +49,9 @@ public:
  *					a pointer that points to a patent tree, which can be obtained in a cBlocking_Operation_By_Coauthor object.
  *		cCluster & operator = ( const cCluster &): forbid the assignment operation.
  *		void find_representative():  to sets a component of cluster head to be the record whose columns appear most frequently among the all the members.
- *
+ */
+
+/*
  * Public:
  *		cCluster(const cCluster_Head & info, const cGroup_Value & fellows): constructor
  *		~cCluster() : destructor
@@ -73,8 +71,8 @@ public:
  *					This step is controversial, as it actually changed the raw data. Or more correctly, it changed the pointers of the raw data.
  *
  */
-
 class cCluster {
+
 private:
 	static const unsigned int invalid_year = 0;
 	cCluster_Head m_info;
@@ -97,6 +95,7 @@ private:
 	void update_year_range();
 	unsigned int patents_gap( const cCluster & rhs) const;
 	bool is_valid_year() const;
+
 public:
 	cCluster(const cCluster_Head & info, const cGroup_Value & fellows);
 	~cCluster();
@@ -115,7 +114,8 @@ public:
 	void add_uid2uinv( map < const Record *, const Record *> & uid2uinv ) const;
 };
 
-/*
+
+/**
  * cException_Empty_Cluster: an exception that may be used.
  */
 class cException_Empty_Cluster : public cAbstract_Exception {
@@ -124,15 +124,4 @@ public:
 };
 
 
-
-
-
-
-
-
-
-
-
-
-
-#endif /* DISAMBIGNEWCLUSTER_H_ */
+#endif /* PATENT_NEWCLUSTER_H */

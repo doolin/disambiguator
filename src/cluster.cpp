@@ -3,7 +3,7 @@
 #include "DisambigEngine.h"
 #include "fileoper.h"
 #include "DisambigRatios.h"
-#include "DisambigNewCluster.h"
+#include "newcluster.h"
 extern "C" {
 #include "strcmp95.h"
 }

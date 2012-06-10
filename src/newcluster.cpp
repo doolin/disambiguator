@@ -1,21 +1,14 @@
-/*
- * DisambigNewCluster.cpp
- *
- *  Created on: Feb 7, 2011
- *      Author: ysun
- */
 
-#include "DisambigNewCluster.h"
+#include "newcluster.h"
 
 //static members initialization.
 const cRatios * cCluster::pratio = NULL;
 const map < const Record *, cGroup_Value, cSort_by_attrib > * cCluster::reference_pointer = NULL;
 
 
-/*
+/**
  * Aim: constructor of cCluster objects.
  */
-
 cCluster::cCluster(const cCluster_Head & info, const cGroup_Value & fellows)
 		: m_info(info), m_fellows(fellows), m_mergeable(true), m_usable(true) {
 	if ( NULL == reference_pointer )
@@ -26,16 +19,19 @@ cCluster::cCluster(const cCluster_Head & info, const cGroup_Value & fellows)
 	this->update_locations();
 }
 
-/*
+
+/**
  * Aim: merge the mergee object into "*this", with the new cluster head = info ( Actually only the cohesion is used,
  * 		because the delegate will be reset by find_representative).
  * Algorithm: put the mergee's members into "*this" object, and set mergee's signal to false.
  * 				And then call find_representative.
  */
+void
+cCluster::merge(cCluster & mergee, const cCluster_Head & info) {
 
-void cCluster::merge( cCluster & mergee, const cCluster_Head & info ) {
 	if ( this->m_mergeable == false )
 		throw cException_Empty_Cluster("Merging error: merger is empty.");
+
 	if ( mergee.m_mergeable == false )
 		throw cException_Empty_Cluster("Merging error: mergEE is empty.");
 
@@ -65,23 +61,32 @@ void cCluster::merge( cCluster & mergee, const cCluster_Head & info ) {
 	mergee.m_mergeable = false;
 }
 
-/*
+/**
  * Aim: To change the pointer to abbreviated middle names to the full names.
- * Algorithm: build a binary tree: unique last name -> longest middle name pointer. Then traverse the whole record members to
- * 			update the binary tree. Finally, traverse the record members again, look up their last names and update their
- * 			middle name pointers to the corresponding pointer.
- * ATTENTION: for records without middle names (ie. the pointer of middle name points to an empty string ), the modification will
- * 			NOT take place. This is because it is very risky, as we have no information about the real middle name.
+ *
+ * Algorithm: build a binary tree: unique last name -> longest middle
+ * name pointer. Then traverse the whole record members to
+ * update the binary tree. Finally, traverse the record members again,
+ * look up their last names and update their
+ * middle name pointers to the corresponding pointer.
+ * ATTENTION: for records without middle names (ie. the pointer of middle
+ * name points to an empty string ), the modification will
+ * NOT take place. This is because it is very risky, as we have no
+ * information about the real middle name.
  */
 
-void cCluster::change_mid_name()  {
+void
+cCluster::change_mid_name()  {
+
 	// The folowing step actually changes the raw data. Changes the abbreviated middlename to a longer one if possible.
 	if ( ! cMiddlename::is_enabled() )
 		return;
+
 	static const unsigned int midname_index = Record::get_index_by_name(cMiddlename::static_get_class_name());
 	static const unsigned int lastname_index = Record::get_index_by_name(cLastname::static_get_class_name());
 	map < const Attribute *, const Attribute *> last2mid;
 	map < const Attribute *, const Attribute * >::iterator q;
+
 	for ( cGroup_Value::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p ) {
 		const Attribute * pl = (*p)->get_attrib_pointer_by_index(lastname_index);
 		const Attribute * pm = (*p)->get_attrib_pointer_by_index(midname_index);
@@ -90,8 +95,8 @@ void cCluster::change_mid_name()  {
 			if ( pm->is_informative() ) {
 				last2mid.insert( std::pair< const Attribute *, const Attribute *> (pl, pm) );
 			}
-		}
-		else {
+
+		} else {
 			const unsigned int old_size = q->second->get_data().at(0)->size();
 			const unsigned int new_size = pm->get_data().at(0)->size();
 			if ( new_size > old_size )
@@ -123,20 +128,26 @@ cCluster::~cCluster() {}
 
 //copy constructor
 cCluster::cCluster( const cCluster & rhs ) : m_info(rhs.m_info), m_fellows(rhs.m_fellows), m_mergeable(true),
-		first_patent_year ( rhs.first_patent_year ), last_patent_year ( rhs.last_patent_year ){
+		first_patent_year ( rhs.first_patent_year ), last_patent_year ( rhs.last_patent_year ) {
 	if ( rhs.m_mergeable == false )
 		throw cException_Other("cCluster Copy Constructor error.");
 }
 
-/*
- * Aim: to compare "*this" with rhs, and check whether the clusters should merge. If it is a merge, the returned
- * 		cluster head consists of a non-NULL Record pointer and a cohesion value; if it is nor a merge, the returned cluster
- * 		head is composed of a NULL Record pointer, and the cohesion value is useless then.
- * Algorithm: Check if some special cases should be dealt first. Otherwise, call disambiguate_by_set in DisambigEngine.cpp
- *
- */
 
-cCluster_Head cCluster::disambiguate( const cCluster & rhs, const double prior, const double mutual_threshold) const {
+/**
+ * Aim: to compare "*this" with rhs, and check whether the clusters
+ * should merge. If it is a merge, the returned cluster head consists
+ * of a non-NULL Record pointer and a cohesion value; if it is nor
+ * a merge, the returned cluster head is composed of a NULL Record
+ * pointer, and the cohesion value is useless then. Algorithm: Check
+ * if some special cases should be dealt first. Otherwise, call
+ * disambiguate_by_set in DisambigEngine.cpp
+ */
+cCluster_Head
+cCluster::disambiguate(const cCluster & rhs,
+                       const double prior,
+                       const double mutual_threshold) const {
+
 	static const unsigned int country_index = Record::get_index_by_name(cCountry::static_get_class_name());
 	static const string asian_countries[] = {"JP"};
 	static const double asian_threshold = 0.99;
@@ -145,9 +156,11 @@ cCluster_Head cCluster::disambiguate( const cCluster & rhs, const double prior, 
 
 	if ( pratio == NULL)
 		throw cException_Other("Critical: ratios map is not set yet.");
+
 	if ( this->m_mergeable == false ) {
 		throw cException_Empty_Cluster("Comparison error: lhs is empty.");
 	}
+
 	if ( rhs.m_mergeable == false ) {
 		throw cException_Empty_Cluster("Comparison error: rhs is empty.");
 	}
@@ -195,20 +208,24 @@ cCluster_Head cCluster::disambiguate( const cCluster & rhs, const double prior, 
 
 }
 
-/*
+
+/**
  * Aim: insert a new record pointer to the member list.
  */
+void
+cCluster::insert_elem( const Record * more_elem) {
 
-void cCluster::insert_elem( const Record * more_elem) {
 	this->m_fellows.push_back(more_elem);
 	m_usable = false;
 }
 
-/*
+
+/**
  * Aim: to repair a cluster.
  */
+void
+cCluster::self_repair() {
 
-void cCluster::self_repair() {
 	const unsigned int rec_size = Record::record_size();
 	for ( unsigned int i = 0 ; i < rec_size; ++i ) {
 		list < const Attribute ** > l1;
@@ -236,18 +253,21 @@ void cCluster::self_repair() {
 }
 
 
-/*
+/**
  * Aim: to find a representative/delegate for a cluster.
  * Algorithm: for each specified column, build a binary map of const Attribute pointer -> unsigned int ( as a counter).
  * 			Then traverse the whole cluster and fill in the counter. Finally, get the most frequent.
  *
  */
-void cCluster::find_representative()  {
+void
+cCluster::find_representative()  {
+
 	static const string useful_columns[] = { cFirstname::static_get_class_name(), cMiddlename::static_get_class_name(), cLastname::static_get_class_name(),
 											cLatitude::static_get_class_name(), cAssignee::static_get_class_name(), cCity::static_get_class_name(), cCountry::static_get_class_name()};
 	static const unsigned int nc = sizeof(useful_columns)/sizeof(string);
 	vector < map < const Attribute *, unsigned int > > tracer( nc );
 	vector < unsigned int > indice;
+
 	for ( unsigned int i = 0; i < nc; ++i )
 		indice.push_back ( Record::get_index_by_name( useful_columns[i]));
 
@@ -257,6 +277,7 @@ void cCluster::find_representative()  {
 			++ tracer.at(i)[pA];
 		}
 	}
+
 	vector < const Attribute * > most;
 	for ( unsigned int i = 0; i < nc ; ++i ) {
 		const Attribute * most_pA = NULL;
@@ -289,8 +310,11 @@ void cCluster::find_representative()  {
 
 }
 
-void cCluster::update_year_range() {
+void
+cCluster::update_year_range() {
+
 	static const unsigned int appyearindex = Record::get_index_by_name(cApplyYear::static_get_class_name());
+
 	for ( cGroup_Value::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p ) {
 		const Attribute * pAttribYear = (*p)->get_attrib_pointer_by_index(appyearindex);
 		const string * py = pAttribYear->get_data().at(0);
@@ -315,17 +339,25 @@ void cCluster::update_year_range() {
 
 }
 
-bool cCluster::is_valid_year() const {
+
+bool
+cCluster::is_valid_year() const {
+
 	if (this->first_patent_year == invalid_year || this->last_patent_year == invalid_year )
 		return false;
 	else
 		return true;
 }
 
-unsigned int cCluster::patents_gap( const cCluster & rhs) const {
+
+unsigned int
+cCluster::patents_gap( const cCluster & rhs) const {
+
 	if ( ! this->is_valid_year() || ! rhs.is_valid_year() )
 		return 0;
+
 	unsigned int x = 0;
+
 	if ( this->first_patent_year > rhs.last_patent_year )
 		x = this->first_patent_year - rhs.last_patent_year ;
 	else if  ( this->last_patent_year < rhs.first_patent_year )
@@ -337,7 +369,9 @@ unsigned int cCluster::patents_gap( const cCluster & rhs) const {
 }
 
 
-void cCluster::update_locations() {
+void
+cCluster::update_locations() {
+
 	locs.clear();
 	static const unsigned int latindex = Record::get_index_by_name(cLatitude::static_get_class_name());
 	for ( cGroup_Value::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p ) {
@@ -353,7 +387,10 @@ void cCluster::update_locations() {
 	}
 }
 
-void cCluster::add_uid2uinv( map < const Record *, const Record *> & uid2uinv ) const {
+
+void
+cCluster::add_uid2uinv( map < const Record *, const Record *> & uid2uinv ) const {
+
 	map < const Record *, const Record *>::iterator q;
 	for ( cGroup_Value::const_iterator p = this->m_fellows.begin(); p != m_fellows.end(); ++p ) {
 		q = uid2uinv.find(*p);

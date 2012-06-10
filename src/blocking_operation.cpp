@@ -1,6 +1,6 @@
 
 #include "cluster.h"
-#include "DisambigNewCluster.h"
+#include "newcluster.h"
 #include "DisambigEngine.h"
 //#include "engine.h"
 // TODO: Change to include only blocking_operation.h

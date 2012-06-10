@@ -7,7 +7,7 @@
 
 #ifndef DISAMBIGMISC_H_
 #define DISAMBIGMISC_H_
-#include "DisambigNewCluster.h"
+#include "newcluster.h"
 
 class cCluster_Info;
 

@@ -4,7 +4,7 @@
 #include "fileoper.h"
 #include "cluster.h"
 #include "DisambigRatios.h"
-#include "DisambigNewCluster.h"
+#include "newcluster.h"
 #include <algorithm>
 #include <map>
 #include <set>

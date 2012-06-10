@@ -7,12 +7,10 @@
 #include <vector>
 
 #include <DisambigEngine.h>
-//#include <DisambigCluster.h>
 #include <attribute.h>
 #include <DisambigEngine.h>
-//#include <DisambigFileOper.h>
 #include <Disambigmain.h>
-#include <DisambigNewCluster.h>
+//#include <DisambigNewCluster.h>
 #include <DisambigPostProcess.h>
 #include <DisambigRatios.h>
 #include <DisambigTraining.h>

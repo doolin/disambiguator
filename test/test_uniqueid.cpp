@@ -7,12 +7,10 @@
 
 
 #include <DisambigEngine.h>
-//#include <DisambigCluster.h>
 #include <attribute.h>
 #include <DisambigEngine.h>
-//#include <DisambigFileOper.h>
 #include <Disambigmain.h>
-#include <DisambigNewCluster.h>
+//#include <DisambigNewCluster.h>
 #include <DisambigPostProcess.h>
 #include <DisambigRatios.h>
 #include <DisambigTraining.h>
@@ -30,7 +28,7 @@ public:
 class InitialTest : public CppUnit::TestCase { 
 public: 
   InitialTest( std::string name ) : CppUnit::TestCase( name ) {}
- 
+
   void runTest() {
     Initial * i = new Initial();
     CPPUNIT_ASSERT( i->value  == 1 );
