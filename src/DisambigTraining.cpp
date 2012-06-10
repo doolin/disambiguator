@@ -20,6 +20,7 @@ cBlocking::cBlocking (const list<const Record *> & psource,
 
     const string label_delim = cBlocking_Operation::delim;
     const unsigned int num_block_columns = blocking_column_names.size();
+
     if ( num_block_columns != pmanipulators.size())
         throw cBlocking::cException_Blocking("Blocking Constructor Error.");
 
@@ -34,6 +35,7 @@ cBlocking::cBlocking (const list<const Record *> & psource,
     std::cout << "Grouping ..." << std::endl;
     unsigned int count = 0;
     const unsigned int base = 100000;
+
     for ( list<const Record*>::const_iterator p = psource.begin(); p != psource.end(); ++p ) {
         string label;
         for ( unsigned int i = 0; i < num_block_columns; ++i ) {
@@ -66,13 +68,20 @@ cBlocking::cBlocking (const list<const Record *> & psource,
     }
 }
 
-cBlocking_For_Training::cBlocking_For_Training( const list < const Record *> & source, const vector<string> & blocking_column_names,
-                                    const vector<const StringManipulator*>& pmanipulators, const string & unique_identifier, const unsigned int qt)
-                : cBlocking ( source, blocking_column_names, pmanipulators, unique_identifier ), total_quota(qt) {
+
+cBlocking_For_Training::cBlocking_For_Training(const list < const Record *> & source,
+                                               const vector<string> & blocking_column_names,
+                                               const vector<const StringManipulator*>& pmanipulators,
+                                               const string & unique_identifier, const unsigned int qt)
+                : cBlocking (source, blocking_column_names, pmanipulators, unique_identifier ), total_quota(qt) {
+
     reset(blocking_column_names.size());
 }
 
-void cBlocking_For_Training::reset(const unsigned int num_cols) {
+
+void
+cBlocking_For_Training::reset(const unsigned int num_cols) {
+
     string nullstring;
     for ( unsigned int i = 0; i < num_cols ; ++i )
         nullstring += cBlocking_Operation::delim;
@@ -83,10 +92,12 @@ void cBlocking_For_Training::reset(const unsigned int num_cols) {
     inner_cursor_map.clear();
     unsigned long quota_distributor = 0;
     unsigned int temp_sum = 0;
+
     for ( map<string, cGroup_Value >::const_iterator cpm = blocking_data.begin(); cpm != blocking_data.end(); ++ cpm) {
         if ( cpm->first != nullstring)
             quota_distributor +=  cpm->second.size() * ( cpm->second.size() - 1 );
     }
+
     for ( map<string, cGroup_Value >::const_iterator cpm = blocking_data.begin(); cpm != blocking_data.end(); ++ cpm) {
         unsigned int quota_for_this = 0;
         if ( cpm->first != nullstring ) {
@@ -102,10 +113,10 @@ void cBlocking_For_Training::reset(const unsigned int num_cols) {
         outer_cursor_map.insert(std::pair < const string *, cGroup_Value::const_iterator > (pstr, begin_cur ) );
         inner_cursor_map.insert(std::pair < const string *, cGroup_Value::const_iterator > (pstr, ++begin_cur ) );
     }
+
     quota_left = total_quota - temp_sum;
     std::cout << "Total quota = " << total_quota << " Quota left = " << quota_left << std::endl;
     was_used = false;
-
 }
 
 
@@ -167,6 +178,7 @@ cBlocking_For_Training::create_xset01_on_block(const string & block_id,
     unsigned int count = 0;
 
     while (  outercursor != dataset.end() ) {
+
         if ( quota_used == quota_for_this ) {
             //std::cout << pmap->second.size() << std::endl;
             //std::cout << pmap->first << std::endl;
@@ -605,7 +617,7 @@ create_tset02(list <pointer_pairs> &results, const list <const Record*> & reclis
               const unsigned int limit) {
 
     //equal_indice should be the indices of the names in this case.
-    if ( column_names.size() > vec_prare_names.size() ) {
+    if (column_names.size() > vec_prare_names.size()) {
         std::cout << "ERROR: Number of input column names > size of vector of rare names." << std::endl;
         throw cException_Other("Wrong column names");
     }
