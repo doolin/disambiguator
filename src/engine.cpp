@@ -5,11 +5,6 @@
  * Author: ysun
  */
 
-//#include "DisambigEngine.h"
-#include "attribute.h"
-#include "cluster.h"
-#include "DisambigRatios.h"
-#include "DisambigNewCluster.h"
 #include <algorithm>
 #include <map>
 #include <set>
@@ -19,16 +14,19 @@
 #include <cstring>
 #include <numeric>
 
+#include "attribute.h"
+#include "cluster.h"
+#include "DisambigRatios.h"
+#include "DisambigNewCluster.h"
+
 using std::map;
 using std::set;
 
 
 
-
-/*
+/**
  * Aim: constructor of cReconfigurator_AsianNames.
  */
-
 cReconfigurator_AsianNames::cReconfigurator_AsianNames(): country_index(Record::get_index_by_name(cCountry::static_get_class_name())),
                                 firstname_index(Record::get_index_by_name(cFirstname::static_get_class_name())),
                                 middlename_index(Record::get_index_by_name(cMiddlename::static_get_class_name())),
@@ -51,7 +49,7 @@ cReconfigurator_AsianNames::cReconfigurator_AsianNames(): country_index(Record::
  *  3. Change the Record data such that the firstname pointer points to the
  *     newly created firstname object. So for the middle name.
  */
-void 
+void
 cReconfigurator_AsianNames::reconfigure( const Record * p ) const {
 
     bool need_reconfigure = false;
@@ -96,7 +94,7 @@ cReconfigurator_Interactives::cReconfigurator_Interactives( const string & my_na
 }
 
 
-void 
+void
 cReconfigurator_Interactives::reconfigure ( const Record * p ) const {
 
     vector < const Attribute * > interact;
@@ -652,7 +650,7 @@ Record_Reconfigurator * generate_interactive_reconfigurator( const Attribute * p
 }
 
 
-void 
+void
 reconfigure_interactives (const Record_Reconfigurator * pc,
                           const Record * pRec) {
 
@@ -677,7 +675,7 @@ cAssignee::configure_assignee( const list < const Record *> & recs) {
 }
 
 
-void 
+void
 build_patent_tree(map < const Record *, cGroup_Value, cSort_by_attrib > & patent_tree,
                         const list < const Record * > & all_rec_pointers ) {
 
@@ -695,7 +693,7 @@ build_patent_tree(map < const Record *, cGroup_Value, cSort_by_attrib > & patent
 }
 
 
-void 
+void
 build_patent_tree(map < const Record *, cGroup_Value, cSort_by_attrib > & patent_tree,
                   const list < Record > & all_records ) {
 

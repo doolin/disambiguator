@@ -42,7 +42,7 @@ cBlocking_Operation_Multiple_Column_Manipulate::cBlocking_Operation_Multiple_Col
 /**
  * Aim: to extract blocking information from a record pointer and 
  * returns its blocking id string.
- * 
+ *
  * Algorithm: call the polymorphic methods by StringManipulator 
  * pointers to create strings, and concatenate them.
  */
@@ -68,7 +68,7 @@ cBlocking_Operation_Multiple_Column_Manipulate::reset_data_indice ( const vector
 }
 
 
-/*
+/**
  * Aim: to extract a specific blocking string. look at the header file for mor details.
  */
 string cBlocking_Operation_Multiple_Column_Manipulate::extract_column_info ( const Record * p, unsigned int flag ) const {
@@ -127,7 +127,7 @@ cBlocking_Operation_By_Coauthors::cBlocking_Operation_By_Coauthors(const list < 
 /**
  * Aim: to create a binary tree of patent -> patent holders
  * to allow fast search.
- * 
+ *
  * Algorithm: create a patent->patent holder map (std::map),
  * and for any given const Record pointer p, look for the patent
  * attribute of p in * the map. If the patent attribute is not found,
@@ -190,6 +190,7 @@ void cBlocking_Operation_By_Coauthors::build_uid2uinv_tree( const cCluster_Info 
     std::cout << count << " nodes has been created inside the tree." << std::endl;
 }
 
+
 /*
  * Aim: to get a list of top N coauthors ( as represented by a const Record pointer ) of an inventor to whom prec ( a unique record id ) belongs.
  * Algorithm:
@@ -204,12 +205,14 @@ void cBlocking_Operation_By_Coauthors::build_uid2uinv_tree( const cCluster_Info 
  *         3. return values in T.
  *
  */
+cGroup_Value cBlocking_Operation_By_Coauthors::get_topN_coauthors(const Record * prec,
+                                                                  const unsigned int topN ) const {
 
-cGroup_Value cBlocking_Operation_By_Coauthors::get_topN_coauthors( const Record * prec, const unsigned int topN ) const {
     const cGroup_Value & list_alias = patent_tree.find(prec)->second;
     map < unsigned int, cGroup_Value > occurrence_map;
     unsigned int cnt = 0;
-    for ( cGroup_Value::const_iterator p = list_alias.begin(); p != list_alias.end(); ++p ) {
+
+    for (cGroup_Value::const_iterator p = list_alias.begin(); p != list_alias.end(); ++p) {
         if ( *p == prec )
             continue;
 
@@ -242,6 +245,7 @@ cGroup_Value cBlocking_Operation_By_Coauthors::get_topN_coauthors( const Record 
             }
         }
     }
+
     //output
     cGroup_Value ans;
     for ( map < unsigned int, cGroup_Value>::const_reverse_iterator rp = occurrence_map.rbegin(); rp != occurrence_map.rend(); ++rp )
@@ -251,12 +255,12 @@ cGroup_Value cBlocking_Operation_By_Coauthors::get_topN_coauthors( const Record 
 }
 
 
-/*
+/**
  * Aim: to get the blocking string id for prec.
  * Algorithm: see get_topN_coauthor
  */
-
 string cBlocking_Operation_By_Coauthors::extract_blocking_info(const Record * prec) const {
+
     const cGroup_Value top_coauthor_list = get_topN_coauthors(prec, num_coauthors);
     // now make string
     const unsigned int firstnameindex = Record::get_index_by_name(cFirstname::static_get_class_name());
