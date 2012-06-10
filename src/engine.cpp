@@ -16,7 +16,7 @@
 
 #include "attribute.h"
 #include "cluster.h"
-#include "DisambigRatios.h"
+#include "ratios.h"
 #include "newcluster.h"
 
 using std::map;

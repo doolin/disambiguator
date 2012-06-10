@@ -1,10 +1,4 @@
 
-#include "DisambigEngine.h"
-#include "attribute.h"
-#include "fileoper.h"
-#include "cluster.h"
-#include "DisambigRatios.h"
-#include "newcluster.h"
 #include <algorithm>
 #include <map>
 #include <set>
@@ -13,6 +7,13 @@
 #include <cmath>
 #include <cstring>
 #include <numeric>
+
+#include "DisambigEngine.h"
+#include "attribute.h"
+#include "fileoper.h"
+#include "cluster.h"
+#include "ratios.h"
+#include "newcluster.h"
 
 using std::map;
 using std::set;

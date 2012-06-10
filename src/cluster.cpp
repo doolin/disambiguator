@@ -2,7 +2,7 @@
 #include "cluster.h"
 #include "DisambigEngine.h"
 #include "fileoper.h"
-#include "DisambigRatios.h"
+#include "ratios.h"
 #include "newcluster.h"
 extern "C" {
 #include "strcmp95.h"

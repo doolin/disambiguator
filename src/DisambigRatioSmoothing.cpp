@@ -5,7 +5,7 @@
  *      Author: ysun
  */
 
-#include "DisambigRatios.h"
+#include "ratios.h"
 #include "DisambigEngine.h"
 
 #include <limits>

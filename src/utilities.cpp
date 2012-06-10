@@ -3,7 +3,7 @@
 #include "attribute.h"
 #include "DisambigEngine.h"
 #include "fileoper.h"
-#include "DisambigRatios.h"
+#include "ratios.h"
 #include "training.h"
 #include "cluster.h"
 #include "DisambigPostProcess.h"
