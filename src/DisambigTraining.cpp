@@ -13,10 +13,10 @@ extern "C" {
 
 
 cBlocking::cBlocking (const list<const Record *> & psource,
-                        const vector<string> & blocking_column_names,
-                        const vector<const StringManipulator*>& pmanipulators,
-                        const string & unique_identifier)
-                    : blocking_column_names(blocking_column_names), string_manipulator_pointers(pmanipulators){
+                      const vector<string> & blocking_column_names,
+                      const vector<const StringManipulator*>& pmanipulators,
+                      const string & unique_identifier)
+                    : blocking_column_names(blocking_column_names), string_manipulator_pointers(pmanipulators) {
 
     const string label_delim = cBlocking_Operation::delim;
     const unsigned int num_block_columns = blocking_column_names.size();
@@ -108,7 +108,12 @@ void cBlocking_For_Training::reset(const unsigned int num_cols) {
 
 }
 
-bool cBlocking_For_Training::move_cursor( cGroup_Value:: const_iterator & outer, cGroup_Value:: const_iterator & inner, const cGroup_Value & datarange) {
+
+bool
+cBlocking_For_Training::move_cursor(cGroup_Value:: const_iterator & outer,
+                                    cGroup_Value:: const_iterator & inner,
+                                    const cGroup_Value & datarange) {
+
     while ( true ) {
         if ( outer == datarange.end() )
             return false;
@@ -124,7 +129,11 @@ bool cBlocking_For_Training::move_cursor( cGroup_Value:: const_iterator & outer,
     }
 };
 
-void cBlocking_For_Training::print (std::ostream & os, const string & unique_record_id_name ) const {
+
+void
+cBlocking_For_Training::print(std::ostream & os,
+                              const string & unique_record_id_name) const {
+
     if ( was_used == false )
         throw cException_Other("Training sets are not ready to be output yet.");
     cPrint_Pair do_print(os, unique_record_id_name);
@@ -132,13 +141,14 @@ void cBlocking_For_Training::print (std::ostream & os, const string & unique_rec
 }
 
 
+unsigned int 
+cBlocking_For_Training::create_xset01_on_block(const string & block_id,
+                                               const vector <unsigned int> & equal_indice,
+                                               const vector<const StringManipulator*>& pmanipulators_equal,
+                                               const vector <unsigned int> &nonequal_indice,
+                                               const vector<const StringManipulator*>& pmanipulators_nonequal,
+                                               const bool is_firstround) {
 
-unsigned int cBlocking_For_Training::create_xset01_on_block(const string & block_id,
-                                             const vector <unsigned int> & equal_indice,
-                                             const vector<const StringManipulator*>& pmanipulators_equal,
-                                             const vector <unsigned int> &nonequal_indice,
-                                             const vector<const StringManipulator*>& pmanipulators_nonequal,
-                                             const bool is_firstround) {
     map < string, cGroup_Value >::const_iterator pmap = blocking_data.find(block_id);
     if ( pmap == blocking_data.end() )
         throw cException_Attribute_Not_In_Tree(block_id.c_str());
@@ -278,12 +288,14 @@ unsigned int cBlocking_For_Training::create_xset01_on_block(const string & block
 }
 
 
-unsigned int cBlocking_For_Training::create_tset05_on_block(const string & block_id,
-                                             const vector <unsigned int> & equal_indice,
-                                             const vector<const StringManipulator*>& pmanipulators_equal,
-                                             const vector <unsigned int> &nonequal_indice,
-                                             const vector<const StringManipulator*>& pmanipulators_nonequal,
-                                             const bool is_firstround) {
+unsigned int 
+cBlocking_For_Training::create_tset05_on_block(const string & block_id,
+                                               const vector <unsigned int> & equal_indice,
+                                               const vector<const StringManipulator*>& pmanipulators_equal,
+                                               const vector <unsigned int> &nonequal_indice,
+                                               const vector<const StringManipulator*>& pmanipulators_nonequal,
+                                               const bool is_firstround) {
+
     map < string, cGroup_Value>::const_iterator pmap = blocking_data.find(block_id);
     if ( pmap == blocking_data.end() )
         throw cException_Attribute_Not_In_Tree(block_id.c_str());
@@ -300,6 +312,7 @@ unsigned int cBlocking_For_Training::create_tset05_on_block(const string & block
     unsigned int count = 0;
 
     while ( outercursor != dataset.end() ) {
+
         if ( quota_used == quota_for_this ) {
             return count;
         }
@@ -380,11 +393,15 @@ unsigned int cBlocking_For_Training::create_tset05_on_block(const string & block
     return count;
 }
 
-unsigned int cBlocking_For_Training::create_set(pFunc mf,
-                                 const vector <string> & equal_indice_names,
-                                 const vector<const StringManipulator*>& pmanipulators_equal,
-                                 const vector <string> &nonequal_indice_names,
-                                 const vector<const StringManipulator*>& pmanipulators_nonequal) {
+
+
+unsigned int
+cBlocking_For_Training::create_set(pFunc mf,
+                                   const vector <string> & equal_indice_names,
+                                   const vector<const StringManipulator*>& pmanipulators_equal,
+                                   const vector <string> &nonequal_indice_names,
+                                   const vector<const StringManipulator*>& pmanipulators_nonequal) {
+
     if ( was_used )
         throw cException_Other("This block has been used before. Cannot be used anymore.");
     if ( equal_indice_names.size() != pmanipulators_equal.size() )
@@ -473,7 +490,10 @@ unsigned int cBlocking_For_Training::create_set(pFunc mf,
 }
 
 
-void find_rare_names_v2(const vector < cGroup_Value * > &vec_pdest, const list< const Record* > & source ) {
+void
+find_rare_names_v2(const vector < cGroup_Value * > &vec_pdest,
+                   const list< const Record* > & source ) {
+
     typedef std::pair < unsigned int, unsigned int > cWord_occurrence;
     // step 1: build phrase map: key=phrase(here is firstname+lastname with some delimiters). value= list of unique_ids (here is invnums)
     const string blocks[] = {cFirstname::static_get_class_name(), cLastname::static_get_class_name()};
@@ -579,9 +599,11 @@ void find_rare_names_v2(const vector < cGroup_Value * > &vec_pdest, const list< 
 }
 
 
-unsigned int create_tset02(list <pointer_pairs> &results,     const list <const Record*> & reclist,
-                                             const vector <string> & column_names,
-                                             const vector < const cGroup_Value * > & vec_prare_names, const unsigned int limit ) {
+unsigned int
+create_tset02(list <pointer_pairs> &results, const list <const Record*> & reclist,
+              const vector <string> & column_names, const vector < const cGroup_Value * > & vec_prare_names,
+              const unsigned int limit) {
+
     //equal_indice should be the indices of the names in this case.
     if ( column_names.size() > vec_prare_names.size() ) {
         std::cout << "ERROR: Number of input column names > size of vector of rare names." << std::endl;
@@ -644,13 +666,16 @@ unsigned int create_tset02(list <pointer_pairs> &results,     const list <const 
 }
 
 
-unsigned int create_xset03(list <pointer_pairs> &results,     const list <const Record*> & reclist,
-                            const vector < const cGroup_Value * > & vec_prare_names, const unsigned int limit ) {
+unsigned int
+create_xset03(list <pointer_pairs> &results, const list <const Record*> & reclist,
+              const vector < const cGroup_Value * > & vec_prare_names, const unsigned int limit ) {
+
     cGroup_Value pool;
     for ( unsigned int i = 0; i < vec_prare_names.size(); ++i) {
         //pool.insert(vec_prare_names.at(i)->begin(), vec_prare_names.at(i)->end());
         pool.insert(pool.end(), vec_prare_names.at(i)->begin(), vec_prare_names.at(i)->end());
     }
+
     unsigned int count = 0;
     const unsigned int base = 100000;
     for ( cGroup_Value::const_iterator p = pool.begin(); p != pool.end(); ++p ) {
@@ -669,12 +694,14 @@ unsigned int create_xset03(list <pointer_pairs> &results,     const list <const 
 }
 
 
-unsigned int cBlocking_For_Training::create_xset03_on_block(const string & block_id,
-                                             const vector <unsigned int> & equal_indice,
-                                             const vector<const StringManipulator*>& pmanipulators_equal,
-                                             const vector <unsigned int> &nonequal_indice,
-                                             const vector<const StringManipulator*>& pmanipulators_nonequal,
-                                             const bool is_firstround) {
+unsigned int
+cBlocking_For_Training::create_xset03_on_block(const string & block_id,
+                                               const vector <unsigned int> & equal_indice,
+                                               const vector<const StringManipulator*>& pmanipulators_equal,
+                                               const vector <unsigned int> &nonequal_indice,
+                                               const vector<const StringManipulator*>& pmanipulators_nonequal,
+                                               const bool is_firstround) {
+
     map < string, cGroup_Value >::const_iterator pmap = blocking_data.find(block_id);
     if ( pmap == blocking_data.end() )
         throw cException_Attribute_Not_In_Tree(block_id.c_str());
@@ -688,6 +715,7 @@ unsigned int cBlocking_For_Training::create_xset03_on_block(const string & block
     unsigned int count = 0;
 
     while ( outercursor != dataset.end() ) {
+
         if ( quota_used == quota_for_this ) {
             return count;
         }
@@ -747,14 +775,17 @@ unsigned int cBlocking_For_Training::create_xset03_on_block(const string & block
     return count;
 }
 
+
 pthread_mutex_t cWorker_For_Training::iter_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 void cWorker_For_Training::run() {
-
-
 }
 
-unsigned int create_xset01(list <pointer_pairs> &results, const list <const Record *> & source,  const unsigned int limit ) {
+
+unsigned int
+create_xset01(list <pointer_pairs> &results, const list <const Record *> & source,
+              const unsigned int limit) {
+
     std::cout << " Creating xset01 ..." << std::endl;
     results.clear();
     unsigned int count = 0;
@@ -765,6 +796,7 @@ unsigned int create_xset01(list <pointer_pairs> &results, const list <const Reco
     //const unsigned int fnidx = Record::get_index_by_name(cFirstname::static_get_class_name());
     //const unsigned int lnidx = Record::get_index_by_name(cLastname::static_get_class_name());
     cBlocking bl( source, blocking_column_names, pman, cPatent::static_get_class_name());
+
     for ( map < string, cGroup_Value>::const_iterator pm = bl.get_block_map().begin(); pm != bl.get_block_map().end(); ++pm ) {
         for ( cGroup_Value::const_iterator p = pm->second.begin(); p != pm->second.end(); ++p ) {
             cGroup_Value::const_iterator q = p;
@@ -784,5 +816,4 @@ unsigned int create_xset01(list <pointer_pairs> &results, const list <const Reco
     std::cout << " xset01 done." << std::endl;
     return count;
 }
-
 
