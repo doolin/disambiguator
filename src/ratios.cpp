@@ -1,9 +1,3 @@
-/*
- *  DisambigRatios.cpp
- *  mydisambiguation
-
- *
- */
 
 #include "ratios.h"
 #include "DisambigEngine.h"
@@ -15,7 +9,7 @@ const char * cRatios::secondary_delim = ",";
 const unsigned int cRatioComponent::laplace_base = 5;
 
 
-vector < unsigned int > 
+vector < unsigned int >
 get_max_similarity(const vector < string > & attrib_names)  {
 
     vector < unsigned int > sp;
@@ -28,7 +22,7 @@ get_max_similarity(const vector < string > & attrib_names)  {
 }
 
 
-void 
+void
 cRatioComponent::sp_stats (const list<std::pair<string, string> > & trainpairs, 
                            map < vector < unsigned int >,
                            unsigned int, cSimilarity_Compare > & sp_counts ) const {
@@ -37,7 +31,7 @@ cRatioComponent::sp_stats (const list<std::pair<string, string> > & trainpairs,
     //const list <Record > & source = *psource;
     //cSort_by_attrib unique_comparator(unique_identifier);
     //const unsigned int unique_index = Record::get_index_by_name(unique_identifier);
-    
+
     /*
     map <string, const Record *> dict;
     map<string, const Record *>::iterator pm;
@@ -52,6 +46,7 @@ cRatioComponent::sp_stats (const list<std::pair<string, string> > & trainpairs,
         dict.insert(std::pair<string, const Record*>(info, &(*p) ));
     }
      */
+
     const map <string, const Record *> & dict = *puid_tree;
     map<string, const Record *>::const_iterator pm;
     map < vector < unsigned int >, unsigned int, cSimilarity_Compare >::iterator psp;
@@ -64,7 +59,7 @@ cRatioComponent::sp_stats (const list<std::pair<string, string> > & trainpairs,
         if ( pm == dict.end() )
             throw cException_Attribute_Not_In_Tree( ( string("\"") + p->second + string ("\"") ).c_str() );
         const Record *prhs = pm->second;
-        
+
         vector < unsigned int > similarity_profile = plhs->record_compare_by_attrib_indice(*prhs, component_indice_in_record);
         //debug only
         //std::cout << "Size of Similarity Profile = "<< similarity_profile.size() << ". Similarity Profile = ";
@@ -82,13 +77,13 @@ cRatioComponent::sp_stats (const list<std::pair<string, string> > & trainpairs,
 }
 
 
-void 
+void
 cRatioComponent::read_train_pairs(list<std::pair<string, string> > & trainpairs, 
                                   const char * txt_file) const {
 
     static const char * delim = ",";
     static const unsigned int delim_size = strlen(delim);
-    
+
     std::ifstream::sync_with_stdio(false);
     std::ifstream infile(txt_file);
 
@@ -111,7 +106,7 @@ cRatioComponent::read_train_pairs(list<std::pair<string, string> > & trainpairs,
 }
 
 
-void 
+void
 cRatioComponent::stats_output( const char * filename) const {
 
     std::ofstream of ( filename );
@@ -164,7 +159,7 @@ cRatioComponent::stats_output( const char * filename) const {
 }
 
 
-void 
+void
 cRatioComponent::prepare(const char* x_file,
                          const char * m_file) {
 
@@ -179,15 +174,14 @@ cRatioComponent::prepare(const char* x_file,
     read_train_pairs(m_list, m_file);
     sp_stats(x_list, x_counts);
     sp_stats(m_list, m_counts);
-    
 
     std::cout << "Before LAPLACE CORRECTION: " << std::endl;
     std::cout << "Size of non-match pair list = " << x_list.size() << std::endl;
     std::cout << "Size of match pair list = " << m_list.size() << std::endl;
-    
+
     std::cout << "Non-match unique profile number = " << x_counts.size() << std::endl;
     std::cout << "Match unique profile number = " << m_counts.size() << std::endl;
-    
+
     // laplace correction
     map < vector < unsigned int >, unsigned int, cSimilarity_Compare >::const_iterator p, q;
 
@@ -226,8 +220,7 @@ cRatioComponent::prepare(const char* x_file,
     std::cout << "Non-match unique profile number = " << x_counts.size() << std::endl;
     std::cout << "Match unique profile number = " << m_counts.size() << std::endl;
     //ratios = count of match / count of non-match;
-    
-    
+
     unsigned int num_xcount_without_mcount = 0;
     unsigned int num_mcount_without_xcount = 0;
 
@@ -248,6 +241,7 @@ cRatioComponent::prepare(const char* x_file,
         else
             ++pp;
     }
+
     for ( map < vector < unsigned int >, unsigned int, cSimilarity_Compare >::iterator qq = m_counts.begin(); qq != m_counts.end();  ) {
         if ( ratio_map.find( qq->first ) == ratio_map.end() ) {
             m_counts.erase ( qq++ );
@@ -267,7 +261,7 @@ cRatioComponent::prepare(const char* x_file,
         << std::endl;
         //throw cException_Partial_SP_Missing(attrib_group.c_str());
     }
-    
+
         //std::cout << "Exiting line 251 " << __FILE__ << std::endl;
         //exit(0);
 
@@ -281,7 +275,7 @@ cRatioComponent:: cRatioComponent( const map < string, const Record * > & uid_tr
             : attrib_group(groupname), puid_tree(&uid_tree), is_ready(false) {
 };
 
-void 
+void
 cRatioComponent::get_similarity_info() {
 
     positions_in_ratios.clear();
@@ -319,7 +313,7 @@ cRatios::cRatios(const vector < const cRatioComponent *> & component_pointer_vec
         std::cout << " Size of Ratio Component = " << (*p)->get_ratios_map().size() << std::endl;
         ratio_size += (*p)->get_component_positions_in_ratios().size();
     }
-    
+
     attrib_names.resize(ratio_size, "Invalid Attribute");
     static const unsigned int impossible_value = 10000;
     vector<unsigned int> null_vect (ratio_size, impossible_value);
@@ -327,11 +321,10 @@ cRatios::cRatios(const vector < const cRatioComponent *> & component_pointer_vec
     x_counts.insert(std::pair<  vector <unsigned int> , unsigned int > (null_vect, 0));
     m_counts.insert(std::pair<  vector <unsigned int> , unsigned int > (null_vect, 0));
 
-    
     for (vector< const cRatioComponent *>::const_iterator p = component_pointer_vector.begin(); p != component_pointer_vector.end(); ++p ) {
         More_Components(**p);
     }
-    
+
 // LEAVE THIS IN, this is something which may be necessary, it's one of my #if'ed out blocks. -dmd
 #if 0
     // now checking the final ratios
@@ -340,7 +333,7 @@ cRatios::cRatios(const vector < const cRatioComponent *> & component_pointer_vec
         if ( *k == impossible_value )
             throw cRatioComponent::cException_Ratios_Not_Ready( "Final Ratios is not ready yet. ");
     }
-#endif    
+#endif
 
     // smoothing here
     smooth();
@@ -359,7 +352,7 @@ cRatios:: cRatios(const char * filename) {
 }
 
 
-void 
+void
 cRatios::More_Components(const cRatioComponent & additional_component) {
 
     map < vector <unsigned int>, double, cSimilarity_Compare > temp_ratios;
@@ -371,7 +364,7 @@ cRatios::More_Components(const cRatioComponent & additional_component) {
     for ( unsigned int k = 0; k < positions_in_ratios.size(); ++k ) {
         attrib_names.at( positions_in_ratios.at(k) ) = Record::get_column_names().at(temp_pos_in_rec.at(k) );
     }
- 
+
     std::cout << "final_ratios.size(): " << final_ratios.size() << std::endl;
 
     for (map < vector <unsigned int>, double, cSimilarity_Compare >::iterator p = final_ratios.begin(); p != final_ratios.end(); ++p ) {
@@ -397,19 +390,19 @@ cRatios::More_Components(const cRatioComponent & additional_component) {
 }
 
 
-void 
+void
 cRatios::write_ratios_file( const char * filename) const {
 
     std::ofstream::sync_with_stdio(false);
     std::cout << "Number of of ratios vectors = " << final_ratios.size() << std::endl;
     std::cout << "Saving the ratios in the file " << filename << std::endl;
-    
+
     std::ofstream outfile(filename);
     for (vector<string>::const_iterator p = attrib_names.begin(); p != attrib_names.end(); ++p ) {
         outfile << *p << secondary_delim;
     }
     outfile << primary_delim << "VALUE" << '\n';
-    
+
     for (map < vector <unsigned int>, double, cSimilarity_Compare >::const_iterator q = final_ratios.begin();
          q != final_ratios.end(); ++q ) {
         for ( vector < unsigned int>::const_iterator pint = q->first.begin(); pint != q->first.end(); ++pint)
@@ -427,6 +420,7 @@ cRatios::read_ratios_file(const char * filename) {
     std::ifstream infile ( filename );
     const unsigned int primary_delim_size = strlen(primary_delim);
     const unsigned int secondary_delim_size = strlen(secondary_delim);
+
     if ( ! infile.good() )
         throw cException_File_Not_Found(filename);
 
@@ -456,6 +450,7 @@ cRatios::read_ratios_file(const char * filename) {
 
         final_ratios.insert(std::pair<vector<unsigned int>, double >(key, value));
     }
+
     std::cout << filename << " has been loaded as the final ratios file"<< std::endl;
     std::cout << "Resetting similarity profiles ... ..." << std::endl;
     Record::activate_comparators_by_name(attrib_names);
