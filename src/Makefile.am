@@ -20,7 +20,7 @@ INCLUDES = -I/usr/local/include -I$(CPLEXINCLUDE) -I$(CONCERTINCLUDE) -I../inclu
 
 noinst_LIBRARIES = libdisambiguation.a
 libdisambiguation_a_SOURCES = Disambigmain.cpp cluster.cpp comparators.cpp attribute.cpp \
-                              DisambigEngine.cpp fileoper.cpp DisambigNewCluster.cpp \
+                              engine.cpp fileoper.cpp DisambigNewCluster.cpp \
                               DisambigPostProcess.cpp DisambigRatios.cpp DisambigRatioSmoothing.cpp \
                               DisambigTraining.cpp utilities.cpp Threading.cpp strcmp95.c record.cpp \
                               string_manipulator.cpp

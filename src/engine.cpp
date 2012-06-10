@@ -682,7 +682,7 @@ fetch_records_from_txt(list <Record> & source,
         } else {
             pointer_array[i] = create_attribute_instance ( Record::column_names[i].c_str() );
         }
- 
+
 #if 0
         if ( Record::column_names[i] == cLongitude::class_name ) {
             cLatitude::interactive_column_indice_in_query.push_back(i);
@@ -902,7 +902,7 @@ create_attribute_instance ( const string & id ) {
 }
 
 
-const 
+const
 Record_Reconfigurator * generate_interactive_reconfigurator( const Attribute * pAttrib) {
 
     vector <string > linked_attribs (pAttrib->get_interactive_class_names());
@@ -921,7 +921,7 @@ reconfigure_interactives (const Record_Reconfigurator * pc,
 }
 
 
-void 
+void
 cAssignee::configure_assignee( const list < const Record *> & recs) {
 
     static const unsigned int asgnumidx = Record::get_index_by_name(cAsgNum::static_get_class_name());

@@ -1,12 +1,6 @@
-/*
- * DisambigCluster.h
- *
- *  Created on: Jan 12, 2011
- *      Author: ysun
- */
 
-#ifndef DISAMBIGCLUSTER_H_
-#define DISAMBIGCLUSTER_H_
+#ifndef PATENT_CLUSTER_H
+#define PATENT_CLUSTER_H
 
 #include <iostream>
 #include <map>
@@ -414,4 +408,4 @@ public:
 };
 
 
-#endif /* DISAMBIGCLUSTER_H_ */
+#endif /* PATENT_CLUSTER_H */
