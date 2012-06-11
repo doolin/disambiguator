@@ -215,6 +215,9 @@ unsigned int create_xset03      (list <pointer_pairs> &results,
                                  const vector < const cGroup_Value * > & vec_prare_names,
                                  const unsigned int limit );
 
+/** This function creates one of the training sets.
+ * @todo Write the documentation.
+ */
 unsigned int create_xset01      (list <pointer_pairs> &results,
                                  const list <const Record *> & source,
                                  const unsigned int limit );

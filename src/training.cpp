@@ -675,8 +675,10 @@ create_tset02(list <pointer_pairs> &results, const list <const Record*> & reclis
 
 
 unsigned int
-create_xset03(list <pointer_pairs> &results, const list <const Record*> & reclist,
-              const vector < const cGroup_Value * > & vec_prare_names, const unsigned int limit ) {
+create_xset03(list <pointer_pairs> &results,
+              const list <const Record*> & reclist,
+              const vector < const cGroup_Value * > & vec_prare_names,
+              const unsigned int limit ) {
 
     cGroup_Value pool;
     for ( unsigned int i = 0; i < vec_prare_names.size(); ++i) {
