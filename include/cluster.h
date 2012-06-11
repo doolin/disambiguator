@@ -7,8 +7,8 @@
 #include <set>
 #include <fstream>
 #include <pthread.h>
-#include "Threading.h"
 
+#include "threading.h"
 #include "attribute.h"
 #include "newcluster.h"
 
