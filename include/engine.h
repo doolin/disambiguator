@@ -13,13 +13,19 @@
 #include "typedefs.h"
 
 #include "record.h"
-#include "Threading.h"
+#include "threading.h"
 
 using std::string;
 using std::list;
 using std::vector;
 using std::map;
 using std::set;
+
+// cGroup_Value is a list of const Record pointers.
+// This definition will be used throughout the whole project.
+typedef std::list<const Record * > cGroup_Value;
+
+
 
 /*
  * cSort_by_attrib:

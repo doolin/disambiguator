@@ -7,7 +7,7 @@
 #include <cstring>
 
 #include "attribute.h"
-#include "DisambigEngine.h"
+#include "engine.h"
 #include "fileoper.h"
 #include "ratios.h"
 #include "training.h"

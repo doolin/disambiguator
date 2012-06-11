@@ -2,7 +2,7 @@
 #ifndef PATENT_NEWCLUSTER_H
 #define PATENT_NEWCLUSTER_H
 
-#include "DisambigEngine.h"
+#include "engine.h"
 
 /**
  * cCluster_Head:

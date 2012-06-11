@@ -6,10 +6,8 @@
 #include <string>
 
 
-#include <DisambigEngine.h>
 #include <attribute.h>
-#include <DisambigEngine.h>
-//#include <Disambigmain.h>
+#include <engine.h>
 #include <strcmp95.h>
 #include <Threading.h>
 #include <txt2sqlite3.h>

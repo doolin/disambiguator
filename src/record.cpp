@@ -1,9 +1,3 @@
-/*
- * DisambigEngine.cpp
- *
- * Created on: Dec 13, 2010
- * Author: ysun
- */
 
 #include <algorithm>
 #include <map>
@@ -14,7 +8,8 @@
 #include <cstring>
 #include <numeric>
 
-#include "DisambigEngine.h"
+#include "record.h"
+#include "engine.h"
 #include "attribute.h"
 #include "fileoper.h"
 #include "cluster.h"

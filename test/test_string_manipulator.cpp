@@ -8,7 +8,7 @@
 #include <cppunit/TestCase.h>
 
 #include <disambiguation.h>
-#include <DisambigEngine.h>
+#include <engine.h>
 
 
 class StringManipulatorTest : public CppUnit::TestCase { 

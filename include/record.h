@@ -1,9 +1,3 @@
-/*
- * DisambigEngine.h
- *
- *  Created on: Dec 13, 2010
- *      Author: ysun
- */
 
 #ifndef PATENT_RECORD_H
 #define PATENT_RECORD_H
@@ -16,6 +10,8 @@
 #include <set>
 #include <algorithm>
 
+#include "attribute.h"
+#include "threading.h"
 
 using std::string;
 using std::list;
@@ -24,7 +20,8 @@ using std::map;
 using std::set;
 
 
-/*
+
+/**
  * definition of Record class.
  * The Record class is used to save a real line of record which includes multiple concrete attributes.
  *

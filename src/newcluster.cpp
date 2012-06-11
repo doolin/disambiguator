@@ -1,4 +1,5 @@
 
+
 #include "newcluster.h"
 
 //static members initialization.
@@ -147,7 +148,7 @@ cCluster::cCluster( const cCluster & rhs ) : m_info(rhs.m_info), m_fellows(rhs.m
  * a merge, the returned cluster head is composed of a NULL Record
  * pointer, and the cohesion value is useless then. Algorithm: Check
  * if some special cases should be dealt first. Otherwise, call
- * disambiguate_by_set in DisambigEngine.cpp
+ * disambiguate_by_set in engine.cpp
  */
 cCluster_Head
 cCluster::disambiguate(const cCluster & rhs,

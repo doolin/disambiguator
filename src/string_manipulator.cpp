@@ -8,7 +8,7 @@
 #include <cstring>
 #include <numeric>
 
-#include "DisambigEngine.h"
+#include "engine.h"
 #include "attribute.h"
 #include "fileoper.h"
 #include "cluster.h"

@@ -1,9 +1,3 @@
-/*
- * DisambigEngine.cpp
- *
- * Created on: Dec 13, 2010
- * Author: ysun
- */
 
 #include <algorithm>
 #include <map>

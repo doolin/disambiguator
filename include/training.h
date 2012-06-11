@@ -48,8 +48,8 @@
 #define PATENT_TRAINING_H
 
 #include "attribute.h"
-#include "DisambigEngine.h"
-#include "Threading.h"
+#include "engine.h"
+#include "threading.h"
 
 
 
