@@ -20,7 +20,7 @@
 
 static const bool should_do_name_range_check = true;
 
-void 
+void
 smoothing_inter_extrapolation_cplex(map < SimilarityProfile, double,  cSimilarity_Compare  > & ratio_map,
     const SimilarityProfile & min_sp,
     const SimilarityProfile & max_sp,
@@ -31,7 +31,7 @@ smoothing_inter_extrapolation_cplex(map < SimilarityProfile, double,  cSimilarit
     const bool backup_quadprog);
 
 
-unsigned int 
+unsigned int
 sp2index ( const SimilarityProfile & sp, const SimilarityProfile & min_sp, const SimilarityProfile & max_sp ) {
 
     if ( sp.size() != min_sp.size() )
@@ -50,7 +50,7 @@ sp2index ( const SimilarityProfile & sp, const SimilarityProfile & min_sp, const
 }
 
 
-SimilarityProfile 
+SimilarityProfile
 index2sp ( unsigned int index, const SimilarityProfile & min_sp, const SimilarityProfile & max_sp ) {
 
     static const unsigned int ulimit = 0 - 1;
@@ -68,7 +68,7 @@ index2sp ( unsigned int index, const SimilarityProfile & min_sp, const Similarit
 }
 
 
-void 
+void
 cRatioComponent::smooth() {
 
     std::cout << "Starting data smoothing..." << std::endl;
@@ -89,7 +89,7 @@ cRatioComponent::smooth() {
 }
 
 
-void 
+void
 cRatios::smooth() {
     std::cout << "Starting ratios smoothing..." << std::endl;
     //smoothing( final_ratios, similarity_map, x_counts, m_counts, this->get_attrib_names(), should_do_name_range_check);
@@ -102,7 +102,7 @@ cRatios::smooth() {
 }
 
 
-vector < SimilarityProfile > 
+vector < SimilarityProfile >
 find_lesser_neighbour(const SimilarityProfile & sp, const SimilarityProfile & min_sp) {
 
     vector < SimilarityProfile > vs;
@@ -142,7 +142,7 @@ find_greater_neighbour( const SimilarityProfile & sp, const SimilarityProfile & 
 
 vector < std::pair < SimilarityProfile, SimilarityProfile> >
 find_neighbours(const SimilarityProfile & sp,
-        const SimilarityProfile & min_sp,
+                const SimilarityProfile & min_sp,
                 const SimilarityProfile & max_sp) {
 
     vector < std::pair < SimilarityProfile, SimilarityProfile> > vs;
@@ -164,14 +164,14 @@ find_neighbours(const SimilarityProfile & sp,
 }
 
 
-double 
+double
 get_weight (const unsigned int x_count, const unsigned int m_count) {
 
     return 1.0 * x_count + 1.0 * m_count;
 }
 
 
-void 
+void
 smoothing_inter_extrapolation_cplex(map < SimilarityProfile, double, cSimilarity_Compare > & ratio_map,
     const SimilarityProfile & min_sp,
     const SimilarityProfile & max_sp,
@@ -183,8 +183,10 @@ smoothing_inter_extrapolation_cplex(map < SimilarityProfile, double, cSimilarity
 
     if ( x_counts.size() != m_counts.size() )
         throw cException_Other("x_counts and m_counts are not of the same size");
+
     if ( x_counts.size() != ratio_map.size() )
         throw cException_Other("x_counts and ratio_map are not of the same size");
+
     //first, build all the possible similarity profiles.
     if ( min_sp.size() != max_sp.size() )
         throw cException_Other("Minimum similarity profile and Maximum similarity profile are not consistent.");
