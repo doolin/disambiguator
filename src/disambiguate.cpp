@@ -14,10 +14,11 @@
 #include "cluster.h"
 #include "postprocess.h"
 #include "utilities.h"
+#include "disambiguate.h"
 
 using std::list;
 using std::string;
-#include "Disambigmain.h"
+
 
 
 
