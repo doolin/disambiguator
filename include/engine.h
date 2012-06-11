@@ -11,7 +11,6 @@
 #include <algorithm>
 
 #include "typedefs.h"
-
 #include "record.h"
 #include "threading.h"
 
@@ -27,7 +26,7 @@ typedef std::list<const Record * > cGroup_Value;
 
 
 
-/*
+/**
  * cSort_by_attrib:
  * A functor for comparison of attributes in associated containers such as map or set.
  *
@@ -63,19 +62,13 @@ public:
 
 
 #include "string_manipulator.h"
-
 #include "blocking_operation.h"
-
 #include "record_reconfigurator.h"
-
-
-
-//===========================================================
 
 
 class cRatios; //forward declaration
 
-/*
+/**
  * disambiguate_by_set:
  * This is a global function. It takes information from two clusters ( not cluster_info !!) and return whether the two are of the same inventor,
  * and if yes, what the cohesion should be.
@@ -96,22 +89,32 @@ class cRatios; //forward declaration
  *         1. const Record *: NULL if the two clusters are identified as of different inventors, and key1 if they are of the same inventors.
  *         2. double: the cohesion of the combination of the first and the second cluster. This is only valid if the first returned pointer is not NULL.
  */
+std::pair<const Record *, double> disambiguate_by_set (const Record * key1,
+                                                       const cGroup_Value & match1,
+                                                       const double cohesion1,
+                                                       const Record * key2,
+                                                       const cGroup_Value & match2,
+                                                       const double cohesion2,
+                                                       const double prior, 
+                                                       const cRatios & ratio,
+                                                       const double threshold ) ;
 
-std::pair<const Record *, double> disambiguate_by_set (const Record * key1, const cGroup_Value & match1, const double cohesion1,
-                                     const Record * key2, const cGroup_Value & match2, const double cohesion2,
-                                     const double prior, 
-                                     const cRatios & ratio,  const double threshold ) ;
-
-/*
- * copyfile:
- * A file copy function.
+/** @public
+ * Copies a file, of course.
+ * @param target output file
+ * @param source input file
  */
+void        copyfile                  (const char * target,
+                                       const char * source);
 
-void copyfile(const char * target, const char * source);
-Attribute * create_attribute_instance ( const string & id );
+Attribute * create_attribute_instance (const string & id );
 
-void build_patent_tree( map < const Record *, cGroup_Value, cSort_by_attrib > & patent_tree , const list < Record > & all_records );
-void build_patent_tree( map < const Record *, cGroup_Value, cSort_by_attrib > & patent_tree , const list < const Record * > & all_rec_pointers );
-string check_file_existence(const string & description);
+void        build_patent_tree         (map < const Record *, cGroup_Value, cSort_by_attrib > & patent_tree,
+                                       const list < Record > & all_records);
+
+void        build_patent_tree         (map < const Record *, cGroup_Value, cSort_by_attrib > & patent_tree,
+                                       const list < const Record * > & all_rec_pointers);
+
+string      check_file_existence      (const string & description);
 
 #endif /* PATENT_ENGINE_H */

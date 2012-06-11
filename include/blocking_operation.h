@@ -2,6 +2,7 @@
 #ifndef PATENT_BLOCKING_OPERATION_H
 #define PATENT_BLOCKING_OPERATION_H
 
+#include "string_manipulator.h"
 
 /**
  * cBlocking_Operation

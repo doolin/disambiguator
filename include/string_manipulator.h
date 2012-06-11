@@ -4,7 +4,7 @@
 
 #include <string>
 
-/*
+/**
  * StringManipulator:
  *     - StringRemainSame
  *     - StringRemoveSpace
@@ -41,7 +41,7 @@ public:
 };
 
 
-/*
+/**
  * StringRemainSame:
  * As is indicated by the name, this class returns the raw string it obtains.
  *
@@ -55,7 +55,7 @@ public:
 };
 
 
-/*
+/**
  * StringRemoveSpace:
  * This class remove all the white spaces of the input string and returns a cleaned one.
  * i.e. Input = "THIS IS AN   EXAMPLE  ". Return value = "THISISANEXAMPLE".
@@ -76,7 +76,7 @@ public:
 };
 
 
-/*
+/**
  * StringTruncate:
  * This class is more often used for string operation.
  * Understanding of the member is desirable.
@@ -94,7 +94,7 @@ public:
  *
  */
 
-/*
+/**
  * WARNING: A COMBINATION OF NCHAR = 0 AND IS_FORWARD = FALSE WILL RETURN AN EMPTY STRING.
  *
  *
@@ -163,7 +163,7 @@ public:
 };
 
 
-/*
+/**
  * StringNoSpaceTruncate:
  * The functionality of the class is similar to the above StringTruncate.
  * The only difference is that it removes space first and then truncates as directed.
@@ -183,13 +183,16 @@ public:
 };
 
 
-/*
+/**
  * ExtractInitials:
  * Extract the initials from the string, starting from the (starting_word)th word.
  *
  * Example:
+ *
+ * ~~~~
  * ExtractInitials eiobj(3);    //create an instance eiobj, setting the starting_word = 3;
- * eiobj.manipulate("THIS IS AN EXAMPLE, YOU KNOW.") returns "EYK".
+ * eiobj.manipulate("THIS IS AN EXAMPLE, YOU KNOW."); // returns "EYK".
+ * ~~~~
  *
  */
 class ExtractInitials : public StringManipulator {
