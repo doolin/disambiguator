@@ -1,14 +1,8 @@
 
-/*
- * DisambigLib.cpp
- *
- *  Created on: Dec 7, 2010
- *      Author: ysun
- */
-
-#include "attribute.h"
 #include <algorithm>
 #include <cstring>
+
+#include "attribute.h"
 
 using std::list;
 using std::string;
@@ -18,27 +12,31 @@ vector <string> Attribute::Derived_Class_Name_Registry;
 
 
 
-/*
+/**
  * This function splits the input string and save it into the attribute object.
- * Legacy format of data is in the form of "DATA1~COUNT1/DATA2~COUNT2/DATA3~COUNT3", so this function splits the string and
- * saves the pointer to "DATA1", 'DATA2', 'DATA3'. There was a counter class member, but it was removed later.
+ * Legacy format of data is in the form of "DATA1~COUNT1/DATA2~COUNT2/DATA3~COUNT3",
+ * so this function splits the string and saves the pointer to "DATA1", 'DATA2', 'DATA3'.
+ * There was a counter class member, but it was removed later.
  *
- * One needs to be very familiar with how the strings look like and what they can be in the source text file. Especially the delimiters.
+ * One needs to be very familiar with how the strings look like and what
+ * they can be in the source text file. Especially the delimiters.
  * However, one is also assumed to have familiarized with the source text format.
  *
  */
-
 bool Attribute::split_string(const char* recdata) {
+
 	static const string emptystring ("");
 	vector < const string * > & data = this->get_data_modifiable();
 	const char * p = recdata;
 	const char * pend = p + strlen(recdata);
+
 	if ( pend == p ) {
 		data.push_back( this->add_string(emptystring));
 		return true;
 	}
 
 	char string_count_cache[10];
+
 	const char delim = '/';
 	const char secondary_delim = '~';
 	const char * q;
@@ -80,15 +78,17 @@ bool Attribute::split_string(const char* recdata) {
 }
 
 
-/*
- * This is a global function, not a class member function!!!!!!!
- * usually for set_mode classes, attrib_merge works, and classes of single_mode do not support such operation.
- * if this function is called, the attributes in list1 and list2 will be merged into a larger attribute object,
- * and the pointers in list1 and list2 will then point to the newly created large object.
- *
+/**
+ * This is a global function, not a class member function.
+ * usually for set_mode classes, attrib_merge works, and
+ * classes of single_mode do not support such operation.
+ * if this function is called, the attributes in list1 and
+ * list2 will be merged into a larger attribute object,
+ * and the pointers in list1 and list2 will then point
+ * to the newly created large object.
  */
-
 void attrib_merge ( list < const Attribute * *> & l1, list < const Attribute * *> & l2 ) {
+
 	static const string errmsg = "Error: attribute pointers are not pointing to the same object. Attribute Type = ";
 	if ( l1.empty() || l2.empty() )
 		return;
@@ -296,7 +296,7 @@ unsigned int cFirstname::compare(const Attribute & right_hand_side) const {
 
 
 
-/*
+/**
  * cMiddlename::split_string does 3 things:
  * 1. Extract the middle name from an input string, which is usually mixed with first name and middle name.
  * 	  i.e. Input string = "JOHN David WILLIAM", extracted string = "David WILLIAM"
@@ -305,13 +305,10 @@ unsigned int cFirstname::compare(const Attribute & right_hand_side) const {
  * 2. Extract the initials of middle names.
  * 	  i.e. Input string = "JOHN DAVID WILLIAM", middle initials = "DW"
  * 3. Save the first extracted string in data[0], and the second middle initial string in data[1].
- *
- *
  */
+bool
+cMiddlename::split_string(const char *inputdata) {
 
-
-
-bool cMiddlename::split_string(const char *inputdata) {
 	Attribute::split_string(inputdata);
 	const string & source = * get_data().at(0);
 	size_t pos = source.find(' ');
@@ -333,7 +330,7 @@ bool cMiddlename::split_string(const char *inputdata) {
 }
 
 
-/*
+/**
  * cMiddlename::compare:
  * Compare the extracted strings in data[0] to see whether they started with the same letter and whether one contains the other.
  * i.e.
@@ -342,11 +339,9 @@ bool cMiddlename::split_string(const char *inputdata) {
  * "DAVID WILLIAM" vs "DAVE" = 0 ( either one does not container the other. )
  * "" vs "" = 2 ( both missing information )
  * "DAVID" vs "" = 1 ( one missing information )
- *
  */
-
-
 unsigned int cMiddlename::compare(const Attribute & right_hand_side) const {
+
 	if ( ! is_comparator_activated () )
 		throw cException_No_Comparision_Function(static_get_class_name().c_str());
 	try {
@@ -365,7 +360,7 @@ unsigned int cMiddlename::compare(const Attribute & right_hand_side) const {
 
 
 
-/*
+/**
  * cLatitude::compare:
  * Such comparison is complicated because cLatitude is interacted with cLongitude, cCountry , and possibly cStreet
  * One needs to know the structure of how the interactive data are stored, which is actually an assumed knowledge.
@@ -375,13 +370,15 @@ unsigned int cMiddlename::compare(const Attribute & right_hand_side) const {
  * If the distance calculated by latitude and longitude < 50 mile, score = 2
  * If the distance calculated by latitude and longitude > 50 mile, score = 1
  * If countries are different, score = 0;
- *
  */
+unsigned int
+cLatitude::compare(const Attribute & right_hand_side) const {
 
-unsigned int cLatitude::compare(const Attribute & right_hand_side) const {
 	if ( ! is_comparator_activated () )
 		throw cException_No_Comparision_Function(static_get_class_name().c_str());
+
 	check_if_reconfigured();
+
 	try {
 		unsigned int res = 0;
 		const cLatitude & rhs = dynamic_cast< const cLatitude & > (right_hand_side);
@@ -401,10 +398,7 @@ unsigned int cLatitude::compare(const Attribute & right_hand_side) const {
 			throw cException_Interactive_Misalignment(this->get_class_name().c_str());
 		}
 
-
-		
 		//latitude interacts with		{"Longitude", "Street", "Country"}; the sequence is important.
-
 
 		unsigned int country_score = 0;
 		if ( this == &rhs && this->is_informative() ) {
@@ -451,7 +445,9 @@ unsigned int cLatitude::compare(const Attribute & right_hand_side) const {
 }
 
 
-unsigned int cLongitude::compare(const Attribute & right_hand_side) const {
+unsigned int
+cLongitude::compare(const Attribute & right_hand_side) const {
+
 	if ( ! is_comparator_activated () )
 		throw cException_No_Comparision_Function(static_get_class_name().c_str());
 	check_if_reconfigured();
@@ -473,14 +469,14 @@ unsigned int cLongitude::compare(const Attribute & right_hand_side) const {
 }
 
 
-/*
+/**
  * cClass_M2::compare
  * A second way to score the "class" attribute.
  * Not in use now.
  */
+unsigned int
+cClass_M2::compare(const Attribute & right_hand_side) const {
 
-
-unsigned int cClass_M2::compare(const Attribute & right_hand_side) const {
 	const cClass_M2 & rhs = dynamic_cast< const cClass_M2 & > (right_hand_side);
 	const unsigned int common = this->Attribute_Set_Mode <cClass_M2>::compare( rhs );
 	const unsigned int this_size = this->attrib_set.size();
