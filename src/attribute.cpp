@@ -25,56 +25,56 @@ vector <string> Attribute::Derived_Class_Name_Registry;
  */
 bool Attribute::split_string(const char* recdata) {
 
-	static const string emptystring ("");
-	vector < const string * > & data = this->get_data_modifiable();
-	const char * p = recdata;
-	const char * pend = p + strlen(recdata);
+    static const string emptystring ("");
+    vector < const string * > & data = this->get_data_modifiable();
+    const char * p = recdata;
+    const char * pend = p + strlen(recdata);
 
-	if ( pend == p ) {
-		data.push_back( this->add_string(emptystring));
-		return true;
-	}
+    if ( pend == p ) {
+        data.push_back( this->add_string(emptystring));
+        return true;
+    }
 
-	char string_count_cache[10];
+    char string_count_cache[10];
 
-	const char delim = '/';
-	const char secondary_delim = '~';
-	const char * q;
-	unsigned int count_length;
-	while ( (q = std::find(p, pend, delim)) != pend ) {
-		// r points to the secondary delimiter
-		// q points to the primary delimiter
-		const char * r = std::find(p, q, secondary_delim);
-		const string temp ( p, r );
-		data.push_back(this->add_string(temp));
-		if ( r != q ) {
-			count_length = q - r - 1;
-			memcpy(string_count_cache, r + 1, count_length *sizeof(char) );
-			*(string_count_cache + count_length ) = '\0';
-		}
-		else {
-		}
-		p = q + 1;
-	}
-	const char * r = std::find(p, q, secondary_delim);
-	const string tp ( p, r);
-	const string * ptr = this->add_string(tp);
-	data.push_back( ptr );
-	if ( r != q ) {
-		count_length = q - r - 1;
-		memcpy(string_count_cache, r + 1, count_length *sizeof(char) );
-		*(string_count_cache + count_length ) = '\0';
-	}
-	else {
-	}
-	
-	// now use swap trick to minimize the volumn of each attribute. Effective STL by Scott Meyers, Item 17
-	vector< const string* > (data).swap(data);
-	
-	if ( data.size() > 1 )
-		throw cException_Vector_Data(recdata);
-	
-	return true;
+    const char delim = '/';
+    const char secondary_delim = '~';
+    const char * q;
+    unsigned int count_length;
+    while ( (q = std::find(p, pend, delim)) != pend ) {
+        // r points to the secondary delimiter
+        // q points to the primary delimiter
+        const char * r = std::find(p, q, secondary_delim);
+        const string temp ( p, r );
+        data.push_back(this->add_string(temp));
+        if ( r != q ) {
+            count_length = q - r - 1;
+            memcpy(string_count_cache, r + 1, count_length *sizeof(char) );
+            *(string_count_cache + count_length ) = '\0';
+        }
+        else {
+        }
+        p = q + 1;
+    }
+    const char * r = std::find(p, q, secondary_delim);
+    const string tp ( p, r);
+    const string * ptr = this->add_string(tp);
+    data.push_back( ptr );
+    if ( r != q ) {
+        count_length = q - r - 1;
+        memcpy(string_count_cache, r + 1, count_length *sizeof(char) );
+        *(string_count_cache + count_length ) = '\0';
+    }
+    else {
+    }
+    
+    // now use swap trick to minimize the volumn of each attribute. Effective STL by Scott Meyers, Item 17
+    vector< const string* > (data).swap(data);
+    
+    if ( data.size() > 1 )
+        throw cException_Vector_Data(recdata);
+    
+    return true;
 }
 
 
@@ -89,68 +89,68 @@ bool Attribute::split_string(const char* recdata) {
  */
 void attrib_merge ( list < const Attribute * *> & l1, list < const Attribute * *> & l2 ) {
 
-	static const string errmsg = "Error: attribute pointers are not pointing to the same object. Attribute Type = ";
-	if ( l1.empty() || l2.empty() )
-		return;
+    static const string errmsg = "Error: attribute pointers are not pointing to the same object. Attribute Type = ";
+    if ( l1.empty() || l2.empty() )
+        return;
 
-	// calls the class member function to check if attrib merge is supported.
-	// if Null is returned, it means attrib_merge is not supported.
-	// usually for set_mode classes, attrib_merge works, and classes of single_mode do not support such operation.
-	const Attribute * new_object_pointer = (*l1.front())->attrib_merge(** l2.front());
-	if ( new_object_pointer == NULL )
-		return;
+    // calls the class member function to check if attrib merge is supported.
+    // if Null is returned, it means attrib_merge is not supported.
+    // usually for set_mode classes, attrib_merge works, and classes of single_mode do not support such operation.
+    const Attribute * new_object_pointer = (*l1.front())->attrib_merge(** l2.front());
+    if ( new_object_pointer == NULL )
+        return;
 
-	for ( list < const Attribute * * >::const_iterator p = l1.begin(); p != l1.end(); ++p ) {
-		if ( **p != * l1.front() ) {
-			std::cout << "------------" <<std::endl;
-			std::cout << "Front address: " << *l1.front() << " Other address: " << **p << std::endl;
-			(*l1.front())->print();
-			(**p)->print();
-			std::cout << "------------" << std::endl;
-			throw cException_Other ( ( errmsg + (*l1.front())->get_class_name()).c_str() ) ;
-		}
-	}
+    for ( list < const Attribute * * >::const_iterator p = l1.begin(); p != l1.end(); ++p ) {
+        if ( **p != * l1.front() ) {
+            std::cout << "------------" <<std::endl;
+            std::cout << "Front address: " << *l1.front() << " Other address: " << **p << std::endl;
+            (*l1.front())->print();
+            (**p)->print();
+            std::cout << "------------" << std::endl;
+            throw cException_Other ( ( errmsg + (*l1.front())->get_class_name()).c_str() ) ;
+        }
+    }
 
-	for ( list < const Attribute *  * >::const_iterator p = l2.begin(); p != l2.end(); ++p ) {
-		if ( **p != *l2.front() ) {
-			std::cout << "------------" <<std::endl;
-			std::cout << "Front address: " << *l2.front() << " Other address: " << **p << std::endl;
-			(*l2.front())->print();
-			(**p)->print();
-			std::cout << "------------" << std::endl;
-			throw cException_Other ( ( errmsg + (*l2.front())->get_class_name()).c_str() );
-		}
-	}
+    for ( list < const Attribute *  * >::const_iterator p = l2.begin(); p != l2.end(); ++p ) {
+        if ( **p != *l2.front() ) {
+            std::cout << "------------" <<std::endl;
+            std::cout << "Front address: " << *l2.front() << " Other address: " << **p << std::endl;
+            (*l2.front())->print();
+            (**p)->print();
+            std::cout << "------------" << std::endl;
+            throw cException_Other ( ( errmsg + (*l2.front())->get_class_name()).c_str() );
+        }
+    }
 
 
-	const unsigned int l1_size = l1.size();
-	const unsigned int l2_size = l2.size();
+    const unsigned int l1_size = l1.size();
+    const unsigned int l2_size = l2.size();
 
-	if ( l1_size != 1 )
-		(*l1.front())->reduce_attrib(l1_size - 1);
-	if ( l2_size != 1)
-		(*l2.front())->reduce_attrib(l2_size - 1);
-	if ( l1_size + l2_size != 2 )
-		new_object_pointer->add_attrib( l1_size + l2_size - 2 );
+    if ( l1_size != 1 )
+        (*l1.front())->reduce_attrib(l1_size - 1);
+    if ( l2_size != 1)
+        (*l2.front())->reduce_attrib(l2_size - 1);
+    if ( l1_size + l2_size != 2 )
+        new_object_pointer->add_attrib( l1_size + l2_size - 2 );
 
-	for ( list < const Attribute * * >::const_iterator p = l1.begin(); p != l1.end(); ++p )
-		**p = new_object_pointer;
-	for ( list < const Attribute *  * >::const_iterator p = l2.begin(); p != l2.end(); ++p )
-		**p = new_object_pointer;
+    for ( list < const Attribute * * >::const_iterator p = l1.begin(); p != l1.end(); ++p )
+        **p = new_object_pointer;
+    for ( list < const Attribute *  * >::const_iterator p = l2.begin(); p != l2.end(); ++p )
+        **p = new_object_pointer;
 
 }
 
 void Attribute::register_class_names( const vector < string > & input) {
-	Derived_Class_Name_Registry = input;
+    Derived_Class_Name_Registry = input;
 }
 
 int Attribute::position_in_registry( const string & s ) {
-	int i = 0;
-	for ( i = 0; i < static_cast<int> (Derived_Class_Name_Registry.size()); ++i ) {
-		if ( s == Derived_Class_Name_Registry.at(i))
-			return i;
-	}
-	return -1;
+    int i = 0;
+    for ( i = 0; i < static_cast<int> (Derived_Class_Name_Registry.size()); ++i ) {
+        if ( s == Derived_Class_Name_Registry.at(i))
+            return i;
+    }
+    return -1;
 }
 
 
@@ -245,7 +245,7 @@ template <> const string Attribute_Basic<cPatent>::class_name = "Patent";
  * Always keep the following statement in a comparison function:
  *
  * if ( ! is_comparator_activated () )
-		throw cException_No_Comparision_Function(static_get_class_name().c_str());
+        throw cException_No_Comparision_Function(static_get_class_name().c_str());
  *
  *
  */
@@ -257,7 +257,7 @@ unsigned int cFirstname::current_truncation = 0;
 /*
  * cFirstname::split_string does 3 things:
  * 1. Extract the first name from an input string, which is usually mixed with first name and middle name.
- * 	  i.e. Input string = "JOHN David WILLIAM", extracted string = "JOHN"
+ *       i.e. Input string = "JOHN David WILLIAM", extracted string = "JOHN"
  * 2. Keep the original copy of the original input string.
  * 3. Save the first extracted string in data[0], and the second original copy in data[1].
  *
@@ -265,33 +265,33 @@ unsigned int cFirstname::current_truncation = 0;
 
 
 bool cFirstname::split_string(const char *inputdata) {
-	static const char delim = ' ';
-	Attribute::split_string(inputdata);
-	const string * psource = get_data().at(0);
-	const size_t pos = psource->find(delim);
-	vector < const string * > & data_alias = get_data_modifiable();
-	if ( pos == string::npos )
-		data_alias.push_back(psource);
-	else {
-		string to_push ( psource->begin(), psource->begin() + pos );
-		data_alias.push_back(this->add_string( to_push) );
-	}
-	return true;
+    static const char delim = ' ';
+    Attribute::split_string(inputdata);
+    const string * psource = get_data().at(0);
+    const size_t pos = psource->find(delim);
+    vector < const string * > & data_alias = get_data_modifiable();
+    if ( pos == string::npos )
+        data_alias.push_back(psource);
+    else {
+        string to_push ( psource->begin(), psource->begin() + pos );
+        data_alias.push_back(this->add_string( to_push) );
+    }
+    return true;
 }
 
 
 unsigned int cFirstname::compare(const Attribute & right_hand_side) const {
-	// ALWAYS CHECK THE ACTIVITY OF COMPARISON FUNCTION !!
-	if ( ! this->is_comparator_activated () )
-		throw cException_No_Comparision_Function(this->static_get_class_name().c_str());
-	if ( this == & right_hand_side )
-		return this->get_attrib_max_value();
+    // ALWAYS CHECK THE ACTIVITY OF COMPARISON FUNCTION !!
+    if ( ! this->is_comparator_activated () )
+        throw cException_No_Comparision_Function(this->static_get_class_name().c_str());
+    if ( this == & right_hand_side )
+        return this->get_attrib_max_value();
 
-	unsigned int res = 0;
-	res = name_compare(* this->get_data().at(1), * right_hand_side.get_data().at(1), previous_truncation, current_truncation);
-	if ( res > this->get_attrib_max_value() )
-		res = this->get_attrib_max_value();
-	return res;
+    unsigned int res = 0;
+    res = name_compare(* this->get_data().at(1), * right_hand_side.get_data().at(1), previous_truncation, current_truncation);
+    if ( res > this->get_attrib_max_value() )
+        res = this->get_attrib_max_value();
+    return res;
 }
 
 
@@ -299,34 +299,34 @@ unsigned int cFirstname::compare(const Attribute & right_hand_side) const {
 /**
  * cMiddlename::split_string does 3 things:
  * 1. Extract the middle name from an input string, which is usually mixed with first name and middle name.
- * 	  i.e. Input string = "JOHN David WILLIAM", extracted string = "David WILLIAM"
- * 		   Input string = "JOHN", extracted string = ""
+ *       i.e. Input string = "JOHN David WILLIAM", extracted string = "David WILLIAM"
+ *            Input string = "JOHN", extracted string = ""
  *
  * 2. Extract the initials of middle names.
- * 	  i.e. Input string = "JOHN DAVID WILLIAM", middle initials = "DW"
+ *       i.e. Input string = "JOHN DAVID WILLIAM", middle initials = "DW"
  * 3. Save the first extracted string in data[0], and the second middle initial string in data[1].
  */
 bool
 cMiddlename::split_string(const char *inputdata) {
 
-	Attribute::split_string(inputdata);
-	const string & source = * get_data().at(0);
-	size_t pos = source.find(' ');
-	string midpart;
-	if ( pos == string::npos )
-		midpart = "";
-	else
-		midpart = source.substr( pos + 1 );
+    Attribute::split_string(inputdata);
+    const string & source = * get_data().at(0);
+    size_t pos = source.find(' ');
+    string midpart;
+    if ( pos == string::npos )
+        midpart = "";
+    else
+        midpart = source.substr( pos + 1 );
 
-	char initials[64];
-	extract_initials(initials, midpart.c_str());
-	const char * start = initials;
-	vector < const string * > & data_alias = get_data_modifiable();
-	string temp(start);
-	data_alias.clear();
-	data_alias.push_back(this->add_string( midpart) );
-	data_alias.push_back(this->add_string( temp ) );
-	return true;
+    char initials[64];
+    extract_initials(initials, midpart.c_str());
+    const char * start = initials;
+    vector < const string * > & data_alias = get_data_modifiable();
+    string temp(start);
+    data_alias.clear();
+    data_alias.push_back(this->add_string( midpart) );
+    data_alias.push_back(this->add_string( temp ) );
+    return true;
 }
 
 
@@ -342,20 +342,20 @@ cMiddlename::split_string(const char *inputdata) {
  */
 unsigned int cMiddlename::compare(const Attribute & right_hand_side) const {
 
-	if ( ! is_comparator_activated () )
-		throw cException_No_Comparision_Function(static_get_class_name().c_str());
-	try {
-		const cMiddlename & rhs = dynamic_cast< const cMiddlename & > (right_hand_side);
-		unsigned int res = midnamecmp(* this->get_data().at(0), * rhs.get_data().at(0));
-		if ( res > max_value )
-			res = max_value;
-		return res;
-	}
-	catch ( const std::bad_cast & except ) {
-		std::cerr << except.what() << std::endl;
-		std::cerr << "Error: " << this->get_class_name() << " is compared to " << right_hand_side.get_class_name() << std::endl;
-		throw;
-	}
+    if ( ! is_comparator_activated () )
+        throw cException_No_Comparision_Function(static_get_class_name().c_str());
+    try {
+        const cMiddlename & rhs = dynamic_cast< const cMiddlename & > (right_hand_side);
+        unsigned int res = midnamecmp(* this->get_data().at(0), * rhs.get_data().at(0));
+        if ( res > max_value )
+            res = max_value;
+        return res;
+    }
+    catch ( const std::bad_cast & except ) {
+        std::cerr << except.what() << std::endl;
+        std::cerr << "Error: " << this->get_class_name() << " is compared to " << right_hand_side.get_class_name() << std::endl;
+        throw;
+    }
 }
 
 
@@ -374,98 +374,98 @@ unsigned int cMiddlename::compare(const Attribute & right_hand_side) const {
 unsigned int
 cLatitude::compare(const Attribute & right_hand_side) const {
 
-	if ( ! is_comparator_activated () )
-		throw cException_No_Comparision_Function(static_get_class_name().c_str());
+    if ( ! is_comparator_activated () )
+        throw cException_No_Comparision_Function(static_get_class_name().c_str());
 
-	check_if_reconfigured();
+    check_if_reconfigured();
 
-	try {
-		unsigned int res = 0;
-		const cLatitude & rhs = dynamic_cast< const cLatitude & > (right_hand_side);
+    try {
+        unsigned int res = 0;
+        const cLatitude & rhs = dynamic_cast< const cLatitude & > (right_hand_side);
 
-		const Attribute* const & this_longitude = this->get_interactive_vector().at(0);
-		const Attribute* const & rhs_longitude = rhs.get_interactive_vector().at(0);
-		if ( this->get_data().size() != this_longitude->get_data().size() ) {
-			std::cout << "Alignment error in latitude comparison: " << std::endl;
-			this->print(std::cout);
-			this_longitude->print(std::cout);
-			throw cException_Interactive_Misalignment(this->get_class_name().c_str());
-		}
-		if ( rhs.get_data().size() != rhs_longitude->get_data().size() ) {
-			std::cout << "Alignment error in latitude comparison: " << std::endl;
-			rhs.print(std::cout);
-			rhs_longitude->print(std::cout);
-			throw cException_Interactive_Misalignment(this->get_class_name().c_str());
-		}
+        const Attribute* const & this_longitude = this->get_interactive_vector().at(0);
+        const Attribute* const & rhs_longitude = rhs.get_interactive_vector().at(0);
+        if ( this->get_data().size() != this_longitude->get_data().size() ) {
+            std::cout << "Alignment error in latitude comparison: " << std::endl;
+            this->print(std::cout);
+            this_longitude->print(std::cout);
+            throw cException_Interactive_Misalignment(this->get_class_name().c_str());
+        }
+        if ( rhs.get_data().size() != rhs_longitude->get_data().size() ) {
+            std::cout << "Alignment error in latitude comparison: " << std::endl;
+            rhs.print(std::cout);
+            rhs_longitude->print(std::cout);
+            throw cException_Interactive_Misalignment(this->get_class_name().c_str());
+        }
 
-		//latitude interacts with		{"Longitude", "Street", "Country"}; the sequence is important.
+        //latitude interacts with        {"Longitude", "Street", "Country"}; the sequence is important.
 
-		unsigned int country_score = 0;
-		if ( this == &rhs && this->is_informative() ) {
-			res = max_value;
-		}
-		else {
-			// Comparing country
-			if ( this->get_interactive_vector().at(2) == rhs.get_interactive_vector().at(2) )
-				country_score = 1;
+        unsigned int country_score = 0;
+        if ( this == &rhs && this->is_informative() ) {
+            res = max_value;
+        }
+        else {
+            // Comparing country
+            if ( this->get_interactive_vector().at(2) == rhs.get_interactive_vector().at(2) )
+                country_score = 1;
 
-			// Comparing street;
-			//unsigned int street_score = 0;
+            // Comparing street;
+            //unsigned int street_score = 0;
 
-			// Comparing Latitidue and longitude
+            // Comparing Latitidue and longitude
 
-			unsigned int latlon_score = 0;
-			latlon_score = latloncmp ( * this->get_data().at(0), * this_longitude->get_data().at(0),
-										* rhs.get_data().at(0), * rhs_longitude->get_data().at(0) );
+            unsigned int latlon_score = 0;
+            latlon_score = latloncmp ( * this->get_data().at(0), * this_longitude->get_data().at(0),
+                                        * rhs.get_data().at(0), * rhs_longitude->get_data().at(0) );
 
-			if ( country_score == 0 )
-				res = 0;
-			else
-				res = latlon_score;
-		}
+            if ( country_score == 0 )
+                res = 0;
+            else
+                res = latlon_score;
+        }
 
-		//correction for japanese
-		if ( country_score == 1 && *this->get_interactive_vector().at(2)->get_data().at(0) == "JP" ) {
-			const Attribute* const & this_street = this->get_interactive_vector().at(1);
-			const Attribute* const & rhs_street = rhs.get_interactive_vector().at(1);
-			if ( this_street == rhs_street && ( ! this_street->is_informative() ) )
-				res -= 1;
-		}
+        //correction for japanese
+        if ( country_score == 1 && *this->get_interactive_vector().at(2)->get_data().at(0) == "JP" ) {
+            const Attribute* const & this_street = this->get_interactive_vector().at(1);
+            const Attribute* const & rhs_street = rhs.get_interactive_vector().at(1);
+            if ( this_street == rhs_street && ( ! this_street->is_informative() ) )
+                res -= 1;
+        }
 
-		if ( res > max_value )
-			throw cException_Other("latitude error: score > max_value");
+        if ( res > max_value )
+            throw cException_Other("latitude error: score > max_value");
 
-		return res;
-	}
-	catch ( const std::bad_cast & except ) {
-		std::cerr << except.what() << std::endl;
-		std::cerr << "Error: " << this->get_class_name() << " is compared to " << right_hand_side.get_class_name() << std::endl;
-		throw;
-	}
+        return res;
+    }
+    catch ( const std::bad_cast & except ) {
+        std::cerr << except.what() << std::endl;
+        std::cerr << "Error: " << this->get_class_name() << " is compared to " << right_hand_side.get_class_name() << std::endl;
+        throw;
+    }
 }
 
 
 unsigned int
 cLongitude::compare(const Attribute & right_hand_side) const {
 
-	if ( ! is_comparator_activated () )
-		throw cException_No_Comparision_Function(static_get_class_name().c_str());
-	check_if_reconfigured();
-	try {
-		unsigned int res = 0;
-		const bool exact_same = this->exact_compare(right_hand_side) == 1 ;
-		if ( exact_same && this->is_informative())
-			res = 1;
+    if ( ! is_comparator_activated () )
+        throw cException_No_Comparision_Function(static_get_class_name().c_str());
+    check_if_reconfigured();
+    try {
+        unsigned int res = 0;
+        const bool exact_same = this->exact_compare(right_hand_side) == 1 ;
+        if ( exact_same && this->is_informative())
+            res = 1;
 
-		if ( res > max_value )
-			res = max_value;
-		return res;
-	}
-	catch ( const std::bad_cast & except ) {
-		std::cerr << except.what() << std::endl;
-		std::cerr << "Error: " << this->get_class_name() << " is compared to " << right_hand_side.get_class_name() << std::endl;
-		throw;
-	}
+        if ( res > max_value )
+            res = max_value;
+        return res;
+    }
+    catch ( const std::bad_cast & except ) {
+        std::cerr << except.what() << std::endl;
+        std::cerr << "Error: " << this->get_class_name() << " is compared to " << right_hand_side.get_class_name() << std::endl;
+        throw;
+    }
 }
 
 
@@ -477,22 +477,22 @@ cLongitude::compare(const Attribute & right_hand_side) const {
 unsigned int
 cClass_M2::compare(const Attribute & right_hand_side) const {
 
-	const cClass_M2 & rhs = dynamic_cast< const cClass_M2 & > (right_hand_side);
-	const unsigned int common = this->Attribute_Set_Mode <cClass_M2>::compare( rhs );
-	const unsigned int this_size = this->attrib_set.size();
-	const unsigned int rhs_size = rhs.attrib_set.size();
+    const cClass_M2 & rhs = dynamic_cast< const cClass_M2 & > (right_hand_side);
+    const unsigned int common = this->Attribute_Set_Mode <cClass_M2>::compare( rhs );
+    const unsigned int this_size = this->attrib_set.size();
+    const unsigned int rhs_size = rhs.attrib_set.size();
 
-	const double factor = 1.0 * common * common / this_size / rhs_size;
-	if ( factor > 0.3 )
-		return 4;
-	else if ( factor > 0.2 )
-		return 3;
-	else if ( factor > 0.1 )
-		return 2;
-	else if ( factor > 0.05 )
-		return 1;
-	else
-		return 0;
+    const double factor = 1.0 * common * common / this_size / rhs_size;
+    if ( factor > 0.3 )
+        return 4;
+    else if ( factor > 0.2 )
+        return 3;
+    else if ( factor > 0.1 )
+        return 2;
+    else if ( factor > 0.05 )
+        return 1;
+    else
+        return 0;
 }
 
 /*
@@ -502,15 +502,15 @@ cClass_M2::compare(const Attribute & right_hand_side) const {
  */
 
 unsigned int cCountry::compare(const Attribute & right_hand_side) const {
-	if ( ! is_comparator_activated () )
-		throw cException_No_Comparision_Function(static_get_class_name().c_str());
+    if ( ! is_comparator_activated () )
+        throw cException_No_Comparision_Function(static_get_class_name().c_str());
 
-	if ( !this->is_informative() || ! right_hand_side.is_informative() )
-		return 1;
-	if ( this == & right_hand_side )
-		return 2;
-	else
-		return 0;
+    if ( !this->is_informative() || ! right_hand_side.is_informative() )
+        return 1;
+    if ( this == & right_hand_side )
+        return 2;
+    else
+        return 0;
 }
 
 
@@ -519,7 +519,7 @@ unsigned int cCountry::compare(const Attribute & right_hand_side) const {
  * cAssignee::compare:
  * Comparison of assignee includes two steps:
  * 1. look up the assignee->asgnum(assignee number) tree, in order to check whether two assignees shared the same number.
- * 		If they do, they are believed to be the same, and the score of 5 is granted. If the assignee has fewer than 100 different patents, an additional 1 point is added.
+ *         If they do, they are believed to be the same, and the score of 5 is granted. If the assignee has fewer than 100 different patents, an additional 1 point is added.
  * 2. If their assignee numbers are different, they can still be the same assignee.
  *    In this case, a fairly crude jaro-winkler string comparison is used to score.
  *    Refer to the function jwcmp for more scoring information.
@@ -527,48 +527,48 @@ unsigned int cCountry::compare(const Attribute & right_hand_side) const {
  */
 
 unsigned int cAssignee::compare(const Attribute & right_hand_side) const {
-	if ( ! is_comparator_activated () )
-		throw cException_No_Comparision_Function(static_get_class_name().c_str());
-	if ( ! cAssignee::is_ready )
-		throw cException_Other("Trees for assignee comparison are not set up yet. Run cAssignee::configure_assignee first.");
-	try {
+    if ( ! is_comparator_activated () )
+        throw cException_No_Comparision_Function(static_get_class_name().c_str());
+    if ( ! cAssignee::is_ready )
+        throw cException_Other("Trees for assignee comparison are not set up yet. Run cAssignee::configure_assignee first.");
+    try {
 
-		const cAssignee & rhs = dynamic_cast< const cAssignee & > (right_hand_side);
-		//unsigned int res = asgcmp(this->get_data(), rhs.get_data(), assignee_tree_pointer);
-		//unsigned int res = asgcmp ( * this->get_data().at(0), * rhs.get_data().at(0), assignee_tree_pointer);
-		unsigned int res = 0;
-		const cAsgNum * p = dynamic_cast < const cAsgNum *> (this->get_interactive_vector().at(0));
-		if ( ! p )
-			throw cException_Other("Cannot dynamic cast to cAsgNum *.");
+        const cAssignee & rhs = dynamic_cast< const cAssignee & > (right_hand_side);
+        //unsigned int res = asgcmp(this->get_data(), rhs.get_data(), assignee_tree_pointer);
+        //unsigned int res = asgcmp ( * this->get_data().at(0), * rhs.get_data().at(0), assignee_tree_pointer);
+        unsigned int res = 0;
+        const cAsgNum * p = dynamic_cast < const cAsgNum *> (this->get_interactive_vector().at(0));
+        if ( ! p )
+            throw cException_Other("Cannot dynamic cast to cAsgNum *.");
 
-		const cAsgNum * q = dynamic_cast < const cAsgNum *> (rhs.get_interactive_vector().at(0));
-		if ( ! q )
-			throw cException_Other("Cannot dynamic cast rhs to cAsgNum *.");
+        const cAsgNum * q = dynamic_cast < const cAsgNum *> (rhs.get_interactive_vector().at(0));
+        if ( ! q )
+            throw cException_Other("Cannot dynamic cast rhs to cAsgNum *.");
 
-		if ( ! this->is_informative() || ! rhs.is_informative() ) {
-			res = 1;
-		}
-		else if ( p != q ) {
-			res = asgcmp(* this->get_data().at(0), * rhs.get_data().at(0));
-		}
-		else {
-			res = 5;
-			map < const cAsgNum *, unsigned int>::const_iterator t = cAssignee::asgnum2count_tree.find(p);
-			if ( t == cAssignee::asgnum2count_tree.end() )
-				throw cException_Other("AsgNum pointer is not in tree.");
-			if ( t->second < 100 )
-				++res;
-		}
+        if ( ! this->is_informative() || ! rhs.is_informative() ) {
+            res = 1;
+        }
+        else if ( p != q ) {
+            res = asgcmp(* this->get_data().at(0), * rhs.get_data().at(0));
+        }
+        else {
+            res = 5;
+            map < const cAsgNum *, unsigned int>::const_iterator t = cAssignee::asgnum2count_tree.find(p);
+            if ( t == cAssignee::asgnum2count_tree.end() )
+                throw cException_Other("AsgNum pointer is not in tree.");
+            if ( t->second < 100 )
+                ++res;
+        }
 
-		if ( res > max_value )
-			res = max_value;
-		return res;
-	}
-	catch ( const std::bad_cast & except ) {
-		std::cerr << except.what() << std::endl;
-		std::cerr << "Error: " << this->get_class_name() << " is compared to " << right_hand_side.get_class_name() << std::endl;
-		throw;
-	}
+        if ( res > max_value )
+            res = max_value;
+        return res;
+    }
+    catch ( const std::bad_cast & except ) {
+        std::cerr << except.what() << std::endl;
+        std::cerr << "Error: " << this->get_class_name() << " is compared to " << right_hand_side.get_class_name() << std::endl;
+        throw;
+    }
 }
 
 /*
@@ -577,7 +577,7 @@ unsigned int cAssignee::compare(const Attribute & right_hand_side) const {
  */
 
 bool cCity::split_string(const char* source) {
-	string temp (source);
-	get_data_modifiable().push_back(this->add_string(temp));
-	return true;
+    string temp (source);
+    get_data_modifiable().push_back(this->add_string(temp));
+    return true;
 }
