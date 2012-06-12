@@ -162,57 +162,6 @@ nospacecmp(const char* str1, const char* str2) {
 
 
 int
-jwcmp_old(const string & str1, const string& str2) {
-
-    const char *delim= " ";
-    const unsigned int delim_size = strlen(delim);
-    const double threshold  = 0.95;
-
-    int tok_len1, tok_len2, num_tok1, num_tok2;
-    double tok_score, score = 0;
-    if( 0 == str1.size() || 0 == str2.size() )
-        //missing!
-        return 1;
-
-    if( ( str1 == str2 ) && 0==nospacecmp( str1.c_str(), str2.c_str() )){
-        return 4; //JW100
-    }
-    size_t pos1, prev_pos1, pos2, prev_pos2;
-    pos1 = prev_pos1 = 0;
-    num_tok1 = 0;
-    do {
-        tok_score = 0;
-        pos1 = str1.find(delim, prev_pos1);
-        string temp1 = str1.substr(prev_pos1, pos1 - prev_pos1);
-        tok_len1 = temp1.size();
-        num_tok1 += (tok_len1 > 1);
-
-        pos2 = prev_pos2 = 0;
-        num_tok2 = 0;
-        do {
-            pos2 = str2.find(delim, prev_pos2);
-            string temp2 = str2.substr(prev_pos2, pos2 - prev_pos2);
-            tok_len2 = temp2.size();
-            num_tok2 += (tok_len2 > 1);
-            tok_score = max_val<int>(tok_score,
-                    ((min_val<int>(tok_len1, tok_len2) <= 1) ? 0 : strcmp95_modified(temp1.c_str(), temp2.c_str())));
-
-            prev_pos2 = pos2 + delim_size;
-        } while ( pos2!= string::npos);
-        score += (tok_score > threshold);
-
-        prev_pos1 = pos1 + delim_size;
-    } while ( pos1!= string::npos);
-
-    int min_num_tok = min_val<int>(num_tok1, num_tok2);
-    double myres = ( min_num_tok == 0) ? 0 : score/min_num_tok;
-    int is_same_len = (num_tok1 == num_tok2) ? 1 : 0;
-    return( 2*(myres >= 0.33) + (myres >= 0.66) + (myres > 0.99) + (myres > 0.99 && min_num_tok >= 2) + (myres > 0.99 && is_same_len));
-
-}
-
-
-int
 jwcmp(const string & str1, const string& str2) {
 
     if ( str1.empty() || str2.empty() )
