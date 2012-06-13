@@ -23,7 +23,8 @@ vector <string> Attribute::Derived_Class_Name_Registry;
  * However, one is also assumed to have familiarized with the source text format.
  *
  */
-bool Attribute::split_string(const char* recdata) {
+bool
+Attribute::split_string(const char* recdata) {
 
     static const string emptystring ("");
     vector < const string * > & data = this->get_data_modifiable();
@@ -41,6 +42,7 @@ bool Attribute::split_string(const char* recdata) {
     const char secondary_delim = '~';
     const char * q;
     unsigned int count_length;
+
     while ( (q = std::find(p, pend, delim)) != pend ) {
         // r points to the secondary delimiter
         // q points to the primary delimiter
@@ -56,10 +58,12 @@ bool Attribute::split_string(const char* recdata) {
         }
         p = q + 1;
     }
+
     const char * r = std::find(p, q, secondary_delim);
     const string tp ( p, r);
     const string * ptr = this->add_string(tp);
     data.push_back( ptr );
+
     if ( r != q ) {
         count_length = q - r - 1;
         memcpy(string_count_cache, r + 1, count_length *sizeof(char) );
@@ -67,13 +71,14 @@ bool Attribute::split_string(const char* recdata) {
     }
     else {
     }
-    
-    // now use swap trick to minimize the volumn of each attribute. Effective STL by Scott Meyers, Item 17
+
+    // now use swap trick to minimize the volumn of
+    // each attribute. Effective STL by Scott Meyers, Item 17
     vector< const string* > (data).swap(data);
-    
+
     if ( data.size() > 1 )
         throw cException_Vector_Data(recdata);
-    
+
     return true;
 }
 
@@ -87,7 +92,8 @@ bool Attribute::split_string(const char* recdata) {
  * and the pointers in list1 and list2 will then point
  * to the newly created large object.
  */
-void attrib_merge ( list < const Attribute * *> & l1, list < const Attribute * *> & l2 ) {
+void
+attrib_merge (list < const Attribute * *> & l1, list < const Attribute * *> & l2) {
 
     static const string errmsg = "Error: attribute pointers are not pointing to the same object. Attribute Type = ";
     if ( l1.empty() || l2.empty() )
@@ -154,15 +160,6 @@ int Attribute::position_in_registry( const string & s ) {
 }
 
 
-
-/*
- * DisambigCustomizedDefs.cpp
- *
- *  Created on: Apr 5, 2011
- *      Author: ysun
- */
-
-#include "attribute.h"
 
 template <> const string Attribute_Basic<cFirstname>::class_name = "Firstname";
 template <> const string Attribute_Basic<cFirstname>::attrib_group = "Personal";
@@ -240,31 +237,29 @@ template <> const string Attribute_Basic<cCity>::class_name = "City";
 template <> const string Attribute_Basic<cPatent>::class_name = "Patent";
 
 
-/*
- * Whenever overriding a comparison fucntion, it is extremely important to check if the comparator is activated. i.e.
+/**
+ * Whenever overriding a comparison fucntion, it is extremely
+ * important to check if the comparator is activated. i.e.
  * Always keep the following statement in a comparison function:
  *
  * if ( ! is_comparator_activated () )
         throw cException_No_Comparision_Function(static_get_class_name().c_str());
- *
- *
  */
-
 
 unsigned int cFirstname::previous_truncation = 0;
 unsigned int cFirstname::current_truncation = 0;
 
-/*
+
+/**
  * cFirstname::split_string does 3 things:
  * 1. Extract the first name from an input string, which is usually mixed with first name and middle name.
  *       i.e. Input string = "JOHN David WILLIAM", extracted string = "JOHN"
  * 2. Keep the original copy of the original input string.
  * 3. Save the first extracted string in data[0], and the second original copy in data[1].
- *
  */
+bool
+cFirstname::split_string(const char *inputdata) {
 
-
-bool cFirstname::split_string(const char *inputdata) {
     static const char delim = ' ';
     Attribute::split_string(inputdata);
     const string * psource = get_data().at(0);
@@ -280,10 +275,13 @@ bool cFirstname::split_string(const char *inputdata) {
 }
 
 
-unsigned int cFirstname::compare(const Attribute & right_hand_side) const {
+unsigned int
+cFirstname::compare(const Attribute & right_hand_side) const {
+
     // ALWAYS CHECK THE ACTIVITY OF COMPARISON FUNCTION !!
     if ( ! this->is_comparator_activated () )
         throw cException_No_Comparision_Function(this->static_get_class_name().c_str());
+
     if ( this == & right_hand_side )
         return this->get_attrib_max_value();
 
@@ -313,6 +311,7 @@ cMiddlename::split_string(const char *inputdata) {
     const string & source = * get_data().at(0);
     size_t pos = source.find(' ');
     string midpart;
+
     if ( pos == string::npos )
         midpart = "";
     else
@@ -340,10 +339,12 @@ cMiddlename::split_string(const char *inputdata) {
  * "" vs "" = 2 ( both missing information )
  * "DAVID" vs "" = 1 ( one missing information )
  */
-unsigned int cMiddlename::compare(const Attribute & right_hand_side) const {
+unsigned int
+cMiddlename::compare(const Attribute & right_hand_side) const {
 
     if ( ! is_comparator_activated () )
         throw cException_No_Comparision_Function(static_get_class_name().c_str());
+
     try {
         const cMiddlename & rhs = dynamic_cast< const cMiddlename & > (right_hand_side);
         unsigned int res = midnamecmp(* this->get_data().at(0), * rhs.get_data().at(0));
@@ -362,8 +363,12 @@ unsigned int cMiddlename::compare(const Attribute & right_hand_side) const {
 
 /**
  * cLatitude::compare:
- * Such comparison is complicated because cLatitude is interacted with cLongitude, cCountry , and possibly cStreet
- * One needs to know the structure of how the interactive data are stored, which is actually an assumed knowledge.
+ *
+ * Such comparison is complicated because cLatitude is
+ * interacted with cLongitude, cCountry , and possibly cStreet
+ *
+ * One needs to know the structure of how the interactive data
+ * are stored, which is actually an assumed knowledge.
  *
  * If the distance calculated by latitude and longitude < 1 mile, score = 4 ( max score)
  * If the distance calculated by latitude and longitude < 10 mile, score = 3
@@ -495,13 +500,15 @@ cClass_M2::compare(const Attribute & right_hand_side) const {
         return 0;
 }
 
-/*
+
+/**
  * cCountry::compare
  * Not supposed to be used, because country attribute is mixed in the latitude comparison.
  *
  */
+unsigned int
+cCountry::compare(const Attribute & right_hand_side) const {
 
-unsigned int cCountry::compare(const Attribute & right_hand_side) const {
     if ( ! is_comparator_activated () )
         throw cException_No_Comparision_Function(static_get_class_name().c_str());
 
@@ -515,18 +522,25 @@ unsigned int cCountry::compare(const Attribute & right_hand_side) const {
 
 
 
-/*
+/**
  * cAssignee::compare:
+ *
  * Comparison of assignee includes two steps:
- * 1. look up the assignee->asgnum(assignee number) tree, in order to check whether two assignees shared the same number.
- *         If they do, they are believed to be the same, and the score of 5 is granted. If the assignee has fewer than 100 different patents, an additional 1 point is added.
+ *
+ * 1. look up the assignee->asgnum(assignee number) tree,
+ *    in order to check whether two assignees shared the same number.
+ *    If they do, they are believed to be the same, and the score
+ *    of 5 is granted. If the assignee has fewer than 100 different
+ *    patents, an additional 1 point is added.
+ *
  * 2. If their assignee numbers are different, they can still be the same assignee.
  *    In this case, a fairly crude jaro-winkler string comparison is used to score.
  *    Refer to the function jwcmp for more scoring information.
  *
  */
+unsigned int
+cAssignee::compare(const Attribute & right_hand_side) const {
 
-unsigned int cAssignee::compare(const Attribute & right_hand_side) const {
     if ( ! is_comparator_activated () )
         throw cException_No_Comparision_Function(static_get_class_name().c_str());
     if ( ! cAssignee::is_ready )
@@ -550,8 +564,8 @@ unsigned int cAssignee::compare(const Attribute & right_hand_side) const {
         }
         else if ( p != q ) {
             res = asgcmp(* this->get_data().at(0), * rhs.get_data().at(0));
-        }
-        else {
+        } else {
+
             res = 5;
             map < const cAsgNum *, unsigned int>::const_iterator t = cAssignee::asgnum2count_tree.find(p);
             if ( t == cAssignee::asgnum2count_tree.end() )
@@ -571,12 +585,14 @@ unsigned int cAssignee::compare(const Attribute & right_hand_side) const {
     }
 }
 
-/*
- * The reason to override cCity::split_string from its base is because a city's name can include some delimiters in the default base implementation.
- *
- */
 
-bool cCity::split_string(const char* source) {
+/**
+ * The reason to override cCity::split_string from its base is because
+ * a city's name can include some delimiters in the default base implementation.
+ */
+bool
+cCity::split_string(const char* source) {
+
     string temp (source);
     get_data_modifiable().push_back(this->add_string(temp));
     return true;
