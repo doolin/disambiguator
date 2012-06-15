@@ -14,6 +14,8 @@
 #include <cmath>
 #include <algorithm>
 
+#define HAVE_CPLEX 1
+
 #ifdef HAVE_CPLEX
 #include <ilcplex/ilocplex.h>
 #endif
