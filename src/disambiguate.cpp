@@ -443,7 +443,7 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
     const bool train_stable = EngineConfiguration::generate_stable_training_sets;
     const bool use_available_ratios = EngineConfiguration::use_available_ratios_database;
     const string working_dir = EngineConfiguration::working_dir;
-    const string final_file = working_dir + "/final.txt";
+    //const string final_file = working_dir + "/final.txt";
     const vector < double > threshold_vec = EngineConfiguration::thresholds ;
     const unsigned int buff_size = 512;
     const unsigned int num_threads = EngineConfiguration::number_of_threads;
@@ -585,9 +585,10 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
             default:
                 ;
         }
+
         cFirstname::set_truncation( firstname_prev_truncation, BlockingConfiguration::firstname_cur_truncation);
         firstname_prev_truncation = BlockingConfiguration::firstname_cur_truncation;
-    
+
         match.reset_blocking( * BlockingConfiguration::active_blocker_pointer, oldmatchfile);
         if ( network_clustering ) {
             blocker_coauthor.build_uid2uinv_tree(match);
