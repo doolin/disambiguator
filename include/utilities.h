@@ -39,9 +39,9 @@ int    unique_inventors_per_period (unsigned int starting_year,
                                     const char * disambigresult,
                                     const char * outputfile);
 
-void   one_step_prostprocess(const list < Record > & all_records,
-                             const char * last_disambig_result,
-                             const char * outputfile);
+void   one_step_postprocess(const list < Record > & all_records,
+                            const char * last_disambig_result,
+                            const char * outputfile);
 
 string remove_headtail_space(const string & s);
 

@@ -589,7 +589,7 @@ int Full_Disambiguation( const char * EngineConfigFile, const char * BlockingCon
 		}
 		cFirstname::set_truncation( firstname_prev_truncation, BlockingConfiguration::firstname_cur_truncation);
 		firstname_prev_truncation = BlockingConfiguration::firstname_cur_truncation;
-		
+	
 		match.reset_blocking( * BlockingConfiguration::active_blocker_pointer, oldmatchfile);
 		if ( network_clustering ) {
 			blocker_coauthor.build_uid2uinv_tree(match);
@@ -600,7 +600,6 @@ int Full_Disambiguation( const char * EngineConfigFile, const char * BlockingCon
 			cs.output_results(network_file);
 			match.reset_blocking( * BlockingConfiguration::active_blocker_pointer, network_file);
 		}
-	      
 
 
 		if ( ! use_available_ratios ) {
@@ -649,7 +648,7 @@ int Full_Disambiguation( const char * EngineConfigFile, const char * BlockingCon
 	// post-processing now
 	if ( is_blockingconfig_success == 2 ) {
 		std::cout << "Final post processing ... ..." << std::endl;
-		one_step_prostprocess( all_records, oldmatchfile, ( string(working_dir) + "/final.txt").c_str() );
+		one_step_postprocess( all_records, oldmatchfile, ( string(working_dir) + "/final.txt").c_str() );
 	}
 
 	return 0;
