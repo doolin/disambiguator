@@ -103,37 +103,71 @@ public:
 
 /**
  * cRatioComponent:
- * This class is used as intermediate steps to finalize a cRatio object. In the current engine, a complete similarity
+ * This class is used as intermediate steps to finalize a cRatio object.
+ * In the current engine, a complete similarity
  * profile is composed of two parts, and each part has several components:
+ *
  * Personal: cFirstname, cMiddlename, cLastname
  * Patent: cLatitude, cAssignee, cCoauthor, cClass
- * A cRatioComponent object usually take care of one part of the similarity profiles, and a cRatio object ( will be
- * introduced below ) reads all the necessary cRatioComponent objects to finalize, after which the cRatioComponents are
+ *
+ * A cRatioComponent object usually take care of one part of the
+ * similarity profiles, and a cRatio object ( will be
+ * introduced below ) reads all the necessary cRatioComponent
+ * objects to finalize, after which the cRatioComponents are
  * useless.
- *
+ */
+
+/*
  * Private:
- * 		static const unsigned int laplace_base: a value used for laplacian operations of obtained similarity profiles to get a ratio.
- * 		map < vector <unsigned int>, double, cSimilarity_Compare > ratio_map: a ratio map for the current component.
- * 			Key = similarity profile, Value = ratio, Comparator = cSimilarity_Compare
- * 		vector < unsigned int > positions_in_ratios: positions of the current components in the complete similarity profile.
- * 		vector < unsigned int > positions_in_record: position of the current components in the Record::column_names.
- *		const string attrib_group: the attribute GROUP identifier for which the cRatioComponent object represents.
- *		const map < string, const Record *> * puid_tree: the pointer to a map of unique record id string to its correspoinding record pointer.
- *		map < cSimilarity_With_Monotonicity_Dimension, MonotonicSet > similarity_map:
- *			a map of similarity profiles and their monotonic set for a certain dimension.
- *		vector < string > attrib_names: attribute names that belong the the atribute group.
- *		bool is_ready: a boolean value indicating the readiness of the object. The object is usable only if is_ready is true.
- *		map < vector < unsigned int > , unsigned int, cSimilarity_Compare > x_counts, m_counts:
- *			maps of similarity profiles to their occurrences in non-match and match training sets.
  *
+ * 		static const unsigned int laplace_base:
+ * 		    a value used for laplacian operations of obtained similarity profiles to get a ratio.
+ *
+ * 		map < vector <unsigned int>, double, cSimilarity_Compare > ratio_map:
+ * 		    a ratio map for the current component.
+ * 			  Key = similarity profile,
+ * 			  Value = ratio,
+ * 			  Comparator = cSimilarity_Compare
+ *
+ * 		vector < unsigned int > positions_in_ratios:
+ * 		    positions of the current components in the complete similarity profile.
+ *
+ * 		vector < unsigned int > positions_in_record:
+ * 		    position of the current components in the Record::column_names.
+ *
+ *		const string attrib_group:
+ *		    the attribute GROUP identifier for which the
+ *		    cRatioComponent object represents.
+ *
+ *		const map < string, const Record *> * puid_tree:
+ *		    the pointer to a map of unique record id string to
+ *		    its correspoinding record pointer.
+ *
+ *		map < cSimilarity_With_Monotonicity_Dimension, MonotonicSet > similarity_map:
+ *			  a map of similarity profiles and their monotonic set for a certain dimension.
+ *
+ *		vector < string > attrib_names:
+ *		    attribute names that belong the the atribute group.
+ *
+*		map < vector < unsigned int > , unsigned int, cSimilarity_Compare > x_counts, m_counts:
+ *			  maps of similarity profiles to their occurrences in non-match and match training sets.
+ */
+
+/*
  *		void sp_stats (const list<std::pair<string, string> > & trainpairs,
-				   map < vector < unsigned int > , unsigned int, cSimilarity_Compare > & sp_counts ) const:
- *                      read a list of pairs of unique record numbers that are selected as training sets, and do pairwise comparison in the specified
- *                      attribute group. Then the statistics of the appearing similarity profiles ( part of a complete similarity profile ) are stored
- *                      in the map of similarity profiles to their occurrences "sp_counts".
+				  map < vector < unsigned int > , unsigned int, cSimilarity_Compare > & sp_counts ) const:
+ *        read a list of pairs of unique record numbers that are selected as
+ *        training sets, and do pairwise comparison in the specified
+ *        attribute group. Then the statistics of the appearing similarity
+ *        profiles ( part of a complete similarity profile ) are stored
+ *        in the map of similarity profiles to their occurrences "sp_counts".
+ *
  *		void read_train_pairs ( list < std::pair < string, string > & trainpairs, const char * txt_file ) const:
- *              read the list of pairs of unique record numbers ( training sets ) from the specified "txt_file" into the list "trainpairs".
- *		void get_similarity_info(): to get the information of similarity profiles of the attribute group.
+ *        read the list of pairs of unique record numbers ( training sets ) from the
+ *        specified "txt_file" into the list "trainpairs".
+ *
+ *		void get_similarity_info():
+ *		    to get the information of similarity profiles of the attribute group.
  *
  * Public: 
  * 		cRatioComponent ( const map < string, const Record * > uid_tree, const string & groupname ):
@@ -146,6 +180,7 @@ class cRatioComponent {
 	public:
 		cException_Partial_SP_Missing(const char* errmsg): cAbstract_Exception(errmsg){};
 	};
+
 private:
 	static const unsigned int laplace_base;
 	map < vector <unsigned int>, double, cSimilarity_Compare > ratio_map;
@@ -155,13 +190,20 @@ private:
 	const map < string, const Record *> * puid_tree;
 	map < cSimilarity_With_Monotonicity_Dimension, MonotonicSet > similarity_map;
 	vector < string > attrib_names;
-	bool is_ready;
+
+ /**
+  * bool is_ready:
+ *		    a boolean value indicating the readiness of the object.
+ *		    The object is usable only if is_ready is true.
+ */
+ bool is_ready;
 	map < vector < unsigned int > , unsigned int, cSimilarity_Compare > x_counts, m_counts;
 
 	void sp_stats (const list<std::pair<string, string> > & trainpairs, 
 				   map < vector < unsigned int > , unsigned int, cSimilarity_Compare > & sp_counts ) const;
 	void read_train_pairs(list<std::pair<string, string> > & trainpairs, const char * txt_file) const;
 	void get_similarity_info();
+
 public:
 	class cException_Ratios_Not_Ready : public cAbstract_Exception {
 	public:
@@ -177,6 +219,7 @@ public:
 			throw cException_Ratios_Not_Ready("Ratio component map is not ready.");
 		}
 	}
+
 	const map < vector < unsigned int >, unsigned int, cSimilarity_Compare > & get_x_counts() const {return x_counts;}
 	const map < vector < unsigned int >, unsigned int, cSimilarity_Compare > & get_m_counts() const {return m_counts;}
 	const vector < unsigned int > & get_component_positions_in_ratios() const {return positions_in_ratios;};
@@ -190,6 +233,11 @@ public:
 class cRatios {
 
 private:
+
+  /**
+   * final_ratios map takes a similarity vector as a key for the similarity
+   * value, with the appropriate similarity comparator.
+   */
 	map < vector <unsigned int>, double, cSimilarity_Compare > final_ratios;
 	vector < string > attrib_names;
 	unsigned int ratio_size;
@@ -204,19 +252,46 @@ private:
 	static const char * secondary_delim;
 
 public:
-	cRatios(const vector < const cRatioComponent *> & component_vector, const char * filename, const Record & rec);
+
+  /**
+   * TODO: FIXME: document this constructor.
+   */
+	cRatios(const vector < const cRatioComponent *> & component_vector,
+          const char * filename,
+          const Record & record);
+
 	cRatios( const char *filename);
+
+  /**
+   * The getter for the ratios map, i.e., the lookup table for the
+   * computed similarity ratios in Torvik's terminology.
+   */
 	const map < vector < unsigned int >, double, cSimilarity_Compare > & get_ratios_map() const {
 		return final_ratios;
 	}
+
+
 	//const vector <double> & get_coefficients_vector() const { return coeffs;}
+
+  /**
+   * The ratios file name is keyed to the current round of disambiguation.
+   */
 	void read_ratios_file(const char * filename);
+
 	void write_ratios_file(const char * filename) const;
 	//unsigned int get_final_order () const {return final_root_order;}
-	void inter_extra_polation( const vector < unsigned int >& max_similarity, const vector < unsigned int > & min_similarity);
+
+	void inter_extra_polation(const vector < unsigned int >& max_similarity,
+                            const vector < unsigned int > & min_similarity);
+
+  /**
+   * Requires global configuration of requisite matrices and data structures
+   * for conducting the quadratic programming.
+   */
 	void smooth();
 	const vector < string > & get_attrib_names() const { return attrib_names;}
 };
+
 
 vector < unsigned int > get_max_similarity(const vector < string > & attrib_names) ;
 
