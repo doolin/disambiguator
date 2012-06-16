@@ -198,8 +198,8 @@ ones_temporal_unique_coauthors (const cCluster & record_cluster,
 
 
 void 
-one_step_postprocess(const list < Record > & all_records, 
-                     const char * last_disambig_result, 
+one_step_postprocess(const list < Record > & all_records,
+                     const char * last_disambig_result,
                      const char * outputfile) {
 
     map <string, const Record *> uid_dict;

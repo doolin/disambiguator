@@ -34,11 +34,11 @@ libdisambiguation_a_CPPFLAGS = -O0 -pg  -Wall -Wextra -fno-inline $(INCLUDES) -D
 bin_PROGRAMS = disambiguate txt2sqlite3
 disambiguate_SOURCES = main.cpp 
 disambiguate_CPPFLAGS = -O0 -pg  -Wall -Wextra -fno-inline $(INCLUDES) -DIL_STD -L/usr/local/lib #-DNDEBUG -w -finstrument-functions-exclude-file-list=iostream.h,string.h,vector.h
-disambiguate_LDFLAGS = -L$(CPLEXLIB) -lilocplex -lcplex -L$(CONCERTLIB) -lconcert
-#disambiguate_LDFLAGS = -pg  -O0
+#disambiguate_LDFLAGS = -L$(CPLEXLIB) -lilocplex -lcplex -L$(CONCERTLIB) -lconcert
+disambiguate_LDFLAGS = -pg  -O0
 # For Macos
-#disambiguate_LDADD = libdisambiguation.a # -L$(CPLEXLIB) -lilocplex -lcplex -L$(CONCERTLIB) -lconcert
-disambiguate_LDADD = libdisambiguation.a  -L$(CPLEXLIB) -lilocplex -lcplex -L$(CONCERTLIB) -lconcert
+disambiguate_LDADD = libdisambiguation.a # -L$(CPLEXLIB) -lilocplex -lcplex -L$(CONCERTLIB) -lconcert
+#disambiguate_LDADD = libdisambiguation.a  -L$(CPLEXLIB) -lilocplex -lcplex -L$(CONCERTLIB) -lconcert
 #disambiguate_LDADD   = ilocplex
 
 

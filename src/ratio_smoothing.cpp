@@ -14,9 +14,9 @@
 #include <cmath>
 #include <algorithm>
 
-#define HAVE_CPLEX 1
+#define HAVE_CPLEX 0
 
-#ifdef HAVE_CPLEX
+#if HAVE_CPLEX
 #include <ilcplex/ilocplex.h>
 #endif
 
@@ -231,7 +231,7 @@ smoothing_inter_extrapolation_cplex(map < SimilarityProfile, double, cSimilarity
 
     std::cout << "Starting Quadratic Programming. ( Take the logarithm ) ..." << std::endl;
 
-#ifdef HAVE_CPLEX
+#if HAVE_CPLEX
     IloEnv env;
     const double xmin = log(1e-6);
     const double xmax = log(1e6);
