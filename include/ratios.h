@@ -120,9 +120,6 @@ public:
 /*
  * Private:
  *
- *         static const unsigned int laplace_base:
- *             a value used for laplacian operations of obtained similarity profiles to get a ratio.
- *
  *         map < vector <unsigned int>, double, cSimilarity_Compare > ratio_map:
  *             a ratio map for the current component.
  *               Key = similarity profile,
@@ -169,11 +166,7 @@ public:
  *        void get_similarity_info():
  *            to get the information of similarity profiles of the attribute group.
  *
- * Public: 
- *         cRatioComponent ( const map < string, const Record * > uid_tree, const string & groupname ):
- *             constructor. uid_tree = map of unique record id string to its record pointer. groupname = attribute group name.
- *
- */
+*/
 class cRatioComponent {
 
     class cException_Partial_SP_Missing : public cAbstract_Exception {
@@ -182,36 +175,63 @@ class cRatioComponent {
     };
 
 private:
+   /**  static const unsigned int laplace_base:
+    *  a value used for laplacian operations of
+    *  obtained similarity profiles to get a ratio.
+    */
     static const unsigned int laplace_base;
+
     map < vector <unsigned int>, double, cSimilarity_Compare > ratio_map;
+
     vector < unsigned int > positions_in_ratios;
+
     vector < unsigned int > positions_in_record;
+
     const string attrib_group;
+
     const map < string, const Record *> * puid_tree;
+
     map < cSimilarity_With_Monotonicity_Dimension, MonotonicSet > similarity_map;
+
     vector < string > attrib_names;
 
- /**
-  * bool is_ready:
- *            a boolean value indicating the readiness of the object.
- *            The object is usable only if is_ready is true.
- */
- bool is_ready;
+   /**
+    * bool is_ready:
+    * a boolean value indicating the readiness of the object.
+    * The object is usable only if is_ready is true.
+    */
+    bool is_ready;
+
     map < vector < unsigned int > , unsigned int, cSimilarity_Compare > x_counts, m_counts;
 
     void sp_stats (const list<std::pair<string, string> > & trainpairs, 
-                   map < vector < unsigned int > , unsigned int, cSimilarity_Compare > & sp_counts ) const;
+    map < vector < unsigned int > , unsigned int, cSimilarity_Compare > & sp_counts ) const;
     void read_train_pairs(list<std::pair<string, string> > & trainpairs, const char * txt_file) const;
     void get_similarity_info();
 
 public:
+
     class cException_Ratios_Not_Ready : public cAbstract_Exception {
-    public:
+      public:
         cException_Ratios_Not_Ready(const char* errmsg): cAbstract_Exception(errmsg){};
     };
-    
-    explicit cRatioComponent( const map < string, const Record * > & uid_tree, const string & groupname);
+
+   /**
+    *  cRatioComponent ( const map < string, const Record * > uid_tree, const string & groupname ):
+    *
+    *  @param uid_tree  map of unique record id string to its record pointer.
+    *  @param groupname attribute group name.
+    */
+    explicit cRatioComponent(const map < string, const Record * > & uid_tree, const string & groupname);
+
+   /**
+    * TODO: FIXME: Document this method.
+    */
     void prepare(const char* x_flie, const char * m_file);
+
+   /**
+    * TODO: FIXME: Document this method.
+    */
     const map < vector < unsigned int >, double, cSimilarity_Compare > & get_ratios_map() const {
         if ( is_ready )
             return ratio_map;
@@ -220,12 +240,32 @@ public:
         }
     }
 
-    const map < vector < unsigned int >, unsigned int, cSimilarity_Compare > & get_x_counts() const {return x_counts;}
-    const map < vector < unsigned int >, unsigned int, cSimilarity_Compare > & get_m_counts() const {return m_counts;}
-    const vector < unsigned int > & get_component_positions_in_ratios() const {return positions_in_ratios;};
-    const vector < unsigned int > & get_component_positions_in_record() const { return positions_in_record;};
+  /**
+   * TODO: FIXME: Document this method.
+   */
+   const map < vector < unsigned int >, unsigned int, cSimilarity_Compare > & get_x_counts() const {
+      return x_counts;
+    }
+
+  /**
+   * TODO: FIXME: Document this method.
+   */
+    const map < vector < unsigned int >, unsigned int, cSimilarity_Compare > & get_m_counts() const {
+      return m_counts;
+    }
+
+    const vector < unsigned int > & get_component_positions_in_ratios() const {
+      return positions_in_ratios;
+    };
+
+    const vector < unsigned int > & get_component_positions_in_record() const {
+      return positions_in_record;
+    };
+
     void smooth();
+
     void stats_output( const char * ) const;
+
     const vector < string > & get_attrib_names() const { return attrib_names;}
 };
 
