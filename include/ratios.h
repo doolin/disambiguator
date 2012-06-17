@@ -153,14 +153,7 @@ public:
  */
 
 /**
- *  void sp_stats (const list<std::pair<string, string> > & trainpairs,
-        map < vector < unsigned int > , unsigned int, cSimilarity_Compare > & sp_counts ) const:
- *      read a list of pairs of unique record numbers that are selected as
- *      training sets, and do pairwise comparison in the specified
- *      attribute group. Then the statistics of the appearing similarity
- *      profiles ( part of a complete similarity profile ) are stored
- *      in the map of similarity profiles to their occurrences "sp_counts".
- *
+*
  *  void read_train_pairs ( list < std::pair < string, string > & trainpairs, const char * txt_file ) const:
  *      read the list of pairs of unique record numbers ( training sets ) from the
  *      specified "txt_file" into the list "trainpairs".
@@ -206,9 +199,20 @@ private:
 
     map < vector < unsigned int > , unsigned int, cSimilarity_Compare > x_counts, m_counts;
 
-    void sp_stats (const list<std::pair<string, string> > & trainpairs, 
-    map < vector < unsigned int > , unsigned int, cSimilarity_Compare > & sp_counts ) const;
+ /**
+ *  void sp_stats (const list<std::pair<string, string> > & trainpairs,
+        map < vector < unsigned int > , unsigned int, cSimilarity_Compare > & sp_counts ) const:
+ *      read a list of pairs of unique record numbers that are selected as
+ *      training sets, and do pairwise comparison in the specified
+ *      attribute group. Then the statistics of the appearing similarity
+ *      profiles ( part of a complete similarity profile ) are stored
+ *      in the map of similarity profiles to their occurrences "sp_counts".
+ */
+     void sp_stats (const list<std::pair<string, string> > & trainpairs,
+       map < vector < unsigned int > , unsigned int, cSimilarity_Compare > & sp_counts ) const;
+
     void read_train_pairs(list<std::pair<string, string> > & trainpairs, const char * txt_file) const;
+
     void get_similarity_info();
 
 public:
