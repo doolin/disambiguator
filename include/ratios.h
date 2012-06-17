@@ -122,11 +122,11 @@ public:
 /*
  * Private:
  *
- *         map < vector <unsigned int>, double, cSimilarity_Compare > ratio_map:
+ *         map < vector <unsigned int>, double, SimilarityCompare > ratio_map:
  *             a ratio map for the current component.
  *               Key = similarity profile,
  *               Value = ratio,
- *               Comparator = cSimilarity_Compare
+ *               Comparator = SimilarityCompare
  *
  *         vector < unsigned int > positions_in_ratios:
  *             positions of the current components in the complete similarity profile.
@@ -148,7 +148,7 @@ public:
  *        vector < string > attrib_names:
  *            attribute names that belong the the atribute group.
  *
-*        map < vector < unsigned int > , unsigned int, cSimilarity_Compare > x_counts, m_counts:
+*        map < vector < unsigned int > , unsigned int, SimilarityCompare > x_counts, m_counts:
  *              maps of similarity profiles to their occurrences in non-match and match training sets.
  */
 
@@ -176,7 +176,7 @@ private:
     */
     static const unsigned int laplace_base;
 
-    map < vector <unsigned int>, double, cSimilarity_Compare > ratio_map;
+    map < vector <unsigned int>, double, SimilarityCompare > ratio_map;
 
     vector < unsigned int > positions_in_ratios;
 
@@ -197,11 +197,11 @@ private:
     */
     bool is_ready;
 
-    map < vector < unsigned int > , unsigned int, cSimilarity_Compare > x_counts, m_counts;
+    map < vector < unsigned int > , unsigned int, SimilarityCompare > x_counts, m_counts;
 
  /**
  *  void sp_stats (const list<std::pair<string, string> > & trainpairs,
-        map < vector < unsigned int > , unsigned int, cSimilarity_Compare > & sp_counts ) const:
+        map < vector < unsigned int > , unsigned int, SimilarityCompare > & sp_counts ) const:
  *      read a list of pairs of unique record numbers that are selected as
  *      training sets, and do pairwise comparison in the specified
  *      attribute group. Then the statistics of the appearing similarity
@@ -209,7 +209,7 @@ private:
  *      in the map of similarity profiles to their occurrences "sp_counts".
  */
      void sp_stats (const list<std::pair<string, string> > & trainpairs,
-       map < vector < unsigned int > , unsigned int, cSimilarity_Compare > & sp_counts ) const;
+       map < vector < unsigned int > , unsigned int, SimilarityCompare > & sp_counts ) const;
 
     void read_train_pairs(list<std::pair<string, string> > & trainpairs, const char * txt_file) const;
 
@@ -238,7 +238,7 @@ public:
    /**
     * TODO: FIXME: Document this method.
     */
-    const map < vector < unsigned int >, double, cSimilarity_Compare > & get_ratios_map() const {
+    const map < vector < unsigned int >, double, SimilarityCompare > & get_ratios_map() const {
         if ( is_ready )
             return ratio_map;
         else {
@@ -249,14 +249,14 @@ public:
    /**
     * TODO: FIXME: Document this method.
     */
-    const map < vector < unsigned int >, unsigned int, cSimilarity_Compare > & get_x_counts() const {
+    const map < vector < unsigned int >, unsigned int, SimilarityCompare > & get_x_counts() const {
       return x_counts;
     }
 
    /**
     * TODO: FIXME: Document this method.
     */
-    const map < vector < unsigned int >, unsigned int, cSimilarity_Compare > & get_m_counts() const {
+    const map < vector < unsigned int >, unsigned int, SimilarityCompare > & get_m_counts() const {
       return m_counts;
     }
 
@@ -296,12 +296,12 @@ private:
     * final_ratios map takes a similarity vector as a key for the similarity
     * value, with the appropriate similarity comparator.
     */
-    map < vector <unsigned int>, double, cSimilarity_Compare > final_ratios;
+    map < vector <unsigned int>, double, SimilarityCompare > final_ratios;
     vector < string > attrib_names;
     unsigned int ratio_size;
     //vector <double> coeffs;
     //unsigned int final_root_order;
-    map < vector < unsigned int > , unsigned int, cSimilarity_Compare > x_counts, m_counts;
+    map < vector < unsigned int > , unsigned int, SimilarityCompare > x_counts, m_counts;
     map < cSimilarity_With_Monotonicity_Dimension, MonotonicSet > similarity_map;
 
     void More_Components( const cRatioComponent & additional_component);
@@ -327,7 +327,7 @@ public:
     * The getter for the ratios map, i.e., the lookup table for the
     * computed similarity ratios in Torvik's terminology.
     */
-    const map < vector < unsigned int >, double, cSimilarity_Compare > & get_ratios_map() const {
+    const map < vector < unsigned int >, double, SimilarityCompare > & get_ratios_map() const {
         return final_ratios;
     }
 

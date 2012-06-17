@@ -23,11 +23,11 @@
 static const bool should_do_name_range_check = true;
 
 void
-smoothing_inter_extrapolation_cplex(map < SimilarityProfile, double,  cSimilarity_Compare  > & ratio_map,
+smoothing_inter_extrapolation_cplex(map < SimilarityProfile, double,  SimilarityCompare  > & ratio_map,
     const SimilarityProfile & min_sp,
     const SimilarityProfile & max_sp,
-    const map < SimilarityProfile, unsigned int, cSimilarity_Compare  > & x_counts,
-    const map < SimilarityProfile, unsigned int, cSimilarity_Compare  > & m_counts,
+    const map < SimilarityProfile, unsigned int, SimilarityCompare  > & x_counts,
+    const map < SimilarityProfile, unsigned int, SimilarityCompare  > & m_counts,
     const vector < string > & attribute_names,
     const bool name_range_check,
     const bool backup_quadprog);
@@ -77,13 +77,13 @@ cRatioComponent::smooth() {
     std::cout << "This step is skipped for cRatioComponent objects." << std::endl;
     return;
 
-    map < SimilarityProfile, double,  cSimilarity_Compare  > temp_map = ratio_map;
+    map < SimilarityProfile, double,  SimilarityCompare  > temp_map = ratio_map;
     //smoothing( ratio_map, similarity_map, x_counts, m_counts, this->get_attrib_names(), should_do_name_range_check );
     const SimilarityProfile max = get_max_similarity (this->attrib_names);
     const SimilarityProfile min ( max.size(), 0 );
     smoothing_inter_extrapolation_cplex(temp_map, min, max, x_counts, m_counts,
             this->get_attrib_names(), should_do_name_range_check, true);
-    for ( map < SimilarityProfile, double,  cSimilarity_Compare  >:: iterator p = ratio_map.begin();
+    for ( map < SimilarityProfile, double,  SimilarityCompare  >:: iterator p = ratio_map.begin();
             p != ratio_map.end(); ++p ) {
         p->second = temp_map.find(p->first)->second;
     }
@@ -174,11 +174,11 @@ get_weight (const unsigned int x_count, const unsigned int m_count) {
 
 
 void
-smoothing_inter_extrapolation_cplex(map < SimilarityProfile, double, cSimilarity_Compare > & ratio_map,
+smoothing_inter_extrapolation_cplex(map < SimilarityProfile, double, SimilarityCompare > & ratio_map,
     const SimilarityProfile & min_sp,
     const SimilarityProfile & max_sp,
-    const map < SimilarityProfile, unsigned int, cSimilarity_Compare  > & x_counts,
-    const map < SimilarityProfile, unsigned int, cSimilarity_Compare  > & m_counts,
+    const map < SimilarityProfile, unsigned int, SimilarityCompare  > & x_counts,
+    const map < SimilarityProfile, unsigned int, SimilarityCompare  > & m_counts,
     const vector < string > & attribute_names,
     const bool name_range_check,
     const bool backup_quadprog ) {
@@ -248,7 +248,7 @@ smoothing_inter_extrapolation_cplex(map < SimilarityProfile, double, cSimilarity
 
         //configuring the object
         IloExpr target(env);
-        for ( map < SimilarityProfile, double,  cSimilarity_Compare  >::const_iterator cpm = ratio_map.begin();
+        for ( map < SimilarityProfile, double,  SimilarityCompare  >::const_iterator cpm = ratio_map.begin();
                 cpm != ratio_map.end(); ++cpm ) {
 
             const double log_val = log ( cpm->second);

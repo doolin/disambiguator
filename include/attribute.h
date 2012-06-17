@@ -37,13 +37,13 @@ void reconfigure_interactives ( const Record_Reconfigurator * pc, const Record *
 
 
 /**
- * cSimilarity_Compare:
+ * SimilarityCompare:
  * This is the functor to sort similarity profiles.
  * Used only in std::map and std::set of similarity profiles.
  * Overloading the operator () for comparison between
  * similarity profiles by their references or pointers.
  */
-class cSimilarity_Compare {
+class SimilarityCompare {
 
     class cException_Different_Similarity_Dimensions : public cAbstract_Exception {
     public:
@@ -59,7 +59,7 @@ public:
                      const vector < unsigned int > & s2) const {
 
         if ( s1.size() != s2.size() ) {
-            throw cSimilarity_Compare::default_sp_exception;
+            throw SimilarityCompare::default_sp_exception;
         }
 
         return lexicographical_compare(s1.begin(), s1.end(), s2.begin(), s2.end());
@@ -67,7 +67,7 @@ public:
 
     bool operator() (const vector < unsigned int > *ps1,
                      const vector < unsigned int > *ps2) const {
-      return cSimilarity_Compare()(*ps1, *ps2);
+      return SimilarityCompare()(*ps1, *ps2);
     }
 };
 

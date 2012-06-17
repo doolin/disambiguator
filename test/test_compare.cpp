@@ -19,7 +19,7 @@ public:
     s1.push_back(1);
     std::vector <unsigned int> s2;
     s2.push_back(2);
-    cSimilarity_Compare sc;
+    SimilarityCompare sc;
     bool checkval = sc(s1, s2);
     //std::cout << "checkval: " << checkval << std::endl;
     CPPUNIT_ASSERT(checkval == true);
@@ -30,7 +30,7 @@ public:
     s1.push_back(2);
     std::vector <unsigned int> s2;
     s2.push_back(1);
-    cSimilarity_Compare sc;
+    SimilarityCompare sc;
     bool checkval = sc(s1, s2);
     //std::cout << "checkval: " << checkval << std::endl;
     CPPUNIT_ASSERT(checkval == false);
@@ -41,7 +41,7 @@ public:
     s1.push_back(1);
     std::vector <unsigned int> s2;
     s2.push_back(1);
-    cSimilarity_Compare sc;
+    SimilarityCompare sc;
     bool checkval = sc(s1, s2);
     //std::cout << "checkval: " << checkval << std::endl;
     CPPUNIT_ASSERT(checkval == false);
