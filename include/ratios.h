@@ -29,10 +29,12 @@ using std::map;
  *         unsigned int compare_entry: the position of interest.
  *
  * Public:
- *         bool operator() ( const SimilarityProfile * p1, const SimilarityProfile * p2 ) const:
- *             to compare the two similarity profiles at the position of compare_entry.
- *         cMonotonic_Similarity_Compare( const unsigned int entry): constructor
- *         void reset_entry( const unsigned int entry): reset the variable compare_entry to the input entry.
+ *    bool operator() ( const SimilarityProfile * p1, const SimilarityProfile * p2 ) const:
+ *        to compare the two similarity profiles at the position of compare_entry.
+ *
+ *    cMonotonic_Similarity_Compare( const unsigned int entry): constructor
+ *
+ *    void reset_entry( const unsigned int entry): reset the variable compare_entry to the input entry.
  */
 struct cMonotonic_Similarity_Compare {
 
@@ -150,23 +152,23 @@ public:
  *              maps of similarity profiles to their occurrences in non-match and match training sets.
  */
 
-/*
- *        void sp_stats (const list<std::pair<string, string> > & trainpairs,
-                  map < vector < unsigned int > , unsigned int, cSimilarity_Compare > & sp_counts ) const:
- *        read a list of pairs of unique record numbers that are selected as
- *        training sets, and do pairwise comparison in the specified
- *        attribute group. Then the statistics of the appearing similarity
- *        profiles ( part of a complete similarity profile ) are stored
- *        in the map of similarity profiles to their occurrences "sp_counts".
+/**
+ *  void sp_stats (const list<std::pair<string, string> > & trainpairs,
+        map < vector < unsigned int > , unsigned int, cSimilarity_Compare > & sp_counts ) const:
+ *      read a list of pairs of unique record numbers that are selected as
+ *      training sets, and do pairwise comparison in the specified
+ *      attribute group. Then the statistics of the appearing similarity
+ *      profiles ( part of a complete similarity profile ) are stored
+ *      in the map of similarity profiles to their occurrences "sp_counts".
  *
- *        void read_train_pairs ( list < std::pair < string, string > & trainpairs, const char * txt_file ) const:
- *        read the list of pairs of unique record numbers ( training sets ) from the
- *        specified "txt_file" into the list "trainpairs".
+ *  void read_train_pairs ( list < std::pair < string, string > & trainpairs, const char * txt_file ) const:
+ *      read the list of pairs of unique record numbers ( training sets ) from the
+ *      specified "txt_file" into the list "trainpairs".
  *
- *        void get_similarity_info():
- *            to get the information of similarity profiles of the attribute group.
+ *  void get_similarity_info():
+ *      to get the information of similarity profiles of the attribute group.
  *
-*/
+ */
 class cRatioComponent {
 
     class cException_Partial_SP_Missing : public cAbstract_Exception {
@@ -240,32 +242,44 @@ public:
         }
     }
 
-  /**
-   * TODO: FIXME: Document this method.
-   */
-   const map < vector < unsigned int >, unsigned int, cSimilarity_Compare > & get_x_counts() const {
+   /**
+    * TODO: FIXME: Document this method.
+    */
+    const map < vector < unsigned int >, unsigned int, cSimilarity_Compare > & get_x_counts() const {
       return x_counts;
     }
 
-  /**
-   * TODO: FIXME: Document this method.
-   */
+   /**
+    * TODO: FIXME: Document this method.
+    */
     const map < vector < unsigned int >, unsigned int, cSimilarity_Compare > & get_m_counts() const {
       return m_counts;
     }
 
+   /**
+    * TODO: FIXME: document this method.
+    */
     const vector < unsigned int > & get_component_positions_in_ratios() const {
       return positions_in_ratios;
     };
 
+   /**
+    * TODO: FIXME: document this method.
+    */
     const vector < unsigned int > & get_component_positions_in_record() const {
       return positions_in_record;
     };
 
     void smooth();
 
+   /**
+    * TODO: FIXME: document this method.
+    */
     void stats_output( const char * ) const;
 
+   /**
+    * TODO: FIXME: document this method.
+    */
     const vector < string > & get_attrib_names() const { return attrib_names;}
 };
 
@@ -274,10 +288,10 @@ class cRatios {
 
 private:
 
-  /**
-   * final_ratios map takes a similarity vector as a key for the similarity
-   * value, with the appropriate similarity comparator.
-   */
+   /**
+    * final_ratios map takes a similarity vector as a key for the similarity
+    * value, with the appropriate similarity comparator.
+    */
     map < vector <unsigned int>, double, cSimilarity_Compare > final_ratios;
     vector < string > attrib_names;
     unsigned int ratio_size;
@@ -293,19 +307,22 @@ private:
 
 public:
 
-  /**
-   * TODO: FIXME: document this constructor.
-   */
+   /**
+    * TODO: FIXME: document this constructor.
+    */
     cRatios(const vector < const cRatioComponent *> & component_vector,
           const char * filename,
           const Record & record);
 
+   /**
+    * TODO: FIXME: document this constructor.
+    */
     cRatios( const char *filename);
 
-  /**
-   * The getter for the ratios map, i.e., the lookup table for the
-   * computed similarity ratios in Torvik's terminology.
-   */
+   /**
+    * The getter for the ratios map, i.e., the lookup table for the
+    * computed similarity ratios in Torvik's terminology.
+    */
     const map < vector < unsigned int >, double, cSimilarity_Compare > & get_ratios_map() const {
         return final_ratios;
     }
@@ -313,22 +330,32 @@ public:
 
     //const vector <double> & get_coefficients_vector() const { return coeffs;}
 
-  /**
-   * The ratios file name is keyed to the current round of disambiguation.
-   */
+   /**
+    * The ratios file name is keyed to the current round of disambiguation.
+    */
     void read_ratios_file(const char * filename);
 
+   /**
+    * TODO: FIXME: document this method.
+    */
     void write_ratios_file(const char * filename) const;
     //unsigned int get_final_order () const {return final_root_order;}
 
+   /**
+    * TODO: FIXME: document this method.
+    */
     void inter_extra_polation(const vector < unsigned int >& max_similarity,
-                            const vector < unsigned int > & min_similarity);
+                             const vector < unsigned int > & min_similarity);
 
-  /**
-   * Requires global configuration of requisite matrices and data structures
-   * for conducting the quadratic programming.
-   */
+   /**
+    * Requires global configuration of requisite matrices and data structures
+    * for conducting the quadratic programming.
+    */
     void smooth();
+
+   /**
+    * TODO: FIXME: document this method.
+    */
     const vector < string > & get_attrib_names() const { return attrib_names;}
 };
 
