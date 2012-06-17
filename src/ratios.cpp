@@ -271,9 +271,11 @@ cRatioComponent::prepare(const char* x_file,
 }
 
 
-cRatioComponent:: cRatioComponent( const map < string, const Record * > & uid_tree, const string & groupname)
+cRatioComponent::cRatioComponent(const map < string, const Record * > & uid_tree,
+                                 const string & groupname)
             : attrib_group(groupname), puid_tree(&uid_tree), is_ready(false) {
 };
+
 
 void
 cRatioComponent::get_similarity_info() {
@@ -347,7 +349,7 @@ cRatios::cRatios(const vector < const cRatioComponent *> & component_pointer_vec
     similarity_map.clear();
 }
 
-cRatios:: cRatios(const char * filename) {
+cRatios::cRatios(const char * filename) {
     read_ratios_file(filename);
 }
 
@@ -391,7 +393,7 @@ cRatios::More_Components(const cRatioComponent & additional_component) {
 
 
 void
-cRatios::write_ratios_file( const char * filename) const {
+cRatios::write_ratios_file(const char * filename) const {
 
     std::ofstream::sync_with_stdio(false);
     std::cout << "Number of of ratios vectors = " << final_ratios.size() << std::endl;
