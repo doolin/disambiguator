@@ -31,7 +31,7 @@ libdisambiguation_a_CPPFLAGS = -O0 -pg  -Wall -Wextra -fno-inline $(INCLUDES) -D
 #disambiguate_LDADD = -L$(CPLEXLIB) -lilocplex -lcplex -L$(CONCERTLIB) -lconcert
 #disambiguate_LDADD   = ilocplex
 
-bin_PROGRAMS = disambiguate txt2sqlite3
+bin_PROGRAMS = disambiguate  zardoz #txt2sqlite3
 disambiguate_SOURCES = main.cpp 
 disambiguate_CPPFLAGS = -O0 -pg  -Wall -Wextra -fno-inline $(INCLUDES) -DIL_STD -L/usr/local/lib #-DNDEBUG -w -finstrument-functions-exclude-file-list=iostream.h,string.h,vector.h
 disambiguate_LDFLAGS = -L$(CPLEXLIB) -lilocplex -lcplex -L$(CONCERTLIB) -lconcert
@@ -42,4 +42,4 @@ disambiguate_LDADD = libdisambiguation.a  -L$(CPLEXLIB) -lilocplex -lcplex -L$(C
 #disambiguate_LDADD   = ilocplex
 
 
-txt2sqlite3_SOURCES = txt2sqlite3.cpp
+zardoz_SOURCES = txt2sqlite3.cpp
