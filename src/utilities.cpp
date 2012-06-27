@@ -202,19 +202,25 @@ one_step_postprocess(const list < Record > & all_records,
                      const char * last_disambig_result,
                      const char * outputfile) {
 
+    // TODO: document valid keys for this dictionary.
     map <string, const Record *> uid_dict;
+    // 
     const string uid_identifier = cUnique_Record_ID::static_get_class_name();
+    // uid_dict is probably the return value from create_btree_uid2record_pointer
     create_btree_uid2record_pointer(uid_dict, all_records, uid_identifier);
+    // instantiate a map
     map < const Record *, cGroup_Value, cSort_by_attrib > patent_tree(cSort_by_attrib(cPatent::static_get_class_name()));
-    build_patent_tree(  patent_tree , all_records );
+    build_patent_tree(patent_tree , all_records);
     cCluster_Set cs;
     //cs.convert_from_ClusterInfo(&match);
+    // Read results from last disambiguation 
     cs.read_from_file(last_disambig_result, uid_dict);
     map < const Record *, const Record *> uid2uinv;
     const list < cCluster > & full_list = cs.get_set();
 
-    for ( list < cCluster >::const_iterator t = full_list.begin(); t != full_list.end(); ++t )
+    for (list < cCluster >::const_iterator t = full_list.begin(); t != full_list.end(); ++t) {
         t->add_uid2uinv(uid2uinv);
+    }
 
     const char * suffix = ".pplog";
     const string logfile = string(outputfile) + suffix ;
