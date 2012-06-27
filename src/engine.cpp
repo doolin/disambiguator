@@ -26,9 +26,9 @@ using std::set;
 double
 fetch_ratio(const vector < unsigned int > & ratio_to_lookup,
             const map < vector  < unsigned int>,
-            double, cSimilarity_Compare > & ratiosmap ) {
+            double, SimilarityCompare > & ratiosmap ) {
 
-    map < vector < unsigned int >, double, cSimilarity_Compare >::const_iterator p = ratiosmap.find( ratio_to_lookup);
+    map < vector < unsigned int >, double, SimilarityCompare >::const_iterator p = ratiosmap.find( ratio_to_lookup);
     if ( p == ratiosmap.end())
         return 0;
     else

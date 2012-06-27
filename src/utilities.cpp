@@ -198,9 +198,9 @@ ones_temporal_unique_coauthors (const cCluster & record_cluster,
 
 
 void 
-one_step_prostprocess(const list < Record > & all_records, 
-                      const char * last_disambig_result, 
-                      const char * outputfile) {
+one_step_postprocess(const list < Record > & all_records,
+                     const char * last_disambig_result,
+                     const char * outputfile) {
 
     map <string, const Record *> uid_dict;
     const string uid_identifier = cUnique_Record_ID::static_get_class_name();
