@@ -39,6 +39,11 @@ int    unique_inventors_per_period              (unsigned int starting_year,
                                                  const char * disambigresult,
                                                  const char * outputfile);
 
+/**
+ * @param all_records are all the records, excellent.
+ * @param last_disambig_result match file (?) from the last round.
+ * @param outputfile currently hard coded as "final.txt" in disambiguate.cpp:650
+ */
 void   one_step_postprocess                     (const list < Record > & all_records,
                                                  const char * last_disambig_result,
                                                  const char * outputfile);
