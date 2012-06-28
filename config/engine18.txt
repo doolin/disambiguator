@@ -10,5 +10,5 @@ ADJUST PRIOR BY FREQUENCY = true
 DEBUG MODE = true 
 NUMBER OF TRAINING PAIRS = 1000000
 STARTING ROUND = 1
-STARTING FILE = /media/HITACHI/backup_server/1tb/home/doolin/src/CPP_Disambiguation/data/match_cons2.txt
+STARTING FILE = /home/doolin/src/disambiguator/data/match_cons2.txt
 POSTPROCESS AFTER EACH ROUND = true
