@@ -7,6 +7,7 @@ CC=gcc
 # Debugging
 
 CPPFLAGS = -Wall -Wextra 
+CXXFLAGS = -O0 -g
 
 OOQPINCLUDEDIR=/usr/local/include/ooqp
 ILOGINSTALLDIR=/home/ysun/ILOG/CPLEX_Studio_AcademicResearch122
@@ -24,7 +25,9 @@ libdisambiguation_a_SOURCES = disambiguate.cpp cluster.cpp comparators.cpp attri
                               postprocess.cpp ratios.cpp ratio_smoothing.cpp \
                               training.cpp utilities.cpp threading.cpp strcmp95.c record.cpp \
                               string_manipulator.cpp record_reconfigurator.cpp
-libdisambiguation_a_CPPFLAGS = -O0 -pg  -Wall -Wextra -fno-inline $(INCLUDES) -DIL_STD -L/usr/local/lib -DNDEBUG -w
+libdisambiguation_a_CXXFLAGS = -O0 -pg 
+libdisambiguation_a_CPPFLAGS = -Wall -Wextra -fno-inline $(INCLUDES) -DIL_STD -L/usr/local/lib -DNDEBUG -w
+#libdisambiguation_a_LDFLAGS = -pg  -O0
 
 #disambiguate_CPPFLAGS = -O0 -g -Wall -fno-inline $(INCLUDES) -DIL_STD -L/usr/local/lib -DNDEBUG -w
 #disambiguate_LDFLAGS = -L$(CPLEXLIB) -lilocplex -lcplex -L$(CONCERTLIB) -lconcert
@@ -33,7 +36,9 @@ libdisambiguation_a_CPPFLAGS = -O0 -pg  -Wall -Wextra -fno-inline $(INCLUDES) -D
 
 bin_PROGRAMS = disambiguate  zardoz #txt2sqlite3
 disambiguate_SOURCES = main.cpp 
-disambiguate_CPPFLAGS = -O0 -pg  -Wall -Wextra -fno-inline $(INCLUDES) -DIL_STD -L/usr/local/lib #-DNDEBUG -w -finstrument-functions-exclude-file-list=iostream.h,string.h,vector.h
+disambiguate_CXXFLAGS = -O0 -pg 
+disambiguate_CPPFLAGS = -Wall -Wextra -fno-inline $(INCLUDES) -DIL_STD -L/usr/local/lib 
+#disambiguate_CPPFLAGS = -O0 -pg  -Wall -Wextra -fno-inline $(INCLUDES) -DIL_STD -L/usr/local/lib #-DNDEBUG -w -finstrument-functions-exclude-file-list=iostream.h,string.h,vector.h
 #disambiguate_LDFLAGS = -L$(CPLEXLIB) -lilocplex -lcplex -L$(CONCERTLIB) -lconcert
 disambiguate_LDFLAGS = -pg  -O0
 # For Macos
