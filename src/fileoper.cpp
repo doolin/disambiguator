@@ -40,6 +40,9 @@ create_btree_uid2record_pointer(map<string, const Record *> & uid_tree,
         pm = uid_tree.find(label);
 
         if ( pm != uid_tree.end()) {
+            // This will throw on two records having the same Unique_Record_ID
+	    // TODO: Document where Unique_Record_ID is assigned (probably
+	    // in preprocessing consolidation.
             throw cException_Duplicate_Attribute_In_Tree(label.c_str());
 	}
 
