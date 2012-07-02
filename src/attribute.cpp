@@ -535,6 +535,8 @@ cCountry::compare(const Attribute & right_hand_side) const {
  *    patents, an additional 1 point is added.
  *
  * 2. If their assignee numbers are different, they can still be the same assignee.
+ *
+ *    (OBSOLETE, DOESN'T MATCH CODE)
  *    In this case, a fairly crude jaro-winkler string comparison is used to score.
  *    Refer to the function jwcmp for more scoring information.
  *
