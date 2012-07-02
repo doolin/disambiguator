@@ -331,7 +331,8 @@ cMiddlename::split_string(const char *inputdata) {
 
 /**
  * cMiddlename::compare:
- * Compare the extracted strings in data[0] to see whether they started with the same letter and whether one contains the other.
+ * Compare the extracted strings in data[0] to see whether they
+ * started with the same letter and whether one contains the other.
  * i.e.
  * "DAVID WILLIAM" vs "DAVID" = 3 ( max score)
  * "DAVID WILLIAM" vs "WILLIAM" = 0 (min score, not starting with the same letters)
@@ -351,10 +352,10 @@ cMiddlename::compare(const Attribute & right_hand_side) const {
         if ( res > max_value )
             res = max_value;
         return res;
-    }
-    catch ( const std::bad_cast & except ) {
+    } catch ( const std::bad_cast & except ) {
         std::cerr << except.what() << std::endl;
-        std::cerr << "Error: " << this->get_class_name() << " is compared to " << right_hand_side.get_class_name() << std::endl;
+        std::cerr << "Error: " << this->get_class_name() << " is compared to "
+                  << right_hand_side.get_class_name() << std::endl;
         throw;
     }
 }
