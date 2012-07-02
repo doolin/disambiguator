@@ -13,12 +13,12 @@ const unsigned int Jaro_Wrinkler_Max = 5;
 
 template <typename Tp>
 inline const Tp& max_val(const Tp& arg1, const Tp &arg2) {
-	return ( arg1 < arg2 )? arg2 : arg1;
+    return ( arg1 < arg2 )? arg2 : arg1;
 }
 
 template <typename Tp>
 inline const Tp& min_val(const Tp& arg1, const Tp &arg2) {
-	return ( arg1 < arg2 )? arg1 : arg2;
+    return ( arg1 < arg2 )? arg1 : arg2;
 }
 
 template <typename Tp, typename Functor>
@@ -62,44 +62,44 @@ int    asgcmp (const string & s1,
                const string &s2);
 
 int    asgcmp_to_test(const vector <string> & asg1, const vector <string> & asg2,
-		                  const map<string, std::pair<string, unsigned int> > * const asg_table_pointer);
+                          const map<string, std::pair<string, unsigned int> > * const asg_table_pointer);
 
 int    name_compare( const string & s1, const string & s2, const unsigned int prev, const unsigned int cur);
 
 
 class cSentence_JWComparator {
 private:
-	const double threshold;
+    const double threshold;
 public:
-	bool operator() (const string * s1, const string * s2) const;
-	explicit cSentence_JWComparator(const double inputthreshold): threshold(inputthreshold){};
+    bool operator() (const string * s1, const string * s2) const;
+    explicit cSentence_JWComparator(const double inputthreshold): threshold(inputthreshold){};
 };
 
 
 template < typename Iter1, typename Iter2 >
 unsigned int num_common_elements ( const Iter1 & p1begin, const Iter1 & p1e ,
-									const Iter2 & p2begin, const Iter2 & p2e, const unsigned int max) {// containers must be sorted before use.
-	// it has to be a sorted version container, like set, or sorted vector or list
-	unsigned int cnt = 0;
-	Iter1 p1b = p1begin;
-	Iter2 p2b = p2begin;
-	while ( p1b != p1e && p2b != p2e ) {
-		if ( *p1b < *p2b ) {
-			++p1b;
-		}
-		else if ( *p2b  < *p1b  ) {
-			++p2b;
-		}
-		else {
-			++cnt;
-			++p1b;
-			++p2b;
-		}
+                                    const Iter2 & p2begin, const Iter2 & p2e, const unsigned int max) {// containers must be sorted before use.
+    // it has to be a sorted version container, like set, or sorted vector or list
+    unsigned int cnt = 0;
+    Iter1 p1b = p1begin;
+    Iter2 p2b = p2begin;
+    while ( p1b != p1e && p2b != p2e ) {
+        if ( *p1b < *p2b ) {
+            ++p1b;
+        }
+        else if ( *p2b  < *p1b  ) {
+            ++p2b;
+        }
+        else {
+            ++cnt;
+            ++p1b;
+            ++p2b;
+        }
 
-		if ( cnt == max && max != 0 )
-			break;
-	}
-	return cnt;
+        if ( cnt == max && max != 0 )
+            break;
+    }
+    return cnt;
 }
 
 #endif /* PATENT_COMPARATORS_H */
