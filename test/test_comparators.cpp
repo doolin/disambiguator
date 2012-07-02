@@ -37,20 +37,31 @@ public:
     CPPUNIT_ASSERT(distance == 5);
   }
 
-  void runTest() {
-    // Just o get startes...
-    CPPUNIT_ASSERT( 1  == 1 );
-    //delete_attribute();
+  void test_extract_initials() {
+    string source("foo bar");
+    // This is how it's done in attribute.cpp:321 // dmd 2012/07/01
+    char initials[64];
+    char * result = extract_initials(initials, source.c_str());
+    string dest(result);
+    CPPUNIT_ASSERT(dest == string("fb"));
   }
+
 };
+
+
+void test_comparators() {
+
+  ComparatorsTest * ct = new ComparatorsTest(std::string("initial test"));
+  ct->test_zero();
+  ct->test_latloncmp();
+  ct->test_extract_initials();
+  delete ct;
+}
+
+
 
 int
 main(int argc, char ** argv) {
-
-  ComparatorsTest * ct = new ComparatorsTest(std::string("initial test"));
-  ct->runTest();
-  ct->test_latloncmp();
-  ct->test_zero();
-  delete ct;
+  test_comparators();
   return 0;
 }
