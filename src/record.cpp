@@ -221,7 +221,7 @@ Record::record_compare_by_attrib_indice (const Record &rhs,
  * Aim: to check the number of exact identical attributes between (*this) and rhs record objects.
  * Algorithm: call each attribute pointer's "exact_compare" method.
  */
-unsigned int 
+unsigned int
 Record::record_exact_compare(const Record & rhs ) const {
 
     unsigned int result = 0;
