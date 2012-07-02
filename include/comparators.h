@@ -25,46 +25,50 @@ template <typename Tp, typename Functor>
 vector <Tp> Longest_Common_Subsequence(const vector <Tp> & s1, const vector <Tp> &s2, const Functor & func);
 
 
-char * extract_initials(char * dest,
-                        const char * source);
+char * extract_initials (char * dest,
+                         const char * source);
 
-int    nospacecmp(const char* str1,
-                  const char* str2);
+int    nospacecmp       (const char* str1,
+                         const char* str2);
 
-int    jwcmp(const string & str1,
-             const string & str2);
+int    jwcmp            (const string & str1,
+                         const string & str2);
 
-int    midnamecmp(const string & str1,
-                  const string & str2 );
+int    midnamecmp       (const string & str1,
+                         const string & str2 );
 
-int    countrycmp(const string & country1,
-                  const string & country2 );
+int    countrycmp       (const string & country1,
+                         const string & country2 );
 
-int    streetcmp(const string & inputstreet1,
-                 const string & inputstreet2);
+int    streetcmp        (const string & inputstreet1,
+                         const string & inputstreet2);
 
-int    latloncmp(const string & inputlat1,
-                 const string & inputlon1,
-                 const string & inputlat2,
-                 const string & inputlon2 );
+int    latloncmp        (const string & inputlat1,
+                         const string & inputlon1,
+                         const string & inputlat2,
+                         const string & inputlon2 );
 
-int    classcmp(const string & class1,
-                const string & class2);
+int    classcmp         (const string & class1,
+                         const string & class2);
 
-int    coauthorcmp(const string & coauthor1,
-                   const string & coauthor2);
+int    coauthorcmp      (const string & coauthor1,
+                         const string & coauthor2);
 
-int    asgcmp(const string & asg1,
-              const string & asg2,
-              const map<string, std::pair<string, unsigned int> > * const asg_table_pointer);
+int    asgcmp           (const string & asg1,
+                         const string & asg2,
+                         const map<string, std::pair<string, unsigned int> > * const asg_table_pointer);
 
-int    asgcmp (const string & s1,
-               const string &s2);
+int    asgcmp           (const string & s1,
+                         const string &s2);
 
-int    asgcmp_to_test(const vector <string> & asg1, const vector <string> & asg2,
-                          const map<string, std::pair<string, unsigned int> > * const asg_table_pointer);
+int    asgcmp_to_test   (const vector <string> & asg1,
+                         const vector <string> & asg2,
+                         const map<string, std::pair<string, unsigned int> > * const asg_table_pointer);
 
-int    name_compare( const string & s1, const string & s2, const unsigned int prev, const unsigned int cur);
+int    name_compare     (const string & s1,
+                         const string & s2,
+                         const unsigned int prev,
+                         const unsigned int cur);
 
 
 class cSentence_JWComparator {
@@ -77,8 +81,14 @@ public:
 
 
 template < typename Iter1, typename Iter2 >
-unsigned int num_common_elements ( const Iter1 & p1begin, const Iter1 & p1e ,
-                                    const Iter2 & p2begin, const Iter2 & p2e, const unsigned int max) {// containers must be sorted before use.
+unsigned int
+num_common_elements(const Iter1 & p1begin,
+                    const Iter1 & p1e,
+                    const Iter2 & p2begin,
+                    const Iter2 & p2e,
+                    const unsigned int max) {
+
+    // containers must be sorted before use.
     // it has to be a sorted version container, like set, or sorted vector or list
     unsigned int cnt = 0;
     Iter1 p1b = p1begin;
