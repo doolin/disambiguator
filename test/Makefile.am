@@ -7,7 +7,7 @@ AM_LDFLAGS = $(shell cppunit-config --libs)
 
 
 TESTS = distest idtest typedefs record blocking attribute stringmanipulator \
-				comparators comparesimilarities
+	comparators comparesimilarities strcmp95
 bin_PROGRAMS = $(TESTS)
 
 distest_SOURCES = test_initial.cpp
@@ -19,3 +19,4 @@ comparators_SOURCES = test_comparators.cpp
 comparesimilarities_SOURCES = test_compare.cpp
 blocking_SOURCES = test_blocking.cpp
 stringmanipulator_SOURCES = test_string_manipulator.cpp
+strcmp95_SOURCES = test_strcmp95.cpp
