@@ -69,6 +69,31 @@ public:
     CPPUNIT_ASSERT(0 == midnamecmp(dw, dave));
   }
 
+
+ /**
+  * The name_compare function builds a similarity
+  * weight.
+  */
+  void test_name_compare() {
+    
+    string s1("foo");
+    string s2("bar");
+    string s3("baz");
+    string s4("foo");
+    string s5("");
+    string s6("");
+
+    CPPUNIT_ASSERT(4 == name_compare(s1,s4,0,0));
+    CPPUNIT_ASSERT(3 == name_compare(s2,s3,0,0));
+    CPPUNIT_ASSERT(1 == name_compare(s5,s6,0,0));
+    // This is returning zero as part of an abbreviation
+    // finding function or something.
+    //std::cout << "name_compare: " << name_compare(s1,s3,0,0) << std::endl;
+    // TODO: Figure out how to pass through everything such
+    // that a result = 2 is returned. 
+    //CPPUNIT_ASSERT(2 == name_compare(s1,s3,0,0));
+  }
+
 };
 
 
@@ -78,6 +103,8 @@ void test_comparators() {
   ct->test_zero();
   ct->test_latloncmp();
   ct->test_extract_initials();
+  ct->test_midnamecmp();
+  ct->test_name_compare();
   delete ct;
 }
 
