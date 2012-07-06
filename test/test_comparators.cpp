@@ -109,9 +109,10 @@ void test_comparators() {
 }
 
 
-
+#ifdef comparators_STANDALONE
 int
 main(int argc, char ** argv) {
   test_comparators();
   return 0;
 }
+#endif

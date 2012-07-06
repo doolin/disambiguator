@@ -15,7 +15,11 @@ idtest_SOURCES = test_uniqueid.cpp
 typedefs_SOURCES = test_typedefs.cpp
 record_SOURCES = test_record.cpp
 attribute_SOURCES = test_attribute.cpp
+
 comparators_SOURCES = test_comparators.cpp
+comparators_CXXFLAGS = -Dcomparators_STANDALONE
+#comparators_CXXFLAGS = -D$*_STANDALONE
+
 comparesimilarities_SOURCES = test_compare.cpp
 blocking_SOURCES = test_blocking.cpp
 stringmanipulator_SOURCES = test_string_manipulator.cpp
