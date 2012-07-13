@@ -12,7 +12,7 @@
 class RecordTest : public CppUnit::TestCase { 
 
 public: 
-  RecordTest( std::string name ) : CppUnit::TestCase( name ) {}
+  RecordTest(std::string name) : CppUnit::TestCase(name) {}
 
   void attribute_record() {
     cFirstname * firstname  = new cFirstname("Foobar");
@@ -34,6 +34,10 @@ public:
     delete firstname;
   }
 
+  void read_records() {
+    CPPUNIT_ASSERT(1 == 1);
+  }
+
   void delete_record() {
     Record * rc = new Record();
     delete rc;
@@ -44,8 +48,10 @@ public:
     CPPUNIT_ASSERT( 1  == 1 );
     delete_record();
     attribute_record();
+    read_records();
   }
 };
+
 
 int
 main(int argc, char ** argv) {
