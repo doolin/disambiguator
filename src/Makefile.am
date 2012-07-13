@@ -7,7 +7,7 @@ CC=gcc
 # Debugging
 
 CPPFLAGS = -Wall -Wextra 
-#CXXFLAGS = -O0 -g
+CXXFLAGS = -O0 -g
 
 OOQPINCLUDEDIR=/usr/local/include/ooqp
 ILOGINSTALLDIR=/home/ysun/ILOG/CPLEX_Studio_AcademicResearch122
