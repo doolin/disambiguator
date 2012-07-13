@@ -1,0 +1,14 @@
+//Configuration file for the Disambiguation Engine
+WORKING DIRECTORY = /var/share/patentdata/disambiguation/test/synthetic/jones
+ORIGINAL CSV FILE = /var/share/patentdata/patents/test/synthetic/jones/jones3.csv
+NUMBER OF THREADS = 4
+GENERATE STABLE TRAINING SETS = true 
+USE AVAILABLE RATIOS DATABASE = true
+THRESHOLDS = 0.99, 0.95
+NECESSARY ATTRIBUTES = Firstname, Middlename, Lastname, Street, City, State, Country, Zipcode, Latitude, Longitude, InvSeq, Patent, AppYear, ApplyYear, GYear, AppDate, Assignee, AsgNum, Class, Coauthor, Invnum, Invnum_N, Unique_Record_ID
+ADJUST PRIOR BY FREQUENCY = true
+DEBUG MODE = true 
+NUMBER OF TRAINING PAIRS = 10000000
+STARTING ROUND = 1
+STARTING FILE = /home/doolin/src/disambiguator/data/match_cons2.txt
+POSTPROCESS AFTER EACH ROUND = true
