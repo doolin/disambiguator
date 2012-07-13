@@ -193,6 +193,7 @@ int BlockingConfiguration::config_blocking( const char * filename, const string 
 
 
 bool EngineConfiguration::config_engine(const char * filename, std::ostream & os) {
+
     os << "Reading Engine Configuration from " << filename << " ... ..." << std::endl;
     const char * delim = "=";
     const unsigned int delim_len = strlen(delim);
@@ -205,6 +206,7 @@ bool EngineConfiguration::config_engine(const char * filename, std::ostream & os
     size_t pos;
     int pieces_of_information = 0;
     const int must_have_information = 13;
+
     while ( getline (infile, linedata )) {
         pos = linedata.find(delim);
         if ( pos == string::npos )
@@ -213,36 +215,43 @@ bool EngineConfiguration::config_engine(const char * filename, std::ostream & os
         const string clean_lhs = remove_headtail_space(lhs);
         string rhs ( linedata.c_str() + pos + delim_len );
         string clean_rhs = remove_headtail_space(rhs);
+
         if ( clean_lhs == EngineConfiguration::WORKING_DIR_LABEL ) {
             EngineConfiguration::working_dir = clean_rhs;
             os << EngineConfiguration::WORKING_DIR_LABEL << " : "
                     << EngineConfiguration::working_dir << std::endl;
         }
+
         else if ( clean_lhs == EngineConfiguration::SOURCE_CSV_LABEL) {
             EngineConfiguration::source_csv_file = clean_rhs;
             os << EngineConfiguration::SOURCE_CSV_LABEL << " : "
                     << EngineConfiguration::source_csv_file << std::endl;
         }
+
         else if ( clean_lhs == EngineConfiguration::STARTING_FILE_LABEL) {
             EngineConfiguration::previous_disambiguation_result = clean_rhs;
             os << EngineConfiguration::STARTING_FILE_LABEL << " : "
                     << EngineConfiguration::previous_disambiguation_result << std::endl;
         }
+
         else if ( clean_lhs == EngineConfiguration::NUM_THREADS_LABEL) {
             EngineConfiguration::number_of_threads = atoi(clean_rhs.c_str());
             os << EngineConfiguration::NUM_THREADS_LABEL << " : "
                     <<  EngineConfiguration::number_of_threads << std::endl;
         }
+
         else if ( clean_lhs == EngineConfiguration::NUMBER_OF_TRAINING_PAIRS_LABEL){
             EngineConfiguration::number_of_training_pairs = atoi(clean_rhs.c_str());
             os << EngineConfiguration::NUMBER_OF_TRAINING_PAIRS_LABEL << " : "
                     <<  EngineConfiguration::number_of_training_pairs << std::endl;
         }
+
         else if ( clean_lhs == EngineConfiguration::STARTING_ROUND_LABEL){
             EngineConfiguration::starting_round = atoi(clean_rhs.c_str());
             os << EngineConfiguration::STARTING_ROUND_LABEL << " : "
                     <<  EngineConfiguration::starting_round << std::endl;
         }
+
         else if ( clean_lhs == EngineConfiguration::WHETHER_GENERATE_STABLE_TRAINING_SETS_LABEL ) {
             os << EngineConfiguration::WHETHER_GENERATE_STABLE_TRAINING_SETS_LABEL << " : ";
             if ( clean_rhs == "true" ) {
@@ -257,6 +266,7 @@ bool EngineConfiguration::config_engine(const char * filename, std::ostream & os
                 throw cException_Other("Config Error: generate stable training sets.");
             os << std::endl;
         }
+
         else if ( clean_lhs == EngineConfiguration::WHETHER_USE_AVAILABLE_RATIOS_DATABASE_LABEL ){
             os << EngineConfiguration::WHETHER_USE_AVAILABLE_RATIOS_DATABASE_LABEL << " : ";
             if ( clean_rhs == "true" ) {
@@ -271,6 +281,7 @@ bool EngineConfiguration::config_engine(const char * filename, std::ostream & os
                 throw cException_Other("Config Error: use available ratios database");
             os << std::endl;
         }
+
         else if ( clean_lhs == EngineConfiguration::POSTPROCESS_AFTER_EACH_ROUND_LABEL ){
             os << EngineConfiguration::POSTPROCESS_AFTER_EACH_ROUND_LABEL << " : ";
             if ( clean_rhs == "true" ) {
@@ -285,6 +296,7 @@ bool EngineConfiguration::config_engine(const char * filename, std::ostream & os
                 throw cException_Other("Config Error: post processing");
             os << std::endl;
         }
+
         else if ( clean_lhs == EngineConfiguration::WHETHER_ADJUST_PRIOR_BY_FREQUENCY_LABEL ){
             os << EngineConfiguration::WHETHER_ADJUST_PRIOR_BY_FREQUENCY_LABEL<< " : ";
             if ( clean_rhs == "true" ) {
@@ -299,6 +311,7 @@ bool EngineConfiguration::config_engine(const char * filename, std::ostream & os
                 throw cException_Other("Config Error: frequency adjustment mode");
             os << std::endl;
         }
+
         else if ( clean_lhs == EngineConfiguration::DEBUG_MODE_LABEL ){
             os << EngineConfiguration::DEBUG_MODE_LABEL<< " : ";
             if ( clean_rhs == "true" ) {
@@ -313,6 +326,7 @@ bool EngineConfiguration::config_engine(const char * filename, std::ostream & os
                 throw cException_Other("Config Error: debug mode");
             os << std::endl;
         }
+
         else if ( clean_lhs == EngineConfiguration::THRESHOLDS_LABEL ) {
             const char * strdelim = ", ";
             const unsigned int strdelim_len = strlen(strdelim);
@@ -332,6 +346,7 @@ bool EngineConfiguration::config_engine(const char * filename, std::ostream & os
             while ( strpos != string::npos );
             os << std::endl;
         }
+
         else if ( clean_lhs == EngineConfiguration::NECESSARY_ATTRIBUTES_LABEL ) {
             const char * strdelim = ", ";
             const unsigned int strdelim_len = strlen(strdelim);
@@ -354,7 +369,7 @@ bool EngineConfiguration::config_engine(const char * filename, std::ostream & os
 
         ++pieces_of_information;
     }
-    if ( must_have_information == pieces_of_information )
+    if (must_have_information == pieces_of_information)
         return true;
     else
         return false;
@@ -437,8 +452,9 @@ disambiguate_main(std::string & engineconf, std::string & blockingconf) {
 int
 Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigFile ) {
 
-    if ( ! EngineConfiguration::config_engine(EngineConfigFile, std::cout ) )
+    if (!EngineConfiguration::config_engine(EngineConfigFile, std::cout)) {
         throw cException_Other("Engine Configuration is not complete!");
+    }
 
     const bool train_stable = EngineConfiguration::generate_stable_training_sets;
     const bool use_available_ratios = EngineConfiguration::use_available_ratios_database;
@@ -460,7 +476,7 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
     bool is_success = fetch_records_from_txt(all_records, filename2, column_vec);
     if (not is_success) return 1;
 
-        std::cout << "Passed reading in csv data..." << std::endl;
+    std::cout << "Passed reading in csv data..." << std::endl;
 
     list < const Record *> all_rec_pointers;
     for ( list<Record>::const_iterator p = all_records.begin(); p != all_records.end(); ++p )
