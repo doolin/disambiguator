@@ -395,12 +395,14 @@ disambiguate_main(std::string & engineconf, std::string & blockingconf) {
     string enginefile ;
     string blockingfile ;
     switch ( choice ) {
+
     case 1:
         //enginefile = check_file_existence("Disambiguation Engine Configuration.");
         //blockingfile = check_file_existence("Disambiguation Blocking Configuration.");
         //Full_Disambiguation(enginefile.c_str(), blockingfile.c_str());
         Full_Disambiguation(engineconf.c_str(), blockingconf.c_str());
         break;
+
     case 2: {
         enginefile = check_file_existence("Disambiguation Engine Configuration.");
         const string upper = check_file_existence("upper bound.");
@@ -410,10 +412,13 @@ disambiguate_main(std::string & engineconf, std::string & blockingconf) {
         std::cout << "Out-of-cluster density output file :";
         std::cin >> oocd_res;
         std::ofstream ofile ( oocd_res.c_str());
+
         if ( ! ofile.good() )
             throw cException_Other("Out-of-cluster density output file error.");
+
         if ( ! EngineConfiguration::config_engine(enginefile.c_str(), std::cout ) )
             throw cException_Other("Engine Configuration is not complete!");
+
         list <Record> all_records;
         const vector <string> column_vec = EngineConfiguration::involved_columns;
         bool is_success = fetch_records_from_txt(all_records, EngineConfiguration::source_csv_file.c_str(), column_vec);
@@ -436,6 +441,7 @@ disambiguate_main(std::string & engineconf, std::string & blockingconf) {
         out_of_cluster_density(up, low, ratiodb, ofile);
         break;
     }
+
     default:
         std::cerr << "Invalid selection. Program exits." << std::endl;
         return 1;
