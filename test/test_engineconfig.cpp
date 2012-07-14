@@ -1,8 +1,5 @@
 
 // This needs to be in a library for test code. =(
-//
-//
-//
 
 #include <iostream>
 #include <vector>
@@ -12,18 +9,23 @@
 
 #include "record.h"
 
-void
-printer(const std::vector<std::string> & columns) {
+typedef std::vector<std::string> Labels;
 
-  std::vector<std::string>::const_iterator citer = columns.begin();
-  for (; citer != columns.end(); ++citer) {
-    std::cout << (*citer).c_str() << std::endl;
+void
+printer(const Labels & l) {
+
+  Labels::const_iterator iter = l.begin();
+  for (; iter != l.end(); ++iter) {
+    std::cout << (*iter).c_str() << std::endl;
   }
 }
 
 std::vector<std::string>
 setup_columns() {
 
+  // Labels, as typedef'ed above. Keep the full type
+  // definition here to help keep track of what things
+  // are called in the main code.
   std::vector<std::string> involved_columns;
   involved_columns.push_back (std::string("Firstname"));
   involved_columns.push_back (std::string("Middlename"));
@@ -42,7 +44,6 @@ setup_columns() {
   involved_columns.push_back (std::string("Class"));
   involved_columns.push_back (std::string("Coauthor"));
   involved_columns.push_back (std::string("Unique_Record_ID"));
-  printer(involved_columns);
   return involved_columns;
 }
 
@@ -52,6 +53,7 @@ int
 main(int argc, char ** argv) {
 
   std::vector<std::string> involved_columns = setup_columns();
+  printer(involved_columns);
   char filename[] = "./testdata/invpat_onerecord.txt";
   std::list <Record> all_records;
   fetch_records_from_txt(all_records, filename, involved_columns);
