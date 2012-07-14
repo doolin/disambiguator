@@ -25,9 +25,23 @@ std::vector<std::string>
 setup_columns() {
 
   std::vector<std::string> involved_columns;
-  involved_columns.push_back (std::string("Lastname"));
   involved_columns.push_back (std::string("Firstname"));
   involved_columns.push_back (std::string("Middlename"));
+  involved_columns.push_back (std::string("Lastname"));
+  involved_columns.push_back (std::string("Street"));
+  involved_columns.push_back (std::string("City"));
+  involved_columns.push_back (std::string("State"));
+  involved_columns.push_back (std::string("Country"));
+  involved_columns.push_back (std::string("Zipcode"));
+  involved_columns.push_back (std::string("Latitude"));
+  involved_columns.push_back (std::string("Longitude"));
+  involved_columns.push_back (std::string("Patent"));
+  involved_columns.push_back (std::string("ApplyYear"));
+  involved_columns.push_back (std::string("Assignee"));
+  involved_columns.push_back (std::string("AsgNum"));
+  involved_columns.push_back (std::string("Class"));
+  involved_columns.push_back (std::string("Coauthor"));
+  involved_columns.push_back (std::string("Unique_Record_ID"));
   printer(involved_columns);
   return involved_columns;
 }
