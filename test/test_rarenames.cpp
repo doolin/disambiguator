@@ -22,8 +22,8 @@ class RarenamesTest : public CppUnit::TestCase {
 
 //    find_rare_names_v2(const vector < cGroup_Value * > &vec_pdest,
 //                       const list< const Record* > & source )
-  const vector < cGroup_Value * > & vec_pdest;
-  const list< const Record * > & source;
+//  const vector < cGroup_Value * > & vec_pdest;
+//  const list< const Record * > & source;
 
 public:
   RarenamesTest(std::string name) : CppUnit::TestCase(name) {}
@@ -36,7 +36,7 @@ public:
   */
   void test_rarename() {
 
-    find_rare_names_v2(vec_pdest, source);
+    //find_rare_names_v2(vec_pdest, source);
     CPPUNIT_ASSERT(1 == 1);
   }
 
