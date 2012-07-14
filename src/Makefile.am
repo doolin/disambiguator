@@ -25,8 +25,9 @@ libdisambiguation_a_SOURCES = disambiguate.cpp cluster.cpp comparators.cpp attri
                               postprocess.cpp ratios.cpp ratio_smoothing.cpp \
                               training.cpp utilities.cpp threading.cpp strcmp95.c record.cpp \
                               string_manipulator.cpp record_reconfigurator.cpp
-#libdisambiguation_a_CXXFLAGS = -O0 -pg 
-libdisambiguation_a_CPPFLAGS = -Wall -Wextra -fno-inline $(INCLUDES) -DIL_STD -L/usr/local/lib -DNDEBUG -w
+
+#libdisambiguation_a_CXXFLAGS = -O0 -pg a
+libdisambiguation_a_CPPFLAGS = -Wall -Wextra -Wno-ignored-qualifiers -fno-inline $(INCLUDES) -DIL_STD -L/usr/local/lib -DNDEBUG -w
 #libdisambiguation_a_LDFLAGS = -pg  -O0
 
 #disambiguate_CPPFLAGS = -O0 -g -Wall -fno-inline $(INCLUDES) -DIL_STD -L/usr/local/lib -DNDEBUG -w
@@ -39,7 +40,7 @@ disambiguate_SOURCES = main.cpp
 #disambiguate_CXXFLAGS = -O0 -pg 
 disambiguate_CPPFLAGS = -Wall -Wextra -fno-inline $(INCLUDES) -DIL_STD -L/usr/local/lib 
 #disambiguate_CPPFLAGS = -O0 -pg  -Wall -Wextra -fno-inline $(INCLUDES) -DIL_STD -L/usr/local/lib #-DNDEBUG -w -finstrument-functions-exclude-file-list=iostream.h,string.h,vector.h
-disambiguate_LDFLAGS = -L$(CPLEXLIB) -lilocplex -lcplex -L$(CONCERTLIB) -lconcert
+#disambiguate_LDFLAGS = -L$(CPLEXLIB) -lilocplex -lcplex -L$(CONCERTLIB) -lconcert
 #disambiguate_LDFLAGS = -pg  -O0
 # For Macos
 #disambiguate_LDADD = libdisambiguation.a # -L$(CPLEXLIB) -lilocplex -lcplex -L$(CONCERTLIB) -lconcert
