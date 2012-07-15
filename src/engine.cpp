@@ -180,7 +180,7 @@ copyfile(const char * target, const char * source) {
 
 
 
-/*
+/**
  * Aim: to fetch records from a txt format file into memory.
  * This is a very important function.
  *
@@ -199,7 +199,6 @@ copyfile(const char * target, const char * source) {
  * static members and run reconfigurations.
  *
  */
-
 bool
 fetch_records_from_txt(list <Record> & source,
                        const char * txt_file,
@@ -219,7 +218,7 @@ fetch_records_from_txt(list <Record> & source,
     //if ( line != raw_txt_authenticator )
     //    throw cException_File_Not_Found("Specified file is not a valid one.");
     //std::cout << "requested_columns.size: " << requested_columns.size << std::endl; 
-    std::cout << "requested_columns[0]: " << requested_columns[0] << std::endl; 
+    //std::cout << "requested_columns[0]: " << requested_columns[0] << std::endl; 
 
     vector <string> total_col_names;
     getline(instream, line);
@@ -227,8 +226,8 @@ fetch_records_from_txt(list <Record> & source,
     pos = prev_pos = 0;
 
     while (  pos != string::npos){
-        std::cout << "pos " << pos << std::endl;
-        std::cout << "string::npos " << std::string::npos << std::endl;
+        //std::cout << "pos " << pos << std::endl;
+        //std::cout << "string::npos " << std::string::npos << std::endl;
         pos = line.find(delim, prev_pos);
         string columnname;
         if ( pos != string::npos )
@@ -237,12 +236,12 @@ fetch_records_from_txt(list <Record> & source,
             columnname = line.substr( prev_pos );
         total_col_names.push_back(columnname);
         prev_pos = pos + delim_size;
-        std::cout << "columnname: " << columnname << std::endl;
+        //std::cout << "columnname: " << columnname << std::endl;
     }
 
     Attribute::register_class_names(requested_columns);
     const unsigned int num_cols = requested_columns.size();
-    std::cout << "num_cols: " << num_cols << std::endl;
+    //std::cout << "num_cols: " << num_cols << std::endl;
     vector < unsigned int > requested_column_indice;
 
     for ( unsigned int i = 0; i < num_cols; ++i ) {
@@ -270,8 +269,8 @@ fetch_records_from_txt(list <Record> & source,
     for ( unsigned int i = 0; i < num_cols; ++i ) {
 
         const int pos_in_query = Attribute::position_in_registry(Record::column_names[i]);
-        std::cout << "pos_in_query: " << pos_in_query << std::endl;
-        std::cout << "Record::column_names[i]: " << Record::column_names[i] << std::endl;
+        //std::cout << "pos_in_query: " << pos_in_query << std::endl;
+        //std::cout << "Record::column_names[i]: " << Record::column_names[i] << std::endl;
 
         if ( pos_in_query == -1 ) {
             for ( unsigned int j = 0; j < i; ++j )
@@ -304,7 +303,7 @@ fetch_records_from_txt(list <Record> & source,
         }
     }
 
-    std::cout << std::endl;
+    //std::cout << std::endl;
 
     // always do this for all the attribute classes
     for ( unsigned int i = 0; i < num_cols; ++i ) {
