@@ -608,8 +608,10 @@ find_rare_names_v2(const vector < cGroup_Value * > &vec_pdest,
 
 
 unsigned int
-create_tset02(list <pointer_pairs> &results, const list <const Record*> & reclist,
-              const vector <string> & column_names, const vector < const cGroup_Value * > & vec_prare_names,
+create_tset02(list <pointer_pairs> & results,
+              const list <const Record*> & reclist,
+              const vector <string> & column_names,
+	      const vector < const cGroup_Value * > & vec_prare_names,
               const unsigned int limit) {
 
     //equal_indice should be the indices of the names in this case.
@@ -619,28 +621,33 @@ create_tset02(list <pointer_pairs> &results, const list <const Record*> & reclis
     }
 
     vector < unsigned int > column_indice;
-    for ( vector<string>::const_iterator p = column_names.begin(); p != column_names.end(); ++p )
+    for (vector<string>::const_iterator p = column_names.begin(); p != column_names.end(); ++p) {
         column_indice.push_back(Record::get_index_by_name(*p));
+    }
 
     cGroup_Value emptyone;
     map <string, cGroup_Value >::iterator pm;
     map <string, cGroup_Value >::const_iterator cpm;
     unsigned int count = 0;
 
-    set < pointer_pairs >  answer;
+    set < pointer_pairs > answer;
     const unsigned int base = 100000;
-    for ( unsigned int i = 0; i < column_names.size(); ++i) {
+    for (unsigned int i = 0; i < column_names.size(); ++i) {
+
         const unsigned int col_index = column_indice.at(i);
         map < string, cGroup_Value > data_map;
+
         for ( cGroup_Value::const_iterator p = vec_prare_names[i]->begin(); p != vec_prare_names[i]->end(); ++p ) {
             data_map.insert(std::pair<string, cGroup_Value >( * (*p)->get_data_by_index(col_index).at(0), emptyone));
         }
+
         for (list<const Record*>::const_iterator q = reclist.begin(); q != reclist.end(); ++q ) {
             pm = data_map.find( * (*q)->get_data_by_index(col_index).at(0));
             if ( pm != data_map.end() )
                 //pm->second.insert(*q);
                 pm->second.push_back(*q);
         }
+
         for ( cpm = data_map.begin(); cpm != data_map.end(); ++cpm ) {
             for (cGroup_Value::const_iterator rr = cpm->second.begin(); rr != cpm->second.end(); ++rr ) {
                 cGroup_Value::const_iterator ss = rr;
@@ -666,6 +673,7 @@ create_tset02(list <pointer_pairs> &results, const list <const Record*> & reclis
                 }
             }
         }
+
     }
 
     results.insert(results.begin(), answer.begin(), answer.end());
@@ -675,7 +683,7 @@ create_tset02(list <pointer_pairs> &results, const list <const Record*> & reclis
 
 
 unsigned int
-create_xset03(list <pointer_pairs> &results,
+create_xset03(list <pointer_pairs> & results,
               const list <const Record*> & reclist,
               const vector < const cGroup_Value * > & vec_prare_names,
               const unsigned int limit ) {
