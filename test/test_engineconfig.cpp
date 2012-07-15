@@ -8,9 +8,12 @@
 #include <stdlib.h>
 
 #include "record.h"
+#include "cluster.h"
+#include "training.h"
 
 typedef std::vector<std::string> Labels;
 
+/*
 void
 printer(const Labels & l) {
 
@@ -19,6 +22,7 @@ printer(const Labels & l) {
     std::cout << (*iter).c_str() << std::endl;
   }
 }
+*/
 
 std::vector<std::string>
 setup_columns() {
@@ -48,15 +52,35 @@ setup_columns() {
 }
 
 
+void
+rare_names(std::list<Record> all_records) {
+
+  cGroup_Value rare_firstname_set;
+  cGroup_Value rare_lastname_set;
+  std::vector<cGroup_Value *> rare_pointer_vec;
+  rare_pointer_vec.push_back(&rare_firstname_set);
+  rare_pointer_vec.push_back(&rare_lastname_set);
+  list<const Record *> record_pointers;
+
+  list<Record>::const_iterator riter = all_records.begin();
+  for (; riter != all_records.end(); ++riter) {
+    record_pointers.push_back(&(*riter));
+  }
+
+  find_rare_names_v2(rare_pointer_vec, record_pointers);
+  std::cout << "End of rare_names in test" << std::endl;
+}
 
 int
 main(int argc, char ** argv) {
 
   std::vector<std::string> involved_columns = setup_columns();
-  printer(involved_columns);
-  char filename[] = "./testdata/invpat_onerecord.txt";
+  //printer(involved_columns);
+  //char filename[] = "./testdata/invpat2.txt";
+  char filename[] = "/var/share/patentdata/patents/2010/invpat.csv";
   std::list <Record> all_records;
   fetch_records_from_txt(all_records, filename, involved_columns);
-
+  rare_names(all_records);
+ 
   return 0;
 }
