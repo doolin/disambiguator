@@ -21,6 +21,15 @@ using std::string;
 
 
 
+namespace BlockingConfiguration {
+    using std::string;
+    using std::vector;
+    vector < BlockingConfiguration::cBlockingDetail > BlockingConfig;
+    vector < string > active_similarity_attributes;
+    const string ACTIVE_SIMILARITY_ATTRIBUTES_LABEL = "ACTIVE SIMILARITY ATTRIBUTES";
+    std::auto_ptr < cBlocking_Operation > active_blocker_pointer;
+    unsigned int firstname_cur_truncation = 0;
+}
 
 namespace EngineConfiguration {
     using std::vector;
@@ -55,19 +64,10 @@ namespace EngineConfiguration {
     bool postprocess_after_each_round;
 }
 
-namespace BlockingConfiguration {
-    using std::string;
-    using std::vector;
-    vector < BlockingConfiguration::cBlockingDetail > BlockingConfig;
-    vector < string > active_similarity_attributes;
-    const string ACTIVE_SIMILARITY_ATTRIBUTES_LABEL = "ACTIVE SIMILARITY ATTRIBUTES";
-    std::auto_ptr < cBlocking_Operation > active_blocker_pointer;
-    unsigned int firstname_cur_truncation = 0;
-}
-
 
 
 int BlockingConfiguration::config_blocking( const char * filename, const string & module_id ) {
+
     std::cout << std::endl;
     std::cout << "====================== " << module_id << " ===========================" << std::endl;
     std::cout << "Reading Blocking Configuration from " << filename << " ... ..." << std::endl;
@@ -192,7 +192,8 @@ int BlockingConfiguration::config_blocking( const char * filename, const string 
 
 
 
-bool EngineConfiguration::config_engine(const char * filename, std::ostream & os) {
+bool
+EngineConfiguration::config_engine(const char * filename, std::ostream & os) {
 
     os << "Reading Engine Configuration from " << filename << " ... ..." << std::endl;
     const char * delim = "=";
@@ -375,12 +376,10 @@ bool EngineConfiguration::config_engine(const char * filename, std::ostream & os
         return false;
 }
 
-
-
 int
 disambiguate_main(std::string & engineconf, std::string & blockingconf) {
 
-#if 0
+/*
     std::cout << std::endl;
     std::cout << "====================== STARTING DISAMBIGUATION ===========================" << std::endl;
     std::cout << "__FILE__:__LINE__" << __FILE__ << ":" << __LINE__ << std::endl;
@@ -389,7 +388,7 @@ disambiguate_main(std::string & engineconf, std::string & blockingconf) {
     int choice;
     std::cout << "Choose one option: 1. Disambiguation. 2. Calculate Out-Of-Cluster Density. Choice = ";
     std::cin >> choice;
-#endif
+*/
         int choice = 1;
 
     string enginefile ;
