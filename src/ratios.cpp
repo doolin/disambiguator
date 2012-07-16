@@ -160,7 +160,7 @@ cRatioComponent::stats_output( const char * filename) const {
 
 
 void
-cRatioComponent::prepare(const char* x_file,
+cRatioComponent::prepare(const char * x_file,
                          const char * m_file) {
 
     list<std::pair<string, string> > x_list, m_list;
@@ -277,6 +277,12 @@ cRatioComponent::cRatioComponent(const map < string, const Record * > & uid_tree
 };
 
 
+/**
+ * This should probably be `set_similarity_info` because
+ * it doesn't return anything.
+ *
+ * Also, it doesn't actually set anything called `similarity_info`
+ */
 void
 cRatioComponent::get_similarity_info() {
 
@@ -288,7 +294,8 @@ cRatioComponent::get_similarity_info() {
     static const string useless_group_label = "None";
     unsigned int ratios_pos = 0, record_pos = 0;
 
-    for (vector<const Attribute*>::const_iterator p = sample_record.vector_pdata.begin(); p != sample_record.vector_pdata.end(); ++p) {
+    for (vector<const Attribute*>::const_iterator p = sample_record.vector_pdata.begin();
+		    p != sample_record.vector_pdata.end(); ++p) {
         const string & info = (*p)->get_attrib_group();
         bool comparator_activated = (*p)->is_comparator_activated();
         //std::cout << (*p)->get_class_name() << std::endl;
@@ -304,6 +311,16 @@ cRatioComponent::get_similarity_info() {
 }
 
 
+/** 
+ * TODO: Describe the purpose of having all this code in the constructor.
+ *
+ * @param const vector <const cRatioComponent *> & component_pointer_vector
+ *
+ * @param const char * filename for the ratio_[\d].txt files, which are
+ *   index by the number of the disambiguation round.
+ *
+ * @param const Record & rec
+ */
 cRatios::cRatios(const vector < const cRatioComponent *> & component_pointer_vector,
                  const char * filename,
                  const Record & rec) {
@@ -311,7 +328,10 @@ cRatios::cRatios(const vector < const cRatioComponent *> & component_pointer_vec
     std::cout << "Creating the final version ratios file ..." << std::endl;
     unsigned int ratio_size = 0;
 
-    for ( vector< const cRatioComponent *>::const_iterator p = component_pointer_vector.begin(); p != component_pointer_vector.end(); ++p ) {
+    std::cout << "filename: " << filename << std::endl;
+
+    vector< const cRatioComponent *>::const_iterator p = component_pointer_vector.begin(); 
+    for (p; p != component_pointer_vector.end(); ++p ) {
         std::cout << " Size of Ratio Component = " << (*p)->get_ratios_map().size() << std::endl;
         ratio_size += (*p)->get_component_positions_in_ratios().size();
     }
@@ -319,21 +339,36 @@ cRatios::cRatios(const vector < const cRatioComponent *> & component_pointer_vec
     attrib_names.resize(ratio_size, "Invalid Attribute");
     static const unsigned int impossible_value = 10000;
     vector<unsigned int> null_vect (ratio_size, impossible_value);
-    final_ratios.insert( std::pair<  vector <unsigned int> , double > (null_vect, 1) );
+    //final_ratios.insert( std::pair<  vector <unsigned int> , double > (null_vect, 1) );
+    final_ratios.insert( std::pair<  vector <unsigned int> , double >  (null_vect, 1.0) );
     x_counts.insert(std::pair<  vector <unsigned int> , unsigned int > (null_vect, 0));
     m_counts.insert(std::pair<  vector <unsigned int> , unsigned int > (null_vect, 0));
 
-    for (vector< const cRatioComponent *>::const_iterator p = component_pointer_vector.begin(); p != component_pointer_vector.end(); ++p ) {
+    //vector< const cRatioComponent *>::const_iterator p = component_pointer_vector.begin(); 
+    p = component_pointer_vector.begin(); 
+    for (p; p != component_pointer_vector.end(); ++p ) {
         More_Components(**p);
     }
 
-// LEAVE THIS IN, this is something which may be necessary, it's one of my #if'ed out blocks. -dmd
-#if 0
-    // now checking the final ratios
-    const vector < unsigned int > & firstline = final_ratios.begin()->first;
-    for ( vector< unsigned int >::const_iterator k = firstline.begin(); k < firstline.end(); ++k ) {
-        if ( *k == impossible_value )
-            throw cRatioComponent::cException_Ratios_Not_Ready( "Final Ratios is not ready yet. ");
+// LEAVE THIS IN, this is something which may be necessary.
+// It turns out that the following code often (usually? always?)
+// segfaults because the final_ratios map is zeroed out in the
+// More_Components function called above (which is a side effect).
+#if 1
+    if (final_ratios.size() > 0) {
+      // now checking the final ratios
+      //const vector < unsigned int > & firstline = final_ratios.begin()->first;
+      map < const vector < unsigned int >, double, SimilarityCompare>::const_iterator firstline = final_ratios.begin();
+      //vector< unsigned int >::const_iterator k = firstline.begin(); 
+      vector< unsigned int > vec = (*firstline).first;
+      vector< unsigned int >::const_iterator k = vec.begin(); 
+      //for (k; k < firstline.end(); ++k) {
+      //for (k; k != firstline.end(); ++k) {
+      for (k; k != vec.end(); ++k) {
+        if (*k == impossible_value) {
+          throw cRatioComponent::cException_Ratios_Not_Ready( "Final Ratios is not ready yet. ");
+	}
+      }
     }
 #endif
 
@@ -359,21 +394,23 @@ cRatios::More_Components(const cRatioComponent & additional_component) {
 
     map < vector <unsigned int>, double, SimilarityCompare > temp_ratios;
 
-    map < vector < unsigned int > , unsigned int, SimilarityCompare > temp_x_counts, temp_m_counts;
-    const vector < unsigned int > & temp_pos_in_rec = additional_component. get_component_positions_in_record();
+    map < vector < unsigned int >, unsigned int, SimilarityCompare > temp_x_counts, temp_m_counts;
+    const vector < unsigned int > & temp_pos_in_rec = additional_component.get_component_positions_in_record();
     const vector < unsigned int > & positions_in_ratios = additional_component.get_component_positions_in_ratios();
 
     for ( unsigned int k = 0; k < positions_in_ratios.size(); ++k ) {
         attrib_names.at( positions_in_ratios.at(k) ) = Record::get_column_names().at(temp_pos_in_rec.at(k) );
     }
 
-    std::cout << "final_ratios.size(): " << final_ratios.size() << std::endl;
+    std::cout << "From cRatios::More_Components: final_ratios.size(): " << final_ratios.size()
+	      << ", " << __FILE__ << ":" << __LINE__ << std::endl;
 
-    for (map < vector <unsigned int>, double, SimilarityCompare >::iterator p = final_ratios.begin(); p != final_ratios.end(); ++p ) {
+    for (map < vector <unsigned int>, double, SimilarityCompare >::iterator p = final_ratios.begin();
+		    p != final_ratios.end(); ++p ) {
 
         vector < unsigned int > key = p->first;
 
-        for ( map < vector <unsigned int>, double, SimilarityCompare >::const_iterator vv = additional_component.get_ratios_map().begin();
+        for (map < vector <unsigned int>, double, SimilarityCompare >::const_iterator vv = additional_component.get_ratios_map().begin();
              vv != additional_component.get_ratios_map().end(); ++vv) {
 
             for ( unsigned int j = 0; j < vv->first.size(); ++j ) {
@@ -405,9 +442,10 @@ cRatios::write_ratios_file(const char * filename) const {
     }
     outfile << primary_delim << "VALUE" << '\n';
 
-    for (map < vector <unsigned int>, double, SimilarityCompare >::const_iterator q = final_ratios.begin();
-         q != final_ratios.end(); ++q ) {
-        for ( vector < unsigned int>::const_iterator pint = q->first.begin(); pint != q->first.end(); ++pint)
+    map < vector <unsigned int>, double, SimilarityCompare >::const_iterator q = final_ratios.begin();
+    for (q; q != final_ratios.end(); ++q ) {
+        vector <unsigned int>::const_iterator pint = q->first.begin(); 
+        for (pint; pint != q->first.end(); ++pint)
             outfile << *pint << secondary_delim;
         outfile << primary_delim << q->second << '\n';
     }
@@ -419,7 +457,7 @@ void
 cRatios::read_ratios_file(const char * filename) {
 
     std::ifstream::sync_with_stdio(false);
-    std::ifstream infile ( filename );
+    std::ifstream infile (filename);
     const unsigned int primary_delim_size = strlen(primary_delim);
     const unsigned int secondary_delim_size = strlen(secondary_delim);
 
@@ -437,13 +475,13 @@ cRatios::read_ratios_file(const char * filename) {
 
     vector < unsigned int > key;
     while ( getline(infile, filedata)) {
+
         key.clear();
         pos = prev_pos = 0;
         while ( ( pos = filedata.find(secondary_delim, prev_pos) ) != string::npos ) {
             key.push_back(atoi(filedata.substr(prev_pos, pos - prev_pos).c_str()));
             prev_pos = pos + secondary_delim_size;
         }
-
 
         pos = filedata.find(primary_delim, 0);
         pos += primary_delim_size;
