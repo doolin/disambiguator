@@ -22,7 +22,7 @@ pthread_mutex_t cWorker_For_Disambiguation::iter_lock = PTHREAD_MUTEX_INITIALIZE
  */
 cCluster_Info::cCluster_Info(const map <string, const Record*> & input_uid2record,
                              const bool input_is_matching,
-                             const bool aum,
+                             const bool aum, //frequency adjustment
                              const bool debug)
                            : uid2record_pointer(&input_uid2record),
                              is_matching(input_is_matching),
@@ -258,8 +258,8 @@ cCluster_Info::reset_blocking(const cBlocking_Operation & blocker, const char * 
 
 /**
  * Aim: to consolidate records which have the same blocking id together.
- * It should be a very strict consolidation, so
- * the blocker should be very strict.
+ * It should be a very strict consolidation,
+ * so the blocker should be very strict.
  */
 void
 cCluster_Info::preliminary_consolidation(const cBlocking_Operation & blocker,
@@ -313,10 +313,12 @@ cCluster_Info::output_current_comparision_info(const char * const outputfile ) c
 
 
 /**
- * Aim: to output "*this" cCluster_Info to an ostream object. Callable internally only.
- * Algorithm: for each cluster, output: cluster delegate###cohesion###member1,member2,member3,...
- * where ### is the the primary delimiter and , is the secondary delimiter.
+ * Aim: to output "*this" cCluster_Info to an
+ * ostream object. Callable internally only.
  *
+ * Algorithm: for each cluster, output:
+ * cluster delegate###cohesion###member1,member2,member3,...
+ * where ### is the the primary delimiter and "," is the secondary delimiter.
  */
 void
 cCluster_Info::print(std::ostream & os) const {
@@ -354,9 +356,11 @@ cCluster_Info::print(std::ostream & os) const {
 
 /**
  * Aim: to set the activity for certain blocks, according to the input file.
- * Algorithm: read the data from the input file, convert them to blocking id strings, and set the corresponding blocks
- *             to be active. Others remain inactive. If the input file is invalid or empty, all the blocks will be set active.
  *
+ * Algorithm: read the data from the input file, convert them
+ * to blocking id strings, and set the corresponding blocks
+ * to be active. Others remain inactive. If the input file
+ * is invalid or empty, all the blocks will be set active.
  */
 unsigned int
 cCluster_Info::reset_block_activity( const char * const filename ) {
@@ -460,27 +464,41 @@ cCluster_Info::output_prior_value( const char * const outputfile ) const {
 
 
 /**
- * Aim: the determine the priori probability for a certain block, given its name and its components.
- * Algorithm: according to the definition of prior values, it is "the probability of match given two records that are
- * randomly selected within the block". We believe records in the same cluster to be a match, and those in different clusters
- * to be a non-match. So the priori probabiliy is:
- * prior = sum ( N choose 2 ) / ( ( sum N ) choose 2 ), where N is the number of members in each cluster.
- * However, we also want to penalize those frequent names and offer bonus credit to rare names.
- * So we multiple the prior by log ( frequency of the most frequent part / frequency of the part ) and set it to be the new prior.
- * NOTE: the adjustment function is purely arbitrary and based on intuition. So one can definitely change it.
- * However, it should be noted that the adjustment is crude yet very useful and effective.
- * Those commented-out notes are legacy codes of adjustment, for reference purpose only.
+ * Aim: the determine the priori probability for a
+ * certain block, given its name and its components.
  *
+ * Algorithm: according to the definition of prior values,
+ * it is "the probability of match given two records that are
+ * randomly selected within the block". We believe records
+ * in the same cluster to be a match, and those in different clusters
+ * to be a non-match. So the priori probabiliy is:
+ * prior = sum ( N choose 2 ) / ( ( sum N ) choose 2 ),
+ * where N is the number of members in each cluster.
+ * However, we also want to penalize those frequent
+ * names and offer bonus credit to rare names.
+ * So we multiple the prior by log (frequency of the
+ * most frequent part / frequency of the part) and
+ * set it to be the new prior.
+ *
+ * NOTE: the adjustment function is purely arbitrary
+ * and based on intuition. So one can definitely change it.
+ * However, it should be noted that the adjustment is
+ * crude yet very useful and effective. Those commented-out
+ * notes are legacy codes of adjustment, for reference purpose only.
  */
 double
 cCluster_Info::get_prior_value( const string & block_identifier, const list <cCluster> & rg ) {
 
     static const double prior_max = 0.95;
     static const double prior_default = 1e-6;
-    //attention. the uninvolved index is subject to the blocking configuration.
-    //so even if mid name is not a blocking part, it should be in the configuration file.
-    const unsigned int uninvolved_index = 1; //index for middlename, which is not involved in the adjustment. change to other trash value if disabled.
+    //attention. the uninvolved index is subject
+    //to the blocking configuration. so even if
+    //mid name is not a blocking part, it should
+    //be in the configuration file.
 
+    //index for middlename, which is not involved in
+    //the adjustment. change to other trash value if disabled.
+    const unsigned int uninvolved_index = 1; 
     std::ofstream * pfs = NULL;
     if ( debug_mode ) {
         pfs = new std::ofstream ("prior_debug.txt");
@@ -541,13 +559,13 @@ cCluster_Info::get_prior_value( const string & block_identifier, const list <cCl
         factor_history.push_back(factor);
             //factor = 1.0 + 0.5 * ( log (  max_occurrence.at(seq) ) + log(min_occurrence.at(seq) ) ) - log ( this->column_stat.at(seq)[piece] );
         }
-        if ( debug_mode ) {
+        if (debug_mode) {
             (*pfs) << '\n'
-                    << "Part: " << seq
-                    << " Max occurrence: " << max_occurrence.at(seq)
-                    << " Min occurrence: " << min_occurrence.at(seq)
-                    << " Self occurrence: " << this->column_stat.at(seq)[piece]
-                    << " Before adjustment: "<< prior << '\n';
+                   << "Part: " << seq
+                   << " Max occurrence: " << max_occurrence.at(seq)
+                   << " Min occurrence: " << min_occurrence.at(seq)
+                   << " Self occurrence: " << this->column_stat.at(seq)[piece]
+                   << " Before adjustment: "<< prior << '\n';
         }
 
         final_factor = max_val( final_factor,  factor );
@@ -585,7 +603,10 @@ cCluster_Info::get_prior_value( const string & block_identifier, const list <cCl
  * Algorithm: create several thread workers and multi-thread the process.
  */
 void
-cCluster_Info::disambiguate(const cRatios & ratio, const unsigned int num_threads, const char * const debug_block_file, const char * const prior_to_save) {
+cCluster_Info::disambiguate(const cRatios & ratio,
+		            const unsigned int num_threads,
+			    const char * const debug_block_file,
+			    const char * const prior_to_save) {
 
     if ( is_matching_cluster() != true )
         throw cException_Cluster_Error("Wrong type of clusters for disambiguation.");
