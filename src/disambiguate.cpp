@@ -637,11 +637,9 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
         }
 
         const cRatios * ratio_pointer;
-        if ( ! use_available_ratios ) {
-            personalinfo.prepare(training_changable_vec.at(0).c_str(),
-                                    training_changable_vec.at(1).c_str() );
-            patentinfo.prepare(training_stable_vec.at(0).c_str(),
-                               training_stable_vec.at(1).c_str() );
+        if (!use_available_ratios) {
+            personalinfo.prepare(training_changable_vec.at(0).c_str(), training_changable_vec.at(1).c_str());
+            patentinfo.prepare(training_stable_vec.at(0).c_str(), training_stable_vec.at(1).c_str());
 
             personalinfo.stats_output(stat_personal);
             patentinfo.stats_output(stat_patent);
