@@ -315,8 +315,8 @@ public:
     * TODO: FIXME: document this constructor.
     */
     cRatios(const vector < const cRatioComponent *> & component_vector,
-          const char * filename,
-          const Record & record);
+            const char * filename,
+            const Record & record);
 
    /**
     * TODO: FIXME: document this constructor.
