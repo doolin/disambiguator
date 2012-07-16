@@ -835,7 +835,8 @@ public:
         }
         catch ( const std::bad_cast & except ) {
             std::cerr << except.what() << std::endl;
-            std::cerr << "Error: " << this->get_class_name() << " is compared to " << right_hand_side.get_class_name() << std::endl;
+            std::cerr << "Error: " << this->get_class_name() << " is compared to " 
+		      << right_hand_side.get_class_name() << std::endl;
             throw;
         }
     }
@@ -895,17 +896,17 @@ public:
  * and whose comparison function is only comparing such information between two attributes.
  * The information stored in the class is usually read-only, unless necessary to change.
  * Typical classes of such mode include firtname, lastname, assignee, unique_record_id, city, etc.
- *
+ */
+template < typename AttribType >
+class Attribute_Single_Mode : public Attribute_Vector_Intermediary<AttribType> {
+
+/**
  * Public:
  *    unsigned int compare(const Attribute & right_hand_side) const:
  *      Default Jaro-Winkler comparison between the strings. Scoring is user-defined, so feel free to override.
  *    bool split_string(const char* inputdata):
  *      read input string, do some preparations (edition and pooling) and save in the object.
  */
-
-template < typename AttribType >
-class Attribute_Single_Mode : public Attribute_Vector_Intermediary<AttribType> {
-
 public:
 
     unsigned int compare(const Attribute & right_hand_side) const {
