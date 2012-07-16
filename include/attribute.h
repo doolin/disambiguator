@@ -222,8 +222,9 @@ public:
  *        interface for Set_Mode classes.
  *
  *  ATTENTION:
- *      NEVER EDIT AN EXISTING ATTRIBUTE OBJECT, BECAUSING IT MAY BE USED BY DIFFERENT RECORDS!
- *      ONLY ADD NEW OBJECTS AND CHANGE THE POINTER THROUGH EXISTING INTERFACE, SINCE REFERENCE-COUNTING IS IMPLEMENTED.
+ *      NEVER EDIT AN EXISTING ATTRIBUTE OBJECT, BECAUSING IT MAY BE
+ *      USED BY DIFFERENT RECORDS! ONLY ADD NEW OBJECTS AND CHANGE THE
+ *      POINTER THROUGH EXISTING INTERFACE, SINCE REFERENCE-COUNTING IS IMPLEMENTED.
  */
 
 
@@ -355,41 +356,76 @@ public:
 
 /*
  *    Protected:
+ *
  *    Public:
+ *
  *        static void clear_data_pool(): clear the data pool. Only use it when a whole class will be rebuilt.
+ *
  *        static void clear_attrib_pool(): clear the attribute object pool. Only use it when a whole class will be rebuilt.
+ *
  *        Attribute_Intermediary(const char * source = NULL ): default constructor.
+ *
  *        static const Derived * static_add_attrib( const Derived & d , const unsigned int n ): add the reference counter of the d attribute object by n. If d does not exists, add d to the pool. Returns the pointer to the newly added object.
+ *
  *        static const Derived * static_find_attrib ( const Derived & d): find the d object in the attribute pool. Returns 0 if failure, or the pointer to the object if success.
+ *
  *        static const Derived * static_reduce_attrib( const Derived & d , const unsigned int n): deduct the reference counter of the d attribute object by n. If the counter = 0, delete d from the pool and returns NULL, else returns the pointer to d.
+ *
  *        const Attribute* clone() const: Polymorphic constructor of the concrete class. Should only be called when reading data from source files.
+ *
  *        const string & get_class_name() const: to get the concrete class specifier.
+ *
  *        static const string & static_get_class_name(): static function, to get the concrete class specifier.
+ *
  *        static void set_column_index_in_query(const unsigned int i ): to set the sequence of the concrete class to i, as appearing in the class list.
+ *
  *        unsigned int compare(const Attribute & rhs) const: the default comparison function between two concrete class objects. Override if necessary.
+ *
  *        static const unsigned int get_interactive_column_number(): get the number of interactive columns with the current class.
  *        static void static_check_interactive_consistency( const vector <string> & query_columns): check and set the static member interactive_column_indice_in_query;
+ *
  *        void check_interactive_consistency(const vector <string> & query_columns): polymorphic version of the above function.
  */
 
+
 /*
  *        bool has_checked_interactive_consistency(): check if the class interactive consistency is checked.
+ *
  *        static bool is_enabled(): check if the class is enabled for use.
+ *
  *        static void enable(): enable the class.
+ *
  *        static bool static_is_comparator_activated(): check if the comparison function for the class is activated.
+ *
  *        bool is_comparator_activated(): polymorphic version of the above function.
+ *
  *        static void activate_comparator(): activate the comparison function for the class.
+ *
  *        static void deactivate_comparator(): de-activate the comparison function for the class.
+ *
  *        void print( std::ostream & os ) const: print the current object to output stream os, usually std::cout.
+ *
  *        static const string & static_get_attrib_group(): get the specifier of the attribute group of the class.
+ */
+
+
+/*
  *        const string & get_attrib_group() const: polymorphic version of the above function.
+ *
  *        static const string * static_add_string ( const string & str ): copy the string "str" to the data pool, and returns the pointer to the newly added string.
+ *
  *        static const string * static_find_string( const string & str) : find the string "str" in the data pool, and returns the pointer to it if success or NULL if failure.
+ *
  *        const string * add_string ( const string & str ): polymorphic version of the above static version.
+ *
  *        static const Attribute * static_clone_by_data( const vector < string > & str ): add or create an attribute object by the str data, returns the pointer to the object.
+ *
  *        static int static_clean_attrib_pool(): remove the objects whose reference counter = 0, returns the number of removed objects.
+ *
  *        int clean_attrib_pool() const: polymorphic version of the above function
+ *
  *        const Attribute * reduce_attrib(unsigned int n) const: deduct the reference counter of this object by n, and returns the pointer to this object. Null if removed.
+ *
  *        const Attribute * add_attrib(unsigned int n) const: add the reference counter of this object by n, and returns the pointer to this object.
  */
 
@@ -413,14 +449,15 @@ public:
     Attribute_Basic (const char * source = NULL ): Attribute(source) {}
     const string & get_class_name() const { return class_name;}
     static const string & static_get_class_name() {return class_name;}
-       //static void set_column_index_in_query(const unsigned int i ) {column_index_in_query = i;}
-       //THIS IS THE DEFAULT COMPARISON FUNCTION. ANY ATTRIBUTE THAT HAS REAL COMPARISION FUNCTIONS SHOULD OVERRIDE IT.
-       //ANY ATTRIBUTE THAT HAS NO REAL COMPARISION FUNCTIONS SHOULD JUST LEAVE IT.
-       unsigned int compare(const Attribute & rhs) const {
-           throw cException_No_Comparision_Function(class_name.c_str());
-       };
-       static const unsigned int get_interactive_column_number() { return num_of_interactive_columns;};
-       static void static_check_interactive_consistency( const vector <string> & query_columns ) {
+    
+    //static void set_column_index_in_query(const unsigned int i ) {column_index_in_query = i;}
+    //THIS IS THE DEFAULT COMPARISON FUNCTION. ANY ATTRIBUTE THAT HAS REAL COMPARISION FUNCTIONS SHOULD OVERRIDE IT.
+    //ANY ATTRIBUTE THAT HAS NO REAL COMPARISION FUNCTIONS SHOULD JUST LEAVE IT.
+    unsigned int compare(const Attribute & rhs) const {
+        throw cException_No_Comparision_Function(class_name.c_str());
+    };
+    static const unsigned int get_interactive_column_number() { return num_of_interactive_columns;};
+    static void static_check_interactive_consistency( const vector <string> & query_columns ) {
 
 #if 0
            if ( interactive_column_indice_in_query.size() != get_interactive_column_number() )
@@ -436,11 +473,16 @@ public:
 
            bool_interactive_consistency_checked = true;
        }
+
     void check_interactive_consistency(const vector <string> & query_columns) { static_check_interactive_consistency(query_columns);}
+
        bool has_checked_interactive_consistency() const {return bool_interactive_consistency_checked;}
+
     static bool is_enabled() { return bool_is_enabled; }
+    //
     //static void enable() { bool_is_enabled = true;}
     static bool static_is_comparator_activated() {return bool_comparator_activated;}
+
     bool is_comparator_activated() const { return bool_comparator_activated;}
 
     static void static_activate_comparator() {
@@ -479,6 +521,7 @@ public:
     }
 
     static const string & static_get_attrib_group() { return attrib_group; };
+
     const string & get_attrib_group() const { return attrib_group;}
 
     static vector < string > static_get_interactive_column_names() {
@@ -643,6 +686,7 @@ public:
 
 };
 
+
 /*
  * Attribute_Set_Intermediary:
  * Third layer of the attribute hierarchy. Specifically designed to handle the data storage issue.
@@ -694,29 +738,58 @@ public:
 
 
 
-
-
 /*
  * template < Concreate Class Name > Attribute_Set_Mode
- * This is the second layer of abstract class, implementing more detailed certain class behaviors.
- * The set_mode class is especially for attributes like "co-authors" and "patent classes", which usually have multiple values in one record, whose
- * comparison behavior is to find the number of common elements between two records, and whose merging behavior is grouping all distinct values together
+ *
+ * This is the second layer of abstract class, implementing
+ * more detailed certain class behaviors.
+ *
+ * The set_mode class is especially for attributes like "co-authors"
+ * and "patent classes", which usually have multiple values in one record, whose
+ * comparison behavior is to find the number of common elements between two records,
+ * and whose merging behavior is grouping all distinct values together
  * for each cluster ( or disambiguated and grouped records ).
  *
  * Protected:
- *         set < const string * > attrib_set: this is the actual data member that will be used in the storage and comparison of its concrete subclasses.
- *                                            Instead, the data member in the base Attribute class, "data", should not be used unless necessary.
- *        const Attribute * attrib_merge ( const Attribute & right_hand_side) const: the polymorphic attribute merge function customized for set mode. Override in the child class if necessary.
+ *
+ * set < const string * > attrib_set:
+ * this is the actual data member that will be used in the storage
+ * and comparison of its concrete subclasses. Instead, the data
+ * member in the base Attribute class, "data", should not be used unless necessary.
+ *
+ *  const Attribute * attrib_merge ( const Attribute & right_hand_side) const:
+ *  the polymorphic attribute merge function customized for set mode. Override in the child class if necessary.
  *
  * Private:
+ */
+
+
+/*
  * Public:
- *         const set < const string *> * get_attrib_set_pointer() const: to get the pointer to the std::set, which stores all the data for this mode. This overrides the function in the base class.
- *         unsigned int compare(const Attribute & right_hand_side) const: The default comparison function of the set mode, which returns the number of common elements between two classes.
- *                                                                         Override it in the child class if other scoring method is used.
- *         bool split_string(const char* inputdata): polymorphic function to extract data from the input string.
- *         bool operator < ( const Attribute & rhs ) const: overloading operator which overrides the base class one. Used only in internal binary tree sort. Do not call explicitly.
- *        void print( std::ostream & os ) const: polymorphic print function. os can be a file stream, or std::cout if outputting to the screen.
- *        bool is_informative() const: polymorphic function, returning false, indicating that this type of class does not support this function.
+ *
+ *         const set < const string *> * get_attrib_set_pointer() const:
+ *         to get the pointer to the std::set, which stores all the data
+ *         for this mode. This overrides the function in the base class.
+ *
+ *      unsigned int compare(const Attribute & right_hand_side) const:
+ *      The default comparison function of the set mode, which returns
+ *      the number of common elements between two classes.
+ *      Override it in the child class if other scoring method is used.
+ *
+ *         bool split_string(const char* inputdata):
+ *         polymorphic function to extract data from the input string.
+ *
+ *         bool operator < ( const Attribute & rhs ) const:
+ *         overloading operator which overrides the base class one.
+ *         Used only in internal binary tree sort. Do not call explicitly.
+ *
+ *        void print( std::ostream & os ) const:
+ *        polymorphic print function. os can be a file stream,
+ *        or std::cout if outputting to the screen.
+ *
+ *        bool is_informative() const:
+ *        polymorphic function, returning false, indicating that this
+ *        type of class does not support this function.
  */
 
 
