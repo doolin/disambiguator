@@ -404,7 +404,7 @@ fetch_records_from_txt(list <Record> & source,
     for ( list< Record>::iterator ci = source.begin(); ci != source.end(); ++ci )
         ci->reconfigure_record_for_interactives();
 
-    std::cout << "Sample Record:---------" << std::endl;
+    std::cout << "Sample Record: " << __FILE__ << ":" << __LINE__ << "---------" << std::endl;
     Record::sample_record_pointer->print();
     std::cout << "-----------------" << std::endl;
 
