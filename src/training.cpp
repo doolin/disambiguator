@@ -17,7 +17,7 @@ cBlocking::cBlocking (const list<const Record *> & psource,
     const string label_delim = cBlocking_Operation::delim;
     const unsigned int num_block_columns = blocking_column_names.size();
 
-    if ( num_block_columns != pmanipulators.size())
+    if (num_block_columns != pmanipulators.size())
         throw cBlocking::cException_Blocking("Blocking Constructor Error.");
 
     cSort_by_attrib unique_comparator(unique_identifier);

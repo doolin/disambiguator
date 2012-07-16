@@ -461,44 +461,50 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
         throw cException_Other("Engine Configuration is not complete!");
     }
 
-    const bool train_stable = EngineConfiguration::generate_stable_training_sets;
-    const bool use_available_ratios = EngineConfiguration::use_available_ratios_database;
-    const string working_dir = EngineConfiguration::working_dir;
-    //const string final_file = working_dir + "/final.txt";
+    const bool train_stable               = EngineConfiguration::generate_stable_training_sets;
+    const bool use_available_ratios       = EngineConfiguration::use_available_ratios_database;
+    const string working_dir              = EngineConfiguration::working_dir;
     const vector < double > threshold_vec = EngineConfiguration::thresholds ;
+    const unsigned int num_threads        = EngineConfiguration::number_of_threads;
+    const vector <string> column_vec      = EngineConfiguration::involved_columns;
+    const unsigned int limit              = EngineConfiguration::number_of_training_pairs;
+    bool frequency_adjust_mode            = EngineConfiguration::frequency_adjustment_mode;
+    bool debug_mode                       = EngineConfiguration::debug_mode;
+    const unsigned int starting_round     = EngineConfiguration::starting_round;
+
+   /**
+    * Read in the CSV file containing consolidated inventor-patent instances.
+    * This file is typically named "invpat.csv", but the filename is
+    * arbitrary. The data must have the following characteristics:
+    * 1. Header row of csv-parseable strings as column labels.
+    * 2. Valid comma-separated fields in each row.
+    */
     const unsigned int buff_size = 512;
-    const unsigned int num_threads = EngineConfiguration::number_of_threads;
-    const vector <string> column_vec = EngineConfiguration::involved_columns;
-    const unsigned int limit = EngineConfiguration::number_of_training_pairs;
-    bool frequency_adjust_mode = EngineConfiguration::frequency_adjustment_mode;
-    bool debug_mode = EngineConfiguration::debug_mode;
-    const unsigned int starting_round = EngineConfiguration::starting_round;
-
-
     list <Record> all_records;
     char filename2[buff_size];
     sprintf(filename2, "%s", EngineConfiguration::source_csv_file.c_str());
     bool is_success = fetch_records_from_txt(all_records, filename2, column_vec);
     if (not is_success) return 1;
 
-    std::cout << "Passed reading in csv data..." << std::endl;
+    //std::cout << "Passed reading in csv data..." << std::endl;
 
     list < const Record *> all_rec_pointers;
-    for ( list<Record>::const_iterator p = all_records.begin(); p != all_records.end(); ++p )
+    for (list<Record>::const_iterator p = all_records.begin(); p != all_records.end(); ++p ) {
         all_rec_pointers.push_back(&(*p));
+    }
     cAssignee::configure_assignee(all_rec_pointers);
 
-        std::cout << "Passed configuring assignees..." << std::endl;
+    //std::cout << "Passed configuring assignees..." << std::endl;
 
     //patent stable
-    const string training_stable [] = { working_dir + "/xset03_stable.txt",
-                                            working_dir + "/tset02_stable.txt" };
-    const vector<string> training_stable_vec ( training_stable, training_stable + sizeof(training_stable)/sizeof(string));
-    if ( train_stable ) {
-        make_stable_training_sets_by_personal ( all_records, limit, training_stable_vec);
-        }
+    const string training_stable [] = {working_dir + "/xset03_stable.txt",
+                                       working_dir + "/tset02_stable.txt"};
+    const vector<string> training_stable_vec (training_stable, training_stable + sizeof(training_stable)/sizeof(string));
+    if (train_stable) {
+        make_stable_training_sets_by_personal (all_records, limit, training_stable_vec);
+    }
 
-        std::cout << "Stable training sets made..." << std::endl;
+    //std::cout << "Stable training sets made..." << std::endl;
 
     map <string, const Record *> uid_dict;
     const string uid_identifier = cUnique_Record_ID::static_get_class_name();
@@ -511,28 +517,28 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
 
     bool matching_mode = true;
 
-    cCluster_Info match ( uid_dict, matching_mode, frequency_adjust_mode, debug_mode);
-    match.set_thresholds( threshold_vec);
+    cCluster_Info match (uid_dict, matching_mode, frequency_adjust_mode, debug_mode);
+    match.set_thresholds(threshold_vec);
 
-    char xset01[buff_size], tset05[buff_size], ratiofile[buff_size], matchfile[buff_size], stat_patent[buff_size], stat_personal[buff_size];
-    char oldmatchfile[buff_size], debug_block_file[buff_size], network_file[buff_size], postprocesslog[buff_size], prior_save_file[buff_size];
+    char xset01[buff_size], tset05[buff_size], ratiofile[buff_size],
+	 matchfile[buff_size], stat_patent[buff_size], stat_personal[buff_size];
+    char oldmatchfile[buff_size], debug_block_file[buff_size], network_file[buff_size],
+	 postprocesslog[buff_size], prior_save_file[buff_size];
     char roundstr[buff_size];
     sprintf(oldmatchfile,"%s", EngineConfiguration::previous_disambiguation_result.c_str() );
 
 
     bool network_clustering = EngineConfiguration::postprocess_after_each_round;
 
-    if ( debug_mode )
-        network_clustering = false;
+    if (debug_mode) network_clustering = false;
 
     unsigned int round = starting_round;
-
 
 
     cRatioComponent personalinfo(uid_dict, string("Personal") );
 
     const unsigned int num_coauthors_to_group = 2;
-    cBlocking_Operation_By_Coauthors blocker_coauthor( all_rec_pointers, num_coauthors_to_group );
+    cBlocking_Operation_By_Coauthors blocker_coauthor(all_rec_pointers, num_coauthors_to_group);
 
     //Reconfigure
     std::cout << "Reconfiguring ..." << std::endl;
@@ -580,7 +586,7 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
         //match.output_list(record_pointers);
 
         const string training_changable [] = { xset01, tset05 };
-        const vector<string> training_changable_vec ( training_changable, training_changable + sizeof(training_changable)/sizeof(string));
+        const vector<string> training_changable_vec (training_changable, training_changable + sizeof(training_changable)/sizeof(string));
 
         switch (round) {
             case 1:
@@ -616,7 +622,8 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
             cCluster_Set cs;
             //cs.convert_from_ClusterInfo(&match);
             cs.read_from_file(oldmatchfile, uid_dict);
-            post_polish( cs, blocker_coauthor.get_uid2uinv_tree(), blocker_coauthor.get_patent_tree(), string(postprocesslog));
+            post_polish(cs, blocker_coauthor.get_uid2uinv_tree(),
+                        blocker_coauthor.get_patent_tree(), string(postprocesslog));
             cs.output_results(network_file);
             match.reset_blocking( * BlockingConfiguration::active_blocker_pointer, network_file);
         }
@@ -624,7 +631,7 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
 
         if ( ! use_available_ratios ) {
             const cBlocking_Operation_Multiple_Column_Manipulate & blocker_ref =
-                    dynamic_cast < cBlocking_Operation_Multiple_Column_Manipulate &> ( * BlockingConfiguration::active_blocker_pointer );
+                    dynamic_cast < cBlocking_Operation_Multiple_Column_Manipulate &> (*BlockingConfiguration::active_blocker_pointer);
             make_changable_training_sets_by_patent( all_rec_pointers, blocker_ref.get_blocking_attribute_names(),
                     blocker_ref.get_blocking_string_manipulators(), limit,  training_changable_vec);
         }
@@ -645,22 +652,19 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
 
             ratio_pointer = new cRatios (component_vector, ratiofile, all_records.front());
         }
-        else
+        else {
             ratio_pointer = new cRatios (ratiofile);
-
-
-
+        }
         cCluster::set_ratiomap_pointer(*ratio_pointer);
+
         // now disambiguate
         Record::clean_member_attrib_pool();
-
+	// cCluster_Info.disambiguate
         match.disambiguate(*ratio_pointer, num_threads, debug_block_file, prior_save_file);
-
         delete ratio_pointer;
-
         match.output_current_comparision_info(matchfile);
 
-        strcpy ( oldmatchfile, matchfile);
+        strcpy (oldmatchfile, matchfile);
         ++round;
     }
 
