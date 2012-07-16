@@ -187,6 +187,7 @@ public:
  *        -1 means disabled. 0 = not exact match. 1 = exact match.
  */
 
+
 /*
  *        17. virtual const string * add_string( const string & str ) const:
  *        To add the string data into the internal static string data pooling
