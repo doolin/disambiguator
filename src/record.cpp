@@ -89,22 +89,22 @@ Record_update_active_similarity_names() {
 }
 
 
-/*
- * Aim: to print a record to an ostream object, such as a file 
- * stream or a standard output (std::cout). Algorithm: call 
- * each attribute pointer's "print( ostream )" method in the record object.
- */
 void 
 Record::print(std::ostream & os) const {
 
-  const char lend = '\n';
-
-  for (vector <const Attribute *>::const_iterator p = this->vector_pdata.begin();
-       p != this->vector_pdata.end(); ++p) {
-    (*p)->print( os );
+  vector <const Attribute *>::const_iterator a = this->vector_pdata.begin();
+  for (a; a != this->vector_pdata.end(); ++a) {
+    (*a)->print(os );
   }
 
-  os << "===============================" << lend;
+  os << "===============================" << "\n";
+}
+
+
+void 
+Record::print() const { 
+
+  this->print(std::cout);
 }
 
 
@@ -235,15 +235,6 @@ Record::record_exact_compare(const Record & rhs ) const {
     return result;
 }
 
-
-/*
- * Aim: print the record on standard output. The definition here is to avoid inlineness to allow debugging.
- */
-void 
-Record::print() const { 
-
-  this->print(std::cout);
-}
 
 
 /*
