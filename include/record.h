@@ -125,6 +125,7 @@ class Record {
     friend class cRatioComponent;
 
 private:
+    // TODO: s/vector_pdata/attributes/g
     vector <const Attribute *> vector_pdata;
     static vector <string> column_names;
     static vector < string > active_similarity_names;
