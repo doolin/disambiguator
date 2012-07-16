@@ -245,19 +245,19 @@ class cRatios;
  *    const char * previous_round_file = "disambig_r3.txt";
  *    CIobj.reset_blocking( *pblocker, previous_round_file );    //read the data into the object from specified file
  *    const cRatio * pratio;
- *    //......
+ *    //
  */
 
 /* Example continued...
  *    //Here create a cRatio object, do enough preparations for the object, and then assign pratio to the object.
  *    //This should include training steps.
- *    //......
+ *    //
  *    const char * debug_file = "invalid_file.txt";  //this file can be invalid and should be empty if a whole disambiguation is expected.
  *    const char * prior_history = "prior_history_r4.txt";  //this file will be created if not exists.
  *    CIobj.disambiguate( *pratio, number_of_threads, debug_file, prior_history );    //this command starts the disambiguation.
  *    //It should take a several hours to run the disambiguation, so waiting...
- *    //......
- *    //......
+ *    //
+ *    //
  *    const char * target_file = "disambig_r4.txt";    //now ready to dump the disambiguation results into this file.
  *    CIobj.output_current_comparision_info( target_file );        //dumping results.
  *
@@ -371,7 +371,9 @@ public:
  * It is unnecessary to understanding the detail. The only thing necessary to know is the constructor.
  *
  * Private:
- *        map < string, cCluster_Info::cRecGroup >::iterator * ppdisambiged: the pointer to an iterator that is a cursor of progress of disambiguation.
+ *        map < string, cCluster_Info::cRecGroup >::iterator * ppdisambiged:
+ *        the pointer to an iterator that is a cursor of progress of disambiguation.
+ *
  *        const cRatios * pratios: the pointer to a cRatio object.
  *        cCluster_Info & cluster_ref: the reference of a cCluster_Info object that is actually the source.
  *        static pthread_mutex_t iter_lock: a mutex to synchronize the cursor.
