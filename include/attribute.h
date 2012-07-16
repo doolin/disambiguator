@@ -14,7 +14,8 @@
 #include <typeinfo>
 #include <memory>
 
-#define INERT_ATTRIB_GROUP_IDENTIFIER "NONE" // the attribute group specifier that is not the component of similarity profiles
+// the attribute group specifier that is not the component of similarity profiles
+#define INERT_ATTRIB_GROUP_IDENTIFIER "NONE" 
 
 
 using std::string;
@@ -118,14 +119,17 @@ public:
  * All the concrete classes are declared in the file "DisambigCustomizedDefs.h"
  * and implemented in "DisambigCustomizedDefs.cpp".
  *
- *
+ */
+
+/*
  *    Member Functions:
  *    Protected:
  *
  *        1. virtual vector < const string * > & get_data_modifiable() = 0:
  *        get the data. should only be used within derived classes. Implemented in child classes.
  *
- *        2. virtual const Attribute * attrib_merge ( const Attribute & rhs) const: get the attribute pointer into which the two attributes are supposed to merge
+ *        2. virtual const Attribute * attrib_merge ( const Attribute & rhs) const:
+ *        get the attribute pointer into which the two attributes are supposed to merge
  *
  *    Public:
  *
@@ -140,44 +144,82 @@ public:
  */
 
 /* 
- *        5. virtual bool operator == ( const Attribute & rhs) const: exact comparison between two attributes. Has a default implementation but overidable.
+ *        5. virtual bool operator == ( const Attribute & rhs) const:
+ *        exact comparison between two attributes. Has a default implementation but overidable.
  *
- *        6. void reset_data(const char * inputstring): reset the attribute based on the inputstring. calls the polymorphic "split_string" function.
+ *        6. void reset_data(const char * inputstring):
+ *        reset the attribute based on the inputstring. calls the polymorphic "split_string" function.
  *
- *        7. virtual void config_interactive (const vector <const Attribute *> &inputvec ): handles the attribute with other linked ones. Returns the pointer of a configured attribute. Default implementation is throwing an error. Overide if necessary.
+ *        7. virtual void config_interactive (const vector <const Attribute *> &inputvec ):
+ *        handles the attribute with other linked ones. Returns the pointer of a
+ *        configured attribute. Default implementation is throwing an error. Overide if necessary.
  *
- *        8. virtual const vector <const string*> & get_data() const = 0: The most commonly used function. Get the vector of string pointers. Implemented in child classes.
+ *        8. virtual const vector <const string*> & get_data() const = 0:
+ *        The most commonly used function. Get the vector of string pointers. Implemented in child classes.
  *
- *        9. virtual const vector <const Attribute *> & get_interactive_vector(): expected to be implemented in the child class to accommodate access to data that has interactions with the attribute.
+ *        9. virtual const vector <const Attribute *> & get_interactive_vector():
+ *        expected to be implemented in the child class to accommodate access to
+ *        data that has interactions with the attribute.
  *
- *        10. virtual const string & get_class_name() const : To get the identifier of the class. must be implemented by template child class.
+ *        10. virtual const string & get_class_name() const :
+ *        To get the identifier of the class. must be implemented by template child class.
  *
- *        11. virtual bool is_comparator_activated(): To check if the comparison of the attribute is enabled. also must be implemented by template child class.
+ *        11. virtual bool is_comparator_activated():
+ *        To check if the comparison of the attribute is enabled.
+ *        also must be implemented by template child class.
  *
  *        12. virtual ~Attribute(): polymophic destructor. no need to change.
  *
- *        13. virtual const Attribute* clone() const: polymorphic copy constructor. This should be the way to create a copy of the attribute.
+ *        13. virtual const Attribute* clone() const:
+ *        polymorphic copy constructor. This should be the
+ *        way to create a copy of the attribute.
  *
- *        14. virtual bool has_checked_interactive_consistency() const: To check if the pointers of interactive attributes are stored correctly. Must be called when loading a source data file.
+ *        14. virtual bool has_checked_interactive_consistency() const:
+ *        To check if the pointers of interactive attributes are stored
+ *        correctly. Must be called when loading a source data file.
  *
- *        15. virtual unsigned int get_attrib_max_value() const: To get the maximum attribute score. The scores are determined in child classes, so this function has to be overridden in child class.
+ *        15. virtual unsigned int get_attrib_max_value() const:
+ *        To get the maximum attribute score. The scores are determined
+ *        in child classes, so this function has to be overridden in child class.
  *
- *        16. virtual int exact_compare( const Attribute & rhs ): To check if this attribute is exactly the same as rhs. -1 means disabled. 0 = not exact match. 1 = exact match.
+ *        16. virtual int exact_compare( const Attribute & rhs ):
+ *        To check if this attribute is exactly the same as rhs.
+ *        -1 means disabled. 0 = not exact match. 1 = exact match.
+ */
+
+/*
+ *        17. virtual const string * add_string( const string & str ) const:
+ *        To add the string data into the internal static string data pooling
+ *        system, and return the pointer to the pooled string. Extremely important.
  *
- *        17. virtual const string * add_string( const string & str ) const: To add the string data into the internal static string data pooling system, and return the pointer to the pooled string. Extremely important.
+ *        18. virtual bool operator < ( const Attribute & rhs ) const:
+ *        defined the less operator for the class. Used in the internal
+ *        attribute pooling system. Not expected for user use.
+ *        HOWEVER, IT IS EXTREMLY IMPORTANT TO OVERRIDE THE LESS THAN
+ *        OPERATOR IF DIFFERENT OBJECTS ARE COMPARED NOT ONLY BY
+ *        Attribute::data. i.e., interactive data, or set_mode.
  *
- *        18. virtual bool operator < ( const Attribute & rhs ) const: defined the less operator for the class. Used in the internal attribute pooling system. Not expected for user use.
- *                HOWEVER, IT IS EXTREMLY IMPORTANT TO OVERRIDE THE LESS THAN OPERATOR IF DIFFERENT OBJECTS ARE COMPARED NOT ONLY BY Attribute::data. i.e., interactive data, or set_mode.
+ *        19. virtual bool is_informative() const:
+ *        to check if the attribute data vector is empty, or the string
+ *        pointer in the vector points to an empty string. Override if necessary.
  *
- *        19. virtual bool is_informative() const: to check if the attribute data vector is empty, or the string pointer in the vector points to an empty string. Override if necessary.
+ *        20. virtual int clean_attrib_pool() const: to clean the attribute
+ *        pool in the template child class. Must be overridden in child classes.
+ */
+
+
+/*
+ *        21. virtual const Attribute * reduce_attrib(unsigned int n) const:
+ *        deduct the counting reference of "this" attribute by n, and return
+ *        the pointer to the attribute. Pooling is in the subclass. So has to be overridden.
  *
- *        20. virtual int clean_attrib_pool() const: to clean the attribute pool in the template child class. Must be overridden in child classes.
+ *        22. virtual const Attribute * add_attrib( unsigned int n ) const:
+ *        add the counting reference of "this" attribute by n, and return
+ *        the pointer to the attribute. Pooling is in the subclass. So has to be overridden.
  *
- *        21. virtual const Attribute * reduce_attrib(unsigned int n) const: deduct the counting reference of "this" attribute by n, and return the pointer to the attribute. Pooling is in the subclass. So has to be overridden.
- *
- *        22. virtual const Attribute * add_attrib( unsigned int n ) const:  add the counting reference of "this" attribute by n, and return the pointer to the attribute. Pooling is in the subclass. So has to be overridden.
- *
- *        23. virtual const set < const string *> * get_attrib_set_pointer () const: to get the Set_Mode data, instead of the default vector mode data. An interface for Set_Mode classes.
+ *        23. virtual const set < const string *> * get_attrib_set_pointer () const:
+ *        to get the Set_Mode data, instead of the default vector mode data. An
+ *        interface for Set_Mode classes.
  *
  *  ATTENTION:
  *      NEVER EDIT AN EXISTING ATTRIBUTE OBJECT, BECAUSING IT MAY BE USED BY DIFFERENT RECORDS!
