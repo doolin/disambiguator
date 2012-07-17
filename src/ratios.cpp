@@ -433,17 +433,19 @@ void
 cRatios::write_ratios_file(const char * filename) const {
 
     std::ofstream::sync_with_stdio(false);
-    std::cout << "Number of of ratios vectors = " << final_ratios.size() << std::endl;
-    std::cout << "Saving the ratios in the file " << filename << std::endl;
+    std::cout << "Number of of ratios vectors = " << final_ratios.size()
+              << " From: " << __FILE__ << ":" << __LINE__ <<std::endl;
+    std::cout << "Saving the ratios in the file " << filename
+              << " From: " << __FILE__ << ":" << __LINE__ <<std::endl;
 
     std::ofstream outfile(filename);
-    for (vector<string>::const_iterator p = attrib_names.begin(); p != attrib_names.end(); ++p ) {
+    for (vector<string>::const_iterator p = attrib_names.begin(); p != attrib_names.end(); ++p) {
         outfile << *p << secondary_delim;
     }
     outfile << primary_delim << "VALUE" << '\n';
 
     map < vector <unsigned int>, double, SimilarityCompare >::const_iterator q = final_ratios.begin();
-    for (q; q != final_ratios.end(); ++q ) {
+    for (q; q != final_ratios.end(); ++q) {
         vector <unsigned int>::const_iterator pint = q->first.begin(); 
         for (pint; pint != q->first.end(); ++pint)
             outfile << *pint << secondary_delim;
