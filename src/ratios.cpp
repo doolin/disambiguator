@@ -25,8 +25,7 @@ get_max_similarity(const vector < string > & attrib_names)  {
 
 void
 cRatioComponent::sp_stats (const list<std::pair<string, string> > & trainpairs, 
-                           map < vector < unsigned int >,
-                           unsigned int, SimilarityCompare > & sp_counts ) const {
+                           map < SimilarityProfile, unsigned int, SimilarityCompare > & sp_counts ) const {
 
     const vector < unsigned int > & component_indice_in_record = get_component_positions_in_record();
     //const list <Record > & source = *psource;
@@ -50,7 +49,7 @@ cRatioComponent::sp_stats (const list<std::pair<string, string> > & trainpairs,
 
     const map <string, const Record *> & dict = *puid_tree;
     map<string, const Record *>::const_iterator pm;
-    map < vector < unsigned int >, unsigned int, SimilarityCompare >::iterator psp;
+    map < SimilarityProfile, unsigned int, SimilarityCompare >::iterator psp;
     for ( list< std::pair<string, string> >::const_iterator p = trainpairs.begin(); p != trainpairs.end(); ++p ) {
         pm = dict.find(p->first);
         if ( pm == dict.end() )
@@ -61,16 +60,17 @@ cRatioComponent::sp_stats (const list<std::pair<string, string> > & trainpairs,
             throw cException_Attribute_Not_In_Tree( ( string("\"") + p->second + string ("\"") ).c_str() );
         const Record *prhs = pm->second;
 
-        vector < unsigned int > similarity_profile = plhs->record_compare_by_attrib_indice(*prhs, component_indice_in_record);
+        SimilarityProfile similarity_profile = plhs->record_compare_by_attrib_indice(*prhs, component_indice_in_record);
         //debug only
-        //std::cout << "Size of Similarity Profile = "<< similarity_profile.size() << ". Similarity Profile = ";
-        //for ( vector <unsigned int >::const_iterator tt = similarity_profile.begin(); tt != similarity_profile.end(); ++tt )
-        //    std::cout << *tt << ":";
-        //std::cout << std::endl;
+        std::cout << "Size of Similarity Profile = "<< similarity_profile.size() << ". Similarity Profile = ";
+        for ( vector <unsigned int >::const_iterator tt = similarity_profile.begin(); tt != similarity_profile.end(); ++tt ) {
+            std::cout << *tt << ":";
+        }
+        std::cout << std::endl;
         //end of debug
         psp = sp_counts.find(similarity_profile);
         if ( psp == sp_counts.end() )
-            sp_counts.insert( std::pair < vector <unsigned int>, unsigned int >(similarity_profile, 1));
+            sp_counts.insert( std::pair < SimilarityProfile, unsigned int >(similarity_profile, 1));
         else {
             ++ (psp->second);
         }
@@ -187,6 +187,7 @@ cRatioComponent::prepare(const char * x_file,
     map < vector < unsigned int >, unsigned int, SimilarityCompare >::const_iterator p, q;
 
     const unsigned int count_to_consider = 100;
+    // This is probably also a SimilarityProfile
     set < vector < unsigned int >, SimilarityCompare > all_possible;
 
     for ( p = x_counts.begin(); p != x_counts.end(); ++p ) {
@@ -230,7 +231,7 @@ cRatioComponent::prepare(const char * x_file,
         if ( q == m_counts.end() ) 
             continue;
         else {
-            ratio_map.insert(std::pair< vector < unsigned int>, double >(p->first, 1.0 * q->second / p->second) );
+            ratio_map.insert(std::pair< SimilarityProfile, double >(p->first, 1.0 * q->second / p->second) );
         }
     }
 
@@ -359,10 +360,10 @@ cRatios::cRatios(const vector < const cRatioComponent *> & component_pointer_vec
     if (final_ratios.size() > 0) {
       // now checking the final ratios
       //const vector < unsigned int > & firstline = final_ratios.begin()->first;
-      map < const vector < unsigned int >, double, SimilarityCompare>::const_iterator firstline = final_ratios.begin();
+      map < const SimilarityProfile, double, SimilarityCompare>::const_iterator firstline = final_ratios.begin();
       //vector< unsigned int >::const_iterator k = firstline.begin(); 
-      vector< unsigned int > vec = (*firstline).first;
-      vector< unsigned int >::const_iterator k = vec.begin(); 
+      SimilarityProfile vec = (*firstline).first;
+      SimilarityProfile::const_iterator k = vec.begin(); 
       //for (k; k < firstline.end(); ++k) {
       //for (k; k != firstline.end(); ++k) {
       for (k; k != vec.end(); ++k) {
@@ -393,7 +394,7 @@ cRatios::cRatios(const char * filename) {
 void
 cRatios::More_Components(const cRatioComponent & additional_component) {
 
-    map < vector <unsigned int>, double, SimilarityCompare > temp_ratios;
+    map < SimilarityProfile, double, SimilarityCompare > temp_ratios;
 
     map < vector < unsigned int >, unsigned int, SimilarityCompare > temp_x_counts, temp_m_counts;
     const vector < unsigned int > & temp_pos_in_rec = additional_component.get_component_positions_in_record();
@@ -406,19 +407,19 @@ cRatios::More_Components(const cRatioComponent & additional_component) {
     std::cout << "From cRatios::More_Components: final_ratios.size(): " << final_ratios.size()
 	      << ", " << __FILE__ << ":" << __LINE__ << std::endl;
 
-    for (map < vector <unsigned int>, double, SimilarityCompare >::iterator p = final_ratios.begin();
+    for (map < SimilarityProfile, double, SimilarityCompare >::iterator p = final_ratios.begin();
 		    p != final_ratios.end(); ++p ) {
 
         vector < unsigned int > key = p->first;
 
-        for (map < vector <unsigned int>, double, SimilarityCompare >::const_iterator vv = additional_component.get_ratios_map().begin();
+        for (map < SimilarityProfile, double, SimilarityCompare >::const_iterator vv = additional_component.get_ratios_map().begin();
              vv != additional_component.get_ratios_map().end(); ++vv) {
 
             for ( unsigned int j = 0; j < vv->first.size(); ++j ) {
                 key.at( positions_in_ratios.at(j) ) = vv->first.at(j);
             }
 
-            temp_ratios.insert( std::pair < vector < unsigned int >, double >(key, p->second * vv->second));
+            temp_ratios.insert( std::pair < SimilarityProfile, double >(key, p->second * vv->second));
             temp_x_counts.insert(std::pair < vector < unsigned int >, unsigned int >(key, this->x_counts.find(p->first)->second + additional_component.get_x_counts().find(vv->first)->second ) );
             temp_m_counts.insert(std::pair < vector < unsigned int >, unsigned int >(key, this->m_counts.find(p->first)->second + additional_component.get_m_counts().find(vv->first)->second ) );
         }
@@ -441,16 +442,16 @@ cRatios::write_ratios_file(const char * filename) const {
 
     std::ofstream outfile(filename);
 
-    // Firstname, etc. attributes.   
+    // Firstname, etc. attributes in a top of file header row.   
     for (vector<string>::const_iterator p = attrib_names.begin(); p != attrib_names.end(); ++p) {
         outfile << *p << secondary_delim;
     }
     outfile << primary_delim << "VALUE" << '\n';
 
     // The actual values..
-    map < vector <unsigned int>, double, SimilarityCompare >::const_iterator q = final_ratios.begin();
+    map < SimilarityProfile, double, SimilarityCompare >::const_iterator q = final_ratios.begin();
     for (q; q != final_ratios.end(); ++q) {
-        vector <unsigned int>::const_iterator pint = q->first.begin(); 
+        SimilarityProfile::const_iterator pint = q->first.begin(); 
         for (pint; pint != q->first.end(); ++pint) {
 	    // Currently secondary_delim is ","
             outfile << *pint << secondary_delim;
@@ -482,7 +483,7 @@ cRatios::read_ratios_file(const char * filename) {
         prev_pos = pos + secondary_delim_size;
     }
 
-    vector < unsigned int > key;
+    SimilarityProfile key;
     while ( getline(infile, filedata)) {
 
         key.clear();
@@ -497,7 +498,7 @@ cRatios::read_ratios_file(const char * filename) {
 
         const double value = atof(filedata.substr(pos).c_str());
 
-        final_ratios.insert(std::pair<vector<unsigned int>, double >(key, value));
+        final_ratios.insert(std::pair<SimilarityProfile, double >(key, value));
     }
 
     std::cout << filename << " has been loaded as the final ratios file"<< std::endl;

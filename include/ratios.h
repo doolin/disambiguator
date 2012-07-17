@@ -177,7 +177,7 @@ private:
     */
     static const unsigned int laplace_base;
 
-    map < vector <unsigned int>, double, SimilarityCompare > ratio_map;
+    map < SimilarityProfile, double, SimilarityCompare > ratio_map;
 
     vector < unsigned int > positions_in_ratios;
 
@@ -239,7 +239,7 @@ public:
    /**
     * TODO: FIXME: Document this method.
     */
-    const map < vector < unsigned int >, double, SimilarityCompare > & get_ratios_map() const {
+    const map < SimilarityProfile, double, SimilarityCompare > & get_ratios_map() const {
         if ( is_ready )
             return ratio_map;
         else {
@@ -297,7 +297,7 @@ private:
     * final_ratios map takes a similarity vector as a key for the similarity
     * value, with the appropriate similarity comparator.
     */
-    map < vector <unsigned int>, double, SimilarityCompare > final_ratios;
+    map < SimilarityProfile, double, SimilarityCompare > final_ratios;
     vector < string > attrib_names;
     unsigned int ratio_size;
     //vector <double> coeffs;
@@ -328,7 +328,7 @@ public:
     * The getter for the ratios map, i.e., the lookup table for the
     * computed similarity ratios in Torvik's terminology.
     */
-    const map < vector < unsigned int >, double, SimilarityCompare > & get_ratios_map() const {
+    const map < SimilarityProfile, double, SimilarityCompare > & get_ratios_map() const {
         return final_ratios;
     }
 
