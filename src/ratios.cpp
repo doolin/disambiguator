@@ -1,7 +1,8 @@
 
+#include <cstring>
+
 #include "ratios.h"
 #include "engine.h"
-#include <cstring>
 
 
 const char * cRatios::primary_delim = "#";

@@ -7,6 +7,7 @@
 #include <set>
 #include <fstream>
 
+#include "typedefs.h"
 #include "disambiguation.h"
 #include "attribute.h"
 
