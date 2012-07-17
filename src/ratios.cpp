@@ -82,6 +82,9 @@ void
 cRatioComponent::read_train_pairs(list<std::pair<string, string> > & trainpairs, 
                                   const char * txt_file) const {
 
+    std::cout << "Reading training pairs from " << txt_file
+              << ", " << __FILE__ << ":" << __LINE__ << std::endl;
+
     static const char * delim = ",";
     static const unsigned int delim_size = strlen(delim);
 
@@ -108,31 +111,34 @@ cRatioComponent::read_train_pairs(list<std::pair<string, string> > & trainpairs,
 
 
 void
-cRatioComponent::stats_output( const char * filename) const {
+cRatioComponent::stats_output(const char * filename) const {
 
-    std::ofstream of ( filename );
+    std::ofstream ostream (filename);
+
     const string nmc = "Non-Match Counts";
     const string mc = "Match Counts";
     const string splabel = "Similarity Profiles";
     const string delim = " | ";
 
-    of << splabel  << "(";
-    for ( vector < unsigned int >:: const_iterator tt = this->positions_in_record.begin(); tt != this->positions_in_record.end(); ++tt )
-        of << Record::get_column_names().at(*tt) << ",";
-    of << ")";
+    ostream << splabel  << "(";
 
-    of << delim << mc << delim << nmc << '\n';
+    vector < unsigned int >:: const_iterator tt = this->positions_in_record.begin(); 
+    for (tt; tt != this->positions_in_record.end(); ++tt )
+        ostream << Record::get_column_names().at(*tt) << ",";
+    ostream << ")";
+
+    ostream << delim << mc << delim << nmc << '\n';
     map < vector < unsigned int >, unsigned int  >::const_iterator pm;
     map < vector < unsigned int >, double>::const_iterator p;
 
     for (p = this->ratio_map.begin(); p != this->ratio_map.end(); ++p) {
         for ( vector <unsigned int >::const_iterator q = p->first.begin(); q != p->first.end(); ++q )
-            of << *q << ",";
-        of << delim;
+            ostream << *q << ",";
+        ostream << delim;
         pm = this->m_counts.find(p->first);
-        of << pm->second << delim;
+        ostream << pm->second << delim;
         pm = this->x_counts.find(p->first);
-        of << pm->second << '\n';
+        ostream << pm->second << '\n';
     }
 
     for ( pm = this->m_counts.begin(); pm != this->m_counts.end(); ++pm ) {
@@ -140,10 +146,10 @@ cRatioComponent::stats_output( const char * filename) const {
         if ( p != this->ratio_map.end())
             continue;
         for ( vector <unsigned int >::const_iterator q = pm->first.begin(); q != pm->first.end(); ++q )
-            of << *q << ",";
-        of << delim;
-        of << pm->second << delim;
-        of << 0 << '\n';
+            ostream << *q << ",";
+        ostream << delim;
+        ostream << pm->second << delim;
+        ostream << 0 << '\n';
     }
 
     for ( pm = this->x_counts.begin(); pm != this->x_counts.end(); ++pm ) {
@@ -151,10 +157,10 @@ cRatioComponent::stats_output( const char * filename) const {
         if ( p != this->ratio_map.end())
             continue;
         for ( vector <unsigned int >::const_iterator q = pm->first.begin(); q != pm->first.end(); ++q )
-            of << *q << ",";
-        of << delim;
-        of << 0 << delim;
-        of << pm->second << '\n';
+            ostream << *q << ",";
+        ostream << delim;
+        ostream << 0 << delim;
+        ostream << pm->second << '\n';
     }
     std::cout << "Ratio component info saved in " << filename << std::endl;
 }
