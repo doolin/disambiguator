@@ -439,16 +439,22 @@ cRatios::write_ratios_file(const char * filename) const {
               << " From: " << __FILE__ << ":" << __LINE__ <<std::endl;
 
     std::ofstream outfile(filename);
+
+    // Firstname, etc. attributes.   
     for (vector<string>::const_iterator p = attrib_names.begin(); p != attrib_names.end(); ++p) {
         outfile << *p << secondary_delim;
     }
     outfile << primary_delim << "VALUE" << '\n';
 
+    // The actual values..
     map < vector <unsigned int>, double, SimilarityCompare >::const_iterator q = final_ratios.begin();
     for (q; q != final_ratios.end(); ++q) {
         vector <unsigned int>::const_iterator pint = q->first.begin(); 
-        for (pint; pint != q->first.end(); ++pint)
+        for (pint; pint != q->first.end(); ++pint) {
+	    // Currently secondary_delim is ","
             outfile << *pint << secondary_delim;
+	}
+	// Currently primary_delim is "#"
         outfile << primary_delim << q->second << '\n';
     }
     std::cout << "Ratios file saved." << std::endl;
