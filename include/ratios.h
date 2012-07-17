@@ -122,13 +122,10 @@ public:
 
 /*
  * Private:
- *
- *         map < vector <unsigned int>, double, SimilarityCompare > ratio_map:
- *             a ratio map for the current component.
- *               Key = similarity profile,
- *               Value = ratio,
- *               Comparator = SimilarityCompare
- *
+ */
+
+
+/*
  *         vector < unsigned int > positions_in_ratios:
  *             positions of the current components in the complete similarity profile.
  *
@@ -177,6 +174,13 @@ private:
     */
     static const unsigned int laplace_base;
 
+   /**
+    *  map < SimilarityProfile, double, SimilarityCompare > ratio_map:
+    *  a ratio map for the current component.
+    *  Key = similarity profile,
+    *  Value = ratio,
+    *  Comparator = SimilarityCompare
+    */
     map < SimilarityProfile, double, SimilarityCompare > ratio_map;
 
     vector < unsigned int > positions_in_ratios;
