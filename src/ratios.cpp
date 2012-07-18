@@ -347,8 +347,7 @@ cRatios::cRatios(const vector < const cRatioComponent *> & component_pointer_vec
     attrib_names.resize(ratio_size, "Invalid Attribute");
     static const unsigned int impossible_value = 10000;
     vector<unsigned int> null_vect (ratio_size, impossible_value);
-    //final_ratios.insert( std::pair<  vector <unsigned int> , double > (null_vect, 1) );
-    final_ratios.insert( std::pair<  vector <unsigned int> , double >  (null_vect, 1.0) );
+    final_ratios.insert( std::pair<  vector <unsigned int> , double > (null_vect, 1) );
     x_counts.insert(std::pair<  vector <unsigned int> , unsigned int > (null_vect, 0));
     m_counts.insert(std::pair<  vector <unsigned int> , unsigned int > (null_vect, 0));
 
@@ -398,6 +397,54 @@ cRatios::cRatios(const char * filename) {
 
 
 void
+print_similarity(const SimilarityProfile & s) {
+
+  std::cout << "From :" << __FUNCTION__ << ", " << __FILE__ 
+            << ":" << __LINE__ << std::endl;
+
+  std::cout << "(";
+
+  SimilarityProfile::const_iterator i = s.begin(); 
+  for (i; i != s.end()-1; ++i) {
+    std::cout << *i << ", ";
+  }
+  std::cout << *i;
+  std::cout << ")" << std::endl;
+}
+
+
+void
+print_value(unsigned int i) {
+  std::cout << "From " << __FUNCTION__ ", " << __FILE__ << ":" << __LINE__ << std::endl;
+  std::cout << "Value: " << i << std::endl;
+}
+
+/*
+void
+print_map(std::map < SimilarityProfile, double, comparator > m) {
+
+  std::map < SimilarityProfile, double, comparator >::const_iterator mi = m.begin();
+  for (mi; mi != m.end(); ++mi) {
+    print_similarity((*mi).first);
+    print_value((*mi).second);
+  }
+}
+*/
+
+void
+print_map(std::map < SimilarityProfile, unsigned int, SimilarityCompare > m) {
+
+  std::cout << "From " << __FILE__ << ":" << __LINE__ << std::endl;
+
+  std::map < SimilarityProfile, unsigned int, SimilarityCompare >::const_iterator mi = m.begin();
+  for (mi; mi != m.end(); ++mi) {
+    print_similarity((*mi).first);
+    print_value((*mi).second);
+  }
+}
+
+
+void
 cRatios::More_Components(const cRatioComponent & additional_component) {
 
     map < SimilarityProfile, double, SimilarityCompare > temp_ratios;
@@ -425,15 +472,18 @@ cRatios::More_Components(const cRatioComponent & additional_component) {
                 key.at( positions_in_ratios.at(j) ) = vv->first.at(j);
             }
 
-            temp_ratios.insert( std::pair < SimilarityProfile, double >(key, p->second * vv->second));
+            temp_ratios.insert(std::pair < SimilarityProfile, double >(key, p->second * vv->second));
             temp_x_counts.insert(std::pair < vector < unsigned int >, unsigned int >(key, this->x_counts.find(p->first)->second + additional_component.get_x_counts().find(vv->first)->second ) );
             temp_m_counts.insert(std::pair < vector < unsigned int >, unsigned int >(key, this->m_counts.find(p->first)->second + additional_component.get_m_counts().find(vv->first)->second ) );
         }
     }
 
     final_ratios = temp_ratios;
+    //print_map(final_ratios);
     x_counts = temp_x_counts;
+    //print_map(x_counts);
     m_counts = temp_m_counts;
+    //print_map(m_counts);
 }
 
 
