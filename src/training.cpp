@@ -503,7 +503,8 @@ find_rare_names_v2(const vector < cGroup_Value * > &vec_pdest,
                    const list< const Record* > & source ) {
 
     typedef std::pair < unsigned int, unsigned int > cWord_occurrence;
-    // step 1: build phrase map: key=phrase(here is firstname+lastname with some delimiters). value= list of unique_ids (here is invnums)
+    // step 1: build phrase map: key=phrase(here is firstname+lastname with
+    // some delimiters). value= list of unique_ids (here is invnums)
     const string blocks[] = {cFirstname::static_get_class_name(), cLastname::static_get_class_name()};
 
     const unsigned int num_columns_for_blocking = sizeof(blocks)/sizeof(string);
@@ -513,7 +514,9 @@ find_rare_names_v2(const vector < cGroup_Value * > &vec_pdest,
     cBlocking fullname(source, blocking_columns, blocking_operator_pointers, cUnique_Record_ID::static_get_class_name());
 
 
-    //step 2: build word map: key = word, value = [OCCURRENCE in UNIQUE PHRASES, OCCURRENCE in ALL PHRASES]
+    //step 2: build word map:
+    //key = word,
+    //value = [OCCURRENCE in UNIQUE PHRASES, OCCURRENCE in ALL PHRASES]
     //split and update
     unsigned int size;
     const char * delim = " ";
@@ -528,7 +531,9 @@ find_rare_names_v2(const vector < cGroup_Value * > &vec_pdest,
         map < string, cWord_occurrence > word_map;
         set <string> chosen_words;
         const unsigned int cindex = Record::get_index_by_name(blocking_columns[kkk]);
-        for ( map < string, cGroup_Value >::const_iterator p = fullname.get_block_map().begin(); p != fullname.get_block_map().end() ; ++p ) {
+
+        map < string, cGroup_Value >::const_iterator p = fullname.get_block_map().begin(); 
+        for (p; p != fullname.get_block_map().end() ; ++p) {
             size = p->second.size();
             position = prev_pos = 0;
             const string & info = * (*(p->second.begin()))->get_data_by_index(cindex).at(0);
