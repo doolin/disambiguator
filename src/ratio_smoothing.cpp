@@ -94,7 +94,6 @@ cRatioComponent::smooth() {
 void
 cRatios::smooth() {
     std::cout << "Starting ratios smoothing..." << std::endl;
-    //smoothing( final_ratios, similarity_map, x_counts, m_counts, this->get_attrib_names(), should_do_name_range_check);
     const SimilarityProfile max = get_max_similarity (this->attrib_names);
     const SimilarityProfile min ( max.size(), 0 );
     smoothing_inter_extrapolation_cplex(this->final_ratios, min, max, x_counts, m_counts,
@@ -230,6 +229,8 @@ smoothing_inter_extrapolation_cplex(map < SimilarityProfile, double, SimilarityC
               << total_possible_inequality << " inequalities in all." << std::endl;
 
     std::cout << "Starting Quadratic Programming. ( Take the logarithm ) ..." << std::endl;
+
+    //exit(0);
 
 #if HAVE_CPLEX
     IloEnv env;
