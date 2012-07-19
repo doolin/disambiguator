@@ -1,4 +1,4 @@
-/* strcmp95.c   Version 2						      */
+/* strcmp95.c   Version 2                              */
 
 #include "strcmp95.h"
 #include "stdlib.h"
@@ -29,14 +29,14 @@ double strcmp95_modified (const char *ying, const char *yang)
 
    The suggested values are all zeros for character strings such as names.    */
 
-static	int	pass=0,	adjwt[91][91];
-static	const unsigned char	sp[39][2] =
+static    int    pass=0,    adjwt[91][91];
+static    const unsigned char    sp[39][2] =
  { {'A','E'},  {'A','I'},  {'A','O'},  {'A','U'},  {'B','V'},  {'E','I'},  {'E','O'},  {'E','U'},
-	{'I','O'},  {'I','U'},  {'O','U'},  {'I','Y'},  {'E','Y'},  {'C','G'},  {'E','F'},
-	{'W','U'},  {'W','V'},  {'X','K'},  {'S','Z'},  {'X','S'},  {'Q','C'},  {'U','V'},
-	{'M','N'},  {'L','I'},  {'Q','O'},  {'P','R'},  {'I','J'},  {'2','Z'},  {'5','S'},
-	{'8','B'},  {'1','I'},  {'1','L'},  {'0','O'},  {'0','Q'},  {'C','K'},  {'G','J'},
-	{'E',' '},  {'Y',' '},  {'S',' '}
+    {'I','O'},  {'I','U'},  {'O','U'},  {'I','Y'},  {'E','Y'},  {'C','G'},  {'E','F'},
+    {'W','U'},  {'W','V'},  {'X','K'},  {'S','Z'},  {'X','S'},  {'Q','C'},  {'U','V'},
+    {'M','N'},  {'L','I'},  {'Q','O'},  {'P','R'},  {'I','J'},  {'2','Z'},  {'5','S'},
+    {'8','B'},  {'1','I'},  {'1','L'},  {'0','O'},  {'0','Q'},  {'C','K'},  {'G','J'},
+    {'E',' '},  {'Y',' '},  {'S',' '}
  };
 
 char    ying_hold[MAX_VAR_SIZE],
@@ -44,12 +44,12 @@ char    ying_hold[MAX_VAR_SIZE],
         ying_flag[MAX_VAR_SIZE],
         yang_flag[MAX_VAR_SIZE];
 
-double  weight,	Num_sim;
+double  weight,    Num_sim;
 
 long    minv,   search_range,   lowlim,    ying_length,
         hilim,  N_trans,        Num_com,   yang_length;
 
-int	yl1,	/*yi_st,*/	N_simi;
+int    yl1,    /*yi_st,*/    N_simi;
 
 register int     i,      j,      k;
 
@@ -73,7 +73,7 @@ if (!strncmp(yang,NULL60,y_length)) return(0.0);
 if(ying[0] == '\0' || yang[0] == '\0') return(0.0);
 
 /* Identify the strings to be compared by stripping off all leading and 
- 	 trailing spaces.							      */
+      trailing spaces.                                  */
 k = y_length - 1;
 for(j = 0;((ying[j]==' ') && (j < k));j++);
 //for(i = k;((ying[i]==' ') && (i > 0));i--);
@@ -113,7 +113,7 @@ if (ying_length > yang_length) {
 /* If either string is blank - return                                         */
 /* if (!minv) return(0.0);                   removed in version 2             */
 
-/* Blank out the flags							      */
+/* Blank out the flags                                  */
 ying_flag[0] = yang_flag[0] = 0;
 strncat(ying_flag,NULL60,search_range);
 strncat(yang_flag,NULL60,search_range);
@@ -171,7 +171,7 @@ if (minv > Num_com) {
 } } } } } }
 Num_sim = ((double) N_simi)/10.0 + Num_com;
 
-/* Main weight computation.						      */
+/* Main weight computation.                              */
 weight= Num_sim / ((double) ying_length) + Num_sim / ((double) yang_length) + ((double) (Num_com - N_trans)) / ((double) Num_com);
 weight = weight / 3.0;
 
@@ -202,86 +202,86 @@ return(weight);
 
 
 int is_misspell( const char * s1, const char * s2 ) {
-	const int size_diff = strlen(s1)- strlen(s2);
-	const char * plong = NULL, *pshort = NULL;
-	int hit = 0;
+    const int size_diff = strlen(s1)- strlen(s2);
+    const char * plong = NULL, *pshort = NULL;
+    int hit = 0;
 
 
-	if ( size_diff == 1 || size_diff == -1  ) {
-		// one character is missing
-		if ( size_diff == 1 ) {
-			plong = s1;
-			pshort = s2;
-		}
-		else {
-			plong = s2;
-			pshort = s1;
-		}
+    if ( size_diff == 1 || size_diff == -1  ) {
+        // one character is missing
+        if ( size_diff == 1 ) {
+            plong = s1;
+            pshort = s2;
+        }
+        else {
+            plong = s2;
+            pshort = s1;
+        }
 
-		while ( *pshort != '\0' ) {
-			if ( *plong++ != *pshort++ ) {
-				if ( hit )
-					return 0;
-				++plong;
-				hit = 1;
-			}
-		}
+        while ( *pshort != '\0' ) {
+            if ( *plong++ != *pshort++ ) {
+                if ( hit )
+                    return 0;
+                ++plong;
+                hit = 1;
+            }
+        }
 
-		if ( *pshort != '\0' && *plong != '\0' )
-			return 0;
-		else
-			return 1;
-	}
+        if ( *pshort != '\0' && *plong != '\0' )
+            return 0;
+        else
+            return 1;
+    }
 
-	else if ( size_diff == 0) {
-		//switch or misspell
-		while ( *s1 != '\0' ) {
-			if ( *s1 != *s2 ) {
-				if ( hit )
-					return 0;
-				else {
-					hit = 1;
-					plong = s1;
-					pshort = s2;
-					++s1;
-					++s2;
-					if ( *s1 == '\0' )
-						return 3; //misspelling of last char
-				}
+    else if ( size_diff == 0) {
+        //switch or misspell
+        while ( *s1 != '\0' ) {
+            if ( *s1 != *s2 ) {
+                if ( hit )
+                    return 0;
+                else {
+                    hit = 1;
+                    plong = s1;
+                    pshort = s2;
+                    ++s1;
+                    ++s2;
+                    if ( *s1 == '\0' )
+                        return 3; //misspelling of last char
+                }
 
-			}
-			++s1;
-			++s2;
-		}
-		if ( hit == 0 )
-			return 4; //exact match
-		else {
-			if ( *plong != *pshort && *( plong + 1 ) == *(pshort + 1) )
-				return 3; //misspelling
-			else if ( *plong == * (pshort + 1) && *pshort == *(plong + 1 ))
-				return 2; //switch of 2 chars
-			else
-				return 0;
-		}
-	}
-	else
-		return 0;
+            }
+            ++s1;
+            ++s2;
+        }
+        if ( hit == 0 )
+            return 4; //exact match
+        else {
+            if ( *plong != *pshort && *( plong + 1 ) == *(pshort + 1) )
+                return 3; //misspelling
+            else if ( *plong == * (pshort + 1) && *pshort == *(plong + 1 ))
+                return 2; //switch of 2 chars
+            else
+                return 0;
+        }
+    }
+    else
+        return 0;
 
 }
 
 int is_abbreviation( const char * s1, const char * s2 ) {
         int cnt = 0;
-	while ( *s1 != '\0' && *s2 != '\0' && *s1 == *s2 ) {
-		++s1;
-		++s2;
-	    ++cnt;
-	}
-	if ( *s1 != '\0' && *s2 != '\0' )
-		return 0;
-	//else if ( *s1 == '\0' && *s2 == '\0' )
-	//	return 2;
-	else
-		return cnt;
+    while ( *s1 != '\0' && *s2 != '\0' && *s1 == *s2 ) {
+        ++s1;
+        ++s2;
+        ++cnt;
+    }
+    if ( *s1 != '\0' && *s2 != '\0' )
+        return 0;
+    //else if ( *s1 == '\0' && *s2 == '\0' )
+    //    return 2;
+    else
+        return cnt;
 }
 
 
