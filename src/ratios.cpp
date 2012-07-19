@@ -415,7 +415,7 @@ print_similarity(const SimilarityProfile & s) {
 
 void
 print_value(unsigned int i) {
-  std::cout << "From " << __FUNCTION__ ", " << __FILE__ << ":" << __LINE__ << std::endl;
+  std::cout << "From " << __FUNCTION__ << ", " << __FILE__ << ":" << __LINE__ << std::endl;
   std::cout << "Value: " << i << std::endl;
 }
 
