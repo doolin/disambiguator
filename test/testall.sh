@@ -25,3 +25,5 @@ echo "Rare names test"
 echo "Typedefs test"
 `./typedefs`
 
+echo "Abbreviations test"
+`./abbreviation`
