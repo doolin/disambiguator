@@ -7,7 +7,9 @@ AM_LDFLAGS = $(shell cppunit-config --libs)
 
 
 TESTS = distest idtest typedefs record blocking attribute stringmanipulator \
-	comparators comparesimilarities strcmp95 rarenames engineconfig
+	comparators comparesimilarities strcmp95 rarenames engineconfig     \
+	abbreviation
+
 bin_PROGRAMS = $(TESTS)
 
 distest_SOURCES = test_initial.cpp
@@ -22,6 +24,9 @@ comparators_CXXFLAGS = -Dcomparators_STANDALONE
 
 rarenames_SOURCES = test_rarenames.cpp
 rarenames_CXXFLAGS = -Drarenames_STANDALONE
+
+abbreviation_SOURCES = test_abbreviation.cpp
+abbreviation_CXXFLAGS = -Dabbreviation_STANDALONE
 
 engineconfig_SOURCES = test_engineconfig.cpp
 #engineconfig_CXXFLAGS = -Dengineconfig_STANDALONE

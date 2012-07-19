@@ -7,48 +7,35 @@
 #include <cppunit/TestCase.h>
 
 
-#include <strcmp95.h>
+#include "strcmp95.h"
 
 /**
  * Run this code with /usr/bin/valgrind ./abbreviations --leak-check=full
  */
 
+void
+test_is_abbrev() {
 
-class InitialTest : public CppUnit::TestCase { 
-public: 
-  InitialTest( std::string name ) : CppUnit::TestCase( name ) {}
- 
-  void runTest() {
-    Initial * i = new Initial();
-    CPPUNIT_ASSERT( i->value  == 1 );
-    const string uid_identifier = cUnique_Record_ID::static_get_class_name();
-    //uid = string("Unique_Record_ID");
-    CPPUNIT_ASSERT( uid_identifier == string("Unique_Record_ID"));
-    delete i;
-  }
+  const char * s1 = "abbreviation";
+  const char * s2 = "abbr";
+  CPPUNIT_ASSERT (3 == is_abbreviation(s1,s2));
+}
 
-  void LabelTest(void) {
-    Label * l = new Label();
-    delete l;
-  }
+void
+test_is_not_abbrev() {
 
-  void LabelTest(char const * label) {
-    const string s(label);
-    Label l(1, s);
-    Label m(1, string("baz"));
-  }
-};
+}
 
+void
+test_abbreviations() {
+  test_is_abbrev();
+  test_is_not_abbrev();
+}
 
 int
 main(int argc, char ** argv) {
 
-  InitialTest * it = new InitialTest(std::string("initial test"));
-  it->runTest();
-  it->LabelTest();
-  it->LabelTest("foobar");
-
-  delete it;
-
+  test_abbreviations();
   return 0;
 }
+
