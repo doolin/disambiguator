@@ -27,3 +27,7 @@ echo "Typedefs test"
 
 echo "Abbreviations test"
 `./abbreviation`
+
+echo "is_misspell test"
+`./misspell`
+
