@@ -31,3 +31,6 @@ echo "Abbreviations test"
 echo "is_misspell test"
 `./misspell`
 
+echo "name_compare test"
+`./namecompare`
+

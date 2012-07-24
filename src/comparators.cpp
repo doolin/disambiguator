@@ -525,7 +525,7 @@ name_compare(const string & s1,
     int misspell_score = is_misspell(s1.c_str(), s2.c_str()) ;
     if (misspell_score) return 3;
 
-    unsigned int abbrev_score = is_abbreviation ( s1.c_str(), s2.c_str());
+    unsigned int abbrev_score = is_abbreviation (s1.c_str(), s2.c_str());
     if (abbrev_score == 0) {
         return 0;
     } else if ( cur != 0 && cur <= abbrev_score ) {
