@@ -11,11 +11,12 @@
 #include "comparators.h"
 
 extern "C" {
-    #include "strcmp95.h"
+#include "strcmp95.h"
 }
 
 using std::list;
 
+#if 0
 //this function is to get the incontinuous longest common subsequence of two vectors.
 //for example, the mid name comparision uses the function | or the following continuous function.
 template <typename Tp, typename Functor>
@@ -117,13 +118,13 @@ vector <Tp> Longest_Common_Subsequence_Continuous(const vector <Tp> & s1, const 
     return ss;
 }
 
-
 inline bool
 cSentence_JWComparator::operator()(const string * ps1, const string * ps2) const {
 
     const double compres = strcmp95_modified(ps1->c_str(), ps2->c_str());
     return compres > threshold;
 };
+#endif
 
 
 char *
@@ -468,6 +469,7 @@ asgcmp (const string & s1, const string &s2) {
 }
 
 
+#if 0
 int
 asgcmp_to_test(const vector <string> & asg1,
                const vector <string> & asg2,
@@ -511,6 +513,7 @@ asgcmp_to_test(const vector <string> & asg1,
     }
     return score;
 }
+#endif
 
 
 int
