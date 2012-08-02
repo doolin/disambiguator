@@ -68,8 +68,8 @@ if (!pass) {
 //modified by edward
 #if 0
 // If either string is blank - return - added in Version 2                    */
-if (!strncmp(ying,NULL60,y_length)) return(0.0);                 
-if (!strncmp(yang,NULL60,y_length)) return(0.0);                 
+if (!strncmp(ying,NULL60,y_length)) return(0.0);
+if (!strncmp(yang,NULL60,y_length)) return(0.0);
 if(ying[0] == '\0' || yang[0] == '\0') return(0.0);
 
 /* Identify the strings to be compared by stripping off all leading and 
@@ -201,7 +201,8 @@ return(weight);
 
 
 
-int is_misspell( const char * s1, const char * s2 ) {
+int
+is_misspell( const char * s1, const char * s2 ) {
     const int size_diff = strlen(s1)- strlen(s2);
     const char * plong = NULL, *pshort = NULL;
     int hit = 0;
@@ -268,6 +269,7 @@ int is_misspell( const char * s1, const char * s2 ) {
         return 0;
 
 }
+
 
 int
 is_abbreviation(const char * s1, const char * s2) {
