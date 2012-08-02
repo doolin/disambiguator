@@ -158,7 +158,7 @@ main(int argc, char ** argv) {
 
 // http://stackoverflow.com/questions/138383/colored-grep/138528#138528
 // http://stackoverflow.com/questions/9158150/colored-output-in-c
-  std::cout << "\033[32mTesting \033[36mname_\033[33mcompare...!\033[0m" << std::endl;
+// std::cout << "\033[32mTesting \033[36mname_\033[33mcompare...!\033[0m" << std::endl;
   test_namecompare();
   //test_positioners();
   return 0;

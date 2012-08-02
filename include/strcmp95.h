@@ -26,7 +26,6 @@ extern "C" {
 
 //double  strcmp95(char *, char *, long, int **);
 double strcmp95_modified (const char *ying, const char *yang);
-int is_misspell( const char * s1, const char * s2 );
 
 #ifdef __cplusplus
 }

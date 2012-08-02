@@ -7,7 +7,7 @@
 #include <cppunit/TestCase.h>
 
 
-#include "strcmp95.h"
+#include "comparators.h"
 
 /**
  * Run this code with /usr/bin/valgrind ./missing --leak-check=full

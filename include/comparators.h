@@ -56,6 +56,10 @@ int    name_compare     (const string & s1,
 int    is_abbreviation  (const char * s1,
                          const char * s2);
 
+int    is_misspell      (const char * s1,
+                         const char * s2 );
+
+
 template <typename Tp>
 inline const Tp& max_val(const Tp& arg1, const Tp &arg2) {
     return ( arg1 < arg2 )? arg2 : arg1;
