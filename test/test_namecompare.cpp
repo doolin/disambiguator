@@ -58,6 +58,16 @@ test_is_misspall() {
 }
 
 
+void
+test_not_same() {
+
+  std::string s1("function");
+  std::string s2("egregious");
+  CPPUNIT_ASSERT (0 == name_compare(s1,s2,0,0));
+}
+
+
+
 /**
  * The case where 2 is returned.
  * Why?
@@ -79,6 +89,7 @@ test_namecompare() {
   test_is_missepll();
   test_is_misspall();
   test_is_abbrev2();
+  test_not_same();
 }
 
 
@@ -116,6 +127,7 @@ test_positioners() {
   traverse_cursors("kim", "lim");
   traverse_cursors("Kim", "lim");
   traverse_cursors("Kim", "Lim");
+  traverse_cursors("function", "method");
 }
 
 
@@ -127,7 +139,7 @@ main(int argc, char ** argv) {
 // http://stackoverflow.com/questions/9158150/colored-output-in-c
   std::cout << "\033[32mTesting \033[36mname_\033[33mcompare...!\033[0m" << std::endl;
   test_namecompare();
-  test_positioners();
+  //test_positioners();
   return 0;
 }
 #endif
