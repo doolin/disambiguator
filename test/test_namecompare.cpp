@@ -6,11 +6,19 @@
 #include <cppunit/extensions/TestFactory.h>
 #include <cppunit/TestCase.h>
 
-
 #include "comparators.h"
 
 /**
  * Run this code with /usr/bin/valgrind ./namecompare --leak-check=full
+ */
+
+/**
+ * The `name_compare` function computes similarity values as follows:
+ * 0: two strings are completely different
+ * 1: both strings empty
+ * 2: one string is an abbreviation of the other string
+ * 3: strings are the same with one misspelled
+ * 4: both strings identical
  */
 
 void
@@ -69,14 +77,26 @@ test_not_same() {
 
 
 /**
- * The case where 2 is returned.
- * Why?
+ * The case where 2 is returned
+ * indicates one string is an abbreviation
+ * of the other string.
+ */
+void
+test_is_abbrev1() {
+
+  std::string s1("miss");
+  std::string s2("misspell");
+  CPPUNIT_ASSERT (2 == name_compare(s1,s2,3,0));
+}
+
+/**
+ * Reverse the abbreviation and try again.
  */
 void
 test_is_abbrev2() {
 
-  std::string s1("miss");
-  std::string s2("misspell");
+  std::string s1("misspell");
+  std::string s2("miss");
   CPPUNIT_ASSERT (2 == name_compare(s1,s2,3,0));
 }
 
@@ -88,6 +108,7 @@ test_namecompare() {
   test_is_not_misspell();
   test_is_missepll();
   test_is_misspall();
+  test_is_abbrev1();
   test_is_abbrev2();
   test_not_same();
 }
