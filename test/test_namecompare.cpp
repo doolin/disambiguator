@@ -58,7 +58,7 @@ test_is_misspall() {
 }
 
 
-/** 
+/**
  * The case where 2 is returned.
  * Why?
  */
@@ -81,11 +81,53 @@ test_namecompare() {
   test_is_abbrev2();
 }
 
+
+void
+print_namecompare(std::string s1, std::string s2, int prev, int cur, int value) {
+
+  std::cout << "s1: "    << s1   << ", "
+            << "s2: "    << s2   << ", "
+            << "prev: "  << prev << ", "
+            << "cur: "   << cur  << ", "
+            << "value: " << value
+            << std::endl;
+}
+
+void
+traverse_cursors(std::string s1, std::string s2) {
+
+  for (unsigned int prev=0; prev<s1.size(); ++prev) {
+    for (unsigned int cur=0; cur<s2.size(); ++cur) {
+      int value = name_compare(s1,s2,prev,cur);
+      print_namecompare(s1, s2, prev, cur, value);
+    }
+  }
+}
+
+void
+test_positioners() {
+
+  traverse_cursors("fo", "fi");
+  traverse_cursors("foo", "foi");
+  traverse_cursors("foo", "boo");
+  traverse_cursors("foo", "foo");
+  traverse_cursors("foobar", "foo");
+  traverse_cursors("foo", "foobar");
+  traverse_cursors("kim", "lim");
+  traverse_cursors("Kim", "lim");
+  traverse_cursors("Kim", "Lim");
+}
+
+
 #ifdef namecompare_STANDALONE
 int
 main(int argc, char ** argv) {
 
+// http://stackoverflow.com/questions/138383/colored-grep/138528#138528
+// http://stackoverflow.com/questions/9158150/colored-output-in-c
+  std::cout << "\033[32mTesting \033[36mname_\033[33mcompare...!\033[0m" << std::endl;
   test_namecompare();
+  test_positioners();
   return 0;
 }
 #endif
