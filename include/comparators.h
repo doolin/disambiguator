@@ -53,12 +53,6 @@ int    name_compare     (const string & s1,
                          const unsigned int prev,
                          const unsigned int cur);
 
-#if 0
-int    asgcmp_to_test   (const vector <string> & asg1,
-                         const vector <string> & asg2,
-                         const map<string, std::pair<string, unsigned int> > * const asg_table_pointer);
-#endif
-
 
 template <typename Tp>
 inline const Tp& max_val(const Tp& arg1, const Tp &arg2) {

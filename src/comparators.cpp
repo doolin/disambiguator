@@ -469,53 +469,6 @@ asgcmp (const string & s1, const string &s2) {
 }
 
 
-#if 0
-int
-asgcmp_to_test(const vector <string> & asg1,
-               const vector <string> & asg2,
-               const map<string, std::pair<string, unsigned int> > * const asg_table_pointer) {
-
-    map<string, std::pair<string, unsigned int> >::const_iterator p1, p2;
-    p1 = asg_table_pointer->find(asg1.at(0));
-    p2 = asg_table_pointer->find(asg2.at(0));
-
-    if ( p1 == asg_table_pointer->end() || p2 == asg_table_pointer->end() ) {
-        std::cout << "Error: either assignee is not found in the assignee tree. "
-                  << asg1.at(0) << " or " << asg2.at(0) << std::endl;
-        exit(3);
-    }
-
-    int score = 0;
-    if ( p1->second.first == p2->second.first && p1->second.first.size() > 3 ) {
-
-        score = 6;
-        if ( p1->second.second < 100 || p2->second.second < 100)
-            score += 2;
-        else if ( p1->second.second < 1000 || p2->second.second < 1000 )
-            score += 1;
-    } else {
-
-        const double jw_threshold = 0.9;
-        static const cSentence_JWComparator sjw(jw_threshold);
-        vector < const string * > vec_asg1;
-        vector < string >::const_iterator q1 = asg1.begin();
-
-        for ( ++q1; q1 != asg1.end(); ++q1 )
-            vec_asg1.push_back(&(*q1));
-
-        vector < const string * > vec_asg2;
-        vector < string >::const_iterator q2 = asg2.begin();
-
-        for ( ++q2; q2 != asg2.end(); ++q2 )
-            vec_asg2.push_back(&(*q2));
-
-        score = Longest_Common_Subsequence_Incontinuous <const string *, cSentence_JWComparator>(vec_asg1, vec_asg2, sjw).size();
-    }
-    return score;
-}
-#endif
-
-
 int
 name_compare(const string & s1,
              const string & s2,
