@@ -16,6 +16,26 @@ extern "C" {
 
 using std::list;
 
+
+int
+is_abbreviation(const char * s1, const char * s2) {
+
+    int cnt = 0;
+    while ( *s1 != '\0' && *s2 != '\0' && *s1 == *s2 ) {
+        ++s1;
+        ++s2;
+        ++cnt;
+    }
+    if ( *s1 != '\0' && *s2 != '\0' )
+        return 0;
+    //else if ( *s1 == '\0' && *s2 == '\0' )
+    //    return 2;
+    else
+        return cnt;
+}
+
+
+
 #if 0
 //this function is to get the incontinuous longest common subsequence of two vectors.
 //for example, the mid name comparision uses the function | or the following continuous function.

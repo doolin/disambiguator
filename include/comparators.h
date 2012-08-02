@@ -53,6 +53,8 @@ int    name_compare     (const string & s1,
                          const unsigned int prev,
                          const unsigned int cur);
 
+int    is_abbreviation  (const char * s1,
+                         const char * s2);
 
 template <typename Tp>
 inline const Tp& max_val(const Tp& arg1, const Tp &arg2) {
