@@ -58,6 +58,19 @@ test_is_misspall() {
 }
 
 
+/** 
+ * The case where 2 is returned.
+ * Why?
+ */
+void
+test_is_abbrev2() {
+
+  std::string s1("miss");
+  std::string s2("misspell");
+  CPPUNIT_ASSERT (2 == name_compare(s1,s2,3,0));
+}
+
+
 void
 test_namecompare() {
   test_empty();
@@ -65,6 +78,7 @@ test_namecompare() {
   test_is_not_misspell();
   test_is_missepll();
   test_is_misspall();
+  test_is_abbrev2();
 }
 
 #ifdef namecompare_STANDALONE
