@@ -31,6 +31,10 @@ public:
     return strcmp95_modified(s1.c_str(), s2.c_str());
   }
 
+  void print_comparison(string s1, string s2, float value) {
+    std::cout << s1 << " vs. " << s2 << ": " << value << std::endl;
+  }
+
 };
 
 
@@ -55,44 +59,57 @@ test_strcmp95() {
   s1 = "MATTHEW";
   s2 = "HEWMATT";
   val = st->compute_jw("MATTHEW", "HEWMATT");
-  std::cout << "val: " << val << std::endl;
+  val = st->compute_jw(s1, s2);
+  st->print_comparison(s1, s2, val);
   //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
 
-  val = st->compute_jw("MATTHEW", "MATEW");
-  std::cout << "val: " << val << std::endl;
+  s2 = "MATEW";
+  val = st->compute_jw(s1,s2);
+  st->print_comparison(s1, s2, val);
   //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
 
-  val = st->compute_jw("MATTHEW", "MATT");
-  std::cout << "val: " << val << std::endl;
+  s2 = "MATT";
+  val = st->compute_jw(s1, s2);
+  st->print_comparison(s1, s2, val);
   //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
 
-  val = st->compute_jw("MATTHEW", "MTATWEH");
-  std::cout << "val: " << val << std::endl;
+  s2 = "MTATWEH";
+  val = st->compute_jw(s1, s2);
+  st->print_comparison(s1, s2, val);
   //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
 
+  s2 = "M";
   val = st->compute_jw("MATTHEW", "M");
-  std::cout << "val: " << val << std::endl;
+  st->print_comparison(s1, s2, val);
   //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
 
-  val = st->compute_jw("MATTHEW", "TALIN");
-  std::cout << "val: " << val << std::endl;
+  s2 = "TALIN";
+  val = st->compute_jw(s1, s2);
+  st->print_comparison(s1, s2, val);
   //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
 
-  val = st->compute_jw("MATTHEW", "XYZ");
-  std::cout << "val: " << val << std::endl;
+  s2 = "XYZ";
+  val = st->compute_jw(s1, s2);
+  st->print_comparison(s1, s2, val);
   //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
 
   // The next three come from Wikipedia
-  val = st->compute_jw("dixon", "dicksonx");
-  std::cout << "val: " << val << std::endl;
+  s1 = "dixon";
+  s2 = "dicksonx";
+  val = st->compute_jw(s1, s2);
+  st->print_comparison(s1, s2, val);
   //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
 
-  val = st->compute_jw("duane", "dwayne");
-  std::cout << "val: " << val << std::endl;
+  s1 = "duane";
+  s2 = "dwayne";
+  val = st->compute_jw(s1, s2);
+  st->print_comparison(s1, s2, val);
   //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
 
-  val = st->compute_jw("MARTHA", "MARHTA");
-  std::cout << "val: " << val << std::endl;
+  s1 = "MARTHA";
+  s2 = "MARHTA";
+  val = st->compute_jw(s1, s2);
+  st->print_comparison(s1, s2, val);
   //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
 
   delete st;
