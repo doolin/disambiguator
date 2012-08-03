@@ -34,3 +34,6 @@ echo "is_misspell test"
 echo "name_compare test"
 `./namecompare`
 
+echo "strcmp95 test"
+`./strcmp95`
+

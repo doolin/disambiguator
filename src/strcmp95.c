@@ -199,5 +199,3 @@ return(weight);
 
 } /* strcmp95 */
 
-
-
