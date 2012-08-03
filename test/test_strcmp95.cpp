@@ -32,7 +32,7 @@ public:
   }
 
   void print_comparison(string s1, string s2, float value) {
-    std::cout << s1 << " vs. " << s2 << ": " << value << std::endl;
+    //std::cout << s1 << " vs. " << s2 << ": " << value << std::endl;
   }
 
 };

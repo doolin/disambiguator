@@ -37,3 +37,6 @@ echo "name_compare test"
 echo "strcmp95 test"
 `./strcmp95`
 
+echo "jwcmp test"
+`./jwcmp`
+

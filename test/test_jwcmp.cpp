@@ -13,10 +13,12 @@
 using std::string;
 
 // Need a tempate for comparing floats
+/*
 bool
 is_equal(float f1, float f2, float tol) {
   return (fabs(f1-f2) < tol);
 }
+*/
 
 class JWcmpTest : public CppUnit::TestCase {
 
@@ -31,8 +33,8 @@ public:
     return jwcmp(s1.c_str(), s2.c_str());
   }
 
-  void print_comparison(string s1, string s2, float value) {
-    std::cout << s1 << " vs. " << s2 << ": " << value << std::endl;
+  void print_score(string s1, string s2, int score) {
+    //std::cout << s1 << " vs. " << s2 << ": " << score << std::endl;
   }
 
 };
@@ -45,7 +47,35 @@ test_jwcmp() {
 
   string s1("");
   string s2("");
+  int score;
 
+  score = jwcmp(s1, s2);
+  st->print_score(s1, s2, score);
+  CPPUNIT_ASSERT(0 == score);
+
+  s1 = "MATTHEW";
+  s2 = "XYZ";
+  score = jwcmp(s1, s2);
+  st->print_score(s1, s2, score);
+  CPPUNIT_ASSERT(0 == score);
+
+  s1 = "MATTHEW";
+  s2 = "TALIN";
+  score = jwcmp(s1, s2);
+  st->print_score(s1, s2, score);
+  CPPUNIT_ASSERT(0 == score);
+
+  s1 = "MATTHEW";
+  s2 = "MATHEW";
+  score = jwcmp(s1, s2);
+  st->print_score(s1, s2, score);
+  CPPUNIT_ASSERT(4 == score);
+
+  s1 = "MATTHEW";
+  s2 = "MATTHEW";
+  score = jwcmp(s1, s2);
+  st->print_score(s1, s2, score);
+  CPPUNIT_ASSERT(5 == score);
   delete st;
 }
 
@@ -57,4 +87,3 @@ main(int argc, char ** argv) {
   return 0;
 }
 #endif /* jwcmp_STANDALONE */
-
