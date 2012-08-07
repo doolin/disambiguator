@@ -344,7 +344,7 @@ fetch_records_from_txt(list <Record> & source,
     std::cout << "Reading input data file..." << std::endl;
     while (getline(instream, line) ) {
 
-        std::cout << "line: " << line << std::endl;
+        //std::cout << "line: " << line << std::endl;
 
         // vector.clear is an stl method, calls all destructors
         temp_vec_attrib.clear();
