@@ -1,3 +1,6 @@
+tmp
+tmp/*
+./*/tmp/*
 gmon.out
 *~
 *.swp
