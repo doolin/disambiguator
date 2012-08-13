@@ -5,20 +5,21 @@
  *      Author: ysun
  */
 
-#include "ratios.h"
-#include "engine.h"
-
 #include <limits>
 #include <climits>
 #include <sstream>
 #include <cmath>
 #include <algorithm>
+#include <iostream>
 
 #define HAVE_CPLEX 1
 
 #if HAVE_CPLEX
 #include <ilcplex/ilocplex.h>
 #endif
+
+#include <ratios.h>
+#include <engine.h>
 
 static const bool should_do_name_range_check = true;
 

@@ -1,7 +1,8 @@
 /* strcmp95.c   Version 2						      */
 
-#include "strcmp95.h"
-#include "stdlib.h"
+#include <stdlib.h>
+
+#include <strcmp95.h>
 
 //double  strcmp95(char *ying, char *yang, long y_length, int *ind_c[])
 double strcmp95_modified (const char *ying, const char *yang)
