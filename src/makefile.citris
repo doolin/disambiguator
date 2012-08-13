@@ -8,18 +8,21 @@ CC=gcc
 # Profiling
 #CFLAGS=-O3 -pg -Wall -I/usr/local/include -L/usr/local/lib
 # Debugging
-INCLUDES = -I../include
-CFLAGS=-O3  -Wall -fno-inline -I/usr/local/include -L/usr/local/lib $(INCLUDES)
+CFLAGS=-O3  -Wall -fno-inline -DIL_STD
 OOQPINCLUDEDIR=/usr/local/include/ooqp
 
 #ILOGINSTALLDIR=/home/ysun/ILOG/CPLEX_Studio_AcademicResearch122
-ILOGINSTALLDIR=/global/home/users/ddoolin/ILOG/
+ILOGINSTALLDIR=/global/home/users/ddoolin/ILOG
 
 
 CPLEXINCLUDE=$(ILOGINSTALLDIR)/cplex/include
 CONCERTINCLUDE=$(ILOGINSTALLDIR)/concert/include
+
+INCLUDES = -I../include -I/usr/local/include -I$(CPLEXINCLUDE) -I$(CONCERTINCLUDE)
+
 #CPLEXLIB=$(ILOGINSTALLDIR)/cplex/lib/x86_sles10_4.1/static_pic
 CPLEXLIB=$(ILOGINSTALLDIR)/cplex/lib/x86-64_sles10_4.1/static_pic
+
 #CONCERTLIB=$(ILOGINSTALLDIR)/concert/lib/x86_sles10_4.1/static_pic
 CONCERTLIB=$(ILOGINSTALLDIR)/concert/lib/x86-64_sles10_4.1/static_pic
 
@@ -27,11 +30,14 @@ CONCERTLIB=$(ILOGINSTALLDIR)/concert/lib/x86-64_sles10_4.1/static_pic
 objects = attribute.o engine.o comparators.o blocking_operation.o cluster.o \
           ratios.o fileoper.o main.o disambiguate.o newcluster.o record.o \
           record_reconfigurator.o string_manipulator.o threading.o training.o \
-          utilities.o
+          utilities.o strcmp95.o ratio_smoothing.o postprocess.o
 
 
 %.o: %.cpp
-	$(CXX)  $(CFLAGS) -c $<
+	$(CXX)  $(CFLAGS) $(INCLUDES) -c $<
+
+%.o: %.c
+	$(CC)  $(CFLAGS) -I../include -c $<
 
 all:exedisambig #txt2sqlite3
 
@@ -59,8 +65,8 @@ DisambigComp.o: DisambigComp.cpp DisambigComp.h
 DisambigTraining.o: DisambigTraining.h DisambigTraining.cpp
 	$(CXX) -c $? $(CFLAGS)
 
-strcmp95.o: strcmp95.c strcmp95.h
-	$(CC) -c $? $(CFLAGS)
+#strcmp95.o: strcmp95.c strcmp95.h
+#	$(CC) -c $? $(CFLAGS)
 
 Threading.o: Threading.cpp Threading.h
 	$(CXX) -c $? $(CFLAGS)
