@@ -5,7 +5,9 @@
 #include <cstring>
 #include <map>
 
-#include "txt2sqlite3.h"
+#include <sqlite3.h>
+
+#include <txt2sqlite3.h>
 
 using std::string;
 using std::map;
