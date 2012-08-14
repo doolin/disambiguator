@@ -8,9 +8,12 @@
 #ifndef TXT2SQLITE3_H_
 #define TXT2SQLITE3_H_
 
+#ifdef __cplusplus
 extern "C" {
-	#include <sqlite3.h>
+#include <sqlite3.h>
 }
+#endif
+
 #include <string>
 using std::string;
 
