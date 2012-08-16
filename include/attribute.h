@@ -450,14 +450,15 @@ public:
     Attribute_Basic (const char * source = NULL ): Attribute(source) {}
     const string & get_class_name() const { return class_name;}
     static const string & static_get_class_name() {return class_name;}
-    
+
     //static void set_column_index_in_query(const unsigned int i ) {column_index_in_query = i;}
     //THIS IS THE DEFAULT COMPARISON FUNCTION. ANY ATTRIBUTE THAT HAS REAL COMPARISION FUNCTIONS SHOULD OVERRIDE IT.
     //ANY ATTRIBUTE THAT HAS NO REAL COMPARISION FUNCTIONS SHOULD JUST LEAVE IT.
     unsigned int compare(const Attribute & rhs) const {
         throw cException_No_Comparision_Function(class_name.c_str());
     };
-    static const unsigned int get_interactive_column_number() { return num_of_interactive_columns;};
+    //static const unsigned int get_interactive_column_number() { return num_of_interactive_columns;};
+    static unsigned int get_interactive_column_number() { return num_of_interactive_columns;};
     static void static_check_interactive_consistency( const vector <string> & query_columns ) {
 
 #if 0
@@ -805,8 +806,8 @@ protected:
         AttribType tempclass;
         tempclass.attrib_set = temp;
         const AttribType * result = this->static_add_attrib(tempclass, 2);
-        static_reduce_attrib( dynamic_cast<const AttribType & >(*this), 1);
-        static_reduce_attrib(rhs, 1);
+        this->static_reduce_attrib( dynamic_cast<const AttribType & >(*this), 1);
+        this->static_reduce_attrib(rhs, 1);
         return result;
     }
 
