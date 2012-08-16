@@ -80,7 +80,7 @@ test_jwcmp() {
 }
 
 
-#ifdef jwcmp_STANDALONE
+#ifdef test_jwcmp_STANDALONE
 int
 main(int argc, char ** argv) {
   test_jwcmp();

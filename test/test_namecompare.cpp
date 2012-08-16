@@ -152,7 +152,7 @@ test_positioners() {
 }
 
 
-#ifdef namecompare_STANDALONE
+#ifdef test_namecompare_STANDALONE
 int
 main(int argc, char ** argv) {
 

@@ -51,7 +51,7 @@ void test_rarenames() {
 }
 
 
-#ifdef rarenames_STANDALONE
+#ifdef test_rarenames_STANDALONE
 int
 main(int argc, char ** argv) {
   test_rarenames();

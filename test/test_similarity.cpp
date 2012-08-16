@@ -82,7 +82,7 @@ public:
 };
 
 // Add these in for building a test library
-#ifdef similarity_STANDALONE
+#ifdef test_similarity_STANDALONE
 int
 main(int argc, char ** argv) {
 

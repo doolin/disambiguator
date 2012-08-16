@@ -57,7 +57,7 @@ test_misspell() {
   test_is_misspall();
 }
 
-#ifdef misspell_STANDALONE
+#ifdef test_misspell_STANDALONE
 int
 main(int argc, char ** argv) {
 

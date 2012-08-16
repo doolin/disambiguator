@@ -109,7 +109,7 @@ void test_comparators() {
 }
 
 
-#ifdef comparators_STANDALONE
+#ifdef test_comparators_STANDALONE
 int
 main(int argc, char ** argv) {
   test_comparators();
