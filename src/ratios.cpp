@@ -61,6 +61,7 @@ cRatioComponent::sp_stats (const list<std::pair<string, string> > & trainpairs,
         const Record *prhs = pm->second;
 
         SimilarityProfile similarity_profile = plhs->record_compare_by_attrib_indice(*prhs, component_indice_in_record);
+        /*
         //debug only
         std::cout << "Size of Similarity Profile = "<< similarity_profile.size() << ". Similarity Profile = ";
         for ( vector <unsigned int >::const_iterator tt = similarity_profile.begin(); tt != similarity_profile.end(); ++tt ) {
@@ -68,6 +69,7 @@ cRatioComponent::sp_stats (const list<std::pair<string, string> > & trainpairs,
         }
         std::cout << std::endl;
         //end of debug
+        */
         psp = sp_counts.find(similarity_profile);
         if ( psp == sp_counts.end() )
             sp_counts.insert( std::pair < SimilarityProfile, unsigned int >(similarity_profile, 1));
