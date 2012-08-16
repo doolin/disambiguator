@@ -1,0 +1,51 @@
+#CXX=icpc
+#CC=icc
+#CFLAGS=-O3 -g -xsse4.1 -ipo -static-intel -Wall
+
+#CXX=g++
+#CC=gcc
+CXX=icc
+CC=icc
+
+#CFLAGS=-O3 -g -Wall -I/usr/local/include -L/usr/local/lib
+# Profiling
+#CFLAGS=-O3 -pg -Wall -I/usr/local/include -L/usr/local/lib
+# Debugging
+
+OOQPINCLUDEDIR=/usr/local/include/ooqp
+
+#ILOGINSTALLDIR=/home/ysun/ILOG/CPLEX_Studio_AcademicResearch122
+ILOGINSTALLDIR=/global/home/users/ddoolin/ILOG
+
+
+CPLEXINCLUDE=$(ILOGINSTALLDIR)/cplex/include
+CONCERTINCLUDE=$(ILOGINSTALLDIR)/concert/include
+
+INCLUDES = -I../include -I/usr/local/include -I$(CPLEXINCLUDE) -I$(CONCERTINCLUDE)
+
+#CPLEXLIB=$(ILOGINSTALLDIR)/cplex/lib/x86_sles10_4.1/static_pic
+CPLEXLIB=$(ILOGINSTALLDIR)/cplex/lib/x86-64_sles10_4.1/static_pic
+
+#CONCERTLIB=$(ILOGINSTALLDIR)/concert/lib/x86_sles10_4.1/static_pic
+CONCERTLIB=$(ILOGINSTALLDIR)/concert/lib/x86-64_sles10_4.1/static_pic
+
+objects = attribute.o engine.o comparators.o blocking_operation.o cluster.o \
+          ratios.o fileoper.o main.o disambiguate.o newcluster.o record.o \
+          record_reconfigurator.o string_manipulator.o threading.o training.o \
+          utilities.o strcmp95.o ratio_smoothing.o postprocess.o
+
+CFLAGS=-O3  -Wall -fno-inline -DIL_STD
+
+%.o: %.cpp
+	$(CXX)  $(CFLAGS) $(INCLUDES) -c $<
+
+%.o: %.c
+	$(CC)  $(CFLAGS) -I../include -c $<
+
+all: exedisambig
+
+exedisambig: $(objects)
+	$(CXX) -o $@ $? $(CFLAGS) -L$(CPLEXLIB) -lilocplex -lcplex -L$(CONCERTLIB) -lconcert -lm -lpthread
+
+clean:
+	rm -rf *.o *.gch
