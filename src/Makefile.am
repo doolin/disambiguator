@@ -33,7 +33,7 @@ libdisambiguation_a_SOURCES = disambiguate.cpp cluster.cpp comparators.cpp attri
                               string_manipulator.cpp record_reconfigurator.cpp
 
 #libdisambiguation_a_CXXFLAGS = -O0 -pg a
-libdisambiguation_a_CPPFLAGS = -Wall -Wextra -Wno-ignored-qualifiers -fno-inline $(INCLUDES) -DIL_STD -L/usr/local/lib -DNDEBUG -w
+libdisambiguation_a_CPPFLAGS = -Wall -Wextra -fno-inline $(INCLUDES) -DIL_STD -L/usr/local/lib -DNDEBUG -w #-Wno-ignored-qualifiers 
 #libdisambiguation_a_LDFLAGS = -pg  -O0
 
 #disambiguate_CPPFLAGS = -O0 -g -Wall -fno-inline $(INCLUDES) -DIL_STD -L/usr/local/lib -DNDEBUG -w
