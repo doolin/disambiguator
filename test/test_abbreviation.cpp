@@ -43,7 +43,7 @@ test_abbreviations() {
 }
 
 int
-main(int argc, char ** argv) {
+main(int, char **) {
 
   test_abbreviations();
   return 0;

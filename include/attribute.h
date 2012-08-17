@@ -14,6 +14,8 @@
 #include <typeinfo>
 #include <memory>
 
+#include "macros.h"
+
 // the attribute group specifier that is not the component of similarity profiles
 #define INERT_ATTRIB_GROUP_IDENTIFIER "NONE" 
 
@@ -235,19 +237,19 @@ private:
     friend class Record;
     friend void attrib_merge ( list < const Attribute **> & l1, list < const Attribute **> & l2 );
     static vector <string> Derived_Class_Name_Registry;
-    virtual void reconfigure_for_interactives( const Record * pRec) const {};
+    virtual void reconfigure_for_interactives( const Record * UP(pRec)) const {};
 
 protected:
 
     // get the data. should only be used within derived classes. Implemented in child classes.
     virtual vector < const string * > & get_data_modifiable() = 0;
 
-    virtual const Attribute * attrib_merge ( const Attribute & rhs) const { return NULL;};
+    virtual const Attribute * attrib_merge ( const Attribute & UP(rhs)) const { return NULL;};
 
 public:
     virtual unsigned int compare(const Attribute & rhs) const = 0 ;
     virtual bool split_string(const char* );    //can be overridden if necessary.
-    Attribute (const char * inputstring ) {}
+    Attribute (const char * UP(inputstring)) {}
     virtual bool operator == ( const Attribute & rhs) const { return this == &rhs ;}
 
     void reset_data(const char * inputstring) {
@@ -255,7 +257,9 @@ public:
         split_string(inputstring);
     }
 
-    virtual const Attribute*  config_interactive (const vector <const Attribute *> &inputvec ) const { throw cException_No_Interactives(get_class_name().c_str()); return NULL;};
+    virtual const Attribute*  config_interactive (const vector <const Attribute *> & UP(inputvec)) const {
+      throw cException_No_Interactives(get_class_name().c_str()); return NULL;
+    };
     virtual const vector <const string*> & get_data() const = 0;
     virtual const vector <const Attribute *> & get_interactive_vector() const { throw cException_No_Interactives(get_class_name().c_str()); };
 
@@ -269,9 +273,11 @@ public:
     void print() const { this->print(std::cout); }
     virtual const string & get_attrib_group() const = 0;
     virtual void check_interactive_consistency(const vector <string> & query_columns) = 0;
-    virtual unsigned int get_attrib_max_value() const { throw cException_Invalid_Function(get_class_name().c_str());};
+    virtual unsigned int get_attrib_max_value() const {
+      throw cException_Invalid_Function(get_class_name().c_str());
+    };
     // -1 means no exact_compare. 0 = not the same 1= exact same
-    virtual int exact_compare( const Attribute & rhs ) const { return -1; }
+    virtual int exact_compare( const Attribute & UP(rhs)) const { return -1; }
     virtual const string * add_string( const string & str ) const = 0;
 
     virtual bool operator < ( const Attribute & rhs ) const = 0;
@@ -454,12 +460,12 @@ public:
     //static void set_column_index_in_query(const unsigned int i ) {column_index_in_query = i;}
     //THIS IS THE DEFAULT COMPARISON FUNCTION. ANY ATTRIBUTE THAT HAS REAL COMPARISION FUNCTIONS SHOULD OVERRIDE IT.
     //ANY ATTRIBUTE THAT HAS NO REAL COMPARISION FUNCTIONS SHOULD JUST LEAVE IT.
-    unsigned int compare(const Attribute & rhs) const {
+    unsigned int compare(const Attribute & UP(rhs)) const {
         throw cException_No_Comparision_Function(class_name.c_str());
     };
     //static const unsigned int get_interactive_column_number() { return num_of_interactive_columns;};
     static unsigned int get_interactive_column_number() { return num_of_interactive_columns;};
-    static void static_check_interactive_consistency( const vector <string> & query_columns ) {
+    static void static_check_interactive_consistency( const vector <string> & UP(query_columns) ) {
 
 #if 0
            if ( interactive_column_indice_in_query.size() != get_interactive_column_number() )
@@ -1036,7 +1042,7 @@ public:
 
     int clean_attrib_pool() const { return 0; }
 
-    Attribute_Interactive_Mode ( const char * data = NULL ): pAttrib (NULL) {}
+    Attribute_Interactive_Mode ( const char * UP(data) = NULL ): pAttrib (NULL) {}
 
     bool split_string(const char* recdata) {
         if ( stat_pdata.get() == NULL )
@@ -1174,7 +1180,7 @@ class cFirstname : public Attribute_Single_Mode <cFirstname> {
     //static const unsigned int max_value = Jaro_Wrinkler_Max;
     static const unsigned int max_value = 4;
 
-    cFirstname(const char * source = NULL) {}
+    cFirstname(const char * UP(source) = NULL) {}
     bool split_string(const char*);        //override because some class-specific splitting is involved.
 
     unsigned int get_attrib_max_value() const {
@@ -1193,7 +1199,7 @@ class cLastname : public Attribute_Single_Mode <cLastname> {
 public:
     static const unsigned int max_value = Jaro_Wrinkler_Max;
 
-    cLastname(const char * source = NULL ) {}
+    cLastname(const char * UP(source) = NULL ) {}
     unsigned int get_attrib_max_value() const {
         if ( ! is_comparator_activated() )
             Attribute::get_attrib_max_value();
@@ -1206,7 +1212,7 @@ class cMiddlename : public Attribute_Single_Mode <cMiddlename> {
 public:
     static const unsigned int max_value = 3;
 
-    cMiddlename(const char * source = NULL ) {}
+    cMiddlename(const char * UP(source) = NULL ) {}
     unsigned int compare(const Attribute & rhs) const;        //override to allow customization.
     bool split_string(const char*);
     unsigned int get_attrib_max_value() const {
@@ -1223,7 +1229,7 @@ class cLatitude : public Attribute_Interactive_Mode <cLatitude, cLatitude_Data> 
 private:
     static const unsigned int max_value = 5;
 public:
-    cLatitude(const char * source = NULL ) {}
+    cLatitude(const char * UP(source) = NULL ) {}
     unsigned int compare(const Attribute & rhs) const;    //override to customize
     unsigned int get_attrib_max_value() const {
         if ( ! is_comparator_activated() )
@@ -1238,7 +1244,7 @@ class cLongitude: public Attribute_Interactive_Mode <cLongitude, cLongitude_Data
 private:
     static const unsigned int max_value = 1;
 public:
-    cLongitude(const char * source = NULL ) {}
+    cLongitude(const char * UP(source) = NULL ) {}
     unsigned int compare(const Attribute & rhs) const;    //override to customize
     unsigned int get_attrib_max_value() const {
         if ( ! is_comparator_activated() )
@@ -1249,7 +1255,7 @@ public:
 
 class cStreet: public Attribute_Single_Mode <cStreet> {
 public:
-    cStreet(const char * source = NULL) {}
+    cStreet(const char * UP(source) = NULL) {}
     //SHOULD NOT OVERRIDE THE COMPARISON FUNCTION SINCE Street IS NOT BEING COMPARED either. IT IS WITH THE LATITUDE COMPARISION.
 
 };
@@ -1257,13 +1263,13 @@ public:
 // Modeled after the Street class
 class cState: public Attribute_Single_Mode <cState> {
 public:
-    cState(const char * source = NULL) {}
+    cState(const char * UP(source) = NULL) {}
 };
 
 // Modeled after the Street class
 class cZipcode: public Attribute_Single_Mode <cZipcode> {
 public:
-    cZipcode(const char * source = NULL) {}
+    cZipcode(const char * UP(source) = NULL) {}
 };
 
 // Modeled after the Street class
@@ -1276,30 +1282,30 @@ public:
 
 class cAppDate: public Attribute_Single_Mode <cAppDate> {
 public:
-    cAppDate(const char * source = NULL) {}
+    cAppDate(const char * UP(source) = NULL) {}
 };
 
 // Modeled after the Street class
 class cInvSeq: public Attribute_Single_Mode <cInvSeq> {
 public:
-    cInvSeq(const char * source = NULL) {}
+    cInvSeq(const char * UP(source) = NULL) {}
 };
 
 // Modeled after the Street class
 class cinvnum_N: public Attribute_Single_Mode <cinvnum_N> {
 public:
-    cinvnum_N(const char * source = NULL) {}
+    cinvnum_N(const char * UP(source) = NULL) {}
 };
 
 class cinvnum: public Attribute_Single_Mode <cinvnum> {
 public:
-    cinvnum(const char * source = NULL) {}
+    cinvnum(const char * UP(source) = NULL) {}
 };
 
 class cCountry: public Attribute_Single_Mode <cCountry> {
 public:
     static unsigned int const max_value = 2;
-    cCountry(const char * source = NULL ) {}
+    cCountry(const char * UP(source) = NULL ) {}
     unsigned int get_attrib_max_value() const {
         if ( ! is_comparator_activated() )
             Attribute::get_attrib_max_value();
@@ -1361,49 +1367,53 @@ private:
     static map < const cAsgNum*, unsigned int > asgnum2count_tree;
     static bool is_ready;
 public:
-    cAssignee(const char * source = NULL ) {}
+    cAssignee(const char * UP(source) = NULL ) {}
     unsigned int compare(const Attribute & rhs) const;
     //static void set_assignee_tree_pointer(const map<string, std::pair<string, unsigned int>  >& asgtree) {assignee_tree_pointer = & asgtree;}
     static void configure_assignee( const list <const Record *> & );
+
     unsigned int get_attrib_max_value() const {
         if ( ! is_comparator_activated() )
             Attribute::get_attrib_max_value();
         return max_value;
     }
-    int exact_compare( const Attribute & rhs ) const { return this == & rhs; }
+
+    int exact_compare( const Attribute & rhs ) const {
+      return this == & rhs;
+    }
 };
 
 class cAsgNum : public Attribute_Single_Mode<cAsgNum> {
 public:
-    cAsgNum(const char * source = NULL ){}
+    cAsgNum(const char * UP(source) = NULL ){}
 };
 
 class cUnique_Record_ID : public Attribute_Single_Mode <cUnique_Record_ID> {
 public:
-    cUnique_Record_ID(const char * source = NULL ){}
+    cUnique_Record_ID(const char * UP(source) = NULL ){}
 };
 
 class cApplyYear: public Attribute_Single_Mode<cApplyYear> {
 public:
-    cApplyYear(const char * source = NULL ){}
+    cApplyYear(const char * UP(source) = NULL ){}
     //SHOULD NOT OVERRIDE THE COMPARISON FUNCTION SINCE LONGITUDE IS NOT BEING COMPARED. IT IS WITH THE LATITUDE COMPARISION.
 };
 
 class cAppYear: public Attribute_Single_Mode<cAppYear> {
 public:
-    cAppYear(const char * source = NULL ){}
+    cAppYear(const char * UP(source) = NULL ){}
     //SHOULD NOT OVERRIDE THE COMPARISON FUNCTION SINCE LONGITUDE IS NOT BEING COMPARED. IT IS WITH THE LATITUDE COMPARISION.
 };
 
 class cGYear: public Attribute_Single_Mode<cGYear> {
 public:
-    cGYear(const char * source = NULL ){}
+    cGYear(const char * UP(source) = NULL ){}
     //SHOULD NOT OVERRIDE THE COMPARISON FUNCTION SINCE LONGITUDE IS NOT BEING COMPARED. IT IS WITH THE LATITUDE COMPARISION.
 };
 
 class cCity: public Attribute_Single_Mode <cCity> {
 public:
-    cCity(const char * source = NULL ) {}
+    cCity(const char * UP(source) = NULL ) {}
     //SHOULD NOT OVERRIDE THE COMPARISON FUNCTION SINCE LONGITUDE IS NOT BEING COMPARED. IT IS WITH THE LATITUDE COMPARISION.
     bool split_string(const char*);
     int exact_compare( const Attribute & rhs ) const { return this == & rhs; }
@@ -1411,7 +1421,7 @@ public:
 
 class cPatent: public Attribute_Single_Mode <cPatent> {
 public:
-    cPatent( const char * source = NULL){};
+    cPatent( const char * UP(source) = NULL){};
 };
 
 

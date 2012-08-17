@@ -154,7 +154,7 @@ test_positioners() {
 
 #ifdef test_namecompare_STANDALONE
 int
-main(int argc, char ** argv) {
+main(int, char **) {
 
 // http://stackoverflow.com/questions/138383/colored-grep/138528#138528
 // http://stackoverflow.com/questions/9158150/colored-output-in-c

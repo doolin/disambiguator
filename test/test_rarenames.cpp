@@ -53,7 +53,7 @@ void test_rarenames() {
 
 #ifdef test_rarenames_STANDALONE
 int
-main(int argc, char ** argv) {
+main(int, char **) {
   test_rarenames();
   return 0;
 }

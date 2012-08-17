@@ -1,7 +1,9 @@
 
 INCLUDES = -I../include -I/opt/local/include
 
-AM_CPPFLAGS = -Wall -Wextra  -Wno-unused-parameter -Wno-uninitialized -Wno-ignored-qualifiers
+CXXFLAGS = -Wall -Wextra  # -Wno-unused-parameter  -Wno-uninitialized # -Wno-ignored-qualifiers
+AM_CXXFLAGS = $(CXXFLAGS) #-Wall -Wextra  -Wno-unused-parameter -Wno-uninitialized # -Wno-ignored-qualifiers
+
 LDADD = ../src/libdisambiguation.a 
 AM_LDFLAGS = $(shell cppunit-config --libs)
 
@@ -13,7 +15,7 @@ TESTS = distest idtest typedefs record blocking attribute stringmanipulator \
 bin_PROGRAMS = $(TESTS)
 
 %.o: %.cpp
-	g++ $(INCLUDES) -D$*_STANDALONE -c $<
+	g++ $(INCLUDES) $(CXXFLAGS)  -D$*_STANDALONE -c $<
 
 distest_SOURCES = test_initial.cpp
 idtest_SOURCES = test_uniqueid.cpp

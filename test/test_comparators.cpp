@@ -111,7 +111,7 @@ void test_comparators() {
 
 #ifdef test_comparators_STANDALONE
 int
-main(int argc, char ** argv) {
+main(int, char **) {
   test_comparators();
   return 0;
 }

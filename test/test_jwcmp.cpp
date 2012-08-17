@@ -34,7 +34,7 @@ public:
   }
 
   void print_score(string s1, string s2, int score) {
-    //std::cout << s1 << " vs. " << s2 << ": " << score << std::endl;
+    std::cout << s1 << " vs. " << s2 << ": " << score << std::endl;
   }
 
 };
@@ -56,25 +56,25 @@ test_jwcmp() {
   s1 = "MATTHEW";
   s2 = "XYZ";
   score = jwcmp(s1, s2);
-  st->print_score(s1, s2, score);
+  //st->print_score(s1, s2, score);
   CPPUNIT_ASSERT(0 == score);
 
   s1 = "MATTHEW";
   s2 = "TALIN";
   score = jwcmp(s1, s2);
-  st->print_score(s1, s2, score);
+  //st->print_score(s1, s2, score);
   CPPUNIT_ASSERT(0 == score);
 
   s1 = "MATTHEW";
   s2 = "MATHEW";
   score = jwcmp(s1, s2);
-  st->print_score(s1, s2, score);
+  //st->print_score(s1, s2, score);
   CPPUNIT_ASSERT(4 == score);
 
   s1 = "MATTHEW";
   s2 = "MATTHEW";
   score = jwcmp(s1, s2);
-  st->print_score(s1, s2, score);
+  //st->print_score(s1, s2, score);
   CPPUNIT_ASSERT(5 == score);
   delete st;
 }
@@ -82,7 +82,7 @@ test_jwcmp() {
 
 #ifdef test_jwcmp_STANDALONE
 int
-main(int argc, char ** argv) {
+main(int, char **) {
   test_jwcmp();
   return 0;
 }

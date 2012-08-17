@@ -59,7 +59,7 @@ test_misspell() {
 
 #ifdef test_misspell_STANDALONE
 int
-main(int argc, char ** argv) {
+main(int, char **) {
 
   test_misspell();
   return 0;

@@ -32,7 +32,7 @@ public:
   }
 
   void print_comparison(string s1, string s2, float value) {
-    //std::cout << s1 << " vs. " << s2 << ": " << value << std::endl;
+    std::cout << s1 << " vs. " << s2 << ": " << value << std::endl;
   }
 
 };
@@ -60,64 +60,66 @@ test_strcmp95() {
   s2 = "HEWMATT";
   val = st->compute_jw("MATTHEW", "HEWMATT");
   val = st->compute_jw(s1, s2);
-  st->print_comparison(s1, s2, val);
+  //st->print_comparison(s1, s2, val);
   //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
 
   s2 = "MATEW";
   val = st->compute_jw(s1,s2);
-  st->print_comparison(s1, s2, val);
+  //st->print_comparison(s1, s2, val);
   //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
 
   s2 = "MATT";
   val = st->compute_jw(s1, s2);
-  st->print_comparison(s1, s2, val);
+  //st->print_comparison(s1, s2, val);
   //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
 
   s2 = "MTATWEH";
   val = st->compute_jw(s1, s2);
-  st->print_comparison(s1, s2, val);
+  //st->print_comparison(s1, s2, val);
   //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
 
   s2 = "M";
   val = st->compute_jw("MATTHEW", "M");
-  st->print_comparison(s1, s2, val);
+  //st->print_comparison(s1, s2, val);
   //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
 
   s2 = "TALIN";
   val = st->compute_jw(s1, s2);
-  st->print_comparison(s1, s2, val);
+  //st->print_comparison(s1, s2, val);
   //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
 
   s2 = "XYZ";
   val = st->compute_jw(s1, s2);
-  st->print_comparison(s1, s2, val);
+  //st->print_comparison(s1, s2, val);
   //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
 
   // The next three come from Wikipedia
   s1 = "dixon";
   s2 = "dicksonx";
   val = st->compute_jw(s1, s2);
-  st->print_comparison(s1, s2, val);
+  //st->print_comparison(s1, s2, val);
   //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
 
   s1 = "duane";
   s2 = "dwayne";
   val = st->compute_jw(s1, s2);
-  st->print_comparison(s1, s2, val);
+  //st->print_comparison(s1, s2, val);
   //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
 
   s1 = "MARTHA";
   s2 = "MARHTA";
   val = st->compute_jw(s1, s2);
-  st->print_comparison(s1, s2, val);
-  //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
+  //st->print_comparison(s1, s2, val);
+  CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
 
   delete st;
 }
 
 
+#ifdef test_strcmp95_STANDALONE
 int
-main(int argc, char ** argv) {
+main(int, char **) {
   test_strcmp95();
   return 0;
 }
+#endif

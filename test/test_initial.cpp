@@ -23,7 +23,7 @@ public:
 };
 
 int
-main(int argc, char ** argv) {
+main(int, char **)  {
 
   InitialTest * it = new InitialTest(std::string("initial test"));
   it->runTest();

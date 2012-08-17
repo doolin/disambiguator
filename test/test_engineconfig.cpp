@@ -72,7 +72,7 @@ rare_names(std::list<Record> all_records) {
 }
 
 int
-main(int argc, char ** argv) {
+main(int UP(argc), char ** UP(argv)) {
 
   std::vector<std::string> involved_columns = setup_columns();
   //printer(involved_columns);

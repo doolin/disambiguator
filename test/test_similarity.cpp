@@ -81,10 +81,9 @@ public:
   }
 };
 
-// Add these in for building a test library
 #ifdef test_similarity_STANDALONE
 int
-main(int argc, char ** argv) {
+main(int, char **) {
 
   SimilarityTest * st = new SimilarityTest(std::string("initial test"));
   st->runTest();

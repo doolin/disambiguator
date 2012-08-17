@@ -56,7 +56,7 @@ public:
 
 
 int
-main(int argc, char ** argv) {
+main(int UP(argc), char ** UP(argv)) {
 
   CompareTest * ct = new CompareTest(std::string("SimilarityCompare test"));
   ct->runTest();

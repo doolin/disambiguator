@@ -54,7 +54,7 @@ public:
 
 
 int
-main(int argc, char ** argv) {
+main(int UP(argc), char ** UP(argv)) {
 
   RecordTest * rt = new RecordTest(std::string("initial test"));
   rt->runTest();

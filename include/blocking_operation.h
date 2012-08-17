@@ -59,7 +59,9 @@ public:
     const string & get_useless_string () const { return infoless;}
     static const string delim;
     virtual string extract_blocking_info(const Record *) const = 0;
-    virtual string extract_column_info ( const Record *, unsigned int flag ) const { throw cException_Other ("Function not defined yet.");}
+    virtual string extract_column_info ( const Record *, unsigned int UP(flag)) const {
+      throw cException_Other ("Function not defined yet.");
+    }
     virtual ~cBlocking_Operation() {};
     virtual unsigned int num_involved_columns() const { return 1;}
 };
@@ -91,7 +93,9 @@ public:
     explicit cBlocking_Operation_Column_Manipulate(const StringManipulator & inputsm, const string & colname)
             : sm(inputsm), column_index(Record::get_index_by_name(colname)) { infoless = delim;}
     string extract_blocking_info(const Record * p) const {return sm.manipulate( * p->get_data_by_index(column_index).at(0));}
-    string extract_column_info ( const Record * p, unsigned int flag ) const { return extract_blocking_info(p);}
+    string extract_column_info ( const Record * p, unsigned int UP(flag)) const {
+      return extract_blocking_info(p);
+    }
 };
 
 
