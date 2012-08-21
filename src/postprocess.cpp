@@ -9,14 +9,14 @@ extern "C" {
 }
 
 #if 0
-ClusterSet & ClusterSet::convert_from_ClusterInfo( const cCluster_Info * ps) {
+ClusterSet & ClusterSet::convert_from_ClusterInfo( const ClusterInfo * ps) {
     if ( ps == NULL )
         throw cException_Other("NULL pointer.");
 
     this->consolidated.clear();
 
-    for ( map < string, cCluster_Info::cRecGroup >::const_iterator p = ps->get_cluster_map().begin(); p != ps->get_cluster_map().end(); ++p ) {
-        for ( cCluster_Info::cRecGroup::const_iterator q = p->second.begin(); q != p->second.end(); ++q ) {
+    for ( map < string, ClusterInfo::cRecGroup >::const_iterator p = ps->get_cluster_map().begin(); p != ps->get_cluster_map().end(); ++p ) {
+        for ( ClusterInfo::cRecGroup::const_iterator q = p->second.begin(); q != p->second.end(); ++q ) {
             //this->consolidated.insert(*q);
             this->consolidated.push_back(*q);
         }
@@ -279,14 +279,14 @@ ClusterSet::output_results( const char * dest_file) const {
 
         const Attribute * key_pattrib = p->get_cluster_head().m_delegate->get_attrib_pointer_by_index(uid_index);
 
-        os << * key_pattrib->get_data().at(0) << cCluster_Info::primary_delim;
+        os << * key_pattrib->get_data().at(0) << ClusterInfo::primary_delim;
         double cohesion_value = p->get_cluster_head().m_cohesion;
-        os << cohesion_value << cCluster_Info::primary_delim;
+        os << cohesion_value << ClusterInfo::primary_delim;
 
         for ( cGroup_Value::const_iterator q = p->get_fellows().begin(); q != p->get_fellows().end(); ++q ) {
             const Attribute * value_pattrib = (*q)->get_attrib_pointer_by_index(uid_index);
 
-            os << * value_pattrib->get_data().at(0) << cCluster_Info::secondary_delim;
+            os << * value_pattrib->get_data().at(0) << ClusterInfo::secondary_delim;
         }
         os << '\n';
     }
@@ -301,20 +301,20 @@ ClusterSet::read_from_file(const char * filename,
 
     unsigned int count = 0;
     const unsigned int base = 100000;
-    const unsigned int primary_delim_size = strlen(cCluster_Info::primary_delim);
-    const unsigned int secondary_delim_size = strlen(cCluster_Info::secondary_delim);
+    const unsigned int primary_delim_size = strlen(ClusterInfo::primary_delim);
+    const unsigned int secondary_delim_size = strlen(ClusterInfo::secondary_delim);
     std::ifstream infile ( filename);
 
     if (infile.good()) {
         string filedata;
         while ( getline(infile, filedata)) {
             register size_t pos = 0, prev_pos = 0;
-            pos = filedata.find(cCluster_Info::primary_delim, prev_pos);
+            pos = filedata.find(ClusterInfo::primary_delim, prev_pos);
             string keystring = filedata.substr( prev_pos, pos - prev_pos);
             const Record * key = retrieve_record_pointer_by_unique_id( keystring, uid_tree );
             prev_pos = pos + primary_delim_size;
 
-            pos = filedata.find(cCluster_Info::primary_delim, prev_pos);
+            pos = filedata.find(ClusterInfo::primary_delim, prev_pos);
             double val = 0;
             if ( true ) {
                 string cohesionstring = filedata.substr( prev_pos, pos - prev_pos);
@@ -324,7 +324,7 @@ ClusterSet::read_from_file(const char * filename,
 
 
             cGroup_Value tempv;
-            while ( ( pos = filedata.find(cCluster_Info::secondary_delim, prev_pos) )!= string::npos){
+            while ( ( pos = filedata.find(ClusterInfo::secondary_delim, prev_pos) )!= string::npos){
                 string valuestring = filedata.substr( prev_pos, pos - prev_pos);
                 const Record * value = retrieve_record_pointer_by_unique_id( valuestring, uid_tree);
                 tempv.push_back(value);

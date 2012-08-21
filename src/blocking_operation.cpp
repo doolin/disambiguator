@@ -88,7 +88,7 @@ string cBlocking_Operation_Multiple_Column_Manipulate::extract_column_info ( con
  */
 cBlocking_Operation_By_Coauthors::cBlocking_Operation_By_Coauthors(
     const list < const Record * > & all_rec_pointers,
-    const cCluster_Info & cluster, const unsigned int coauthors)
+    const ClusterInfo & cluster, const unsigned int coauthors)
     : patent_tree(cSort_by_attrib(cPatent::static_get_class_name())), num_coauthors(coauthors) {
 
     if ( num_coauthors > 4 ) {
@@ -167,7 +167,7 @@ cBlocking_Operation_By_Coauthors::build_patent_tree(const list < const Record * 
  *            uinv2count is updated in the same way.
  */
 void
-cBlocking_Operation_By_Coauthors::build_uid2uinv_tree(const cCluster_Info & cluster) {
+cBlocking_Operation_By_Coauthors::build_uid2uinv_tree(const ClusterInfo & cluster) {
 
     uinv2count_tree.clear();
     uid2uinv_tree.clear();

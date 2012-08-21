@@ -517,7 +517,7 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
 
     bool matching_mode = true;
 
-    cCluster_Info match (uid_dict, matching_mode, frequency_adjust_mode, debug_mode);
+    ClusterInfo match (uid_dict, matching_mode, frequency_adjust_mode, debug_mode);
     match.set_thresholds(threshold_vec);
 
     char xset01[buff_size], tset05[buff_size], ratiofile[buff_size],
@@ -657,7 +657,7 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
 
         // now disambiguate
         Record::clean_member_attrib_pool();
-	// cCluster_Info.disambiguate
+	// ClusterInfo.disambiguate
         match.disambiguate(*ratio_pointer, num_threads, debug_block_file, prior_save_file);
         delete ratio_pointer;
         match.output_current_comparision_info(matchfile);

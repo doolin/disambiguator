@@ -22,10 +22,10 @@ class Record;
 class cRatios;
 
 /**
- * cCluster_Info:
+ * ClusterInfo:
  * This class is a key class for the whole disambiguation.
  *
- * cCluster_Info enables:
+ * ClusterInfo enables:
  *
  * 1. loading the previous disambiguation results from
  *    a source file;
@@ -105,7 +105,7 @@ class cRatios;
  *             like [ 0.99, 0.98, 0.95, ...] in a descending manner.
  *
  *        class cException_Cluster_Error:
- *            exception type used in cCluster_Info.
+ *            exception type used in ClusterInfo.
  *
  *        void config_prior():
  *            config the priori probabilities.
@@ -126,7 +126,7 @@ class cRatios;
  *        void output_prior_value(const char * const prior_to_save) const:
  *            save the priori values and their blocking ids in a file.
  *
- *        cCluster_Info (const cCluster_Info &):
+ *        ClusterInfo (const ClusterInfo &):
  *            copy constructor. It is forbidden to call copy constructor.
  *
  *        void print(std::ostream & os) const:
@@ -178,7 +178,7 @@ class cRatios;
  *                string together in same clusters. In practice, it is used to group records
  *                with exact firstname, middlename, lastname, assignee, city, country together.
  *
- *        cCluster_Info(const map <string, const Record*> & input_uid2record,
+ *        ClusterInfo(const map <string, const Record*> & input_uid2record,
  *                      const bool input_is_matching,
  *                      const bool aum,
  *                      const bool debug):
@@ -204,7 +204,7 @@ class cRatios;
  */
 
 /*
- *        ~cCluster_Info(): destructor.
+ *        ~ClusterInfo(): destructor.
  *
  *        const map < string, cRecGroup> & get_cluster_map () const:
  *            return the variable cluster_by_block.
@@ -237,7 +237,7 @@ class cRatios;
  *    bool frequency_adjust_mode = true;
  *    bool debug_mode = false;
  *    const unsigned int number_of_threads = 24; // set number of threads to 24 if the computer has 24 cores.
- *    cCluster_Info CIobj ( *puid_dict, is_matching, frequency_adjust_mode, debug_mode );    //create a cCluster_Info object.
+ *    ClusterInfo CIobj ( *puid_dict, is_matching, frequency_adjust_mode, debug_mode );    //create a ClusterInfo object.
  *    vector < double > thresholds;
  *    thresholds.push_back(0.99);
  *    thresholds.push_back(0.95);
@@ -268,7 +268,7 @@ class cRatios;
  *
  */
 
-class cCluster_Info {
+class ClusterInfo {
 
     friend class cWorker_For_Disambiguation;
 
@@ -276,8 +276,8 @@ public:
     typedef set<const Record *> recordset;
     typedef list < cCluster > cRecGroup;
 
-    friend bool disambiguate_wrapper(const map<string, cCluster_Info::cRecGroup>::iterator & p,
-                                     cCluster_Info & cluster,
+    friend bool disambiguate_wrapper(const map<string, ClusterInfo::cRecGroup>::iterator & p,
+                                     ClusterInfo & cluster,
                                      const cRatios & ratiosmap );
 
 private:
@@ -310,7 +310,7 @@ private:
                                             const cRatios & ratiosmap, const string * const bid, const double threshold ) ;
     void retrieve_last_comparision_info ( const cBlocking_Operation & blocker, const char * const past_comparision_file);
     void output_prior_value( const char * const prior_to_save ) const;
-    cCluster_Info ( const cCluster_Info &);
+    ClusterInfo ( const ClusterInfo &);
     void print(std::ostream & os) const;
     const string & get_useless_string() const {return useless;}
     double get_prior_value( const string & block_identifier, const list <cCluster> & rg );
@@ -325,7 +325,7 @@ public:
     static const char * const primary_delim;
     static const char * const secondary_delim;
 
-    ~cCluster_Info() {}
+    ~ClusterInfo() {}
 
     void output_current_comparision_info(const char * const outputfile ) const;
 
@@ -333,7 +333,7 @@ public:
 
     void preliminary_consolidation(const cBlocking_Operation & blocker, const list < const Record *> & all_rec_list);
 
-    cCluster_Info(const map <string, const Record * > & input_uid2record,
+    ClusterInfo(const map <string, const Record * > & input_uid2record,
                   const bool input_is_matching ,
                   const bool aum ,
                   const bool debug);
@@ -367,22 +367,22 @@ public:
 /**
  * cWorker_For_Disambiguation:
  * This class is a threading subclass to achieve multithreading in Linux systems.
- * It is used in cCluster_Info::disambiguate function.
+ * It is used in ClusterInfo::disambiguate function.
  * It is unnecessary to understanding the detail. The only thing necessary to know is the constructor.
  *
  * Private:
- *        map < string, cCluster_Info::cRecGroup >::iterator * ppdisambiged:
+ *        map < string, ClusterInfo::cRecGroup >::iterator * ppdisambiged:
  *        the pointer to an iterator that is a cursor of progress of disambiguation.
  *
  *        const cRatios * pratios: the pointer to a cRatio object.
- *        cCluster_Info & cluster_ref: the reference of a cCluster_Info object that is actually the source.
+ *        ClusterInfo & cluster_ref: the reference of a ClusterInfo object that is actually the source.
  *        static pthread_mutex_t iter_lock: a mutex to synchronize the cursor.
  *        static unsigned int count: a static member to count the number of disambiguated blocks.
  *        void run(): the overriding function of base class, implementing details of disambiguation in each thread.
  *
  * Public:
- *         explicit cWorker_For_Disambiguation( map < string, cCluster_Info::cRecGroup >::iterator & input_pdisambiged,
-                                            const cRatios & ratiosmap, cCluster_Info & inputcluster): constructor.
+ *         explicit cWorker_For_Disambiguation( map < string, ClusterInfo::cRecGroup >::iterator & input_pdisambiged,
+                                            const cRatios & ratiosmap, ClusterInfo & inputcluster): constructor.
  *        ~cWorker_For_Disambiguation(): destructor.
  *        static void zero_count(): clear the variable "count" to zero.
  *        static unsigned int get_count(): return the variable "count".
@@ -391,17 +391,17 @@ public:
 class cWorker_For_Disambiguation : public Thread {
 
 private:
-    map < string, cCluster_Info::cRecGroup >::iterator * ppdisambiged;
+    map < string, ClusterInfo::cRecGroup >::iterator * ppdisambiged;
     const cRatios * pratios;
-    cCluster_Info & cluster_ref;
+    ClusterInfo & cluster_ref;
 
     static pthread_mutex_t iter_lock;
     static unsigned int count;
     void run();
 public:
-    explicit cWorker_For_Disambiguation( map < string, cCluster_Info::cRecGroup >::iterator & input_pdisambiged,
+    explicit cWorker_For_Disambiguation( map < string, ClusterInfo::cRecGroup >::iterator & input_pdisambiged,
             const cRatios & ratiosmap,
-            cCluster_Info & inputcluster
+            ClusterInfo & inputcluster
     ) : ppdisambiged(&input_pdisambiged), pratios(&ratiosmap), cluster_ref(inputcluster) {}
 
     ~cWorker_For_Disambiguation() {}
