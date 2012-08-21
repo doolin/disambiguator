@@ -9,7 +9,7 @@ extern "C" {
 }
 
 #if 0
-cCluster_Set & cCluster_Set::convert_from_ClusterInfo( const cCluster_Info * ps) {
+ClusterSet & ClusterSet::convert_from_ClusterInfo( const cCluster_Info * ps) {
     if ( ps == NULL )
         throw cException_Other("NULL pointer.");
 
@@ -58,7 +58,7 @@ find_associated_nodes(const cCluster & center, const map < const Record *, const
 
 
 void
-post_polish(cCluster_Set & m, map < const Record *,
+post_polish(ClusterSet & m, map < const Record *,
             const Record *> & uid2uinv,
             const map < const Record *, cGroup_Value, cSort_by_attrib > & patent_tree,
             const string & logfile) {
@@ -265,7 +265,7 @@ post_polish(cCluster_Set & m, map < const Record *,
 
 
 void
-cCluster_Set::output_results( const char * dest_file) const {
+ClusterSet::output_results( const char * dest_file) const {
 
     std::cout << "Writing to " << dest_file << " ... ...";
     std::ostream::sync_with_stdio(false);
@@ -296,8 +296,8 @@ cCluster_Set::output_results( const char * dest_file) const {
 
 
 void
-cCluster_Set::read_from_file(const char * filename,
-                             const map <string, const Record*> & uid_tree) {
+ClusterSet::read_from_file(const char * filename,
+                           const map <string, const Record*> & uid_tree) {
 
     unsigned int count = 0;
     const unsigned int base = 100000;

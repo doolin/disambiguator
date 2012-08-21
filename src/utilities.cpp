@@ -211,7 +211,7 @@ one_step_postprocess(const list < Record > & all_records,
     // instantiate a map
     map < const Record *, cGroup_Value, cSort_by_attrib > patent_tree(cSort_by_attrib(cPatent::static_get_class_name()));
     build_patent_tree(patent_tree , all_records);
-    cCluster_Set cs;
+    ClusterSet cs;
     //cs.convert_from_ClusterInfo(&match);
     // Read results from last disambiguation 
     cs.read_from_file(last_disambig_result, uid_dict);
@@ -253,8 +253,8 @@ remove_headtail_space(const string & s) {
 
 
 void 
-out_of_cluster_density(const cCluster_Set & upper,
-                       const cCluster_Set & lower,
+out_of_cluster_density(const ClusterSet & upper,
+                       const ClusterSet & lower,
                        const cRatios & ratio, std::ofstream & ofile ) {
 
     static const unsigned int uid_index = Record::get_index_by_name(cUnique_Record_ID::static_get_class_name());

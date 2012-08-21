@@ -18,25 +18,26 @@ struct cSort_For_Cluster {
 typedef list < cCluster > Cluster_Container;
 
 
-class cCluster_Set {
+class ClusterSet {
 
 private:
     Cluster_Container consolidated;
-    cCluster_Set ( const cCluster_Set &);
+    ClusterSet ( const ClusterSet &);
 
 public:
-    //cCluster_Set & convert_from_ClusterInfo( const cCluster_Info * );
+    //ClusterSet & convert_from_ClusterInfo( const cCluster_Info * );
     const Cluster_Container & get_set() const {return consolidated;}
     Cluster_Container  & get_modifiable_set() { return consolidated; }
-    cCluster_Set () {}
-    ~cCluster_Set() {}
+    ClusterSet () {}
+    ~ClusterSet() {}
     void output_results( const char * ) const;
 
     void read_from_file (const char * filename,
                        const map <string, const Record*> & uid_tree);
 };
 
-void post_polish(cCluster_Set & m,
+
+void post_polish(ClusterSet & m,
                  map < const Record *, const Record *> & uid2uinv,
                  const map < const Record *, cGroup_Value, cSort_by_attrib > & patent_tree,
                  const string & logfile);

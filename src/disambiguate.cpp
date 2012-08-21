@@ -433,7 +433,7 @@ disambiguate_main(std::string & engineconf, std::string & blockingconf) {
             all_rec_pointers.push_back(&(*p));
         cAssignee::configure_assignee(all_rec_pointers);
 
-        cCluster_Set up, low;
+        ClusterSet up, low;
         up.read_from_file(upper.c_str(), uid_dict);
         low.read_from_file(lower.c_str(), uid_dict);
         const cRatios ratiodb ( ratio.c_str());
@@ -619,7 +619,7 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
         match.reset_blocking( * BlockingConfiguration::active_blocker_pointer, oldmatchfile);
         if ( network_clustering ) {
             blocker_coauthor.build_uid2uinv_tree(match);
-            cCluster_Set cs;
+            ClusterSet cs;
             //cs.convert_from_ClusterInfo(&match);
             cs.read_from_file(oldmatchfile, uid_dict);
             post_polish(cs, blocker_coauthor.get_uid2uinv_tree(),

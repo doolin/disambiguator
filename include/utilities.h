@@ -13,7 +13,7 @@ using std::map;
 
 class Record;
 class StringManipulator;
-class cCluster_Set;
+class ClusterSet;
 class cRatios;
 
 
@@ -50,8 +50,8 @@ void   one_step_postprocess                     (const list < Record > & all_rec
 
 string remove_headtail_space                    (const string & s);
 
-void   out_of_cluster_density                   (const cCluster_Set & upper,
-                                                 const cCluster_Set & lower,
+void   out_of_cluster_density                   (const ClusterSet & upper,
+                                                 const ClusterSet & lower,
                                                  const cRatios & ratio,
                                                  std::ofstream & ofile );
 
