@@ -707,40 +707,78 @@ cWorker_For_Disambiguation::run() {
  * Aim: a function that controls the loop of disambiguation
  * for a certain block. Used in cWorker_For_Disambiguation.
  */
+// TODO: Strip the cruft from this function to expose what
+// it's actually doing. The cruft includes emitting to cout,
+// changing to semantically appropriate variable names.
+// TODO: Consider rewriting this function to enforce a
+// contract for valid data feeding in to the disambiguation
+// loop following the validity checks. This would mean moving
+// the loop out of this function.
 bool
 disambiguate_wrapper(const map<string, cCluster_Info::cRecGroup>::iterator & p,
                      cCluster_Info & cluster,
                      const cRatios & ratio ) {
 
+    // TODO: Consider moving all validity checking to it's own
+    // function.
+
+    ///////// Start validity check /////////////
+
+    // TODO: Rename pst for semantic utility.
     const string * pst = &p->first;
+    // TODO: "useless_string" should be a #define, no need to
+    // drag something like "" out of memory.
+    // TODO: Consider doing a prepass on all the data to get rid of
+    // these blocks before the disambiguation starts.
     if (p->first == cluster.get_useless_string()) {
+        // TODO: Refactor this output to a function call.
         std::cout << "Block Without Any Infomation Tag: " << p->first 
-                  << " Size = " << p->second.size() << "----------SKIPPED."
+                  << " Size = " << p->second.size() << "-----SKIPPED."
                   << std::endl;
         return false;
     }
 
+    // TODO: alias the call in this if condition to be something
+    // semantically useful, e.g., what is the thing p->second is
+    // pointing to.
     if (cluster.block_activity.find(pst)->second == false) return false;
 
+    // TODO: Document why 3000 was chosen.
+    // TODO: #define (or make class variable) 3000 in header file
     if (p->second.size() > 3000) {
-        std::cout << "Block Very Big: " << p->first << " Size = " << p->second.size() << std::endl;
+        // TODO: Move output to function call.
+        std::cout << "Block Very Big: " << p->first 
+                  << " Size = " << p->second.size() << std::endl;
     }
 
+    /////////  End  validity check ///////
+
+
+    // TODO: Rename and rescope these variables appropriately.
+    // temp1 can almost surely be moved into the loop.
     unsigned int temp1 = 0, temp2 = 0;
+    // TODO: Determine basis for choosing 40 iterations
     const unsigned int max_round = 40;
+    // TODO: consider typedef'ing a threshold iterator:
+    // typedef vector<double>::const_iterator threshit_t
     vector < double >::const_iterator c = cluster.thresholds.begin();
     for (; c != cluster.thresholds.end(); ++c) {
 
         unsigned int i = 0;
         for (i = 0; i < max_round; ++i) {
+            // TODO: Document the logic associated with temp1 and temp2
             temp1 = temp2;
+            // TODO: Document the return values from this method, explain why we're
+            // checking the return value.
             temp2 = cluster.disambiguate_by_block(p->second, cluster.get_prior_map().find(pst)->second, ratio, pst, *c);
+            // Explain the condition for breaking the loop here.
             if (temp2 == temp1) break;
         }
 
         if (max_round == i) {
+            // TODO: Refactor this information to a function call.
             std::cout << "============= POSSIBLE FAILURE IN BLOCK ==============" << std::endl;
-            std::cout << p->first << " has exceeded max rounds within block disambiguation !!" << std::endl;
+            std::cout << p->first << " exceeded max rounds block disambiguation" << std::endl;
             std::cout << "============= END OF WARNING =============" << std::endl;
             return false;
         }
