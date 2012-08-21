@@ -704,34 +704,41 @@ cWorker_For_Disambiguation::run() {
 
 
 /**
- * Aim: a function that controls the loop of disambiguation for a certain block. Used in cWorker_For_Disambiguation.
+ * Aim: a function that controls the loop of disambiguation
+ * for a certain block. Used in cWorker_For_Disambiguation.
  */
 bool
-disambiguate_wrapper(const map<string, cCluster_Info::cRecGroup>::iterator & p,cCluster_Info & cluster,
-                            const cRatios & ratio ) {
+disambiguate_wrapper(const map<string, cCluster_Info::cRecGroup>::iterator & p,
+                     cCluster_Info & cluster,
+                     const cRatios & ratio ) {
 
     const string * pst = &p->first;
-    if ( p->first == cluster.get_useless_string() ) {
-        std::cout << "Block Without Any Infomation Tag: " << p->first << " Size = " << p->second.size() << "----------SKIPPED."<< std::endl;
+    if (p->first == cluster.get_useless_string()) {
+        std::cout << "Block Without Any Infomation Tag: " << p->first 
+                  << " Size = " << p->second.size() << "----------SKIPPED."
+                  << std::endl;
         return false;
     }
-    if ( cluster.block_activity.find(pst)->second == false )
-        return false;
 
-    if ( p->second.size() > 3000)
+    if (cluster.block_activity.find(pst)->second == false) return false;
+
+    if (p->second.size() > 3000) {
         std::cout << "Block Very Big: " << p->first << " Size = " << p->second.size() << std::endl;
-    //else
+    }
+
     unsigned int temp1 = 0, temp2 = 0;
     const unsigned int max_round = 40;
-    for ( vector < double >::const_iterator c = cluster.thresholds.begin(); c != cluster.thresholds.end(); ++c ) {
+    vector < double >::const_iterator c = cluster.thresholds.begin();
+    for (; c != cluster.thresholds.end(); ++c) {
+
         unsigned int i = 0;
-        for ( i = 0; i < max_round; ++i ){
+        for (i = 0; i < max_round; ++i) {
             temp1 = temp2;
             temp2 = cluster.disambiguate_by_block(p->second, cluster.get_prior_map().find(pst)->second, ratio, pst, *c);
-            if ( temp2 == temp1 )
-                break;
+            if (temp2 == temp1) break;
         }
-        if ( max_round == i ) {
+
+        if (max_round == i) {
             std::cout << "============= POSSIBLE FAILURE IN BLOCK ==============" << std::endl;
             std::cout << p->first << " has exceeded max rounds within block disambiguation !!" << std::endl;
             std::cout << "============= END OF WARNING =============" << std::endl;
