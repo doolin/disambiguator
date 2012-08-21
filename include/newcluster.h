@@ -19,20 +19,20 @@ public:
   const Record * m_delegate;
 
  /**
-  *	double m_cohesion: the cohesion of a cluster, meaning the probability
-  *	for the members of the cluster to be of the same inventor.
+  *  double m_cohesion: the cohesion of a cluster, meaning the probability
+  *  for the members of the cluster to be of the same inventor.
   */
-	double m_cohesion;
-	
+  double m_cohesion;
+  
  /**
-  *	ClusterHead(const Record * const p, const double c): constructor
+  *  ClusterHead(const Record * const p, const double c): constructor
   */
-	ClusterHead(const Record * const p, const double c): m_delegate(p), m_cohesion(c) {};
+  ClusterHead(const Record * const p, const double c): m_delegate(p), m_cohesion(c) {};
 
  /**
   * ClusterHead ( const ClusterHead & rhs): copy constructor
   */
-	ClusterHead ( const ClusterHead & rhs): m_delegate(rhs.m_delegate), m_cohesion(rhs.m_cohesion) {}
+  ClusterHead ( const ClusterHead & rhs): m_delegate(rhs.m_delegate), m_cohesion(rhs.m_cohesion) {}
 };
 
 
@@ -50,25 +50,25 @@ class cCluster {
 
 private:
 
-	static const unsigned int invalid_year = 0;
+  static const unsigned int invalid_year = 0;
 
   //ClusterHead m_info: cluster head of the cluster, including the delegate and the cohesion of the cluster.
-	ClusterHead m_info;
+  ClusterHead m_info;
 
   //cGroup_Value m_fellows: the list of members of the cluster.
-	cGroup_Value m_fellows;
+  cGroup_Value m_fellows;
 
   //bool m_mergeable: a boolean, indicating "*this" cluster
   //has been merged into others or not.
-	bool m_mergeable;
+  bool m_mergeable;
 
   //bool m_usable: a boolean preventing misuse earlier than
   //fully prepared.
-	bool m_usable;
+  bool m_usable;
 
   //static const cRatios * pratio: a pointer that points to a
   //cRatio object which contains a map of similarity profile to ratio
-	static const cRatios * pratio;
+  static const cRatios * pratio;
 
  /**
   * static const map < const Record *, cGroup_Value, cSort_by_attrib > * reference_pointer:
@@ -78,89 +78,89 @@ private:
   static const map < const Record *, cGroup_Value, cSort_by_attrib > * reference_pointer;
 
   //cCluster & operator = ( const cCluster &): forbid the assignment operation.
-	cCluster & operator = ( const cCluster &);
+  cCluster & operator = ( const cCluster &);
 
   //void find_representative():  to sets a component of cluster
   //head to be the record whose columns appear most frequently
   //among the all the members.
-	void find_representative();
+  void find_representative();
 
 
-	unsigned int first_patent_year;
+  unsigned int first_patent_year;
 
-	unsigned int last_patent_year;
+  unsigned int last_patent_year;
 
-	set < const cLatitude * > locs;
+  set < const cLatitude * > locs;
 
-	void update_locations();
+  void update_locations();
 
-	void update_year_range();
+  void update_year_range();
 
-	unsigned int patents_gap( const cCluster & rhs) const;
+  unsigned int patents_gap( const cCluster & rhs) const;
 
-	bool is_valid_year() const;
+  bool is_valid_year() const;
 
 public:
 
-  //	cCluster(const ClusterHead & info, const cGroup_Value & fellows): constructor
-	cCluster(const ClusterHead & info, const cGroup_Value & fellows);
+  //  cCluster(const ClusterHead & info, const cGroup_Value & fellows): constructor
+  cCluster(const ClusterHead & info, const cGroup_Value & fellows);
 
-  //	~cCluster() : destructor
-	~cCluster();
+  //  ~cCluster() : destructor
+  ~cCluster();
 
-  //	cCluster ( const cCluster & rhs ): copy constructor
-	cCluster ( const cCluster & rhs );
+  //  cCluster ( const cCluster & rhs ): copy constructor
+  cCluster ( const cCluster & rhs );
 
  /**
-  *	void merge( cCluster & mergee, const ClusterHead & info):
-  *	merge the "mergee" cluster into "*this", and set
-  *	the cluster head of the new cluster to be info.
+  *  void merge( cCluster & mergee, const ClusterHead & info):
+  *  merge the "mergee" cluster into "*this", and set
+  *  the cluster head of the new cluster to be info.
   */
- 	void merge( cCluster & mergee, const ClusterHead & info);
+   void merge( cCluster & mergee, const ClusterHead & info);
 
  /**
   * ClusterHead disambiguate(const cCluster & rhs, const double prior, const double mutual_threshold) const:
-  *	disambiguate "*this" cluster with rhs cluster,
-  *	with the prior and mutual_threshold information.
-  *	Returns a ClusterHead to tell whether the two clusters should
-  *	be merged or not, and if yes, the cohesion of the new one.
+  *  disambiguate "*this" cluster with rhs cluster,
+  *  with the prior and mutual_threshold information.
+  *  Returns a ClusterHead to tell whether the two clusters should
+  *  be merged or not, and if yes, the cohesion of the new one.
   */
   ClusterHead disambiguate(const cCluster & rhs, const double prior, const double mutual_threshold) const;
 
   //static void set_ratiomap_pointer( const cRatios & r):
   //set the ratio map pointer to a good one.
-	static void set_ratiomap_pointer( const cRatios & r) {pratio = &r;}
+  static void set_ratiomap_pointer( const cRatios & r) {pratio = &r;}
 
   //const cGroup_Value & get_fellows() const:
   //get the members (actually it is reference to const) of the cluster.
-	const cGroup_Value & get_fellows() const {return m_fellows;}
+  const cGroup_Value & get_fellows() const {return m_fellows;}
 
   //const ClusterHead & get_cluster_head () const:
   //get the cluster head (const reference) of the cluster.
-	const ClusterHead & get_cluster_head () const {return m_info;};
+  const ClusterHead & get_cluster_head () const {return m_info;};
 
   //void insert_elem( const Record *): insert a new member into
   //the member list. This could potentially change the cluster head.
-	void insert_elem(const Record *);
+  void insert_elem(const Record *);
 
   //void self_repair(): call this if insertion of elements is done manually,
   //usually for a batch of record objects (not recommended).
-	void self_repair();
+  void self_repair();
 
   //static void set_reference_patent_tree_pointer(const map < const Record *, cGroup_Value, cSort_by_attrib > & reference_patent_tree ): set the patent tree pointer.
-	static void set_reference_patent_tree_pointer(const map < const Record *, cGroup_Value, cSort_by_attrib > & reference_patent_tree ) {
+  static void set_reference_patent_tree_pointer(const map < const Record *, cGroup_Value, cSort_by_attrib > & reference_patent_tree ) {
     reference_pointer = & reference_patent_tree;
   }
 
  /**
-  *	void change_mid_name(): to change pointers to abbreviated middle
-  *	names to full middle names.	This step is controversial, as it
-  *	actually changed the raw data. Or more correctly, it changed
-  *	the pointers of the raw data.
+  *  void change_mid_name(): to change pointers to abbreviated middle
+  *  names to full middle names.  This step is controversial, as it
+  *  actually changed the raw data. Or more correctly, it changed
+  *  the pointers of the raw data.
   */
-	void change_mid_name();
+  void change_mid_name();
 
-	void add_uid2uinv( map < const Record *, const Record *> & uid2uinv ) const;
+  void add_uid2uinv( map < const Record *, const Record *> & uid2uinv ) const;
 };
 
 
@@ -169,7 +169,7 @@ public:
  */
 class cException_Empty_Cluster : public cAbstract_Exception {
 public:
-	cException_Empty_Cluster(const char* errmsg): cAbstract_Exception(errmsg) {};
+  cException_Empty_Cluster(const char* errmsg): cAbstract_Exception(errmsg) {};
 };
 
 
