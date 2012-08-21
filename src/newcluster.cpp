@@ -3,14 +3,14 @@
 #include "newcluster.h"
 
 //static members initialization.
-const cRatios * cCluster::pratio = NULL;
-const map < const Record *, cGroup_Value, cSort_by_attrib > * cCluster::reference_pointer = NULL;
+const cRatios * Cluster::pratio = NULL;
+const map < const Record *, cGroup_Value, cSort_by_attrib > * Cluster::reference_pointer = NULL;
 
 
 /**
- * Aim: constructor of cCluster objects.
+ * Aim: constructor of Cluster objects.
  */
-cCluster::cCluster(const ClusterHead & info, const cGroup_Value & fellows)
+Cluster::Cluster(const ClusterHead & info, const cGroup_Value & fellows)
 		: m_info(info), m_fellows(fellows), m_mergeable(true), m_usable(true) {
 
 	if ( NULL == reference_pointer )
@@ -33,7 +33,7 @@ cCluster::cCluster(const ClusterHead & info, const cGroup_Value & fellows)
  * And then call find_representative.
  */
 void
-cCluster::merge(cCluster & mergee, const ClusterHead & info) {
+Cluster::merge(Cluster & mergee, const ClusterHead & info) {
 
 	if ( this->m_mergeable == false )
 		throw cException_Empty_Cluster("Merging error: merger is empty.");
@@ -82,7 +82,7 @@ cCluster::merge(cCluster & mergee, const ClusterHead & info) {
  * information about the real middle name.
  */
 void
-cCluster::change_mid_name()  {
+Cluster::change_mid_name()  {
 
 	// The folowing step actually changes the raw data. Changes the
   // abbreviated middlename to a longer one if possible.
@@ -130,14 +130,14 @@ cCluster::change_mid_name()  {
 
 
 //destructor.
-cCluster::~cCluster() {}
+Cluster::~Cluster() {}
 
 
 //copy constructor
-cCluster::cCluster( const cCluster & rhs ) : m_info(rhs.m_info), m_fellows(rhs.m_fellows), m_mergeable(true),
+Cluster::Cluster( const Cluster & rhs ) : m_info(rhs.m_info), m_fellows(rhs.m_fellows), m_mergeable(true),
 		first_patent_year ( rhs.first_patent_year ), last_patent_year ( rhs.last_patent_year ) {
 	if ( rhs.m_mergeable == false )
-		throw cException_Other("cCluster Copy Constructor error.");
+		throw cException_Other("Cluster Copy Constructor error.");
 }
 
 
@@ -151,7 +151,7 @@ cCluster::cCluster( const cCluster & rhs ) : m_info(rhs.m_info), m_fellows(rhs.m
  * disambiguate_by_set in engine.cpp
  */
 ClusterHead
-cCluster::disambiguate(const cCluster & rhs,
+Cluster::disambiguate(const Cluster & rhs,
                        const double prior,
                        const double mutual_threshold) const {
 
@@ -220,7 +220,7 @@ cCluster::disambiguate(const cCluster & rhs,
  * Aim: insert a new record pointer to the member list.
  */
 void
-cCluster::insert_elem( const Record * more_elem) {
+Cluster::insert_elem( const Record * more_elem) {
 
 	this->m_fellows.push_back(more_elem);
 	m_usable = false;
@@ -231,7 +231,7 @@ cCluster::insert_elem( const Record * more_elem) {
  * Aim: to repair a cluster.
  */
 void
-cCluster::self_repair() {
+Cluster::self_repair() {
 
 	const unsigned int rec_size = Record::record_size();
 	for ( unsigned int i = 0 ; i < rec_size; ++i ) {
@@ -269,7 +269,7 @@ cCluster::self_repair() {
  * Finally, get the most frequent.
  */
 void
-cCluster::find_representative()  {
+Cluster::find_representative()  {
 
 	static const string useful_columns[] = { cFirstname::static_get_class_name(), cMiddlename::static_get_class_name(), cLastname::static_get_class_name(),
 											cLatitude::static_get_class_name(), cAssignee::static_get_class_name(), cCity::static_get_class_name(), cCountry::static_get_class_name()};
@@ -321,7 +321,7 @@ cCluster::find_representative()  {
 
 
 void
-cCluster::update_year_range() {
+Cluster::update_year_range() {
 
 	static const unsigned int appyearindex = Record::get_index_by_name(cApplyYear::static_get_class_name());
 
@@ -351,7 +351,7 @@ cCluster::update_year_range() {
 
 
 bool
-cCluster::is_valid_year() const {
+Cluster::is_valid_year() const {
 
 	if (this->first_patent_year == invalid_year || this->last_patent_year == invalid_year )
 		return false;
@@ -361,7 +361,7 @@ cCluster::is_valid_year() const {
 
 
 unsigned int
-cCluster::patents_gap( const cCluster & rhs) const {
+Cluster::patents_gap( const Cluster & rhs) const {
 
 	if ( ! this->is_valid_year() || ! rhs.is_valid_year() )
 		return 0;
@@ -380,7 +380,7 @@ cCluster::patents_gap( const cCluster & rhs) const {
 
 
 void
-cCluster::update_locations() {
+Cluster::update_locations() {
 
 	locs.clear();
 	static const unsigned int latindex = Record::get_index_by_name(cLatitude::static_get_class_name());
@@ -390,7 +390,7 @@ cCluster::update_locations() {
 		if ( pAttribLat == 0 ) {
 			(*p)->print();
 			std::cerr << "Data type is " << typeid(*pA).name() << std::endl;
-			throw cException_Other("bad cast from cAttrib to cLatitude. cCluster::update_location error.");
+			throw cException_Other("bad cast from cAttrib to cLatitude. Cluster::update_location error.");
 		}
 		if ( pAttribLat->is_informative() )
 			locs.insert(pAttribLat);
@@ -399,7 +399,7 @@ cCluster::update_locations() {
 
 
 void
-cCluster::add_uid2uinv( map < const Record *, const Record *> & uid2uinv ) const {
+Cluster::add_uid2uinv( map < const Record *, const Record *> & uid2uinv ) const {
 
 	map < const Record *, const Record *>::iterator q;
 	for ( cGroup_Value::const_iterator p = this->m_fellows.begin(); p != m_fellows.end(); ++p ) {

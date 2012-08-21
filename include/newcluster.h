@@ -38,7 +38,7 @@ public:
 
 
 /**
- * cCluster objects are the molecules of disambiguation,
+ * Cluster objects are the molecules of disambiguation,
  * while Record objects are atoms of disambiguation.
  * Each cluster contains a cluster_head, a list of members, and some other
  * information. The aim of disambiguation is reorganize clusters
@@ -46,7 +46,7 @@ public:
  * starts from smallest clusters that contain only one record, and
  * ends with clusters that contain some amount of records.
  */
-class cCluster {
+class Cluster {
 
 private:
 
@@ -77,8 +77,8 @@ private:
   */
   static const map < const Record *, cGroup_Value, cSort_by_attrib > * reference_pointer;
 
-  //cCluster & operator = ( const cCluster &): forbid the assignment operation.
-  cCluster & operator = ( const cCluster &);
+  //Cluster & operator = ( const Cluster &): forbid the assignment operation.
+  Cluster & operator = ( const Cluster &);
 
   //void find_representative():  to sets a component of cluster
   //head to be the record whose columns appear most frequently
@@ -96,36 +96,36 @@ private:
 
   void update_year_range();
 
-  unsigned int patents_gap( const cCluster & rhs) const;
+  unsigned int patents_gap( const Cluster & rhs) const;
 
   bool is_valid_year() const;
 
 public:
 
-  //  cCluster(const ClusterHead & info, const cGroup_Value & fellows): constructor
-  cCluster(const ClusterHead & info, const cGroup_Value & fellows);
+  //  Cluster(const ClusterHead & info, const cGroup_Value & fellows): constructor
+  Cluster(const ClusterHead & info, const cGroup_Value & fellows);
 
-  //  ~cCluster() : destructor
-  ~cCluster();
+  //  ~Cluster() : destructor
+  ~Cluster();
 
-  //  cCluster ( const cCluster & rhs ): copy constructor
-  cCluster ( const cCluster & rhs );
+  //  Cluster ( const Cluster & rhs ): copy constructor
+  Cluster ( const Cluster & rhs );
 
  /**
-  *  void merge( cCluster & mergee, const ClusterHead & info):
+  *  void merge( Cluster & mergee, const ClusterHead & info):
   *  merge the "mergee" cluster into "*this", and set
   *  the cluster head of the new cluster to be info.
   */
-   void merge( cCluster & mergee, const ClusterHead & info);
+   void merge( Cluster & mergee, const ClusterHead & info);
 
  /**
-  * ClusterHead disambiguate(const cCluster & rhs, const double prior, const double mutual_threshold) const:
+  * ClusterHead disambiguate(const Cluster & rhs, const double prior, const double mutual_threshold) const:
   *  disambiguate "*this" cluster with rhs cluster,
   *  with the prior and mutual_threshold information.
   *  Returns a ClusterHead to tell whether the two clusters should
   *  be merged or not, and if yes, the cohesion of the new one.
   */
-  ClusterHead disambiguate(const cCluster & rhs, const double prior, const double mutual_threshold) const;
+  ClusterHead disambiguate(const Cluster & rhs, const double prior, const double mutual_threshold) const;
 
   //static void set_ratiomap_pointer( const cRatios & r):
   //set the ratio map pointer to a good one.

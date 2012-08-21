@@ -137,7 +137,7 @@ class cRatios;
  *        const string & get_useless_string() const:
  *            return the reference of the "information-less" string by the blocker.
  *
- *        double get_prior_value(const string & block_identifier, const list <cCluster> & rg):
+ *        double get_prior_value(const string & block_identifier, const list <Cluster> & rg):
  *            obtain a priori probability for a certain block.
  *
  *        const map < const string *, list<double> > & get_prior_map() const:
@@ -274,7 +274,7 @@ class ClusterInfo {
 
 public:
     typedef set<const Record *> recordset;
-    typedef list < cCluster > cRecGroup;
+    typedef list < Cluster > cRecGroup;
 
     friend bool disambiguate_wrapper(const map<string, ClusterInfo::cRecGroup>::iterator & p,
                                      ClusterInfo & cluster,
@@ -313,7 +313,7 @@ private:
     ClusterInfo ( const ClusterInfo &);
     void print(std::ostream & os) const;
     const string & get_useless_string() const {return useless;}
-    double get_prior_value( const string & block_identifier, const list <cCluster> & rg );
+    double get_prior_value( const string & block_identifier, const list <Cluster> & rg );
     const map < const string *, list<double> > & get_prior_map() const {return prior_data;}
     map < const string*, list <double> > & get_prior_map() {return prior_data;};
     const cRecGroup & get_comparision_map(const string* bid) const;

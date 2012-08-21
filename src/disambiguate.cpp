@@ -427,7 +427,7 @@ disambiguate_main(std::string & engineconf, std::string & blockingconf) {
         create_btree_uid2record_pointer(uid_dict, all_records, uid_identifier);
         map < const Record *, cGroup_Value, cSort_by_attrib > patent_tree(cPatent::static_get_class_name());
         build_patent_tree(  patent_tree , all_records ) ;
-        cCluster::set_reference_patent_tree_pointer( patent_tree);
+        Cluster::set_reference_patent_tree_pointer( patent_tree);
         list < const Record *> all_rec_pointers;
         for ( list<Record>::const_iterator p = all_records.begin(); p != all_records.end(); ++p )
             all_rec_pointers.push_back(&(*p));
@@ -549,7 +549,7 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
 
     std::cout << "Reconfiguration done." << std::endl;
 
-    cCluster::set_reference_patent_tree_pointer( blocker_coauthor.get_patent_tree());
+    Cluster::set_reference_patent_tree_pointer( blocker_coauthor.get_patent_tree());
 
 
     vector < string > prev_train_vec;
@@ -653,7 +653,7 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
         else {
             ratio_pointer = new cRatios (ratiofile);
         }
-        cCluster::set_ratiomap_pointer(*ratio_pointer);
+        Cluster::set_ratiomap_pointer(*ratio_pointer);
 
         // now disambiguate
         Record::clean_member_attrib_pool();

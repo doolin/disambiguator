@@ -172,7 +172,7 @@ cBlocking_Operation_By_Coauthors::build_uid2uinv_tree(const ClusterInfo & cluste
     uinv2count_tree.clear();
     uid2uinv_tree.clear();
     unsigned int count = 0;
-    typedef list<cCluster> cRecGroup;
+    typedef list<Cluster> cRecGroup;
     std::cout << "Building trees: 1. Unique Record ID to Unique Inventer ID. 2 Unique Inventer ID to Number of holding patents ........" << std::endl;
     //for ( map < string, cRecGroup >::const_iterator p = cluster.get_cluster_map().begin(); p != cluster.get_cluster_map().end(); ++p ) {
     for ( map < string, cRecGroup >::const_iterator p = cluster.get_cluster_map().begin(); p != cluster.get_cluster_map().end(); ++p ) {

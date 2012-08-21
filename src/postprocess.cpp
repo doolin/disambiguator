@@ -27,7 +27,7 @@ ClusterSet & ClusterSet::convert_from_ClusterInfo( const ClusterInfo * ps) {
 
 
 void
-find_associated_nodes(const cCluster & center, const map < const Record *, const Record *> & uid2uinv,
+find_associated_nodes(const Cluster & center, const map < const Record *, const Record *> & uid2uinv,
                       const map < const Record *, cGroup_Value, cSort_by_attrib > & patent_tree,
                       set < const Record * > & associated_delegates) {
 
@@ -331,7 +331,7 @@ ClusterSet::read_from_file(const char * filename,
                 prev_pos = pos + secondary_delim_size;
             }
             ClusterHead th(key, val);
-            cCluster tempc(th, tempv);
+            Cluster tempc(th, tempv);
             tempc.self_repair();
             this->consolidated.push_back(tempc);
 

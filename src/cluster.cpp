@@ -96,8 +96,8 @@ ClusterInfo::is_consistent() const {
  *                 For each part of b_id, record its occurrence in the variable "column_stat".
  *             Look up the map "cluster_by_block" for b_id and get the cluster list. If b_id does not exist,
  *             create insert (b_id, an empty cluster list) into cluster_by_block.
- *             Read the rest of the whole line, and create a cCluster object.
- *             Append the cCluster object into the end of the list of clusters.
+ *             Read the rest of the whole line, and create a Cluster object.
+ *             Append the Cluster object into the end of the list of clusters.
  *
  *         Finally, use the variable "column_stat" to reset "min_occurrence" and "max_occurence".
  */
@@ -164,7 +164,7 @@ ClusterInfo::retrieve_last_comparision_info ( const cBlocking_Operation & blocke
                     prev_pos = pos + secondary_delim_size;
                 }
                 ClusterHead th(key, val);
-                cCluster tempc(th, tempv);
+                Cluster tempc(th, tempv);
                 tempc.self_repair();
 
                 if ( prim_iter != cluster_by_block.end()) {
@@ -276,7 +276,7 @@ ClusterInfo::preliminary_consolidation(const cBlocking_Operation & blocker,
         mi = cluster_by_block.find(temp);
         if ( mi == cluster_by_block.end() ) {
             ClusterHead th(*p, 1);
-            cCluster tc(th, empty_fellows);
+            Cluster tc(th, empty_fellows);
             cRecGroup tr(1, tc);
             mi = cluster_by_block.insert(std::pair<string, cRecGroup>(temp, tr)).first;
         }
@@ -487,7 +487,7 @@ ClusterInfo::output_prior_value( const char * const outputfile ) const {
  * notes are legacy codes of adjustment, for reference purpose only.
  */
 double
-ClusterInfo::get_prior_value( const string & block_identifier, const list <cCluster> & rg ) {
+ClusterInfo::get_prior_value( const string & block_identifier, const list <Cluster> & rg ) {
 
     static const double prior_max = 0.95;
     static const double prior_default = 1e-6;
@@ -507,7 +507,7 @@ ClusterInfo::get_prior_value( const string & block_identifier, const list <cClus
     double numerator = 0;
     unsigned int tt = 0;
 
-    for ( list<cCluster>::const_iterator q = rg.begin(); q != rg.end(); ++q ) {
+    for ( list<Cluster>::const_iterator q = rg.begin(); q != rg.end(); ++q ) {
         const unsigned int c = q->get_fellows().size();
         numerator += 1.0 * c * ( c - 1 );
         tt += c;
@@ -645,7 +645,7 @@ ClusterInfo::disambiguate(const cRatios & ratio,
 
 
     unsigned int max_inventor = 0;
-    const cCluster * pmax = NULL;
+    const Cluster * pmax = NULL;
 
     for ( map < string, cRecGroup >::const_iterator p = cluster_by_block.begin(); p != cluster_by_block.end(); ++p ) {
         const cRecGroup & galias = p->second;
@@ -803,7 +803,7 @@ ClusterInfo::set_thresholds ( const vector < double > & input ) {
 
 /**
  * Aim: to disambiguate clusters within a given block. Probably also update the prior values.
- * Algorithm: call the cCluster::disambiguate method and, if necessary, the cCluster::merge method.
+ * Algorithm: call the Cluster::disambiguate method and, if necessary, the Cluster::merge method.
  */
 unsigned int
 ClusterInfo::disambiguate_by_block(cRecGroup & to_be_disambiged_group,

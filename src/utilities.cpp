@@ -147,7 +147,7 @@ make_stable_training_sets_by_personal(const list <Record> & all_records,
 
 
 std::pair < const Record *, set < const Record * > > 
-ones_temporal_unique_coauthors (const cCluster & record_cluster,
+ones_temporal_unique_coauthors (const Cluster & record_cluster,
                                 const map < const Record *, 
                                 const Record *> & complete_uid2uinv,
                                 const map < const Record *, cGroup_Value, cSort_by_attrib > & complete_patent_tree,
@@ -216,9 +216,9 @@ one_step_postprocess(const list < Record > & all_records,
     // Read results from last disambiguation 
     cs.read_from_file(last_disambig_result, uid_dict);
     map < const Record *, const Record *> uid2uinv;
-    const list < cCluster > & full_list = cs.get_set();
+    const list < Cluster > & full_list = cs.get_set();
 
-    for (list < cCluster >::const_iterator t = full_list.begin(); t != full_list.end(); ++t) {
+    for (list < Cluster >::const_iterator t = full_list.begin(); t != full_list.end(); ++t) {
         t->add_uid2uinv(uid2uinv);
     }
 
@@ -261,13 +261,13 @@ out_of_cluster_density(const ClusterSet & upper,
     const unsigned int base = 100000;
     std:: cout << "Processing out-of-cluster density ... ..." << std::endl;
     map < const Record *, const Record *> upper_uid2uinv;
-    const list < cCluster > & full_list = upper.get_set();
+    const list < Cluster > & full_list = upper.get_set();
 
-    for ( list < cCluster >::const_iterator t = full_list.begin(); t != full_list.end(); ++t )
+    for ( list < Cluster >::const_iterator t = full_list.begin(); t != full_list.end(); ++t )
         t->add_uid2uinv(upper_uid2uinv);
 
     unsigned int cluster_count = 0;
-    for ( list < cCluster >::const_iterator plower = lower.get_set().begin(); plower != lower.get_set().end(); ++plower ) {
+    for ( list < Cluster >::const_iterator plower = lower.get_set().begin(); plower != lower.get_set().end(); ++plower ) {
         ++ cluster_count;
         if ( cluster_count % base == 0 )
             std::cout << cluster_count << " clusters have been process for out-of-cluster density." << std::endl;
