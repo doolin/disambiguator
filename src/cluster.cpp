@@ -725,7 +725,7 @@ disambiguate_wrapper(const map<string, cCluster_Info::cRecGroup>::iterator & p,
     ///////// Start validity check /////////////
 
     // TODO: Rename pst for semantic utility.
-    const string * pst = &p->first;
+    const string * pst = &p->first; // This may be "bid" elsewhere, e.g., blocking_id, tag.
     // TODO: "useless_string" should be a #define, no need to
     // drag something like "" out of memory.
     // TODO: Consider doing a prepass on all the data to get rid of
@@ -806,7 +806,7 @@ unsigned int
 cCluster_Info::disambiguate_by_block(cRecGroup & to_be_disambiged_group,
                                      list <double> & prior_list,
                                      const cRatios & ratio,
-                                     const string * const bid,
+                                     const string * const bid, // blocking_id
                                      const double threshold ) {
 
     const bool should_update_prior = false;
@@ -817,7 +817,9 @@ cCluster_Info::disambiguate_by_block(cRecGroup & to_be_disambiged_group,
         second_iter = first_iter;
         for ( ++second_iter; second_iter != to_be_disambiged_group.end(); ) {
             cCluster_Head result = first_iter->disambiguate(*second_iter, prior_value, threshold);
+
             if ( debug_mode && result.m_delegate != NULL) {
+                // TODO: Move all this to its own function.
                 std::cout << "**************************" << std::endl;
                 first_iter->get_cluster_head().m_delegate->print(std::cout);
                 std::cout << "The first cluster has " << first_iter->get_fellows().size() << " members." << std::endl;
