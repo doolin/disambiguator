@@ -85,44 +85,66 @@ private:
 	unsigned int patents_gap( const cCluster & rhs) const;
 	bool is_valid_year() const;
 
-/**
- * Public:
- *		cCluster(const ClusterHead & info, const cGroup_Value & fellows): constructor
- *		~cCluster() : destructor
- *		cCluster ( const cCluster & rhs ): copy constructor
- *		void merge( cCluster & mergee, const ClusterHead & info): merge the "mergee" cluster into "*this", and set
- *				the cluster head of the new cluster to be info.
- *
- *		ClusterHead disambiguate(const cCluster & rhs, const double prior, const double mutual_threshold) const:
- *				dsiambiguate "*this" cluster with rhs cluster, with the prior and mutual_threshold information.
- *				Returns a ClusterHead to tell whether the two clusters should be merged or not, and if yes, the cohesion of the new one.
- *
- *		static void set_ratiomap_pointer( const cRatios & r): set the ratio map pointer to a good one.
- *		const cGroup_Value & get_fellows() const: get the members ( actually it is reference to const )of the cluster.
- *		const ClusterHead & get_cluster_head () const: get the cluster head ( const reference ) of the cluster.
- *		void insert_elem( const Record *): insert a new member into the member list. This could potentially change the cluster head.
- *		void self_repair(): call this if insertion of elements is done manually, usually for a batch of record objects (not recommended).
- *		static void set_reference_patent_tree_pointer(const map < const Record *, cGroup_Value, cSort_by_attrib > & reference_patent_tree ): set the patent tree pointer.
- *		void change_mid_name(): to change pointers to abbreviated middle names to full middle names.
- *					This step is controversial, as it actually changed the raw data. Or more correctly, it changed the pointers of the raw data.
- */
 public:
+
+  //	cCluster(const ClusterHead & info, const cGroup_Value & fellows): constructor
 	cCluster(const ClusterHead & info, const cGroup_Value & fellows);
+
+  //	~cCluster() : destructor
 	~cCluster();
+
+  //	cCluster ( const cCluster & rhs ): copy constructor
 	cCluster ( const cCluster & rhs );
-	void merge( cCluster & mergee, const ClusterHead & info);
 
-	ClusterHead disambiguate(const cCluster & rhs, const double prior, const double mutual_threshold) const;
+ /**
+  *	void merge( cCluster & mergee, const ClusterHead & info):
+  *	merge the "mergee" cluster into "*this", and set
+  *	the cluster head of the new cluster to be info.
+  */
+ 	void merge( cCluster & mergee, const ClusterHead & info);
 
+ /**
+  * ClusterHead disambiguate(const cCluster & rhs, const double prior, const double mutual_threshold) const:
+  *	disambiguate "*this" cluster with rhs cluster,
+  *	with the prior and mutual_threshold information.
+  *	Returns a ClusterHead to tell whether the two clusters should
+  *	be merged or not, and if yes, the cohesion of the new one.
+  */
+  ClusterHead disambiguate(const cCluster & rhs, const double prior, const double mutual_threshold) const;
+
+  //static void set_ratiomap_pointer( const cRatios & r):
+  //set the ratio map pointer to a good one.
 	static void set_ratiomap_pointer( const cRatios & r) {pratio = &r;}
+
+  //const cGroup_Value & get_fellows() const:
+  //get the members (actually it is reference to const) of the cluster.
 	const cGroup_Value & get_fellows() const {return m_fellows;}
+
+  //const ClusterHead & get_cluster_head () const:
+  //get the cluster head (const reference) of the cluster.
 	const ClusterHead & get_cluster_head () const {return m_info;};
-	void insert_elem( const Record *);
 
+  //void insert_elem( const Record *): insert a new member into
+  //the member list. This could potentially change the cluster head.
+	void insert_elem(const Record *);
+
+  //void self_repair(): call this if insertion of elements is done manually,
+  //usually for a batch of record objects (not recommended).
 	void self_repair();
-	static void set_reference_patent_tree_pointer(const map < const Record *, cGroup_Value, cSort_by_attrib > & reference_patent_tree ) { reference_pointer = & reference_patent_tree;}
 
+  //static void set_reference_patent_tree_pointer(const map < const Record *, cGroup_Value, cSort_by_attrib > & reference_patent_tree ): set the patent tree pointer.
+	static void set_reference_patent_tree_pointer(const map < const Record *, cGroup_Value, cSort_by_attrib > & reference_patent_tree ) {
+    reference_pointer = & reference_patent_tree;
+  }
+
+ /**
+  *	void change_mid_name(): to change pointers to abbreviated middle
+  *	names to full middle names.	This step is controversial, as it
+  *	actually changed the raw data. Or more correctly, it changed
+  *	the pointers of the raw data.
+  */
 	void change_mid_name();
+
 	void add_uid2uinv( map < const Record *, const Record *> & uid2uinv ) const;
 };
 
