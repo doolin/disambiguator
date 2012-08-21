@@ -1,13 +1,17 @@
+#include <cmath>
 
 #include "cluster.h"
 #include "engine.h"
 #include "fileoper.h"
 #include "ratios.h"
 #include "newcluster.h"
+// TODO: Looks like the worker.h file is only included here,
+// good reason to make it private to src.
+#include "worker.h"
+
 extern "C" {
 #include "strcmp95.h"
 }
-#include <cmath>
 
 //initialization of static members.
 const char * const ClusterInfo::primary_delim = "###";
