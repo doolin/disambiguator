@@ -101,10 +101,11 @@ public:
 
 
 // forward declaration
-class cCluster_Info;
+// TODO: Apparently, these are not needed...
+//class cCluster_Info;
 
 class cBlocking {
-    friend class cCluster_Info;
+//    friend class cCluster_Info;
 private:
     cBlocking ( const cBlocking &);
 protected:
