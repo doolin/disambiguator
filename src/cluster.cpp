@@ -604,9 +604,9 @@ cCluster_Info::get_prior_value( const string & block_identifier, const list <cCl
  */
 void
 cCluster_Info::disambiguate(const cRatios & ratio,
-		            const unsigned int num_threads,
-			    const char * const debug_block_file,
-			    const char * const prior_to_save) {
+		                        const unsigned int num_threads,
+                            const char * const debug_block_file,
+                            const char * const prior_to_save) {
 
     if ( is_matching_cluster() != true )
         throw cException_Cluster_Error("Wrong type of clusters for disambiguation.");
@@ -663,9 +663,9 @@ cCluster_Info::disambiguate(const cRatios & ratio,
     const unsigned int ui = Record::get_index_by_name(cUnique_Record_ID::static_get_class_name());
     std::cout << std::endl;
     std::cout << "Most consolidated cluster: " << * pmax->get_cluster_head().m_delegate->get_data_by_index(fi).at(0)
-            <<"." << * pmax->get_cluster_head().m_delegate->get_data_by_index(li).at(0)
-            << "  ID = " << * pmax->get_cluster_head().m_delegate->get_data_by_index(ui).at(0)
-            <<". Size = " << max_inventor << std::endl;
+              << "." << * pmax->get_cluster_head().m_delegate->get_data_by_index(li).at(0)
+              << "  ID = " << * pmax->get_cluster_head().m_delegate->get_data_by_index(ui).at(0)
+              << ". Size = " << max_inventor << std::endl;
 }
 
 
@@ -770,6 +770,9 @@ disambiguate_wrapper(const map<string, cCluster_Info::cRecGroup>::iterator & p,
             temp1 = temp2;
             // TODO: Document the return values from this method, explain why we're
             // checking the return value.
+            // NOTE: the return value, here captured as temp2, is NOT CALCULATED in the
+            // following function. What's returned from the disambiguate_by_block function
+            // is a size value computed as a side effect of the called code.
             temp2 = cluster.disambiguate_by_block(p->second, cluster.get_prior_map().find(pst)->second, ratio, pst, *c);
             // Explain the condition for breaking the loop here.
             if (temp2 == temp1) break;
@@ -816,6 +819,7 @@ cCluster_Info::disambiguate_by_block(cRecGroup & to_be_disambiged_group,
     for ( first_iter = to_be_disambiged_group.begin(); first_iter != to_be_disambiged_group.end(); ++first_iter) {
         second_iter = first_iter;
         for ( ++second_iter; second_iter != to_be_disambiged_group.end(); ) {
+            // TODO: Find out where the cRecGroup->iterator->disambiguate callback is set.
             cCluster_Head result = first_iter->disambiguate(*second_iter, prior_value, threshold);
 
             if ( debug_mode && result.m_delegate != NULL) {
