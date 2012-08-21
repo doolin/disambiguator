@@ -48,41 +48,56 @@ public:
  */
 class cCluster {
 
-/**
- * Private:
- *
- *		ClusterHead m_info: cluster head of the cluster, including the delegate and the cohesion of the cluster.
- *		cGroup_Value m_fellows: the list of members of the cluster.
- *		bool m_mergeable: a boolean, indicating "*this" cluster has been merged into others or not.
- *		bool m_usable: a boolean preventing misuse earlier than fully prepared.
- *
- *		static const cRatios * pratio: a pointer that points to a cRatio object which contains a map of similarity profile to ratio
- *		static const map < const Record *, cGroup_Value, cSort_by_attrib > * reference_pointer:
- *					a pointer that points to a patent tree, which can be obtained in a cBlocking_Operation_By_Coauthor object.
- *		cCluster & operator = ( const cCluster &): forbid the assignment operation.
- *		void find_representative():  to sets a component of cluster head to be the record whose columns appear most frequently among the all the members.
- */
 private:
+
 	static const unsigned int invalid_year = 0;
+
+  //ClusterHead m_info: cluster head of the cluster, including the delegate and the cohesion of the cluster.
 	ClusterHead m_info;
+
+  //cGroup_Value m_fellows: the list of members of the cluster.
 	cGroup_Value m_fellows;
+
+  //bool m_mergeable: a boolean, indicating "*this" cluster
+  //has been merged into others or not.
 	bool m_mergeable;
+
+  //bool m_usable: a boolean preventing misuse earlier than
+  //fully prepared.
 	bool m_usable;
 
+  //static const cRatios * pratio: a pointer that points to a
+  //cRatio object which contains a map of similarity profile to ratio
 	static const cRatios * pratio;
-	static const map < const Record *, cGroup_Value, cSort_by_attrib > * reference_pointer;
 
+ /**
+  * static const map < const Record *, cGroup_Value, cSort_by_attrib > * reference_pointer:
+  * a pointer that points to a patent tree, which can be obtained in
+  * a cBlocking_Operation_By_Coauthor object.
+  */
+  static const map < const Record *, cGroup_Value, cSort_by_attrib > * reference_pointer;
+
+  //cCluster & operator = ( const cCluster &): forbid the assignment operation.
 	cCluster & operator = ( const cCluster &);
+
+  //void find_representative():  to sets a component of cluster
+  //head to be the record whose columns appear most frequently
+  //among the all the members.
 	void find_representative();
 
 
 	unsigned int first_patent_year;
+
 	unsigned int last_patent_year;
+
 	set < const cLatitude * > locs;
 
 	void update_locations();
+
 	void update_year_range();
+
 	unsigned int patents_gap( const cCluster & rhs) const;
+
 	bool is_valid_year() const;
 
 public:
