@@ -10,7 +10,7 @@ const map < const Record *, cGroup_Value, cSort_by_attrib > * cCluster::referenc
 /**
  * Aim: constructor of cCluster objects.
  */
-cCluster::cCluster(const cCluster_Head & info, const cGroup_Value & fellows)
+cCluster::cCluster(const ClusterHead & info, const cGroup_Value & fellows)
 		: m_info(info), m_fellows(fellows), m_mergeable(true), m_usable(true) {
 
 	if ( NULL == reference_pointer )
@@ -33,7 +33,7 @@ cCluster::cCluster(const cCluster_Head & info, const cGroup_Value & fellows)
  * And then call find_representative.
  */
 void
-cCluster::merge(cCluster & mergee, const cCluster_Head & info) {
+cCluster::merge(cCluster & mergee, const ClusterHead & info) {
 
 	if ( this->m_mergeable == false )
 		throw cException_Empty_Cluster("Merging error: merger is empty.");
@@ -150,7 +150,7 @@ cCluster::cCluster( const cCluster & rhs ) : m_info(rhs.m_info), m_fellows(rhs.m
  * if some special cases should be dealt first. Otherwise, call
  * disambiguate_by_set in engine.cpp
  */
-cCluster_Head
+ClusterHead
 cCluster::disambiguate(const cCluster & rhs,
                        const double prior,
                        const double mutual_threshold) const {
@@ -211,7 +211,7 @@ cCluster::disambiguate(const cCluster & rhs,
 												rhs.m_info.m_delegate, rhs.m_fellows, rhs.m_info.m_cohesion,
 													prior_to_use, *pratio, threshold_to_use) );
 
-	return cCluster_Head(ans.first, ans.second);
+	return ClusterHead(ans.first, ans.second);
 
 }
 

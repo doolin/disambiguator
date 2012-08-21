@@ -5,11 +5,11 @@
 #include "engine.h"
 
 /**
- * cCluster_Head:
+ * ClusterHead:
  * This class contains two pieces of information about
  * a cluster: its delegate and its cohesion.
  */
-class cCluster_Head {
+class ClusterHead {
 
 public:
 
@@ -25,14 +25,14 @@ public:
 	double m_cohesion;
 	
  /**
-  *	cCluster_Head(const Record * const p, const double c): constructor
+  *	ClusterHead(const Record * const p, const double c): constructor
   */
-	cCluster_Head(const Record * const p, const double c): m_delegate(p), m_cohesion(c) {};
+	ClusterHead(const Record * const p, const double c): m_delegate(p), m_cohesion(c) {};
 
  /**
-  * cCluster_Head ( const cCluster_Head & rhs): copy constructor
+  * ClusterHead ( const ClusterHead & rhs): copy constructor
   */
-	cCluster_Head ( const cCluster_Head & rhs): m_delegate(rhs.m_delegate), m_cohesion(rhs.m_cohesion) {}
+	ClusterHead ( const ClusterHead & rhs): m_delegate(rhs.m_delegate), m_cohesion(rhs.m_cohesion) {}
 };
 
 
@@ -45,7 +45,7 @@ public:
  *
  * Private:
  *
- *		cCluster_Head m_info: cluster head of the cluster, including the delegate and the cohesion of the cluster.
+ *		ClusterHead m_info: cluster head of the cluster, including the delegate and the cohesion of the cluster.
  *		cGroup_Value m_fellows: the list of members of the cluster.
  *		bool m_mergeable: a boolean, indicating "*this" cluster has been merged into others or not.
  *		bool m_usable: a boolean preventing misuse earlier than fully prepared.
@@ -59,19 +59,19 @@ public:
 
 /*
  * Public:
- *		cCluster(const cCluster_Head & info, const cGroup_Value & fellows): constructor
+ *		cCluster(const ClusterHead & info, const cGroup_Value & fellows): constructor
  *		~cCluster() : destructor
  *		cCluster ( const cCluster & rhs ): copy constructor
- *		void merge( cCluster & mergee, const cCluster_Head & info): merge the "mergee" cluster into "*this", and set
+ *		void merge( cCluster & mergee, const ClusterHead & info): merge the "mergee" cluster into "*this", and set
  *				the cluster head of the new cluster to be info.
  *
- *		cCluster_Head disambiguate(const cCluster & rhs, const double prior, const double mutual_threshold) const:
+ *		ClusterHead disambiguate(const cCluster & rhs, const double prior, const double mutual_threshold) const:
  *				dsiambiguate "*this" cluster with rhs cluster, with the prior and mutual_threshold information.
- *				Returns a cCluster_Head to tell whether the two clusters should be merged or not, and if yes, the cohesion of the new one.
+ *				Returns a ClusterHead to tell whether the two clusters should be merged or not, and if yes, the cohesion of the new one.
  *
  *		static void set_ratiomap_pointer( const cRatios & r): set the ratio map pointer to a good one.
  *		const cGroup_Value & get_fellows() const: get the members ( actually it is reference to const )of the cluster.
- *		const cCluster_Head & get_cluster_head () const: get the cluster head ( const reference ) of the cluster.
+ *		const ClusterHead & get_cluster_head () const: get the cluster head ( const reference ) of the cluster.
  *		void insert_elem( const Record *): insert a new member into the member list. This could potentially change the cluster head.
  *		void self_repair(): call this if insertion of elements is done manually, usually for a batch of record objects (not recommended).
  *		static void set_reference_patent_tree_pointer(const map < const Record *, cGroup_Value, cSort_by_attrib > & reference_patent_tree ): set the patent tree pointer.
@@ -83,7 +83,7 @@ class cCluster {
 
 private:
 	static const unsigned int invalid_year = 0;
-	cCluster_Head m_info;
+	ClusterHead m_info;
 	cGroup_Value m_fellows;
 	bool m_mergeable;
 	bool m_usable;
@@ -105,16 +105,16 @@ private:
 	bool is_valid_year() const;
 
 public:
-	cCluster(const cCluster_Head & info, const cGroup_Value & fellows);
+	cCluster(const ClusterHead & info, const cGroup_Value & fellows);
 	~cCluster();
 	cCluster ( const cCluster & rhs );
-	void merge( cCluster & mergee, const cCluster_Head & info);
+	void merge( cCluster & mergee, const ClusterHead & info);
 
-	cCluster_Head disambiguate(const cCluster & rhs, const double prior, const double mutual_threshold) const;
+	ClusterHead disambiguate(const cCluster & rhs, const double prior, const double mutual_threshold) const;
 
 	static void set_ratiomap_pointer( const cRatios & r) {pratio = &r;}
 	const cGroup_Value & get_fellows() const {return m_fellows;}
-	const cCluster_Head & get_cluster_head () const {return m_info;};
+	const ClusterHead & get_cluster_head () const {return m_info;};
 	void insert_elem( const Record *);
 
 	void self_repair();

@@ -163,7 +163,7 @@ cCluster_Info::retrieve_last_comparision_info ( const cBlocking_Operation & bloc
                     tempv.push_back(value);
                     prev_pos = pos + secondary_delim_size;
                 }
-                cCluster_Head th(key, val);
+                ClusterHead th(key, val);
                 cCluster tempc(th, tempv);
                 tempc.self_repair();
 
@@ -275,7 +275,7 @@ cCluster_Info::preliminary_consolidation(const cBlocking_Operation & blocker,
         string temp ( blocker.extract_blocking_info(*p));
         mi = cluster_by_block.find(temp);
         if ( mi == cluster_by_block.end() ) {
-            cCluster_Head th(*p, 1);
+            ClusterHead th(*p, 1);
             cCluster tc(th, empty_fellows);
             cRecGroup tr(1, tc);
             mi = cluster_by_block.insert(std::pair<string, cRecGroup>(temp, tr)).first;
@@ -820,7 +820,7 @@ cCluster_Info::disambiguate_by_block(cRecGroup & to_be_disambiged_group,
         second_iter = first_iter;
         for ( ++second_iter; second_iter != to_be_disambiged_group.end(); ) {
             // TODO: Find out where the cRecGroup->iterator->disambiguate callback is set.
-            cCluster_Head result = first_iter->disambiguate(*second_iter, prior_value, threshold);
+            ClusterHead result = first_iter->disambiguate(*second_iter, prior_value, threshold);
 
             if ( debug_mode && result.m_delegate != NULL) {
                 // TODO: Move all this to its own function.

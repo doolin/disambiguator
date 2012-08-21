@@ -330,7 +330,7 @@ cCluster_Set::read_from_file(const char * filename,
                 tempv.push_back(value);
                 prev_pos = pos + secondary_delim_size;
             }
-            cCluster_Head th(key, val);
+            ClusterHead th(key, val);
             cCluster tempc(th, tempv);
             tempc.self_repair();
             this->consolidated.push_back(tempc);
