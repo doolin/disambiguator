@@ -28,7 +28,10 @@ class cRatios;
  * This class is a threading subclass to achieve multithreading in Linux systems.
  * It is used in ClusterInfo::disambiguate function.
  * It is unnecessary to understanding the detail. The only thing necessary to know is the constructor.
- *
+ */
+class cWorker_For_Disambiguation : public Thread {
+
+/**
  * Private:
  *        map < string, ClusterInfo::cRecGroup >::iterator * ppdisambiged:
  *        the pointer to an iterator that is a cursor of progress of disambiguation.
@@ -38,17 +41,7 @@ class cRatios;
  *        static pthread_mutex_t iter_lock: a mutex to synchronize the cursor.
  *        static unsigned int count: a static member to count the number of disambiguated blocks.
  *        void run(): the overriding function of base class, implementing details of disambiguation in each thread.
- *
- * Public:
- *         explicit cWorker_For_Disambiguation( map < string, ClusterInfo::cRecGroup >::iterator & input_pdisambiged,
-                                            const cRatios & ratiosmap, ClusterInfo & inputcluster): constructor.
- *        ~cWorker_For_Disambiguation(): destructor.
- *        static void zero_count(): clear the variable "count" to zero.
- *        static unsigned int get_count(): return the variable "count".
- *
  */
-class cWorker_For_Disambiguation : public Thread {
-
 private:
     map < string, ClusterInfo::cRecGroup >::iterator * ppdisambiged;
     const cRatios * pratios;
@@ -57,6 +50,19 @@ private:
     static pthread_mutex_t iter_lock;
     static unsigned int count;
     void run();
+
+
+
+/**
+ * Public:
+ *         explicit cWorker_For_Disambiguation( map < string, ClusterInfo::cRecGroup >::iterator & input_pdisambiged,
+                                            const cRatios & ratiosmap, ClusterInfo & inputcluster): constructor.
+ *        ~cWorker_For_Disambiguation(): destructor.
+ *        static void zero_count(): clear the variable "count" to zero.
+ *        static unsigned int get_count(): return the variable "count".
+ *
+ */
+
 public:
     explicit cWorker_For_Disambiguation( map < string, ClusterInfo::cRecGroup >::iterator & input_pdisambiged,
             const cRatios & ratiosmap,
