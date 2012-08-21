@@ -6,26 +6,32 @@
 
 /**
  * cCluster_Head:
- * This class contains two pieces of information about a cluster: its delegate and its cohesion.
- *
- * Public:
- *
- * 		const Record * m_delegate: the delegate (representative) of a cluster.
- * 		Usually this pointer contains the most frequently occurring information.
- *
- * 		double m_cohesion: the cohesion of a cluster, meaning the probability
- * 		for the members of the cluster to be of the same inventor.
- *
- * 		cCluster_Head(const Record * const p, const double c): constructor
- * 		cCluster_Head ( const cCluster_Head & rhs): copy constructor
- *
+ * This class contains two pieces of information about
+ * a cluster: its delegate and its cohesion.
  */
 class cCluster_Head {
 
 public:
-	const Record * m_delegate;
+
+ /** const Record * m_delegate: the delegate (representative) of a cluster.
+  * Usually this pointer contains the most frequently occurring information.
+  */
+  const Record * m_delegate;
+
+ /**
+  *	double m_cohesion: the cohesion of a cluster, meaning the probability
+  *	for the members of the cluster to be of the same inventor.
+  */
 	double m_cohesion;
+	
+ /**
+  *	cCluster_Head(const Record * const p, const double c): constructor
+  */
 	cCluster_Head(const Record * const p, const double c): m_delegate(p), m_cohesion(c) {};
+
+ /**
+  * cCluster_Head ( const cCluster_Head & rhs): copy constructor
+  */
 	cCluster_Head ( const cCluster_Head & rhs): m_delegate(rhs.m_delegate), m_cohesion(rhs.m_cohesion) {}
 };
 
@@ -58,9 +64,11 @@ public:
  *		cCluster ( const cCluster & rhs ): copy constructor
  *		void merge( cCluster & mergee, const cCluster_Head & info): merge the "mergee" cluster into "*this", and set
  *				the cluster head of the new cluster to be info.
+ *
  *		cCluster_Head disambiguate(const cCluster & rhs, const double prior, const double mutual_threshold) const:
  *				dsiambiguate "*this" cluster with rhs cluster, with the prior and mutual_threshold information.
  *				Returns a cCluster_Head to tell whether the two clusters should be merged or not, and if yes, the cohesion of the new one.
+ *
  *		static void set_ratiomap_pointer( const cRatios & r): set the ratio map pointer to a good one.
  *		const cGroup_Value & get_fellows() const: get the members ( actually it is reference to const )of the cluster.
  *		const cCluster_Head & get_cluster_head () const: get the cluster head ( const reference ) of the cluster.
@@ -101,7 +109,9 @@ public:
 	~cCluster();
 	cCluster ( const cCluster & rhs );
 	void merge( cCluster & mergee, const cCluster_Head & info);
+
 	cCluster_Head disambiguate(const cCluster & rhs, const double prior, const double mutual_threshold) const;
+
 	static void set_ratiomap_pointer( const cRatios & r) {pratio = &r;}
 	const cGroup_Value & get_fellows() const {return m_fellows;}
 	const cCluster_Head & get_cluster_head () const {return m_info;};
