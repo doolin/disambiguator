@@ -36,13 +36,19 @@ public:
 };
 
 
+
 /**
- * cCluster:
- * This class objects are the molecules of disambiguation, while Record objects are atoms of disambiguation.
+ * cCluster objects are the molecules of disambiguation,
+ * while Record objects are atoms of disambiguation.
  * Each cluster contains a cluster_head, a list of members, and some other
- * information. The aim of disambiguation is reorganize clusters so that some can probably compound to bigger ones. Disambiguation
- * starts from smallest clusters that contain only one record, and ends with clusters that contain some amount of records.
- *
+ * information. The aim of disambiguation is reorganize clusters
+ * so that some can probably compound to bigger ones. Disambiguation
+ * starts from smallest clusters that contain only one record, and
+ * ends with clusters that contain some amount of records.
+ */
+class cCluster {
+
+/**
  * Private:
  *
  *		ClusterHead m_info: cluster head of the cluster, including the delegate and the cohesion of the cluster.
@@ -56,31 +62,6 @@ public:
  *		cCluster & operator = ( const cCluster &): forbid the assignment operation.
  *		void find_representative():  to sets a component of cluster head to be the record whose columns appear most frequently among the all the members.
  */
-
-/*
- * Public:
- *		cCluster(const ClusterHead & info, const cGroup_Value & fellows): constructor
- *		~cCluster() : destructor
- *		cCluster ( const cCluster & rhs ): copy constructor
- *		void merge( cCluster & mergee, const ClusterHead & info): merge the "mergee" cluster into "*this", and set
- *				the cluster head of the new cluster to be info.
- *
- *		ClusterHead disambiguate(const cCluster & rhs, const double prior, const double mutual_threshold) const:
- *				dsiambiguate "*this" cluster with rhs cluster, with the prior and mutual_threshold information.
- *				Returns a ClusterHead to tell whether the two clusters should be merged or not, and if yes, the cohesion of the new one.
- *
- *		static void set_ratiomap_pointer( const cRatios & r): set the ratio map pointer to a good one.
- *		const cGroup_Value & get_fellows() const: get the members ( actually it is reference to const )of the cluster.
- *		const ClusterHead & get_cluster_head () const: get the cluster head ( const reference ) of the cluster.
- *		void insert_elem( const Record *): insert a new member into the member list. This could potentially change the cluster head.
- *		void self_repair(): call this if insertion of elements is done manually, usually for a batch of record objects (not recommended).
- *		static void set_reference_patent_tree_pointer(const map < const Record *, cGroup_Value, cSort_by_attrib > & reference_patent_tree ): set the patent tree pointer.
- *		void change_mid_name(): to change pointers to abbreviated middle names to full middle names.
- *					This step is controversial, as it actually changed the raw data. Or more correctly, it changed the pointers of the raw data.
- *
- */
-class cCluster {
-
 private:
 	static const unsigned int invalid_year = 0;
 	ClusterHead m_info;
@@ -104,6 +85,27 @@ private:
 	unsigned int patents_gap( const cCluster & rhs) const;
 	bool is_valid_year() const;
 
+/**
+ * Public:
+ *		cCluster(const ClusterHead & info, const cGroup_Value & fellows): constructor
+ *		~cCluster() : destructor
+ *		cCluster ( const cCluster & rhs ): copy constructor
+ *		void merge( cCluster & mergee, const ClusterHead & info): merge the "mergee" cluster into "*this", and set
+ *				the cluster head of the new cluster to be info.
+ *
+ *		ClusterHead disambiguate(const cCluster & rhs, const double prior, const double mutual_threshold) const:
+ *				dsiambiguate "*this" cluster with rhs cluster, with the prior and mutual_threshold information.
+ *				Returns a ClusterHead to tell whether the two clusters should be merged or not, and if yes, the cohesion of the new one.
+ *
+ *		static void set_ratiomap_pointer( const cRatios & r): set the ratio map pointer to a good one.
+ *		const cGroup_Value & get_fellows() const: get the members ( actually it is reference to const )of the cluster.
+ *		const ClusterHead & get_cluster_head () const: get the cluster head ( const reference ) of the cluster.
+ *		void insert_elem( const Record *): insert a new member into the member list. This could potentially change the cluster head.
+ *		void self_repair(): call this if insertion of elements is done manually, usually for a batch of record objects (not recommended).
+ *		static void set_reference_patent_tree_pointer(const map < const Record *, cGroup_Value, cSort_by_attrib > & reference_patent_tree ): set the patent tree pointer.
+ *		void change_mid_name(): to change pointers to abbreviated middle names to full middle names.
+ *					This step is controversial, as it actually changed the raw data. Or more correctly, it changed the pointers of the raw data.
+ */
 public:
 	cCluster(const ClusterHead & info, const cGroup_Value & fellows);
 	~cCluster();
