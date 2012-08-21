@@ -13,8 +13,8 @@ extern "C" {
 const char * const ClusterInfo::primary_delim = "###";
 const char * const ClusterInfo::secondary_delim = ",";
 
-unsigned int cWorker_For_Disambiguation::count = 0;
-pthread_mutex_t cWorker_For_Disambiguation::iter_lock = PTHREAD_MUTEX_INITIALIZER;
+unsigned int Worker::count = 0;
+pthread_mutex_t Worker::iter_lock = PTHREAD_MUTEX_INITIALIZER;
 
 
 /*
@@ -628,9 +628,9 @@ ClusterInfo::disambiguate(const cRatios & ratio,
     // variables to sync: match, nonmatch, prior_iterator, cnt.
     std::cout << "There are "<< size_to_disambig << " blocks to disambiguate." << std::endl;
     pdisambiged = cluster_by_block.begin();
-    cWorker_For_Disambiguation sample(pdisambiged, ratio, *this);
+    Worker sample(pdisambiged, ratio, *this);
 
-    vector < cWorker_For_Disambiguation > worker_vector( num_threads, sample);
+    vector < Worker > worker_vector( num_threads, sample);
 
     for ( unsigned int i = 0; i < num_threads; ++i )
         worker_vector.at(i).start();
@@ -638,8 +638,8 @@ ClusterInfo::disambiguate(const cRatios & ratio,
         worker_vector.at(i).join();
 
     std::cout << "Disambiguation done! " ;
-    std::cout << cWorker_For_Disambiguation::get_count() << " blocks were eventually disambiguated." << std::endl;
-    cWorker_For_Disambiguation::zero_count();
+    std::cout << Worker::get_count() << " blocks were eventually disambiguated." << std::endl;
+    Worker::zero_count();
 
     output_prior_value(prior_to_save);
 
@@ -678,7 +678,7 @@ ClusterInfo::disambiguate(const cRatios & ratio,
  * PAY ATTENTION TO THE SYNCRONIZATION!
  */
 void
-cWorker_For_Disambiguation::run() {
+Worker::run() {
     const unsigned int base = 10000;
     map < string, ClusterInfo::cRecGroup >::iterator pthis;
     while ( true) {
@@ -705,7 +705,7 @@ cWorker_For_Disambiguation::run() {
 
 /**
  * Aim: a function that controls the loop of disambiguation
- * for a certain block. Used in cWorker_For_Disambiguation.
+ * for a certain block. Used in Worker.
  */
 // TODO: Strip the cruft from this function to expose what
 // it's actually doing. The cruft includes emitting to cout,

@@ -24,12 +24,11 @@ class cRatios;
 
 
 /**
- * cWorker_For_Disambiguation:
- * This class is a threading subclass to achieve multithreading in Linux systems.
+ * Worker is a threading subclass to achieve multithreading in Linux systems.
  * It is used in ClusterInfo::disambiguate function.
  * It is unnecessary to understanding the detail. The only thing necessary to know is the constructor.
  */
-class cWorker_For_Disambiguation : public Thread {
+class Worker : public Thread {
 
 /**
  * Private:
@@ -55,21 +54,21 @@ private:
 
 /**
  * Public:
- *         explicit cWorker_For_Disambiguation( map < string, ClusterInfo::cRecGroup >::iterator & input_pdisambiged,
-                                            const cRatios & ratiosmap, ClusterInfo & inputcluster): constructor.
- *        ~cWorker_For_Disambiguation(): destructor.
- *        static void zero_count(): clear the variable "count" to zero.
- *        static unsigned int get_count(): return the variable "count".
+ *         explicit Worker( map < string, ClusterInfo::cRecGroup >::iterator & input_pdisambiged,
+                                            const cRatios & ratiosmap, ClusterInfo & inputcluster): constructor
+ *        ~Worker(): destructor
+ *        static void zero_count(): clear the variable "count" to zero
+ *        static unsigned int get_count(): return the variable "count"
  *
  */
 
 public:
-    explicit cWorker_For_Disambiguation( map < string, ClusterInfo::cRecGroup >::iterator & input_pdisambiged,
+    explicit Worker( map < string, ClusterInfo::cRecGroup >::iterator & input_pdisambiged,
             const cRatios & ratiosmap,
             ClusterInfo & inputcluster
     ) : ppdisambiged(&input_pdisambiged), pratios(&ratiosmap), cluster_ref(inputcluster) {}
 
-    ~cWorker_For_Disambiguation() {}
+    ~Worker() {}
     static void zero_count() { count = 0; }
     static unsigned int get_count() { return count;}
 };
