@@ -24,9 +24,15 @@ using std::set;
 /**
  * definition of Record class.
  * The Record class is used to save a real line of record which includes multiple concrete attributes.
- *
- *
- * Private:
+ */
+class Record {
+
+    friend bool fetch_records_from_txt(list <Record> & source, const char * txt_file, const vector<string> &requested_columns);
+    friend void clear_records(const list <Record> & source);
+    friend class cSort_by_attrib;
+    friend class cRatioComponent;
+
+/**
  *         vector <const Attribute *> vector_pdata: the major data of the class,
  *         which stores a vector of pointers of concrete attributes.
  *
@@ -40,8 +46,14 @@ using std::set;
  *         record object, allowing some polymorphic static functions.
  *
  */
+private:
+    // TODO: s/vector_pdata/attributes/g
+    vector <const Attribute *> vector_pdata;
+    static vector <string> column_names;
+    static vector < string > active_similarity_names;
+    static const Record * sample_record_pointer;
 
-/*
+/**
  * Public:
  *  Record(const vector <const Attribute *>& input_vec): vector_pdata(input_vec): constructor.
  *
@@ -61,8 +73,14 @@ using std::set;
  *  then the return value is a vector < unsigned int > = [ Firstname, Assignee, Class];
  */
 
+public:
+    Record(const vector <const Attribute *> & input_vec): vector_pdata(input_vec) {};
+    Record() {}
+    vector <unsigned int> record_compare(const Record & rhs) const;
+    vector <unsigned int> record_compare_by_attrib_indice (const Record &rhs, const vector < unsigned int > & attrib_indice_to_compare) const;
 
-/*
+
+/**
  *    static unsigned int get_index_by_name(const string & inputstr):
  *    get the index of the attribute whose specifier is "inputstr"
  *
@@ -117,28 +135,9 @@ using std::set;
  *        return the sample record object for external use.
  *
  */
-class Record {
-
-    friend bool fetch_records_from_txt(list <Record> & source, const char * txt_file, const vector<string> &requested_columns);
-    friend void clear_records(const list <Record> & source);
-    friend class cSort_by_attrib;
-    friend class cRatioComponent;
-
-private:
-    // TODO: s/vector_pdata/attributes/g
-    vector <const Attribute *> vector_pdata;
-    static vector <string> column_names;
-    static vector < string > active_similarity_names;
-    static const Record * sample_record_pointer;
-
-public:
-    Record(const vector <const Attribute *> & input_vec): vector_pdata(input_vec) {};
-    Record() {}
-    vector <unsigned int> record_compare(const Record & rhs) const;
-    vector <unsigned int> record_compare_by_attrib_indice (const Record &rhs, const vector < unsigned int > & attrib_indice_to_compare) const;
     static unsigned int get_index_by_name(const string & inputstr);
     const vector <const string * > & get_data_by_index(const unsigned int i) const {return vector_pdata.at(i)->get_data();};
-    
+
     //return a reference is very important, because the content can be changed.
     const Attribute * const & get_attrib_pointer_by_index(const unsigned int i) const {return vector_pdata.at(i);}
     const vector < const Attribute*> & get_attrib_vector () const { return vector_pdata;}

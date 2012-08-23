@@ -101,8 +101,8 @@ Record::print(std::ostream & os) const {
 }
 
 
-void 
-Record::print() const { 
+void
+Record::print() const {
 
   this->print(std::cout);
 }
