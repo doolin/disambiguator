@@ -152,8 +152,8 @@ Cluster::Cluster( const Cluster & rhs ) : m_info(rhs.m_info), m_fellows(rhs.m_fe
  */
 ClusterHead
 Cluster::disambiguate(const Cluster & rhs,
-                       const double prior,
-                       const double mutual_threshold) const {
+                      const double prior,
+                      const double mutual_threshold) const {
 
 	static const unsigned int country_index = Record::get_index_by_name(cCountry::static_get_class_name());
 	static const string asian_countries[] = {"JP"};
@@ -204,12 +204,19 @@ Cluster::disambiguate(const Cluster & rhs,
 		const double t = threshold_to_use + ( max_threshold - threshold_to_use ) / 2;
 		threshold_to_use = t;
 	}
+
 	if ( threshold_to_use > max_threshold )
 		threshold_to_use = max_threshold;
 
-	std::pair<const Record *, double > ans ( disambiguate_by_set ( this->m_info.m_delegate, this->m_fellows, this->m_info.m_cohesion,
-												rhs.m_info.m_delegate, rhs.m_fellows, rhs.m_info.m_cohesion,
-													prior_to_use, *pratio, threshold_to_use) );
+	std::pair<const Record *, double > ans (disambiguate_by_set (this->m_info.m_delegate,
+                                                               this->m_fellows,
+                                                               this->m_info.m_cohesion,
+												                                       rhs.m_info.m_delegate,
+                                                               rhs.m_fellows,
+                                                               rhs.m_info.m_cohesion,
+													                                     prior_to_use,
+                                                              *pratio,
+                                                               threshold_to_use));
 
 	return ClusterHead(ans.first, ans.second);
 
