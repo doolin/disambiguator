@@ -747,22 +747,17 @@ disambiguate_wrapper(const map<string, ClusterInfo::cRecGroup>::iterator & p,
     // pointing to.
     if (cluster.block_activity.find(pst)->second == false) return false;
 
-    // TODO: Document why 3000 was chosen.
-    // TODO: #define (or make class variable) 3000 in header file
-    if (p->second.size() > 3000) {
-        // TODO: Move output to function call.
-        std::cout << "Block Very Big: " << p->first 
-                  << " Size = " << p->second.size() << std::endl;
+    if (p->second.size() > LARGE_BLOCK_SIZE) {
+      warn_very_big_blocks(p);
     }
 
     /////////  End  validity check ///////
 
 
-    // TODO: Rename and rescope these variables appropriately.
-    // temp1 can almost surely be moved into the loop.
-    unsigned int temp1 = 0, temp2 = 0;
-    // TODO: Determine basis for choosing 40 iterations
-    const unsigned int max_round = 40;
+    // TODO: Rescope these variables appropriately.
+    // current_size can almost surely be moved into the loop.
+    unsigned int current_size = 0, new_size = 0;
+    const unsigned int max_round = MAX_ROUNDS;
     // TODO: consider typedef'ing a threshold iterator:
     // typedef vector<double>::const_iterator threshit_t
     vector < double >::const_iterator c = cluster.thresholds.begin();

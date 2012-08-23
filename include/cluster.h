@@ -6,21 +6,22 @@
 #include <map>
 #include <set>
 #include <fstream>
-#include <pthread.h>
 
-#include "threading.h"
+// TODO: Document why 3000 was chosen.
+#define LARGE_BLOCK_SIZE 3000
+
+// TODO: Why 40 rounds instead of 30 or 50?
+#define MAX_ROUNDS 40
+
 #include "attribute.h"
 #include "newcluster.h"
-
-using std::string;
-using std::set;
-using std::map;
 
 
 //forward declaration
 class Record;
 class cRatios;
 #include "clusterinfo.h"
-//#include "worker.h"
+
+
 
 #endif /* PATENT_CLUSTER_H */
