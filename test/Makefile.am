@@ -12,17 +12,21 @@ AM_LDFLAGS = $(shell cppunit-config --libs)
 
 TESTS = distest idtest typedefs record blocking attribute stringmanipulator \
 	comparators comparesimilarities strcmp95 rarenames engineconfig           \
-	abbreviation misspell namecompare jwcmp similarity
+	abbreviation misspell namecompare jwcmp similarity clusterhead #cluster
 
 bin_PROGRAMS = $(TESTS)
 
 %.o: %.cpp
 	g++ $(INCLUDES) $(AM_CXXFLAGS) -D$*_STANDALONE -c $<
 
+COMMON = testdata.cpp
+
 distest_SOURCES = test_initial.cpp
 idtest_SOURCES = test_uniqueid.cpp
 typedefs_SOURCES = test_typedefs.cpp
 record_SOURCES = test_record.cpp
+#cluster_SOURCES = test_cluster.cpp
+clusterhead_SOURCES = test_clusterhead.cpp $(COMMON)
 attribute_SOURCES = test_attribute.cpp
 comparators_SOURCES = test_comparators.cpp
 rarenames_SOURCES = test_rarenames.cpp
