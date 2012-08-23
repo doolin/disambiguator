@@ -20,7 +20,8 @@ private:
 
   static const unsigned int invalid_year = 0;
 
-  //ClusterHead m_info: cluster head of the cluster, including the delegate and the cohesion of the cluster.
+  //ClusterHead m_info: cluster head of the cluster,
+  //including the delegate and the cohesion of the cluster.
   ClusterHead m_info;
 
   //RecordList m_fellows: the list of members of the cluster.
@@ -87,13 +88,15 @@ public:
    void merge( Cluster & mergee, const ClusterHead & info);
 
  /**
-  * ClusterHead disambiguate(const Cluster & rhs, const double prior, const double mutual_threshold) const:
+  * ClusterHead disambiguate(const Cluster & rhs, const double prior,
+  * const double mutual_threshold) const:
   *  disambiguate "*this" cluster with rhs cluster,
   *  with the prior and mutual_threshold information.
   *  Returns a ClusterHead to tell whether the two clusters should
   *  be merged or not, and if yes, the cohesion of the new one.
   */
-  ClusterHead disambiguate(const Cluster & rhs, const double prior, const double mutual_threshold) const;
+  ClusterHead disambiguate(const Cluster & rhs, const double prior,
+      const double mutual_threshold) const;
 
   //static void set_ratiomap_pointer( const cRatios & r):
   //set the ratio map pointer to a good one.
@@ -115,8 +118,11 @@ public:
   //usually for a batch of record objects (not recommended).
   void self_repair();
 
-  //static void set_reference_patent_tree_pointer(const map < const Record *, RecordList, cSort_by_attrib > & reference_patent_tree ): set the patent tree pointer.
-  static void set_reference_patent_tree_pointer(const map < const Record *, RecordList, cSort_by_attrib > & reference_patent_tree ) {
+  //static void set_reference_patent_tree_pointer(
+  //const map < const Record *, RecordList, cSort_by_attrib > & reference_patent_tree):
+  //set the patent tree pointer.
+  static void set_reference_patent_tree_pointer(
+      const map < const Record *, RecordList, cSort_by_attrib > & reference_patent_tree) {
     reference_pointer = & reference_patent_tree;
   }
 
@@ -128,7 +134,7 @@ public:
   */
   void change_mid_name();
 
-  void add_uid2uinv( map < const Record *, const Record *> & uid2uinv ) const;
+  void add_uid2uinv( map < const Record *, const Record *> & uid2uinv) const;
 };
 
 
