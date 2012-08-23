@@ -300,6 +300,8 @@ private:
     cRecGroup & get_comparision_map(const string* bid);
     unsigned int reset_block_activity( const char * filename );
 
+    void debug_disambiguation_loop(cRecGroup::iterator, cRecGroup::iterator, const double, const ClusterHead &);
+
 public:
 
     static const char * const primary_delim;
