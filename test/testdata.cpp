@@ -1,7 +1,7 @@
 
 #include <record.h>
 
-  void make_foobar_record() {
+  Record * make_foobar_record() {
 
     cFirstname  * firstname   = new cFirstname("Foo");
     cMiddlename * middlename  = new cMiddlename("X");
@@ -21,12 +21,12 @@
     temp_vec_attrib.push_back(city);
     temp_vec_attrib.push_back(country);
 
-    Record tmprec(temp_vec_attrib);
-    std::cout << "Record..." << std::endl;
+    Record * r = new Record(temp_vec_attrib);
+    return r;
   }
 
 
-  void make_quuxalot_record() {
+  Record * make_quuxalot_record() {
 
     cFirstname  * firstname   = new cFirstname("Quux");
     cMiddlename * middlename  = new cMiddlename("A");
@@ -46,8 +46,8 @@
     temp_vec_attrib.push_back(city);
     temp_vec_attrib.push_back(country);
 
-    Record tmprec(temp_vec_attrib);
-    std::cout << "Record..." << std::endl;
+    Record * r = new Record(temp_vec_attrib);
+    return r;
   }
 
 
