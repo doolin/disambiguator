@@ -12,39 +12,7 @@
  * cBlocking_Operation reads data from a const Record pointer,
  * and extract information to create a string which represents
  * the blocking id to which the record belongs.
- */
-
-
-/**
- * Protected:
  *
- * string infoless:
- *   this string represents the string that has delimiters ONLY.
- *   i.e. no useful information at all.
- *   Usually, the variable is changed by concrete subclasses.
- */
-
-
-/**
- * Public:
- *
- * const string & get_useless_string () const: returns the infoless string.
- *
- * static const string delim: the separator between columns. Defined in
- * cpp file. Will be used by other modules.
- *
- * virtual string extract_blocking_info(const Record *) const = 0:
- * pure virtual function to extract information from a Record pointer.
- *
- * virtual string extract_column_info ( const Record *, unsigned int flag ) const:
- * virtual function that extract information from the (flag)th column.
- *
- * virtual unsigned int num_involved_columns() const: return number
- * of columns that the extraction operates on.
- */
-
-
-/**
  * Example:
  *  Record recobj: firstname = "JACK", lastname = "SMITH", patent = "12345A"
  *  if cBlocking_Operation::delim == "###", then
@@ -60,17 +28,55 @@
 class cBlocking_Operation {
 
 
+/**
+ * Protected:
+ *
+ * string infoless:
+ *   this string represents the string that has delimiters ONLY.
+ *   i.e. no useful information at all.
+ *   Usually, the variable is changed by concrete subclasses.
+ */
 protected:
     string infoless;
 
+
+
+
 public:
-    const string & get_useless_string () const { return infoless;}
+
+   /**
+    * const string & get_useless_string () const: returns the infoless string.
+    */
+    const string & get_useless_string () const {
+      return infoless;
+    }
+
+   /**
+    * static const string delim: the separator between columns. Defined in
+    * cpp file. Will be used by other modules.
+    */
     static const string delim;
+
+   /**
+    * virtual string extract_blocking_info(const Record *) const = 0:
+    * pure virtual function to extract information from a Record pointer.
+    */
     virtual string extract_blocking_info(const Record *) const = 0;
+
+   /**
+    * virtual string extract_column_info ( const Record *, unsigned int flag ) const:
+    * virtual function that extract information from the (flag)th column.
+    */
     virtual string extract_column_info ( const Record *, unsigned int UP(flag)) const {
       throw cException_Other ("Function not defined yet.");
     }
+
     virtual ~cBlocking_Operation() {};
+
+   /**
+    * virtual unsigned int num_involved_columns() const: return number
+    * of columns that the extraction operates on.
+    */
     virtual unsigned int num_involved_columns() const { return 1;}
 };
 
