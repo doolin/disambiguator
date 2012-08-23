@@ -278,8 +278,15 @@ Cluster::self_repair() {
 void
 Cluster::find_representative()  {
 
-	static const string useful_columns[] = { cFirstname::static_get_class_name(), cMiddlename::static_get_class_name(), cLastname::static_get_class_name(),
-											cLatitude::static_get_class_name(), cAssignee::static_get_class_name(), cCity::static_get_class_name(), cCountry::static_get_class_name()};
+	static const string useful_columns[] = {
+    cFirstname::static_get_class_name(),
+    cMiddlename::static_get_class_name(),
+    cLastname::static_get_class_name(),
+    cLatitude::static_get_class_name(),
+    cAssignee::static_get_class_name(),
+    cCity::static_get_class_name(),
+    cCountry::static_get_class_name()
+  };
 
 	static const unsigned int nc = sizeof(useful_columns)/sizeof(string);
 	vector < map < const Attribute *, unsigned int > > tracer( nc );
