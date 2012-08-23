@@ -538,6 +538,9 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
     cRatioComponent personalinfo(uid_dict, string("Personal") );
 
     const unsigned int num_coauthors_to_group = 2;
+
+    // BOGOSITY: This needs to be set before the "patent tree" is initialized so
+    // that clusters will instantiate. Bogus.
     cBlocking_Operation_By_Coauthors blocker_coauthor(all_rec_pointers, num_coauthors_to_group);
 
     //Reconfigure
