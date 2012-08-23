@@ -236,11 +236,16 @@ class ClusterInfo;    //forward declaration.
  *
  * list < const Record * > complete_list;    //initialize a list
  * Do something here to add elements into the list.
- * cBlocking_Operation_By_Coauthors bobcobj ( complete_list, 2 ); //create an instance of cBlocking_Operation_By_Coauthors
- *                                                     // and set the maximum most prolific coauthors to 2, for blocking information extraction.
- * bobcobj.build_uid2uinv_tree ( Good_Cluster ); // assuming Good_Cluster is a ClusterInfo object. This builds an internal uid2uinv tree in bobcobj.
+ * cBlocking_Operation_By_Coauthors bobcobj ( complete_list, 2 );
+ * //create an instance of cBlocking_Operation_By_Coauthors
+ * // and set the maximum most prolific coauthors to 2,
+ * for blocking information extraction.
+ * bobcobj.build_uid2uinv_tree ( Good_Cluster );
+ * // assuming Good_Cluster is a ClusterInfo object.
+ * This builds an internal uid2uinv tree in bobcobj.
  * Now bobcobj's patent_tree and uid2uinv tree are ready to use.
- * bobcobj.extract_blocking_info(prec) returns the string of the full name concatenation of prec's two most prolific coauthors.
+ * bobcobj.extract_blocking_info(prec) returns the string of
+ * the full name concatenation of prec's two most prolific coauthors.
  * for example: "KIA.SILVERBROOK##GEORGE.SPECTOR##", assuming the delimiter is "##";
  *
  */
@@ -307,25 +312,35 @@ private:
  * build an internal unique record id to unique inventor
  * id map from a ClusterInfo object.
  *
- * const map < const Record *, RecordList, cSort_by_attrib > & get_patent_tree() const :
- * get the reference of const patent tree
- *
+ */
+
+/**
  * map < const Record *, const Record * > & get_uid2uinv_tree():
  * get the reference of the unique record id to unique inventor id tree.
  */
 public:
 
-    cBlocking_Operation_By_Coauthors(const list < const Record * > & allrec, const ClusterInfo& cluster, const unsigned int coauthors);
+    cBlocking_Operation_By_Coauthors(const list < const Record * > & allrec,
+        const ClusterInfo& cluster, const unsigned int coauthors);
 
-    cBlocking_Operation_By_Coauthors(const list < const Record * > & allrec, const unsigned int num_coauthors);
+    cBlocking_Operation_By_Coauthors(const list < const Record * > & allrec,
+        const unsigned int num_coauthors);
 
     string extract_blocking_info(const Record *) const;
 
     void build_uid2uinv_tree( const ClusterInfo &);
 
-    const map < const Record *, RecordList, cSort_by_attrib > & get_patent_tree() const {return patent_tree;}
+   /**
+    * const map < const Record *, RecordList, cSort_by_attrib > & get_patent_tree() const :
+    * get the reference of const patent tree
+    */
+    const map < const Record *, RecordList, cSort_by_attrib > & get_patent_tree() const {
+      return patent_tree;
+    }
 
-    map < const Record *, const Record * > & get_uid2uinv_tree() { return uid2uinv_tree;}
+    map < const Record *, const Record * > & get_uid2uinv_tree() {
+      return uid2uinv_tree;
+    }
 
 };
 
