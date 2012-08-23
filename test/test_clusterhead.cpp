@@ -6,7 +6,7 @@
 
 #include "testdata.h"
 
-class ClusterHeadTest : public CppUnit::TestCase { 
+class ClusterHeadTest : public CppUnit::TestCase {
 
 public:
   ClusterHeadTest(std::string name) : CppUnit::TestCase(name) {}
@@ -15,6 +15,11 @@ public:
     Record * r = make_foobar_record();
     ClusterHead ch(r, 0.9953);
     CPPUNIT_ASSERT (0.9953 == ch.m_cohesion);
+    // Segfaults...
+    //r->print();
+    // segfaults, which shouldn't be...
+    //r->clean_member_attrib_pool();
+    // Leaks, bad
     delete r;
   }
 
