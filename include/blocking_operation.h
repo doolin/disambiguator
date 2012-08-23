@@ -274,6 +274,7 @@ class cBlocking_Operation_By_Coauthors : public cBlocking_Operation {
  *  pointer, and return a list of const Record pointers.
  */
 private:
+
     map < const Record *, RecordList, cSort_by_attrib > patent_tree;
 
     map < const Record *, const Record * > uid2uinv_tree;
@@ -288,25 +289,42 @@ private:
 
 
 /**
- * Public:
- *        cBlocking_Operation_By_Coauthors(const list < const Record * > & allrec, const ClusterInfo& cluster, const unsigned int coauthors):
- *                initialize a class object. allrec = a complete list of const Record pointers.
- *                cluster = a ClusterInfo object, which contains all the information of clustering from the previous disambiguation.
- *                coauthors = number of coauthors for blocking information extraction.
- *        cBlocking_Operation_By_Coauthors(const list < const Record * > & allrec, const unsigned int coauthors): the second constructor.
- *        string extract_blocking_info(const Record * prec) const; extract blocking string for the Record to which prec points, and returns a string.
- *        void build_uid2uinv_tree( const ClusterInfo & source): build an internal unique record id to unique inventor id map from a ClusterInfo object.
- *        const map < const Record *, RecordList, cSort_by_attrib > & get_patent_tree() const : get the reference of const patent tree
- *        map < const Record *, const Record * > & get_uid2uinv_tree(): get the reference of the unique record id to unique inventor id tree.
- *                                                                        NOTE: the referenced tree is not const so it is modifiable.
+ * cBlocking_Operation_By_Coauthors(const list < const Record * > & allrec,
+ * const ClusterInfo& cluster, const unsigned int coauthors):
+ * initialize a class object. allrec = a complete list of const Record pointers.
+ * cluster = a ClusterInfo object, which contains all the information
+ * of clustering from the previous disambiguation.
+ * coauthors = number of coauthors for blocking information extraction.
  *
+ * cBlocking_Operation_By_Coauthors(const list < const Record * > & allrec,
+ * const unsigned int coauthors): the second constructor.
+ *
+ * string extract_blocking_info(const Record * prec) const;
+ * extract blocking string for the Record to which prec points,
+ * and returns a string.
+ *
+ * void build_uid2uinv_tree( const ClusterInfo & source):
+ * build an internal unique record id to unique inventor
+ * id map from a ClusterInfo object.
+ *
+ * const map < const Record *, RecordList, cSort_by_attrib > & get_patent_tree() const :
+ * get the reference of const patent tree
+ *
+ * map < const Record *, const Record * > & get_uid2uinv_tree():
+ * get the reference of the unique record id to unique inventor id tree.
  */
 public:
+
     cBlocking_Operation_By_Coauthors(const list < const Record * > & allrec, const ClusterInfo& cluster, const unsigned int coauthors);
+
     cBlocking_Operation_By_Coauthors(const list < const Record * > & allrec, const unsigned int num_coauthors);
+
     string extract_blocking_info(const Record *) const;
+
     void build_uid2uinv_tree( const ClusterInfo &);
+
     const map < const Record *, RecordList, cSort_by_attrib > & get_patent_tree() const {return patent_tree;}
+
     map < const Record *, const Record * > & get_uid2uinv_tree() { return uid2uinv_tree;}
 
 };
