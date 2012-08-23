@@ -112,7 +112,10 @@ private:
 public:
     explicit cBlocking_Operation_Column_Manipulate(const StringManipulator & inputsm,
         const string & colname)
-      : sm(inputsm), column_index(Record::get_index_by_name(colname)) { infoless = delim;}
+      : sm(inputsm), column_index(Record::get_index_by_name(colname)) {
+        infoless = delim;
+    }
+
     string extract_blocking_info(const Record * p) const {
       return sm.manipulate( * p->get_data_by_index(column_index).at(0));
     }
@@ -128,60 +131,6 @@ public:
  * cBlocking_Operation_Multiple_Column_Manipulate:
  * This is a subclass of cBlocking_Operation, which extracts information
  * from several columns and returns a block specifier string.
- *
- * Private:
- *
- *   vector < const StringManipulator * > vsm: the vector
- *   of string manipulator pointers.
- *
- *   vector < unsigned int > indice: the vector of column indice
- *   from which the manipulators extract information, respectively.
- *
- *   vector < const unsigned int * > pdata_indice: the vector of
- *   the const interger pointers indicating the positions of data in
- *   the data vector in Attribute on which the extractions take place.
- */
-
-
-/**
- * Public:
- *
- *  cBlocking_Operation_Multiple_Column_Manipulate (
- *  const vector < const StringManipulator * > & inputvsm,
- *  const vector<string> & columnnames, const vector < unsigned int > & di )
- *     : This is a constructor of the class.
- *   inputvsm = the vector of string manipulator pointers
- *   columnnames = the vector of strings which reprensents
- *   the name of columns that the extractions will be applied on,
- *   respectively.
- *   di = the vector of indice in the Attribute::data,
- *   which will serve as the source string pointers.
- *   NOTE: di SHOULD NOT BE DESTRUCTED BEFORE THE
- *   cBlocking_Operation_Multiple_Column_Manipulate object is discarded.
- *
- * cBlocking_Operation_Multiple_Column_Manipulate (
- * const StringManipulator * const* pinputvsm,
- * const string * pcolumnnames, const unsigned int  * pdi, const unsigned int num_col ):
- *
- * This is another constructor of the class object.
- * pinputvsm = pointer of the string manipulator pointers array
- * pcolumnnames = pointer of the strings array.
- * pdi = pointer of the Attribute::data indice array.
- * num_col = number of involed columns.
- * NOTE: pdi SHOULD NOT BE DESTRUCTED BEFORE THE
- * cBlocking_Operation_Multiple_Column_Manipulate object is discarded.
- *
- * string extract_blocking_info(const Record * p) const:
- * extracts information and returns a string.
- *
- * string extract_column_info ( const Record * p, unsigned int flag ) const:
- * extracts information from specified column and returns a string
- *
- * unsigned int num_involved_columns() const :
- * return number of involved columns.
- */
-
-/**
  *
  * Example:
  *
@@ -274,6 +223,19 @@ public:
 
 class cBlocking_Operation_Multiple_Column_Manipulate : public cBlocking_Operation {
 
+/**
+ * Private:
+ *
+ *   vector < const StringManipulator * > vsm: the vector
+ *   of string manipulator pointers.
+ *
+ *   vector < unsigned int > indice: the vector of column indice
+ *   from which the manipulators extract information, respectively.
+ *
+ *   vector < const unsigned int * > pdata_indice: the vector of
+ *   the const interger pointers indicating the positions of data in
+ *   the data vector in Attribute on which the extractions take place.
+ */
 private:
 
     vector < const StringManipulator * > vsm;
@@ -283,6 +245,44 @@ private:
     vector < string > attributes_names;
 
     vector < unsigned int > pdata_indice;
+
+/**
+ * Public:
+ *
+ *  cBlocking_Operation_Multiple_Column_Manipulate (
+ *  const vector < const StringManipulator * > & inputvsm,
+ *  const vector<string> & columnnames, const vector < unsigned int > & di )
+ *     : This is a constructor of the class.
+ *   inputvsm = the vector of string manipulator pointers
+ *   columnnames = the vector of strings which reprensents
+ *   the name of columns that the extractions will be applied on,
+ *   respectively.
+ *   di = the vector of indice in the Attribute::data,
+ *   which will serve as the source string pointers.
+ *   NOTE: di SHOULD NOT BE DESTRUCTED BEFORE THE
+ *   cBlocking_Operation_Multiple_Column_Manipulate object is discarded.
+ *
+ * cBlocking_Operation_Multiple_Column_Manipulate (
+ * const StringManipulator * const* pinputvsm,
+ * const string * pcolumnnames, const unsigned int  * pdi, const unsigned int num_col ):
+ *
+ * This is another constructor of the class object.
+ * pinputvsm = pointer of the string manipulator pointers array
+ * pcolumnnames = pointer of the strings array.
+ * pdi = pointer of the Attribute::data indice array.
+ * num_col = number of involed columns.
+ * NOTE: pdi SHOULD NOT BE DESTRUCTED BEFORE THE
+ * cBlocking_Operation_Multiple_Column_Manipulate object is discarded.
+ *
+ * string extract_blocking_info(const Record * p) const:
+ * extracts information and returns a string.
+ *
+ * string extract_column_info ( const Record * p, unsigned int flag ) const:
+ * extracts information from specified column and returns a string
+ *
+ * unsigned int num_involved_columns() const :
+ * return number of involved columns.
+ */
 
 public:
 
@@ -397,37 +397,38 @@ private:
     RecordList get_topN_coauthors( const Record *, const unsigned int topN) const;
 
 
-/**
- * cBlocking_Operation_By_Coauthors(const list < const Record * > & allrec,
- * const ClusterInfo& cluster, const unsigned int coauthors):
- * initialize a class object. allrec = a complete list of const Record pointers.
- * cluster = a ClusterInfo object, which contains all the information
- * of clustering from the previous disambiguation.
- * coauthors = number of coauthors for blocking information extraction.
- *
- * cBlocking_Operation_By_Coauthors(const list < const Record * > & allrec,
- * const unsigned int coauthors): the second constructor.
- *
- * string extract_blocking_info(const Record * prec) const;
- * extract blocking string for the Record to which prec points,
- * and returns a string.
- *
- * void build_uid2uinv_tree( const ClusterInfo & source):
- * build an internal unique record id to unique inventor
- * id map from a ClusterInfo object.
- *
- */
-
 public:
 
+   /**
+    * cBlocking_Operation_By_Coauthors(const list < const Record * > & allrec,
+    * const ClusterInfo& cluster, const unsigned int coauthors):
+    * initialize a class object. allrec = a complete list of const Record pointers.
+    * cluster = a ClusterInfo object, which contains all the information
+    * of clustering from the previous disambiguation.
+    * coauthors = number of coauthors for blocking information extraction.
+    */
     cBlocking_Operation_By_Coauthors(const list < const Record * > & allrec,
         const ClusterInfo& cluster, const unsigned int coauthors);
 
+   /**
+    * cBlocking_Operation_By_Coauthors(const list < const Record * > & allrec,
+    * const unsigned int coauthors): the second constructor.
+    */
     cBlocking_Operation_By_Coauthors(const list < const Record * > & allrec,
         const unsigned int num_coauthors);
 
+   /**
+    * string extract_blocking_info(const Record * prec) const;
+    * extract blocking string for the Record to which prec points,
+    * and returns a string.
+    */
     string extract_blocking_info(const Record *) const;
 
+   /**
+    * void build_uid2uinv_tree( const ClusterInfo & source):
+    * build an internal unique record id to unique inventor
+    * id map from a ClusterInfo object.
+    */
     void build_uid2uinv_tree( const ClusterInfo &);
 
    /**
