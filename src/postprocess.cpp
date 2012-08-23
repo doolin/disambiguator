@@ -27,7 +27,8 @@ ClusterSet & ClusterSet::convert_from_ClusterInfo( const ClusterInfo * ps) {
 
 
 void
-find_associated_nodes(const Cluster & center, const map < const Record *, const Record *> & uid2uinv,
+find_associated_nodes(const Cluster & center,
+                      const map < const Record *, const Record *> & uid2uinv,
                       const map < const Record *, cGroup_Value, cSort_by_attrib > & patent_tree,
                       set < const Record * > & associated_delegates) {
 
