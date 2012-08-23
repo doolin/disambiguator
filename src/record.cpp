@@ -36,7 +36,7 @@ const Record * Record::sample_record_pointer = NULL;
  * Algorithm: use " is_informative() " function to check each specified attribute, and return the sum.
  */
 
-unsigned int 
+unsigned int
 Record::informative_attributes() const {
 
     static const unsigned int firstname_index = Record::get_index_by_name(cFirstname::static_get_class_name());
@@ -63,7 +63,7 @@ Record::informative_attributes() const {
  * Algorithm: use a static sample Record pointer to check the comparator status of each attribute.
  *                 Clears the original Record::active_similarity_names and update with a newer one.
  */
-void 
+void
 Record::update_active_similarity_names() {
 
     Record::active_similarity_names.clear();
@@ -82,14 +82,14 @@ Record::update_active_similarity_names() {
  * the template implementations in "DisambigDefs.h", where Record has 
  * not be declared yet.
  */
-void 
+void
 Record_update_active_similarity_names() {
 
   Record::update_active_similarity_names();
 }
 
 
-void 
+void
 Record::print(std::ostream & os) const {
 
   vector <const Attribute *>::const_iterator a = this->vector_pdata.begin();
@@ -115,7 +115,7 @@ Record::print() const {
  * Algorithm: call each attribute pointer's "compare" method.
  */
 
-vector <unsigned int> 
+vector <unsigned int>
 Record::record_compare(const Record & rhs) const {
 
     static const bool detail_debug = false;
@@ -188,7 +188,7 @@ Record::record_compare(const Record & rhs) const {
  * Algorithm: call each attribute pointer's "compare" method.
  *
  */
-vector <unsigned int> 
+vector <unsigned int>
 Record::record_compare_by_attrib_indice (const Record &rhs, 
                                           const vector < unsigned int > & attrib_indice_to_compare) const {
 
@@ -217,9 +217,10 @@ Record::record_compare_by_attrib_indice (const Record &rhs,
 }
 
 
-/*
- * Aim: to check the number of exact identical attributes between (*this) and rhs record objects.
- * Algorithm: call each attribute pointer's "exact_compare" method.
+/**
+ * Check the number of exact identical attributes between
+ * (*this) and rhs record objects. Algorithm: call each
+ * attribute pointer's "exact_compare" method.
  */
 unsigned int
 Record::record_exact_compare(const Record & rhs ) const {
@@ -238,24 +239,25 @@ Record::record_exact_compare(const Record & rhs ) const {
 
 
 /*
- * Aim: to clean some specific attribute pool.
- * Algorithm: for those whose reference counting = 0, this operation will delete those nodes.
- *
+ * Clean some specific attribute pool.
+ * Algorithm: for those whose reference counting = 0,
+ * this operation will delete those nodes.
  */
-void 
+void
 Record::clean_member_attrib_pool() {
 
-    for ( vector < const Attribute *>::const_iterator p = sample_record_pointer->vector_pdata.begin();
-            p != sample_record_pointer->vector_pdata.end(); ++p )
+    vector < const Attribute *>::const_iterator p = sample_record_pointer->vector_pdata.begin();
+    for (; p != sample_record_pointer->vector_pdata.end(); ++p) {
         (*p)->clean_attrib_pool();
+    }
 }
 
 
-/*
- * Aim: get the index of the desired column name in the columns read from text file.
+/**
+ * Get the index of the desired column name in the columns read from text file.
  * Algorithm: exhaustive comparison. Time complexity = O(n); if no matching is found, a exception will be thrown.
  */
-unsigned int 
+unsigned int
 Record::get_index_by_name(const string & inputstr) {
 
     for ( unsigned int i = 0 ; i < column_names.size(); ++i ) {
@@ -282,7 +284,7 @@ Record::get_index_by_name(const string & inputstr) {
  * Algorithm: exhaustive comparison. Time complexity = O(n); 
  * if no matching is found, a exception will be thrown.
  */
-unsigned int 
+unsigned int
 Record::get_similarity_index_by_name(const string & inputstr) {
 
     for (unsigned int i = 0 ; i < active_similarity_names.size(); ++i)
@@ -314,7 +316,7 @@ Record::activate_comparators_by_name (const vector < string > & inputvec) {
 }
 
 
-void 
+void
 Record::reconfigure_record_for_interactives() const {
 
     for ( vector <const Attribute *>::const_iterator cipa = vector_pdata.begin(); cipa != vector_pdata.end(); ++cipa ) {
