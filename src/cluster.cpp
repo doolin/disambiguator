@@ -800,16 +800,37 @@ ClusterInfo::set_thresholds ( const vector < double > & input ) {
 }
 
 
+void
+ClusterInfo::debug_disambiguation_loop(cRecGroup::iterator  first_iter,
+    cRecGroup::iterator second_iter,
+    const double prior_value,
+    const ClusterHead & result) {
+
+  std::cout << "**************************" << std::endl;
+  first_iter->get_cluster_head().m_delegate->print(std::cout);
+  std::cout << "The first cluster has " << first_iter->get_fellows().size() << " members." << std::endl;
+  second_iter->get_cluster_head().m_delegate->print(std::cout);
+  std::cout << "The second cluster has " << second_iter->get_fellows().size() << " members." << std::endl;
+  std::cout << "Prior value = "<< prior_value << " Probability = " << result.m_cohesion << std::endl;
+  std::cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^" << std::endl << std::endl;
+}
+
+
 /**
- * Aim: to disambiguate clusters within a given block. Probably also update the prior values.
- * Algorithm: call the Cluster::disambiguate method and, if necessary, the Cluster::merge method.
+ * Aim: to disambiguate clusters within a given block.
+ * Probably also update the prior values.
+ * Algorithm: call the Cluster::disambiguate method and,
+ * if necessary, the Cluster::merge method.
  */
+// NOTE: clusterinfo.h:257:    typedef list < Cluster > cRecGroup;
+//       Expect the location of the typedef to change and the name
+//       will probably also change to something like ClusterList
 unsigned int
 ClusterInfo::disambiguate_by_block(cRecGroup & to_be_disambiged_group,
-                                     list <double> & prior_list,
-                                     const cRatios & ratio,
-                                     const string * const bid, // blocking_id
-                                     const double threshold ) {
+                                   list <double> & prior_list,
+                                   const cRatios & ratio,
+                                   const string * const bid, // blocking_id
+                                   const double threshold ) {
 
     const bool should_update_prior = false;
     cRecGroup::iterator first_iter, second_iter;
@@ -818,20 +839,18 @@ ClusterInfo::disambiguate_by_block(cRecGroup & to_be_disambiged_group,
     for ( first_iter = to_be_disambiged_group.begin(); first_iter != to_be_disambiged_group.end(); ++first_iter) {
         second_iter = first_iter;
         for ( ++second_iter; second_iter != to_be_disambiged_group.end(); ) {
+
             // TODO: Find out where the cRecGroup->iterator->disambiguate callback is set.
+            // The iterator points to a Cluster object.
             ClusterHead result = first_iter->disambiguate(*second_iter, prior_value, threshold);
 
+            // TODO: move the NULL delegate check to the debug function.
             if ( debug_mode && result.m_delegate != NULL) {
-                // TODO: Move all this to its own function.
-                std::cout << "**************************" << std::endl;
-                first_iter->get_cluster_head().m_delegate->print(std::cout);
-                std::cout << "The first cluster has " << first_iter->get_fellows().size() << " members." << std::endl;
-                second_iter->get_cluster_head().m_delegate->print(std::cout);
-                std::cout << "The second cluster has " << second_iter->get_fellows().size() << " members." << std::endl;
-                std::cout << "Prior value = "<< prior_value << " Probability = " << result.m_cohesion << std::endl;
-                std::cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^" << std::endl << std::endl;
+                this->debug_disambiguation_loop(first_iter, second_iter, prior_value, result);
             }
 
+            // TODO: Well, this looks like a pretty critical piece of code...
+            // merging clusters and stuff. A likely candidate for unit testing.
             if ( result.m_delegate != NULL ) {
                 first_iter->merge(*second_iter, result);
                 to_be_disambiged_group.erase( second_iter++ );
