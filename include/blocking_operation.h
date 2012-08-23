@@ -212,7 +212,7 @@ class ClusterInfo;    //forward declaration.
 
 /*
  * Private:
- *         map < const Record *, cGroup_Value, cSort_by_attrib > patent_tree: a binary tree to sort records by patent information.
+ *         map < const Record *, RecordList, cSort_by_attrib > patent_tree: a binary tree to sort records by patent information.
  *                 key = const Record pointer, value = list < const Record * >, comparison function = an object of cSort_by_attrib, which includes the column information.
  *        map < const Record *, const Record * > uid2uinv_tree: a binary tree that maps a unique record pointer to its unique inventor record pointer.
  *        map < const Record *, unsigned int > uinv2count_tree: a binary tree that maps the unique inventor record pointer to the number of its associated patents.
@@ -220,7 +220,7 @@ class ClusterInfo;    //forward declaration.
  *
  *        void build_patent_tree(const list < const Record * > & allrec): reads a list of const Record pointers and build patent tree.
  *                NOTE THAT the comparison function for the tree is determined in the constructor.
- *        cGroup_Value get_topN_coauthors( const Record * pRec, const unsigned int topN) const:
+ *        RecordList get_topN_coauthors( const Record * pRec, const unsigned int topN) const:
  *                find the top N most prolific coauthors of the input pRec record pointer, and return a list of const Record pointers.
  */
 
@@ -233,7 +233,7 @@ class ClusterInfo;    //forward declaration.
  *        cBlocking_Operation_By_Coauthors(const list < const Record * > & allrec, const unsigned int coauthors): the second constructor.
  *        string extract_blocking_info(const Record * prec) const; extract blocking string for the Record to which prec points, and returns a string.
  *        void build_uid2uinv_tree( const ClusterInfo & source): build an internal unique record id to unique inventor id map from a ClusterInfo object.
- *        const map < const Record *, cGroup_Value, cSort_by_attrib > & get_patent_tree() const : get the reference of const patent tree
+ *        const map < const Record *, RecordList, cSort_by_attrib > & get_patent_tree() const : get the reference of const patent tree
  *        map < const Record *, const Record * > & get_uid2uinv_tree(): get the reference of the unique record id to unique inventor id tree.
  *                                                                        NOTE: the referenced tree is not const so it is modifiable.
  *
@@ -255,21 +255,21 @@ class ClusterInfo;    //forward declaration.
 class cBlocking_Operation_By_Coauthors : public cBlocking_Operation {
 
 private:
-    map < const Record *, cGroup_Value, cSort_by_attrib > patent_tree;
+    map < const Record *, RecordList, cSort_by_attrib > patent_tree;
     map < const Record *, const Record * > uid2uinv_tree;
     map < const Record *, unsigned int > uinv2count_tree;
 
     const unsigned int num_coauthors;
 
     void build_patent_tree(const list < const Record * > & allrec);
-    cGroup_Value get_topN_coauthors( const Record *, const unsigned int topN) const;
+    RecordList get_topN_coauthors( const Record *, const unsigned int topN) const;
 
 public:
     cBlocking_Operation_By_Coauthors(const list < const Record * > & allrec, const ClusterInfo& cluster, const unsigned int coauthors);
     cBlocking_Operation_By_Coauthors(const list < const Record * > & allrec, const unsigned int num_coauthors);
     string extract_blocking_info(const Record *) const;
     void build_uid2uinv_tree( const ClusterInfo &);
-    const map < const Record *, cGroup_Value, cSort_by_attrib > & get_patent_tree() const {return patent_tree;}
+    const map < const Record *, RecordList, cSort_by_attrib > & get_patent_tree() const {return patent_tree;}
     map < const Record *, const Record * > & get_uid2uinv_tree() { return uid2uinv_tree;}
 
 };

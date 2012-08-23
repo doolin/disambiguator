@@ -23,8 +23,8 @@ private:
   //ClusterHead m_info: cluster head of the cluster, including the delegate and the cohesion of the cluster.
   ClusterHead m_info;
 
-  //cGroup_Value m_fellows: the list of members of the cluster.
-  cGroup_Value m_fellows;
+  //RecordList m_fellows: the list of members of the cluster.
+  RecordList m_fellows;
 
   //bool m_mergeable: a boolean, indicating "*this" cluster
   //has been merged into others or not.
@@ -39,11 +39,11 @@ private:
   static const cRatios * pratio;
 
  /**
-  * static const map < const Record *, cGroup_Value, cSort_by_attrib > * reference_pointer:
+  * static const map < const Record *, RecordList, cSort_by_attrib > * reference_pointer:
   * a pointer that points to a patent tree, which can be obtained in
   * a cBlocking_Operation_By_Coauthor object.
   */
-  static const map < const Record *, cGroup_Value, cSort_by_attrib > * reference_pointer;
+  static const map < const Record *, RecordList, cSort_by_attrib > * reference_pointer;
 
   //Cluster & operator = ( const Cluster &): forbid the assignment operation.
   Cluster & operator = ( const Cluster &);
@@ -70,8 +70,8 @@ private:
 
 public:
 
-  //  Cluster(const ClusterHead & info, const cGroup_Value & fellows): constructor
-  Cluster(const ClusterHead & info, const cGroup_Value & fellows);
+  //  Cluster(const ClusterHead & info, const RecordList & fellows): constructor
+  Cluster(const ClusterHead & info, const RecordList & fellows);
 
   //  ~Cluster() : destructor
   ~Cluster();
@@ -99,9 +99,9 @@ public:
   //set the ratio map pointer to a good one.
   static void set_ratiomap_pointer( const cRatios & r) {pratio = &r;}
 
-  //const cGroup_Value & get_fellows() const:
+  //const RecordList & get_fellows() const:
   //get the members (actually it is reference to const) of the cluster.
-  const cGroup_Value & get_fellows() const {return m_fellows;}
+  const RecordList & get_fellows() const {return m_fellows;}
 
   //const ClusterHead & get_cluster_head () const:
   //get the cluster head (const reference) of the cluster.
@@ -115,8 +115,8 @@ public:
   //usually for a batch of record objects (not recommended).
   void self_repair();
 
-  //static void set_reference_patent_tree_pointer(const map < const Record *, cGroup_Value, cSort_by_attrib > & reference_patent_tree ): set the patent tree pointer.
-  static void set_reference_patent_tree_pointer(const map < const Record *, cGroup_Value, cSort_by_attrib > & reference_patent_tree ) {
+  //static void set_reference_patent_tree_pointer(const map < const Record *, RecordList, cSort_by_attrib > & reference_patent_tree ): set the patent tree pointer.
+  static void set_reference_patent_tree_pointer(const map < const Record *, RecordList, cSort_by_attrib > & reference_patent_tree ) {
     reference_pointer = & reference_patent_tree;
   }
 

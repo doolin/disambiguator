@@ -126,14 +126,14 @@ protected:
         cException_Tree_Key_Mismatch(const char* errmsg): cAbstract_Exception(errmsg) {};
     };
 
-    map<string, cGroup_Value > blocking_data;
+    map<string, RecordList > blocking_data;
     map < const Record *, const string *> record2blockingstring;
     const vector <string> blocking_column_names;
     const vector<const StringManipulator*> string_manipulator_pointers;
 
 public:
     explicit cBlocking(const list<const Record *> & psource, const vector<string> & blocking_column_names, const vector<const StringManipulator*>& pmanipulators, const string & unique_identifier );
-    const map<string, cGroup_Value > & get_block_map() const {return blocking_data;}
+    const map<string, RecordList > & get_block_map() const {return blocking_data;}
 };
 
 
@@ -143,16 +143,16 @@ class cBlocking_For_Training : public cBlocking {
 private:
     map<const string *, unsigned int, cBlocking::cString_Pointer_Compare> quota_map;
     map<const string *, unsigned int, cBlocking::cString_Pointer_Compare> used_quota_map;
-    map<const string *, cGroup_Value::const_iterator, cBlocking::cString_Pointer_Compare> outer_cursor_map;
-    map<const string *, cGroup_Value::const_iterator, cBlocking::cString_Pointer_Compare> inner_cursor_map;
+    map<const string *, RecordList::const_iterator, cBlocking::cString_Pointer_Compare> outer_cursor_map;
+    map<const string *, RecordList::const_iterator, cBlocking::cString_Pointer_Compare> inner_cursor_map;
     const unsigned int total_quota;
     unsigned int quota_left;
     bool was_used;
 
     list <pointer_pairs> chosen_pairs;
 
-    bool move_cursor( cGroup_Value:: const_iterator & outer, cGroup_Value:: const_iterator & inner, const cGroup_Value & datarange);
-    bool cursor_ok( const cGroup_Value:: const_iterator & outer, const cGroup_Value:: const_iterator & inner, const cGroup_Value & datarange ) const {
+    bool move_cursor( RecordList:: const_iterator & outer, RecordList:: const_iterator & inner, const RecordList & datarange);
+    bool cursor_ok( const RecordList:: const_iterator & outer, const RecordList:: const_iterator & inner, const RecordList & datarange ) const {
         return  ( outer != datarange.end() && inner != datarange.end() &&  inner != outer );
     }
 
@@ -179,7 +179,7 @@ public:
 class cWorker_For_Training : public Thread {
 
 private:
-  map<string, cGroup_Value> ::iterator *piter;
+  map<string, RecordList> ::iterator *piter;
   cBlocking_For_Training::pFunc func;
   const vector < string > & m_equal_indice_names;
   const vector < const StringManipulator * > & m_pstringcontrol_equal;
@@ -188,7 +188,7 @@ private:
 
   static pthread_mutex_t iter_mutex;
  public:
-  explicit cWorker_For_Training ( map < string, cGroup_Value>::iterator *inputiter, const cBlocking_For_Training::pFunc inputfun,
+  explicit cWorker_For_Training ( map < string, RecordList>::iterator *inputiter, const cBlocking_For_Training::pFunc inputfun,
                   const vector < string > & equal_indice_names, const vector < const StringManipulator * > & pmanipulators_equal, 
                   const vector < string > & nonequal_indice_names, const vector < const StringManipulator * > & pmanipulators_nonequal )
     : piter( inputiter ), func(inputfun), m_equal_indice_names(equal_indice_names), m_pstringcontrol_equal(pmanipulators_equal),
@@ -202,18 +202,18 @@ private:
 
 
 
-void         find_rare_names_v2 (const vector < cGroup_Value * > &vec_pdest,
+void         find_rare_names_v2 (const vector < RecordList * > &vec_pdest,
                                  const list< const Record* > & source);
 
 unsigned int create_tset02      (list <pointer_pairs> &results,
                                  const list <const Record*> & reclist,
                                  const vector <string> & column_names,
-                                 const vector < const cGroup_Value * > & vec_prare_names,
+                                 const vector < const RecordList * > & vec_prare_names,
                                  const unsigned int limit );
 
 unsigned int create_xset03      (list <pointer_pairs> &results,
                                  const list <const Record*> & reclist,
-                                 const vector < const cGroup_Value * > & vec_prare_names,
+                                 const vector < const RecordList * > & vec_prare_names,
                                  const unsigned int limit );
 
 /** This function creates one of the training sets.

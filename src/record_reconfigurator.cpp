@@ -95,7 +95,7 @@ Reconfigurator_Interactives::reconfigure ( const Record * p ) const {
  * Reconfigurator_Coauthor objects shall NEVER happen during disambiguation.
  *
  */
-Reconfigurator_Coauthor::Reconfigurator_Coauthor ( const map < const Record *, cGroup_Value, cSort_by_attrib > & patent_authors) :
+Reconfigurator_Coauthor::Reconfigurator_Coauthor ( const map < const Record *, RecordList, cSort_by_attrib > & patent_authors) :
         reference_pointer ( & patent_authors), coauthor_index ( Record::get_index_by_name(cCoauthor::static_get_class_name())) {
     cCoauthor::clear_data_pool();
     cCoauthor::clear_attrib_pool();
@@ -119,7 +119,7 @@ Reconfigurator_Coauthor::reconfigure(const Record * p) const {
     static const StringExtractFirstWord firstname_extracter;
     static const StringRemoveSpace lastname_extracter;
 
-    map < const Record *, cGroup_Value, cSort_by_attrib >::const_iterator cpm;
+    map < const Record *, RecordList, cSort_by_attrib >::const_iterator cpm;
     cCoauthor temp;
 
     cpm = reference_pointer->find( p);
@@ -127,9 +127,9 @@ Reconfigurator_Coauthor::reconfigure(const Record * p) const {
     if ( cpm == reference_pointer->end())
         throw cException_Other("Missing patent data.");
 
-    const cGroup_Value & patent_coauthors = cpm->second;
+    const RecordList & patent_coauthors = cpm->second;
 
-    for ( cGroup_Value::const_iterator q = patent_coauthors.begin(); q != patent_coauthors.end(); ++q ) {
+    for ( RecordList::const_iterator q = patent_coauthors.begin(); q != patent_coauthors.end(); ++q ) {
 
         if ( *q == p )
             continue;

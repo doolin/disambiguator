@@ -29,19 +29,19 @@ ClusterSet & ClusterSet::convert_from_ClusterInfo( const ClusterInfo * ps) {
 void
 find_associated_nodes(const Cluster & center,
                       const map < const Record *, const Record *> & uid2uinv,
-                      const map < const Record *, cGroup_Value, cSort_by_attrib > & patent_tree,
+                      const map < const Record *, RecordList, cSort_by_attrib > & patent_tree,
                       set < const Record * > & associated_delegates) {
 
     associated_delegates.clear();
 
-    for ( cGroup_Value::const_iterator p = center.get_fellows().begin(); p != center.get_fellows().end(); ++p ) {
-        map < const Record *, cGroup_Value, cSort_by_attrib >::const_iterator ipat = patent_tree.find(*p);
+    for ( RecordList::const_iterator p = center.get_fellows().begin(); p != center.get_fellows().end(); ++p ) {
+        map < const Record *, RecordList, cSort_by_attrib >::const_iterator ipat = patent_tree.find(*p);
         if ( ipat == patent_tree.end() ) {
             (*p)->print();
             throw cException_Attribute_Not_In_Tree("Cannot find the patent.");
         }
 
-        for ( cGroup_Value::const_iterator cgi = ipat->second.begin(); cgi != ipat->second.end(); ++cgi ) {
+        for ( RecordList::const_iterator cgi = ipat->second.begin(); cgi != ipat->second.end(); ++cgi ) {
             if ( *cgi == *p )
                 continue;
             map < const Record *, const Record *>::const_iterator q = uid2uinv.find(*cgi);
@@ -52,7 +52,7 @@ find_associated_nodes(const Cluster & center,
 
     }
 
-    for ( cGroup_Value::const_iterator p = center.get_fellows().begin(); p != center.get_fellows().end(); ++p ) {
+    for ( RecordList::const_iterator p = center.get_fellows().begin(); p != center.get_fellows().end(); ++p ) {
         associated_delegates.erase(*p);
     }
 }
@@ -61,7 +61,7 @@ find_associated_nodes(const Cluster & center,
 void
 post_polish(ClusterSet & m, map < const Record *,
             const Record *> & uid2uinv,
-            const map < const Record *, cGroup_Value, cSort_by_attrib > & patent_tree,
+            const map < const Record *, RecordList, cSort_by_attrib > & patent_tree,
             const string & logfile) {
 
     std::cout << "Starting post processing ... ..." << std::endl;
@@ -236,7 +236,7 @@ post_polish(ClusterSet & m, map < const Record *,
 
 
                         //3, update the uid2uinv map;
-                        for ( cGroup_Value::const_iterator p = pmerger->get_fellows().begin(); p != pmerger->get_fellows().end(); ++p ) {
+                        for ( RecordList::const_iterator p = pmerger->get_fellows().begin(); p != pmerger->get_fellows().end(); ++p ) {
                             map < const Record *, const Record *>::iterator t = uid2uinv.find(*p);
                             if ( t == uid2uinv.end() )
                                 throw cException_Attribute_Not_In_Tree("Record pointer not in uid2uinv tree.");
@@ -284,7 +284,7 @@ ClusterSet::output_results( const char * dest_file) const {
         double cohesion_value = p->get_cluster_head().m_cohesion;
         os << cohesion_value << ClusterInfo::primary_delim;
 
-        for ( cGroup_Value::const_iterator q = p->get_fellows().begin(); q != p->get_fellows().end(); ++q ) {
+        for ( RecordList::const_iterator q = p->get_fellows().begin(); q != p->get_fellows().end(); ++q ) {
             const Attribute * value_pattrib = (*q)->get_attrib_pointer_by_index(uid_index);
 
             os << * value_pattrib->get_data().at(0) << ClusterInfo::secondary_delim;
@@ -324,7 +324,7 @@ ClusterSet::read_from_file(const char * filename,
             prev_pos = pos + primary_delim_size;
 
 
-            cGroup_Value tempv;
+            RecordList tempv;
             while ( ( pos = filedata.find(ClusterInfo::secondary_delim, prev_pos) )!= string::npos){
                 string valuestring = filedata.substr( prev_pos, pos - prev_pos);
                 const Record * value = retrieve_record_pointer_by_unique_id( valuestring, uid_tree);

@@ -20,9 +20,18 @@ using std::vector;
 using std::map;
 using std::set;
 
-// cGroup_Value is a list of const Record pointers.
+// RecordList is a list of const Record pointers.
 // This definition will be used throughout the whole project.
-typedef std::list<const Record * > cGroup_Value;
+//typedef std::list<const Record * > RecordList;
+// Ok, technically, it's crappy to use a naming pattern
+// such as *List (or *Set, etc), but this will be clearer
+// than RecordList, which is something I *always* have
+// to look up, I never remember it. Also, the records
+// really ought to be in there own container class
+// instead of stuffed into a bare list. Let the container
+// class choose how to store the records, and make it
+// invisible to the developer.
+typedef std::list<const Record * > RecordList;
 
 
 
@@ -90,10 +99,10 @@ class cRatios; //forward declaration
  *         2. double: the cohesion of the combination of the first and the second cluster. This is only valid if the first returned pointer is not NULL.
  */
 std::pair<const Record *, double> disambiguate_by_set (const Record * key1,
-                                                       const cGroup_Value & match1,
+                                                       const RecordList & match1,
                                                        const double cohesion1,
                                                        const Record * key2,
-                                                       const cGroup_Value & match2,
+                                                       const RecordList & match2,
                                                        const double cohesion2,
                                                        const double prior, 
                                                        const cRatios & ratio,
@@ -109,10 +118,10 @@ void        copyfile                  (const char * target,
 
 Attribute * create_attribute_instance (const string & id );
 
-void        build_patent_tree         (map < const Record *, cGroup_Value, cSort_by_attrib > & patent_tree,
+void        build_patent_tree         (map < const Record *, RecordList, cSort_by_attrib > & patent_tree,
                                        const list < Record > & all_records);
 
-void        build_patent_tree         (map < const Record *, cGroup_Value, cSort_by_attrib > & patent_tree,
+void        build_patent_tree         (map < const Record *, RecordList, cSort_by_attrib > & patent_tree,
                                        const list < const Record * > & all_rec_pointers);
 
 string      check_file_existence      (const string & description);

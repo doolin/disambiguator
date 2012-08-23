@@ -139,12 +139,12 @@ cBlocking_Operation_By_Coauthors::cBlocking_Operation_By_Coauthors(const list < 
 void
 cBlocking_Operation_By_Coauthors::build_patent_tree(const list < const Record * > & all_rec_pointers) {
 
-    map < const Record *, cGroup_Value, cSort_by_attrib >::iterator ppatentmap;
+    map < const Record *, RecordList, cSort_by_attrib >::iterator ppatentmap;
     for ( list < const Record * >::const_iterator p = all_rec_pointers.begin(); p != all_rec_pointers.end(); ++p ) {
         ppatentmap = patent_tree.find(*p);
         if ( ppatentmap == patent_tree.end() ) {
-            cGroup_Value temp ( 1, *p);
-            patent_tree.insert( std::pair < const Record *, cGroup_Value > (*p, temp) );
+            RecordList temp ( 1, *p);
+            patent_tree.insert( std::pair < const Record *, RecordList > (*p, temp) );
         }
         else {
             ppatentmap->second.push_back(*p);
@@ -182,7 +182,7 @@ cBlocking_Operation_By_Coauthors::build_uid2uinv_tree(const ClusterInfo & cluste
             if ( pcount == uinv2count_tree.end() )
                 pcount = uinv2count_tree.insert(std::pair<const Record *, unsigned int>(value, 0)).first;
 
-            for ( cGroup_Value::const_iterator r = q->get_fellows().begin(); r != q->get_fellows().end(); ++r ) {
+            for ( RecordList::const_iterator r = q->get_fellows().begin(); r != q->get_fellows().end(); ++r ) {
                 const Record * key = *r;
                 uid2uinv_tree.insert(std::pair< const Record * , const Record *> (key, value ));
                 ++ ( pcount->second);
@@ -208,14 +208,14 @@ cBlocking_Operation_By_Coauthors::build_uid2uinv_tree(const ClusterInfo & cluste
  *         3. return values in T.
  *
  */
-cGroup_Value cBlocking_Operation_By_Coauthors::get_topN_coauthors(const Record * prec,
+RecordList cBlocking_Operation_By_Coauthors::get_topN_coauthors(const Record * prec,
                                                                   const unsigned int topN ) const {
 
-    const cGroup_Value & list_alias = patent_tree.find(prec)->second;
-    map < unsigned int, cGroup_Value > occurrence_map;
+    const RecordList & list_alias = patent_tree.find(prec)->second;
+    map < unsigned int, RecordList > occurrence_map;
     unsigned int cnt = 0;
 
-    for (cGroup_Value::const_iterator p = list_alias.begin(); p != list_alias.end(); ++p) {
+    for (RecordList::const_iterator p = list_alias.begin(); p != list_alias.end(); ++p) {
 
         if ( *p == prec )
             continue;
@@ -231,10 +231,10 @@ cGroup_Value cBlocking_Operation_By_Coauthors::get_topN_coauthors(const Record *
         const unsigned int coauthor_count = puinv2count->second;
 
         if ( cnt <= topN || coauthor_count > occurrence_map.begin() ->first ) {
-            map < unsigned int, cGroup_Value >::iterator poccur = occurrence_map.find ( coauthor_count );
+            map < unsigned int, RecordList >::iterator poccur = occurrence_map.find ( coauthor_count );
             if ( poccur == occurrence_map.end() ) {
-                cGroup_Value temp (1, coauthor_pointer);
-                occurrence_map.insert(std::pair<unsigned int, cGroup_Value>(coauthor_count, temp));
+                RecordList temp (1, coauthor_pointer);
+                occurrence_map.insert(std::pair<unsigned int, RecordList>(coauthor_count, temp));
             }
             else
                 poccur->second.push_back(coauthor_pointer);
@@ -242,7 +242,7 @@ cGroup_Value cBlocking_Operation_By_Coauthors::get_topN_coauthors(const Record *
             if ( cnt < topN )
                 ++cnt;
             else {
-                map < unsigned int, cGroup_Value >::iterator pbegin = occurrence_map.begin();
+                map < unsigned int, RecordList >::iterator pbegin = occurrence_map.begin();
                 pbegin->second.pop_back();
                 if ( pbegin->second.empty() )
                     occurrence_map.erase(pbegin);
@@ -251,8 +251,8 @@ cGroup_Value cBlocking_Operation_By_Coauthors::get_topN_coauthors(const Record *
     }
 
     //output
-    cGroup_Value ans;
-    for ( map < unsigned int, cGroup_Value>::const_reverse_iterator rp = occurrence_map.rbegin(); rp != occurrence_map.rend(); ++rp )
+    RecordList ans;
+    for ( map < unsigned int, RecordList>::const_reverse_iterator rp = occurrence_map.rbegin(); rp != occurrence_map.rend(); ++rp )
         ans.insert(ans.end(), rp->second.begin(), rp->second.end());
     return ans;
 }
@@ -264,13 +264,13 @@ cGroup_Value cBlocking_Operation_By_Coauthors::get_topN_coauthors(const Record *
  */
 string cBlocking_Operation_By_Coauthors::extract_blocking_info(const Record * prec) const {
 
-    const cGroup_Value top_coauthor_list = get_topN_coauthors(prec, num_coauthors);
+    const RecordList top_coauthor_list = get_topN_coauthors(prec, num_coauthors);
     // now make string
     const unsigned int firstnameindex = Record::get_index_by_name(cFirstname::static_get_class_name());
     const unsigned int lastnameindex = Record::get_index_by_name(cLastname::static_get_class_name());
 
     string answer;
-    for ( cGroup_Value::const_iterator p = top_coauthor_list.begin(); p != top_coauthor_list.end(); ++p ) {
+    for ( RecordList::const_iterator p = top_coauthor_list.begin(); p != top_coauthor_list.end(); ++p ) {
         answer += *(*p)->get_data_by_index(firstnameindex).at(0);
         answer += cBlocking_Operation::delim;
         answer += *(*p)->get_data_by_index(lastnameindex).at(0);

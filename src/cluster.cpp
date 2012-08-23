@@ -115,7 +115,7 @@ ClusterInfo::retrieve_last_comparision_info ( const cBlocking_Operation & blocke
         std::ifstream infile(past_comparision_file);
         const unsigned int primary_delim_size = strlen(primary_delim);
         const unsigned int secondary_delim_size = strlen(secondary_delim);
-        cGroup_Value empty_set;
+        RecordList empty_set;
         map < string , cRecGroup >::iterator prim_iter;
         map < const string*, map < const Record *, double> >::iterator prim_co_iter;
         unsigned int count = 0;
@@ -160,7 +160,7 @@ ClusterInfo::retrieve_last_comparision_info ( const cBlocking_Operation & blocke
                 prev_pos = pos + primary_delim_size;
 
 
-                cGroup_Value tempv;
+                RecordList tempv;
                 while ( ( pos = filedata.find(secondary_delim, prev_pos) )!= string::npos){
                     string valuestring = filedata.substr( prev_pos, pos - prev_pos);
                     const Record * value = retrieve_record_pointer_by_unique_id( valuestring, *uid2record_pointer);
@@ -274,7 +274,7 @@ ClusterInfo::preliminary_consolidation(const cBlocking_Operation & blocker,
     cluster_by_block.clear();
     useless = blocker.get_useless_string();
     map < string, cRecGroup >::iterator mi;
-    const cGroup_Value empty_fellows;
+    const RecordList empty_fellows;
     for ( list < const Record * > ::const_iterator p = all_rec_list.begin(); p != all_rec_list.end(); ++p ) {
         string temp ( blocker.extract_blocking_info(*p));
         mi = cluster_by_block.find(temp);
@@ -348,7 +348,7 @@ ClusterInfo::print(std::ostream & os) const {
 
             os << cohesion_value << primary_delim;
 
-            for ( cGroup_Value::const_iterator q = p->get_fellows().begin(); q != p->get_fellows().end(); ++q ) {
+            for ( RecordList::const_iterator q = p->get_fellows().begin(); q != p->get_fellows().end(); ++q ) {
                 const Attribute * value_pattrib = (*q)->get_attrib_pointer_by_index(uid_index);
                 os << * value_pattrib->get_data().at(0) << secondary_delim;
             }
@@ -624,7 +624,7 @@ ClusterInfo::disambiguate(const cRatios & ratio,
 
     std::cout << "Starting disambiguation ... ..." << std::endl;
     cRecGroup emptyone;
-    const cGroup_Value emptyset;
+    const RecordList emptyset;
     map < string , cRecGroup >::iterator pdisambiged;
 
     // now starting disambiguation.

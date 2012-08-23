@@ -20,9 +20,9 @@ using std::string;
 
 class RarenamesTest : public CppUnit::TestCase {
 
-//    find_rare_names_v2(const vector < cGroup_Value * > &vec_pdest,
+//    find_rare_names_v2(const vector < RecordList * > &vec_pdest,
 //                       const list< const Record* > & source )
-//  const vector < cGroup_Value * > & vec_pdest;
+//  const vector < RecordList * > & vec_pdest;
 //  const list< const Record * > & source;
 
 public:

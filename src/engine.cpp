@@ -38,10 +38,10 @@ fetch_ratio(const vector < unsigned int > & ratio_to_lookup,
 
 std::pair<const Record *, double>
 disambiguate_by_set (const Record * key1,
-                     const cGroup_Value & match1,
+                     const RecordList & match1,
                      const double cohesion1,
                      const Record * key2,
-                     const cGroup_Value & match2,
+                     const RecordList & match2,
                      const double cohesion2,
                      const double prior,
                      const cRatios & ratio,  const double mutual_threshold ) {
@@ -94,8 +94,8 @@ disambiguate_by_set (const Record * key1,
     unsigned int qualified_count = 0;
     //double required_interactives = 0;
     //unsigned int required_cnt = 0;
-    for ( cGroup_Value::const_iterator p = match1.begin(); p != match1.end(); ++p ) {
-        for ( cGroup_Value::const_iterator q = match2.begin(); q != match2.end(); ++q ) {
+    for ( RecordList::const_iterator p = match1.begin(); p != match1.end(); ++p ) {
+        for ( RecordList::const_iterator q = match2.begin(); q != match2.end(); ++q ) {
 
             if ( country_check ) {
                 const Attribute * p1 = (*p)->get_attrib_pointer_by_index(country_index);
@@ -526,15 +526,15 @@ cAssignee::configure_assignee( const list < const Record *> & recs) {
 
 
 void
-build_patent_tree(map < const Record *, cGroup_Value, cSort_by_attrib > & patent_tree,
+build_patent_tree(map < const Record *, RecordList, cSort_by_attrib > & patent_tree,
                         const list < const Record * > & all_rec_pointers ) {
 
-    map < const Record *, cGroup_Value, cSort_by_attrib >::iterator ppatentmap;
+    map < const Record *, RecordList, cSort_by_attrib >::iterator ppatentmap;
     for ( list < const Record * >::const_iterator p = all_rec_pointers.begin(); p != all_rec_pointers.end(); ++p ) {
         ppatentmap = patent_tree.find(*p);
         if ( ppatentmap == patent_tree.end() ) {
-            cGroup_Value temp ( 1, *p);
-            patent_tree.insert( std::pair < const Record *, cGroup_Value > (*p, temp) );
+            RecordList temp ( 1, *p);
+            patent_tree.insert( std::pair < const Record *, RecordList > (*p, temp) );
         }
         else {
             ppatentmap->second.push_back(*p);
@@ -544,7 +544,7 @@ build_patent_tree(map < const Record *, cGroup_Value, cSort_by_attrib > & patent
 
 
 void
-build_patent_tree(map < const Record *, cGroup_Value, cSort_by_attrib > & patent_tree,
+build_patent_tree(map < const Record *, RecordList, cSort_by_attrib > & patent_tree,
                   const list < Record > & all_records ) {
 
     list < const Record *> all_pointers;

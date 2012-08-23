@@ -94,16 +94,16 @@ make_stable_training_sets_by_personal(const list <Record> & all_records,
     //if ( training_filenames.size() != 2 )
         //throw cException_Other("Training: there should be 2 changeable training sets.");
 
-    cGroup_Value rare_firstname_set;
-    cGroup_Value rare_lastname_set;
+    RecordList rare_firstname_set;
+    RecordList rare_lastname_set;
 
     std::ofstream outfile;
     cPrint_Pair do_print(outfile, cUnique_Record_ID::static_get_class_name());
     const char * current_file;
-    vector<cGroup_Value *> rare_pointer_vec;
+    vector<RecordList *> rare_pointer_vec;
     rare_pointer_vec.push_back(&rare_firstname_set);
     rare_pointer_vec.push_back(&rare_lastname_set);
-    const vector< const cGroup_Value * > const_rare_pointer_vec(rare_pointer_vec.begin(), rare_pointer_vec.end());
+    const vector< const RecordList * > const_rare_pointer_vec(rare_pointer_vec.begin(), rare_pointer_vec.end());
 
     list < const Record*> record_pointers;
     for ( list<Record>::const_iterator p = all_records.begin(); p != all_records.end(); ++p )
@@ -150,7 +150,7 @@ std::pair < const Record *, set < const Record * > >
 ones_temporal_unique_coauthors (const Cluster & record_cluster,
                                 const map < const Record *, 
                                 const Record *> & complete_uid2uinv,
-                                const map < const Record *, cGroup_Value, cSort_by_attrib > & complete_patent_tree,
+                                const map < const Record *, RecordList, cSort_by_attrib > & complete_patent_tree,
                                 const unsigned int begin_year, 
                                 const unsigned int end_year, 
                                 const unsigned int year_index ) {
@@ -160,10 +160,10 @@ ones_temporal_unique_coauthors (const Cluster & record_cluster,
     const Record * ret1 = NULL;
     set < const Record * > ret2;
 
-    const cGroup_Value & same_author = record_cluster.get_fellows();
+    const RecordList & same_author = record_cluster.get_fellows();
 
-    cGroup_Value qualified_same_author;
-    for ( cGroup_Value::const_iterator psa = same_author.begin(); psa != same_author.end(); ++psa ) {
+    RecordList qualified_same_author;
+    for ( RecordList::const_iterator psa = same_author.begin(); psa != same_author.end(); ++psa ) {
         //check year range
         const Attribute * pAttrib = (*psa)->get_attrib_pointer_by_index(year_index);
         const unsigned int checkyear = atoi (pAttrib->get_data().at(0)->c_str());
@@ -172,12 +172,12 @@ ones_temporal_unique_coauthors (const Cluster & record_cluster,
         //end of year range check
     }
 
-    for ( cGroup_Value::const_iterator pqsa = qualified_same_author.begin(); pqsa != qualified_same_author.end(); ++pqsa) {
-        const map < const Record *, cGroup_Value, cSort_by_attrib >::const_iterator tempi = complete_patent_tree.find(*pqsa);
+    for ( RecordList::const_iterator pqsa = qualified_same_author.begin(); pqsa != qualified_same_author.end(); ++pqsa) {
+        const map < const Record *, RecordList, cSort_by_attrib >::const_iterator tempi = complete_patent_tree.find(*pqsa);
         if ( tempi == complete_patent_tree.end() )
             throw cException_Other("patent not in patent tree.");
-        const cGroup_Value & coauthor_per_patent = tempi->second;
-        for ( cGroup_Value::const_iterator pp = coauthor_per_patent.begin(); pp != coauthor_per_patent.end(); ++pp ) {
+        const RecordList & coauthor_per_patent = tempi->second;
+        for ( RecordList::const_iterator pp = coauthor_per_patent.begin(); pp != coauthor_per_patent.end(); ++pp ) {
             if ( *pp == *pqsa)
                 continue;
             map < const Record *, const Record *>::const_iterator tempi2 = complete_uid2uinv.find(*pp);
@@ -209,7 +209,7 @@ one_step_postprocess(const list < Record > & all_records,
     // uid_dict is probably the return value from create_btree_uid2record_pointer
     create_btree_uid2record_pointer(uid_dict, all_records, uid_identifier);
     // instantiate a map
-    map < const Record *, cGroup_Value, cSort_by_attrib > patent_tree(cSort_by_attrib(cPatent::static_get_class_name()));
+    map < const Record *, RecordList, cSort_by_attrib > patent_tree(cSort_by_attrib(cPatent::static_get_class_name()));
     build_patent_tree(patent_tree , all_records);
     ClusterSet cs;
     //cs.convert_from_ClusterInfo(&match);
@@ -272,11 +272,11 @@ out_of_cluster_density(const ClusterSet & upper,
         if ( cluster_count % base == 0 )
             std::cout << cluster_count << " clusters have been process for out-of-cluster density." << std::endl;
 
-        const cGroup_Value & members = plower->get_fellows();
+        const RecordList & members = plower->get_fellows();
         const unsigned int member_size = members.size();
         //get prior values first
         map < const Record *, int > small_cluster_counts;
-        for ( cGroup_Value::const_iterator pm = members.begin(); pm != members.end(); ++pm) {
+        for ( RecordList::const_iterator pm = members.begin(); pm != members.end(); ++pm) {
             map < const Record *, const Record *> ::const_iterator puinv = upper_uid2uinv.find( *pm);
             if ( puinv == upper_uid2uinv.end() )
                 throw cException_Other("Outer of cluster density: cannot find unique record id.");
@@ -304,9 +304,9 @@ out_of_cluster_density(const ClusterSet & upper,
         //disambiguate then.
         unsigned int cnt = 0;
         double sum_prob = 0;
-        for ( cGroup_Value::const_iterator pmouter = members.begin(); pmouter != members.end(); ++pmouter) {
+        for ( RecordList::const_iterator pmouter = members.begin(); pmouter != members.end(); ++pmouter) {
             const Record * const outerinv = upper_uid2uinv.find( *pmouter)->second;
-            cGroup_Value::const_iterator pminner = pmouter;
+            RecordList::const_iterator pminner = pmouter;
             for ( ++ pminner; pminner != members.end(); ++pminner) {
                 const Record * const innerinv = upper_uid2uinv.find( *pminner)->second;
                 if ( outerinv == innerinv )
