@@ -8,47 +8,18 @@
 
 class ClusterHeadTest : public CppUnit::TestCase { 
 
-public: 
+public:
   ClusterHeadTest(std::string name) : CppUnit::TestCase(name) {}
 
-
-  void attribute_record() {
-    cFirstname * firstname  = new cFirstname("Foobar");
-    std::string tmp("bar");
-
-    firstname->reset_data(tmp.c_str());
-    const Attribute * pAttrib;
-
-    pAttrib = firstname->clone();
-
-    vector <const Attribute *> temp_vec_attrib;
-    temp_vec_attrib.push_back(pAttrib);
-    Record tmprec(temp_vec_attrib);
-
-    //Record(const vector <const Attribute *> & input_vec);
-    //const std::vector <const Attribute *> input_vec;
-    //input_vec.push_back(firstname);
-    //Record r(input_vec);
-    delete firstname;
-  }
-
-  void read_records() {
-    CPPUNIT_ASSERT(1 == 1);
-  }
-
-  void delete_record() {
-    Record * rc = new Record();
-    delete rc;
+  void create_clusterhead() {
+    Record * r = make_foobar_record();
+    ClusterHead ch(r, 0.9953);
+    CPPUNIT_ASSERT (0.9953 == ch.m_cohesion);
+    delete r;
   }
 
   void runTest() {
-    // Just o get startes...
-    CPPUNIT_ASSERT( 1  == 1 );
-    delete_record();
-    make_foobar_record();
-    make_quuxalot_record();
-    attribute_record();
-    read_records();
+    create_clusterhead();
   }
 };
 
