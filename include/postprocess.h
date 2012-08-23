@@ -5,18 +5,18 @@
 #include "newcluster.h"
 
 // forward declaration
-class Cluster_Info;
+//class Cluster_Info;
 
+#if 0
 struct cSort_For_Cluster {
     bool operator () ( const Cluster & c1, const Cluster & c2 ) const {
         return c1.get_cluster_head().m_delegate < c2.get_cluster_head().m_delegate;
     }
 };
-
-
 //typedef set < Cluster, cSort_For_Cluster > Cluster_Container;
-typedef list < Cluster > Cluster_Container;
+#endif
 
+typedef list < Cluster > Cluster_Container;
 
 class ClusterSet {
 
