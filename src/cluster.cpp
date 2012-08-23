@@ -707,6 +707,33 @@ Worker::run() {
 }
 
 
+void
+warn_block_failure(const map<string, ClusterInfo::cRecGroup>::iterator & p) {
+
+  std::cout << "============= POSSIBLE FAILURE IN BLOCK ==============" << std::endl;
+  std::cout << p->first << " exceeded max rounds block disambiguation" << std::endl;
+  std::cout << "============= END OF WARNING =============" << std::endl;
+}
+
+
+void
+warn_very_big_blocks(const map<string, ClusterInfo::cRecGroup>::iterator & p) {
+
+   std::cout << "Block Very Big: " << p->first 
+             << " Size = " << p->second.size() << std::endl;
+}
+
+
+void
+warn_empty_block(const map<string, ClusterInfo::cRecGroup>::iterator & p) {
+
+  std::cout << "Block Without Any Infomation Tag: " << p->first 
+            << " Size = " << p->second.size() << "-----SKIPPED."
+            << std::endl;
+}
+
+
+
 /**
  * Aim: a function that controls the loop of disambiguation
  * for a certain block. Used in Worker.
@@ -718,6 +745,7 @@ Worker::run() {
 // contract for valid data feeding in to the disambiguation
 // loop following the validity checks. This would mean moving
 // the loop out of this function.
+// TODO: typedef the leading parameter, it's ugly.
 bool
 disambiguate_wrapper(const map<string, ClusterInfo::cRecGroup>::iterator & p,
                      ClusterInfo & cluster,
@@ -730,15 +758,14 @@ disambiguate_wrapper(const map<string, ClusterInfo::cRecGroup>::iterator & p,
 
     // TODO: Rename pst for semantic utility.
     const string * pst = &p->first; // This may be "bid" elsewhere, e.g., blocking_id, tag.
+
     // TODO: "useless_string" should be a #define, no need to
     // drag something like "" out of memory.
+    // TODO: #define USELESS_STRING ""
     // TODO: Consider doing a prepass on all the data to get rid of
     // these blocks before the disambiguation starts.
     if (p->first == cluster.get_useless_string()) {
-        // TODO: Refactor this output to a function call.
-        std::cout << "Block Without Any Infomation Tag: " << p->first 
-                  << " Size = " << p->second.size() << "-----SKIPPED."
-                  << std::endl;
+        warn_empty_block(p);
         return false;
     }
 
@@ -765,23 +792,21 @@ disambiguate_wrapper(const map<string, ClusterInfo::cRecGroup>::iterator & p,
 
         unsigned int i = 0;
         for (i = 0; i < max_round; ++i) {
-            // TODO: Document the logic associated with temp1 and temp2
-            temp1 = temp2;
+            // TODO: Document the logic associated with current_size and new_size
+            current_size = new_size;
             // TODO: Document the return values from this method, explain why we're
             // checking the return value.
-            // NOTE: the return value, here captured as temp2, is NOT CALCULATED in the
+            // NOTE: the return value, here captured as size, is NOT CALCULATED in the
             // following function. What's returned from the disambiguate_by_block function
             // is a size value computed as a side effect of the called code.
-            temp2 = cluster.disambiguate_by_block(p->second, cluster.get_prior_map().find(pst)->second, ratio, pst, *c);
-            // Explain the condition for breaking the loop here.
-            if (temp2 == temp1) break;
+            new_size = cluster.disambiguate_by_block(p->second, cluster.get_prior_map().find(pst)->second, ratio, pst, *c);
+            // TODO: Explain the condition for breaking the loop here. That is,
+            // why/how does size and current_size interact?
+            if (new_size == current_size) break;
         }
 
         if (max_round == i) {
-            // TODO: Refactor this information to a function call.
-            std::cout << "============= POSSIBLE FAILURE IN BLOCK ==============" << std::endl;
-            std::cout << p->first << " exceeded max rounds block disambiguation" << std::endl;
-            std::cout << "============= END OF WARNING =============" << std::endl;
+            warn_block_failure(p);
             return false;
         }
     }
