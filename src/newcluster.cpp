@@ -13,11 +13,18 @@ const map < const Record *, RecordList, cSort_by_attrib > * Cluster::reference_p
 Cluster::Cluster(const ClusterHead & info, const RecordList & fellows)
 		: m_info(info), m_fellows(fellows), m_mergeable(true), m_usable(true) {
 
-	if ( NULL == reference_pointer )
+  // No. Wrong. This is just bad design. You just don't require static
+  // variables to be set before constructing an instance of a class. This is
+  // amazingly bad practice. If this class **NEEDS** this static member
+  // set as a precondition, then the class is designed WRONG. By definition,
+  // WRONG. This is WRONG DESIGN.
+	if ( NULL == reference_pointer ) {
 		throw cException_Other("Critical Error: Patent tree reference pointer is not set yet.");
+  }
 
 	this->first_patent_year = invalid_year;
 	this->last_patent_year = invalid_year;
+  // This is also wrong design. Don't do work in constructors. Not ever.
 	this->update_year_range();
 	this->update_locations();
 }
