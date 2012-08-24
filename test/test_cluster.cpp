@@ -1,9 +1,9 @@
 #include <string>
 #include <vector>
 
-#include <cppunit/Portability.h>
-#include <cppunit/portability/CppUnitSet.h>
-#include <cppunit/extensions/TestFactory.h>
+//#include <cppunit/Portability.h>
+//#include <cppunit/portability/CppUnitSet.h>
+//#include <cppunit/extensions/TestFactory.h>
 #include <cppunit/TestCase.h>
 
 #include <disambiguation.h>
@@ -12,12 +12,14 @@
 
 #include "testdata.h"
 
+
 class ClusterTest : public CppUnit::TestCase {
 
 public:
   ClusterTest(std::string name) : CppUnit::TestCase(name) {}
 
   void create_cluster() {
+    Attribute::register_class_names(get_column_names());
     Record * r = make_quuxalot_record();
     ClusterHead ch(r, 0.9953);
     RecordList rl = get_record_list();
@@ -26,6 +28,7 @@ public:
     Cluster * c = new Cluster(ch, rl);
     delete c;
   }
+
 
   void runTest() {
     create_cluster();

@@ -21,7 +21,7 @@ bin_PROGRAMS = $(TESTS)
 COMMON = testdata.cpp
 
 distest_SOURCES = test_initial.cpp
-engine_SOURCES = test_initial.cpp
+engine_SOURCES = test_engine.cpp $(COMMON)
 idtest_SOURCES = test_uniqueid.cpp
 typedefs_SOURCES = test_typedefs.cpp
 record_SOURCES = test_record.cpp
