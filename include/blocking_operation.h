@@ -27,20 +27,15 @@
  */
 class cBlocking_Operation {
 
-
-/**
- * Protected:
- *
- * string infoless:
- *   this string represents the string that has delimiters ONLY.
- *   i.e. no useful information at all.
- *   Usually, the variable is changed by concrete subclasses.
- */
 protected:
+
+   /**
+    * string infoless:
+    *   this string represents the string that has delimiters ONLY.
+    *   i.e. no useful information at all.
+    *   Usually, the variable is changed by concrete subclasses.
+    */
     string infoless;
-
-
-
 
 public:
 
@@ -223,82 +218,87 @@ public:
 
 class cBlocking_Operation_Multiple_Column_Manipulate : public cBlocking_Operation {
 
-/**
- * Private:
- *
- *   vector < const StringManipulator * > vsm: the vector
- *   of string manipulator pointers.
- *
- *   vector < unsigned int > indice: the vector of column indice
- *   from which the manipulators extract information, respectively.
- *
- *   vector < const unsigned int * > pdata_indice: the vector of
- *   the const interger pointers indicating the positions of data in
- *   the data vector in Attribute on which the extractions take place.
- */
+
 private:
 
+   /**
+    *   vector < const StringManipulator * > vsm: the vector
+    *   of string manipulator pointers.
+    */
     vector < const StringManipulator * > vsm;
 
     vector < unsigned int > indice;
 
+   /**
+    *   vector < unsigned int > indice: the vector of column indice
+    *   from which the manipulators extract information, respectively.
+    */
     vector < string > attributes_names;
 
+   /**
+    *   vector < const unsigned int * > pdata_indice: the vector of
+    *   the const interger pointers indicating the positions of data in
+    *   the data vector in Attribute on which the extractions take place.
+    */
     vector < unsigned int > pdata_indice;
 
-/**
- * Public:
- *
- *  cBlocking_Operation_Multiple_Column_Manipulate (
- *  const vector < const StringManipulator * > & inputvsm,
- *  const vector<string> & columnnames, const vector < unsigned int > & di )
- *     : This is a constructor of the class.
- *   inputvsm = the vector of string manipulator pointers
- *   columnnames = the vector of strings which reprensents
- *   the name of columns that the extractions will be applied on,
- *   respectively.
- *   di = the vector of indice in the Attribute::data,
- *   which will serve as the source string pointers.
- *   NOTE: di SHOULD NOT BE DESTRUCTED BEFORE THE
- *   cBlocking_Operation_Multiple_Column_Manipulate object is discarded.
- *
- * cBlocking_Operation_Multiple_Column_Manipulate (
- * const StringManipulator * const* pinputvsm,
- * const string * pcolumnnames, const unsigned int  * pdi, const unsigned int num_col ):
- *
- * This is another constructor of the class object.
- * pinputvsm = pointer of the string manipulator pointers array
- * pcolumnnames = pointer of the strings array.
- * pdi = pointer of the Attribute::data indice array.
- * num_col = number of involed columns.
- * NOTE: pdi SHOULD NOT BE DESTRUCTED BEFORE THE
- * cBlocking_Operation_Multiple_Column_Manipulate object is discarded.
- *
- * string extract_blocking_info(const Record * p) const:
- * extracts information and returns a string.
- *
- * string extract_column_info ( const Record * p, unsigned int flag ) const:
- * extracts information from specified column and returns a string
- *
- * unsigned int num_involved_columns() const :
- * return number of involved columns.
- */
+   /**
+    *  cBlocking_Operation_Multiple_Column_Manipulate (
+    *  const vector < const StringManipulator * > & inputvsm,
+    *  const vector<string> & columnnames, const vector < unsigned int > & di )
+    *     : This is a constructor of the class.
+    *   inputvsm = the vector of string manipulator pointers
+    *   columnnames = the vector of strings which reprensents
+    *   the name of columns that the extractions will be applied on,
+    *   respectively.
+    *   di = the vector of indice in the Attribute::data,
+    *   which will serve as the source string pointers.
+    *   NOTE: di SHOULD NOT BE DESTRUCTED BEFORE THE
+    *   cBlocking_Operation_Multiple_Column_Manipulate object is discarded.
+    */
+
 
 public:
 
+   /**
+    * cBlocking_Operation_Multiple_Column_Manipulate (
+    * const StringManipulator * const* pinputvsm,
+    * const string * pcolumnnames, const unsigned int  * pdi, const unsigned int num_col ):
+    */
     cBlocking_Operation_Multiple_Column_Manipulate (
         const vector < const StringManipulator * > & inputvsm,
         const vector<string> & columnnames, const vector < unsigned int > & di );
 
+   /**
+    * This is another constructor of the class object.
+    * pinputvsm = pointer of the string manipulator pointers array
+    * pcolumnnames = pointer of the strings array.
+    * pdi = pointer of the Attribute::data indice array.
+    * num_col = number of involed columns.
+    * NOTE: pdi SHOULD NOT BE DESTRUCTED BEFORE THE
+    * cBlocking_Operation_Multiple_Column_Manipulate object is discarded.
+    */
     cBlocking_Operation_Multiple_Column_Manipulate (
         const StringManipulator * const* pinputvsm,
         const string * pcolumnnames, const unsigned int * pdi,
         const unsigned int num_col );
 
+   /**
+    * string extract_blocking_info(const Record * p) const:
+    * extracts information and returns a string.
+    */
     string extract_blocking_info(const Record * p) const;
 
+   /**
+    * string extract_column_info ( const Record * p, unsigned int flag ) const:
+    * extracts information from specified column and returns a string
+    */
     string extract_column_info ( const Record * p, unsigned int flag ) const;
 
+   /**
+    * unsigned int num_involved_columns() const :
+    * return number of involved columns.
+    */
     unsigned int num_involved_columns() const {
       return vsm.size();
     }
@@ -355,45 +355,51 @@ class ClusterInfo;
  */
 class cBlocking_Operation_By_Coauthors : public cBlocking_Operation {
 
-/**
- *  map < const Record *, RecordList, cSort_by_attrib > patent_tree:
- *  a binary tree to sort records by patent information.
- *  key = const Record pointer, value = list < const Record * >,
- *  comparison function = an object of cSort_by_attrib, which
- *  includes the column information.
- *
- *  map < const Record *, const Record * > uid2uinv_tree:
- *  a binary tree that maps a unique record pointer to its
- *  unique inventor record pointer.
- *
- *  map < const Record *, unsigned int > uinv2count_tree:
- *  a binary tree that maps the unique inventor record pointer
- *  to the number of its associated patents.
- *
- *  const unsigned int num_coauthors: number of coauthors to
- *  extract for blocking. Usually it should not be too large (like 10).
- *
- *  void build_patent_tree(const list < const Record * > & allrec):
- *  reads a list of const Record pointers and build patent tree.
- *  NOTE THAT the comparison function for the tree is determined
- *  in the constructor.
- *
- *  RecordList get_topN_coauthors( const Record * pRec, const unsigned int topN) const:
- *  find the top N most prolific coauthors of the input pRec record
- *  pointer, and return a list of const Record pointers.
- */
+
 private:
 
+   /**
+    *  map < const Record *, RecordList, cSort_by_attrib > patent_tree:
+    *  a binary tree to sort records by patent information.
+    *  key = const Record pointer, value = list < const Record * >,
+    *  comparison function = an object of cSort_by_attrib, which
+    *  includes the column information.
+    */
     map < const Record *, RecordList, cSort_by_attrib > patent_tree;
 
+   /**
+    *  map < const Record *, const Record * > uid2uinv_tree:
+    *  a binary tree that maps a unique record pointer to its
+    *  unique inventor record pointer.
+    */
     map < const Record *, const Record * > uid2uinv_tree;
 
+   /**
+    *  map < const Record *, unsigned int > uinv2count_tree:
+    *  a binary tree that maps the unique inventor record pointer
+    *  to the number of its associated patents.
+    */
     map < const Record *, unsigned int > uinv2count_tree;
 
+   /**
+    *  const unsigned int num_coauthors: number of coauthors to
+    *  extract for blocking. Usually it should not be too large (like 10).
+    */
     const unsigned int num_coauthors;
 
+   /**
+    *  void build_patent_tree(const list < const Record * > & allrec):
+    *  reads a list of const Record pointers and build patent tree.
+    *  NOTE THAT the comparison function for the tree is determined
+    *  in the constructor.
+    */
     void build_patent_tree(const list < const Record * > & allrec);
 
+   /**
+    *  RecordList get_topN_coauthors( const Record * pRec, const unsigned int topN) const:
+    *  find the top N most prolific coauthors of the input pRec record
+    *  pointer, and return a list of const Record pointers.
+    */
     RecordList get_topN_coauthors( const Record *, const unsigned int topN) const;
 
 
