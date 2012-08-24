@@ -10,12 +10,15 @@ class EngineTest : public CppUnit::TestCase {
 public:
   EngineTest(std::string name) : CppUnit::TestCase(name) {}
 
-  void create_cluster() {
+  void parse_total_column_names() {
+    std::string line("Firstname,Middlename,Lastname,Latitude,Assignee,City,Country,Patent,ApplyYear");
+    std::vector<std::string> tcn = parse_column_names(line);
+    CPPUNIT_ASSERT(9 == tcn.size());
   }
 
 
   void runTest() {
-    create_cluster();
+    parse_total_column_names();
   }
 };
 
