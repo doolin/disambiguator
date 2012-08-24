@@ -128,5 +128,9 @@ string      check_file_existence      (const string & description);
 
 std::vector<std::string> parse_column_names(std::string line);
 
+vector<unsigned int> create_column_indices(std::vector<std::string> requested_columns,
+    std::vector<std::string> total_col_names);
+
+Attribute ** instantiate_attributes(std::vector<std::string> column_names, int num_cols);
 
 #endif /* PATENT_ENGINE_H */
