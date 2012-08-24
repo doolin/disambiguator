@@ -346,8 +346,11 @@ Cluster::update_year_range() {
 
 	static const unsigned int appyearindex = Record::get_index_by_name(cApplyYear::static_get_class_name());
 
-	for ( RecordList::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p ) {
-		const Attribute * pAttribYear = (*p)->get_attrib_pointer_by_index(appyearindex);
+	RecordList::const_iterator rlit = this->m_fellows.begin();
+	for (; rlit != this->m_fellows.end(); ++rlit ) {
+
+		const Attribute * pAttribYear = (*rlit)->get_attrib_pointer_by_index(appyearindex);
+    // This is segfaulting on test data
 		const string * py = pAttribYear->get_data().at(0);
 		unsigned int year = atoi ( py->c_str());
 		if ( year > 2100 || year < 1500 ) {
