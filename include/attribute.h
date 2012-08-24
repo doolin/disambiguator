@@ -269,7 +269,7 @@ public:
 
     // Polymorphic destructor to allow deletion via Attribute*
     virtual ~Attribute() {
-      std::cout << "attribute destructor" << std::endl;
+      //std::cout << "attribute destructor" << std::endl;
     }
 
     virtual const Attribute* clone() const = 0; // Polymorphic copy constructor
