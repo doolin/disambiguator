@@ -12,6 +12,7 @@ Record * make_foobar_record() {
   cAssignee   * assignee    = new cAssignee("Gonesilent");
   cCity       * city        = new cCity("Burlingame");
   cCountry    * country     = new cCountry("US");
+  cPatent     * patent      = new cPatent("07100123");
 
   vector <const Attribute *> temp_vec_attrib;
 
@@ -22,6 +23,7 @@ Record * make_foobar_record() {
   temp_vec_attrib.push_back(assignee);
   temp_vec_attrib.push_back(city);
   temp_vec_attrib.push_back(country);
+  temp_vec_attrib.push_back(patent);
 
   Record * r = new Record(temp_vec_attrib);
   return r;
@@ -37,6 +39,7 @@ Record * make_quuxalot_record() {
   cAssignee   * assignee    = new cAssignee("Gonesilent");
   cCity       * city        = new cCity("Burlingame");
   cCountry    * country     = new cCountry("US");
+  cPatent     * patent      = new cPatent("07100124");
 
   vector <const Attribute *> temp_vec_attrib;
 
@@ -47,6 +50,7 @@ Record * make_quuxalot_record() {
   temp_vec_attrib.push_back(assignee);
   temp_vec_attrib.push_back(city);
   temp_vec_attrib.push_back(country);
+  temp_vec_attrib.push_back(patent);
 
   Record * r = new Record(temp_vec_attrib);
   return r;
@@ -61,4 +65,14 @@ RecordList get_record_list() {
   rl.push_back(r2);
   return rl;
 }
+
+
+cBlocking_Operation_By_Coauthors get_blocker_coathor() {
+
+  int num_coauthors_to_group = 4;
+  RecordList all_rec_pointers;
+  cBlocking_Operation_By_Coauthors blocker_coauthor(all_rec_pointers, num_coauthors_to_group);
+  return blocker_coauthor;
+}
+
 
