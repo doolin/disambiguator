@@ -14,4 +14,6 @@ RecordList   get_record_list(void);
 
 cBlocking_Operation_By_Coauthors get_blocker_coathor(void);
 
+vector<std::string> get_column_names(void);
+
 #endif // PATENT_TEST_TESTDATA_H

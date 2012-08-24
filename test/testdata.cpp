@@ -3,6 +3,23 @@
 #include <engine.h> // typedef RecordList
 #include <record.h>
 
+vector<std::string>
+get_column_names() {
+
+  vector<std::string> cn;
+  cn.push_back("Firstname");
+  cn.push_back("Middlename");
+  cn.push_back("Lastname");
+  cn.push_back("Latitude");
+  cn.push_back("Assignee");
+  cn.push_back("City");
+  cn.push_back("Country");
+  cn.push_back("Patent");
+  cn.push_back("ApplyYear");
+  return cn;
+}
+
+
 Record * make_foobar_record() {
 
   cFirstname  * firstname   = new cFirstname("Foo");
@@ -13,6 +30,7 @@ Record * make_foobar_record() {
   cCity       * city        = new cCity("Burlingame");
   cCountry    * country     = new cCountry("US");
   cPatent     * patent      = new cPatent("07100123");
+  cApplyYear  * applyyear   = new cApplyYear("2008");
 
   vector <const Attribute *> temp_vec_attrib;
 
@@ -24,8 +42,10 @@ Record * make_foobar_record() {
   temp_vec_attrib.push_back(city);
   temp_vec_attrib.push_back(country);
   temp_vec_attrib.push_back(patent);
+  temp_vec_attrib.push_back(applyyear);
 
   Record * r = new Record(temp_vec_attrib);
+  r->set_column_names(get_column_names());
   return r;
 }
 
@@ -40,6 +60,7 @@ Record * make_quuxalot_record() {
   cCity       * city        = new cCity("Burlingame");
   cCountry    * country     = new cCountry("US");
   cPatent     * patent      = new cPatent("07100124");
+  cApplyYear  * applyyear   = new cApplyYear("2008");
 
   vector <const Attribute *> temp_vec_attrib;
 
@@ -51,8 +72,10 @@ Record * make_quuxalot_record() {
   temp_vec_attrib.push_back(city);
   temp_vec_attrib.push_back(country);
   temp_vec_attrib.push_back(patent);
+  temp_vec_attrib.push_back(applyyear);
 
   Record * r = new Record(temp_vec_attrib);
+  r->set_column_names(get_column_names());
   return r;
 }
 
