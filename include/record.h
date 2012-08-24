@@ -37,25 +37,34 @@ class Record {
 
     friend class cRatioComponent;
 
-/**
- * vector <const Attribute *> vector_pdata: the major data of the class,
- * which stores a vector of pointers of concrete attributes.
- *
- * static vector <string> column_names: static member which stores the
- * name of each attributes with sequential information. Very important.
- *
- * static vector < string > active_similarity_names:
- * static member which stores the names of attributes
- * whose comparison functions are activated.
- *
- * static const Record * sample_record_pointer: a pointer of a real
- * record object, allowing some polymorphic static functions.
- */
+
+
 private:
     // TODO: s/vector_pdata/attributes/g
+
+   /**
+    * vector <const Attribute *> vector_pdata: the major data of the class,
+    * which stores a vector of pointers of concrete attributes.
+    */
     vector <const Attribute *> vector_pdata;
+
+   /**
+    * static vector <string> column_names: static member which stores the
+    * name of each attributes with sequential information. Very important.
+    */
     static vector <string> column_names;
+
+   /**
+    * static vector < string > active_similarity_names:
+    * static member which stores the names of attributes
+    * whose comparison functions are activated.
+    */
     static vector < string > active_similarity_names;
+
+   /**
+    * static const Record * sample_record_pointer: a pointer of a real
+    * record object, allowing some polymorphic static functions.
+    */
     static const Record * sample_record_pointer;
 
 public:
@@ -69,6 +78,11 @@ public:
 
     // Record(): default constructor.
     Record() {}
+
+
+    void set_column_names(std::vector<std::string> cn) {
+      column_names = cn;
+    }
 
    /**
     *  vector <unsigned int> record_compare(const Record & rhs) const:
@@ -140,41 +154,64 @@ public:
 /**
  * unsigned int record_exact_compare(const Record & rhs ) const:
  * compare (*this) with rhs and return the number of attributes that are exactly the same.
- *
+ */
+
+/**
  * void set_attrib_pointer_by_index( const Attribute * pa, const unsigned int i ):
  * modify the attribute vector, setting the ith element to pa
- *
+ */
+
+/**
  * static void clean_member_attrib_pool():
  * clear all the members static attribute pool.
  * This is EXTREMELY dangerous, unless its functionality is fully understood.
- *
+ */
+
+/**
  * static unsigned int record_size():
  * returns the number of attributes of a record.
- *
+ */
+
+/**
  * static void update_active_similarity_names():
  * update the static member "active_similarity_names"
  * by checking the comparator of each attribute.
- *
- * static const vector < string > & get_similarity_names():
- * get the names of the active similarity profile attributes.
- *
- * static unsigned int get_similarity_index_by_name(const string & inputstr):
- * get the index of an attribute in the ACTIVE similarity profile.
- *
- * static const Record & get_sample_record():
- * return the sample record object for external use.
- *
  */
 
+/**
+ * static const vector < string > & get_similarity_names():
+ * get the names of the active similarity profile attributes.
+ */
+
+
+/**
+ * static unsigned int get_similarity_index_by_name(const string & inputstr):
+ * get the index of an attribute in the ACTIVE similarity profile.
+ */
+
+
     unsigned int record_exact_compare(const Record & rhs ) const;
+
     void set_attrib_pointer_by_index( const Attribute * pa, const unsigned int i ) { vector_pdata.at(i) = pa;}
+
     static void clean_member_attrib_pool();
+
     static unsigned int record_size() { return column_names.size();}
+
     static void update_active_similarity_names();
+
     static const vector < string > & get_similarity_names() { return active_similarity_names;}
+
     static unsigned int get_similarity_index_by_name(const string & inputstr);
+
+/**
+ * static const Record & get_sample_record():
+ * return the sample record object for external use.
+ */
     static const Record & get_sample_record() { return *sample_record_pointer;}
+
     void reconfigure_record_for_interactives() const;
+
     static void activate_comparators_by_name ( const vector < string > &);
 };
 
