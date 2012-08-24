@@ -205,6 +205,83 @@ parse_column_names(std::string line) {
 }
 
 
+
+vector<unsigned int>
+create_column_indices(std::vector<std::string> requested_columns,
+    std::vector<std::string> total_col_names) {
+
+  std::vector<unsigned int> rci;
+  const unsigned int num_cols = requested_columns.size();
+  for ( unsigned int i = 0; i < num_cols; ++i ) {
+      unsigned int j;
+      for (  j = 0; j < total_col_names.size(); ++j ) {
+          if ( requested_columns.at(i) == total_col_names.at(j) ) {
+              rci.push_back(j);
+              break;
+          }
+      }
+      if ( j == total_col_names.size() ) {
+          std::cerr << "Critical Error in reading data input file" << std::endl
+          <<"Column names not available in the first line. Please Check the correctness." << std::endl;
+          throw cException_ColumnName_Not_Found(requested_columns.at(i).c_str());
+      }
+  }
+  return rci;
+}
+
+
+Attribute **
+instantiate_attributes(std::vector<std::string> column_names, int num_cols) {
+
+  Attribute ** pointer_array = new Attribute *[num_cols];
+
+  unsigned int pos =  0;
+  unsigned int prev_pos = 0;
+  unsigned int position_in_ratios = 0;
+
+  for (unsigned int i = 0; i < num_cols; ++i) {
+
+      //std::cout << "column_names[i]: " << column_names[i] << std::endl;
+      const int pos_in_query = Attribute::position_in_registry(column_names[i]);
+      //std::cout << "pos_in_query: " << pos_in_query << std::endl;
+      //std::cout << "column_names[i]: " << column_names[i] << std::endl;
+
+      if ( pos_in_query == -1 ) {
+          for ( unsigned int j = 0; j < i; ++j )
+              delete pointer_array[j];
+          delete [] pointer_array;
+          throw cException_ColumnName_Not_Found(column_names[i].c_str());
+      } else {
+          pointer_array[i] = create_attribute_instance (column_names[i].c_str() );
+      }
+
+#ifdef HLKJHLKJJHGKJHKJHKFHGFKHG
+      if ( Record::column_names[i] == cLongitude::class_name ) {
+          cLatitude::interactive_column_indice_in_query.push_back(i);
+      }
+      else if ( Record::column_names[i] == cStreet::class_name ) {
+          cLatitude::interactive_column_indice_in_query.push_back(i);
+      }
+      else if ( Record::column_names[i] == cCountry::class_name ) {
+          cLatitude::interactive_column_indice_in_query.push_back(i);
+      }
+      else if ( Record::column_names[i] == cAsgNum::class_name ) {
+          cAssignee::interactive_column_indice_in_query.push_back(i);
+      }
+#endif
+
+      // If this crashes, will need to add code in the function `create_attribute_instance`
+      // Also, it's stupid that this is used to check whether something is
+      // instantiated.
+      if ( pointer_array[i]->get_attrib_group() != string("None") ) {
+          //std::cout << "pointer_array[i]->get_attrib_group(): " << pointer_array[i]->get_attrib_group() << std::endl;
+          // TODO: What is this for? Get rid of it.
+          ++position_in_ratios;
+      }
+  }
+  return pointer_array;
+}
+
 /**
  * Aim: to fetch records from a txt format file into memory.
  * This is a very important function.
@@ -265,12 +342,14 @@ fetch_records_from_txt(list <Record> & source,
         //std::cout << "columnname: " << columnname << std::endl;
     }
 #endif
+    //total_col_names = parse_column_names(line);
 
     Attribute::register_class_names(requested_columns);
-    const unsigned int num_cols = requested_columns.size();
-    //std::cout << "num_cols: " << num_cols << std::endl;
     vector < unsigned int > requested_column_indice;
 
+    const unsigned int num_cols = requested_columns.size();
+
+#if 1
     for ( unsigned int i = 0; i < num_cols; ++i ) {
         unsigned int j;
         for (  j = 0; j < total_col_names.size(); ++j ) {
@@ -285,15 +364,21 @@ fetch_records_from_txt(list <Record> & source,
             throw cException_ColumnName_Not_Found(requested_columns.at(i).c_str());
         }
     }
-
+#endif
+    //requested_column_indice = create_column_indices(requested_columns, total_col_names);
 
     Record::column_names = requested_columns;
+
+
+
     Attribute ** pointer_array = new Attribute *[num_cols];
 
     pos = prev_pos = 0;
+
+#if 1
     unsigned int position_in_ratios = 0;
 
-    for ( unsigned int i = 0; i < num_cols; ++i ) {
+    for (unsigned int i = 0; i < num_cols; ++i) {
 
         const int pos_in_query = Attribute::position_in_registry(Record::column_names[i]);
         //std::cout << "pos_in_query: " << pos_in_query << std::endl;
@@ -308,7 +393,7 @@ fetch_records_from_txt(list <Record> & source,
             pointer_array[i] = create_attribute_instance ( Record::column_names[i].c_str() );
         }
 
-#if 0
+#ifdef HLKJHLKJJHGKJHKJHKFHGFKHG
         if ( Record::column_names[i] == cLongitude::class_name ) {
             cLatitude::interactive_column_indice_in_query.push_back(i);
         }
@@ -329,8 +414,9 @@ fetch_records_from_txt(list <Record> & source,
             ++position_in_ratios;
         }
     }
+#endif
+    // pointer_array = instantiate_attributes(Record::column_names, num_cols);
 
-    //std::cout << std::endl;
 
     // always do this for all the attribute classes
     for ( unsigned int i = 0; i < num_cols; ++i ) {
@@ -445,6 +531,7 @@ Attribute *
 create_attribute_instance ( const string & id ) {
 
     Attribute *p = NULL;
+
     if ( id == cFirstname::static_get_class_name() ) {
         p = new cFirstname;
     }
@@ -478,6 +565,7 @@ create_attribute_instance ( const string & id ) {
     else if ( id == cinvnum::static_get_class_name() ) {
         p = new cinvnum;
     }
+
     //else if ( id == cAppDateStr::static_get_class_name() ) {
 //        p = new cAppDateStr;
 //    }
