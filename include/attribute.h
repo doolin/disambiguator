@@ -266,7 +266,12 @@ public:
     virtual const string & get_class_name() const = 0;
     virtual bool is_comparator_activated() const = 0;
     // critical for using base pointers to create and copy derived class
-    virtual ~Attribute() {} // Polymorphic destructor to allow deletion via Attribute*
+
+    // Polymorphic destructor to allow deletion via Attribute*
+    virtual ~Attribute() {
+      std::cout << "attribute destructor" << std::endl;
+    }
+
     virtual const Attribute* clone() const = 0; // Polymorphic copy constructor
     virtual bool has_checked_interactive_consistency() const = 0;
     virtual void print( std::ostream & ) const = 0;
@@ -293,7 +298,9 @@ public:
     virtual const Attribute * add_attrib( unsigned int n ) const = 0  ;
     virtual const set < const string *> * get_attrib_set_pointer () const { return NULL; }
     static void register_class_names( const vector < string > &);
+
     static int position_in_registry( const string & );
+
     virtual vector < string > get_interactive_class_names() const = 0;
     virtual void activate_comparator() const = 0;
     virtual void deactivate_comparator() const = 0;
