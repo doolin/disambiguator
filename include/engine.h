@@ -20,19 +20,20 @@ using std::vector;
 using std::map;
 using std::set;
 
-// RecordList is a list of const Record pointers.
+// RecordPList is a list of const Record pointers.
 // This definition will be used throughout the whole project.
-//typedef std::list<const Record * > RecordList;
+//typedef std::list<const Record * > RecordPList;
 // Ok, technically, it's crappy to use a naming pattern
 // such as *List (or *Set, etc), but this will be clearer
-// than RecordList, which is something I *always* have
+// than RecordPList, which is something I *always* have
 // to look up, I never remember it. Also, the records
 // really ought to be in there own container class
 // instead of stuffed into a bare list. Let the container
 // class choose how to store the records, and make it
 // invisible to the developer.
-typedef std::list<const Record * > RecordList;
-
+// Had to add a "P" because there is a another list<Record>
+// which is not pointers. Ugh.
+typedef std::list<const Record * > RecordPList;
 
 
 /**
@@ -53,7 +54,6 @@ typedef std::list<const Record * > RecordList;
  *       Binary tree is ideal for fast search, insertion and deletion.
  *
  */
-
 class cSort_by_attrib {
 private:
   //attrib_index is the column index on which the Record's comparison depends.
@@ -68,6 +68,12 @@ public:
     cSort_by_attrib(const unsigned int i): attrib_index(i) {};
     cSort_by_attrib(const string & attrib_name): attrib_index(Record::get_index_by_name(attrib_name) ) {};
 };
+
+
+// Same comment as above applies about *Tree as a name,
+// but what can you do?
+typedef map<const Record *, RecordPList, cSort_by_attrib> PatentTree;
+
 
 
 #include "string_manipulator.h"
@@ -99,10 +105,10 @@ class cRatios; //forward declaration
  *         2. double: the cohesion of the combination of the first and the second cluster. This is only valid if the first returned pointer is not NULL.
  */
 std::pair<const Record *, double> disambiguate_by_set (const Record * key1,
-                                                       const RecordList & match1,
+                                                       const RecordPList & match1,
                                                        const double cohesion1,
                                                        const Record * key2,
-                                                       const RecordList & match2,
+                                                       const RecordPList & match2,
                                                        const double cohesion2,
                                                        const double prior, 
                                                        const cRatios & ratio,
@@ -118,10 +124,10 @@ void        copyfile                  (const char * target,
 
 Attribute * create_attribute_instance (const string & id );
 
-void        build_patent_tree         (map < const Record *, RecordList, cSort_by_attrib > & patent_tree,
+void        build_patent_tree         (PatentTree & patent_tree,
                                        const list < Record > & all_records);
 
-void        build_patent_tree         (map < const Record *, RecordList, cSort_by_attrib > & patent_tree,
+void        build_patent_tree         (PatentTree & patent_tree,
                                        const list < const Record * > & all_rec_pointers);
 
 string      check_file_existence      (const string & description);

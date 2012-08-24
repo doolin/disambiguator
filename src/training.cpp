@@ -26,8 +26,8 @@ cBlocking::cBlocking (const list<const Record *> & psource,
         blocking_indice.push_back(Record::get_index_by_name(blocking_column_names.at(i)));
     }
 
-    map<string, RecordList >::iterator b_iter;
-    const map<string, RecordList >::key_compare bmap_compare = blocking_data.key_comp();
+    map<string, RecordPList >::iterator b_iter;
+    const map<string, RecordPList >::key_compare bmap_compare = blocking_data.key_comp();
     std::cout << "Grouping ..." << std::endl;
     unsigned int count = 0;
     const unsigned int base = 100000;
@@ -51,10 +51,10 @@ cBlocking::cBlocking (const list<const Record *> & psource,
             b_iter->second.push_back(*p);
         }
         else {
-            RecordList tempset;
+            RecordPList tempset;
             //tempset.insert( *p );
             tempset.push_back(*p);
-            b_iter = blocking_data.insert(b_iter, std::pair< string, RecordList >(label, tempset));
+            b_iter = blocking_data.insert(b_iter, std::pair< string, RecordPList >(label, tempset));
         }
 
         record2blockingstring.insert(std::pair<const Record*, const string *>(*p, &(b_iter->first)));
@@ -89,12 +89,12 @@ cBlocking_For_Training::reset(const unsigned int num_cols) {
     unsigned long quota_distributor = 0;
     unsigned int temp_sum = 0;
 
-    for ( map<string, RecordList >::const_iterator cpm = blocking_data.begin(); cpm != blocking_data.end(); ++ cpm) {
+    for ( map<string, RecordPList >::const_iterator cpm = blocking_data.begin(); cpm != blocking_data.end(); ++ cpm) {
         if ( cpm->first != nullstring)
             quota_distributor +=  cpm->second.size() * ( cpm->second.size() - 1 );
     }
 
-    for ( map<string, RecordList >::const_iterator cpm = blocking_data.begin(); cpm != blocking_data.end(); ++ cpm) {
+    for ( map<string, RecordPList >::const_iterator cpm = blocking_data.begin(); cpm != blocking_data.end(); ++ cpm) {
         unsigned int quota_for_this = 0;
         if ( cpm->first != nullstring ) {
             quota_for_this = 1.0 * total_quota / quota_distributor * cpm->second.size() * ( cpm->second.size() -1 ) ;
@@ -105,9 +105,9 @@ cBlocking_For_Training::reset(const unsigned int num_cols) {
         const string * pstr = &cpm->first;
         quota_map.insert(std::pair<const string *, unsigned int>(pstr, quota_for_this) );
         used_quota_map.insert(std::pair<const string *, unsigned int>(pstr, 0 ) );
-        RecordList::const_iterator begin_cur = cpm->second.begin();
-        outer_cursor_map.insert(std::pair < const string *, RecordList::const_iterator > (pstr, begin_cur ) );
-        inner_cursor_map.insert(std::pair < const string *, RecordList::const_iterator > (pstr, ++begin_cur ) );
+        RecordPList::const_iterator begin_cur = cpm->second.begin();
+        outer_cursor_map.insert(std::pair < const string *, RecordPList::const_iterator > (pstr, begin_cur ) );
+        inner_cursor_map.insert(std::pair < const string *, RecordPList::const_iterator > (pstr, ++begin_cur ) );
     }
 
     quota_left = total_quota - temp_sum;
@@ -117,9 +117,9 @@ cBlocking_For_Training::reset(const unsigned int num_cols) {
 
 
 bool
-cBlocking_For_Training::move_cursor(RecordList:: const_iterator & outer,
-                                    RecordList:: const_iterator & inner,
-                                    const RecordList & datarange) {
+cBlocking_For_Training::move_cursor(RecordPList:: const_iterator & outer,
+                                    RecordPList:: const_iterator & inner,
+                                    const RecordPList & datarange) {
 
     while ( true ) {
         if ( outer == datarange.end() )
@@ -156,13 +156,13 @@ cBlocking_For_Training::create_xset01_on_block(const string & block_id,
                                                const vector<const StringManipulator*>& pmanipulators_nonequal,
                                                const bool is_firstround) {
 
-    map < string, RecordList >::const_iterator pmap = blocking_data.find(block_id);
+    map < string, RecordPList >::const_iterator pmap = blocking_data.find(block_id);
     if ( pmap == blocking_data.end() )
         throw cException_Attribute_Not_In_Tree(block_id.c_str());
-    const RecordList & dataset = pmap->second;
+    const RecordPList & dataset = pmap->second;
 
-    RecordList::const_iterator & outercursor = outer_cursor_map.find(& block_id)->second;
-    RecordList::const_iterator & innercursor = inner_cursor_map.find(& block_id)->second;
+    RecordPList::const_iterator & outercursor = outer_cursor_map.find(& block_id)->second;
+    RecordPList::const_iterator & innercursor = inner_cursor_map.find(& block_id)->second;
     const unsigned int & quota_for_this = quota_map.find(&block_id)->second;
     unsigned int & quota_used = used_quota_map.find(&block_id)->second;
 
@@ -304,13 +304,13 @@ cBlocking_For_Training::create_tset05_on_block(const string & block_id,
                                                const vector<const StringManipulator*>& pmanipulators_nonequal,
                                                const bool is_firstround) {
 
-    map < string, RecordList>::const_iterator pmap = blocking_data.find(block_id);
+    map < string, RecordPList>::const_iterator pmap = blocking_data.find(block_id);
     if ( pmap == blocking_data.end() )
         throw cException_Attribute_Not_In_Tree(block_id.c_str());
-    const RecordList & dataset = pmap->second;
+    const RecordPList & dataset = pmap->second;
 
-    RecordList::const_iterator & outercursor = outer_cursor_map.find(& block_id)->second;
-    RecordList::const_iterator & innercursor = inner_cursor_map.find(& block_id)->second;
+    RecordPList::const_iterator & outercursor = outer_cursor_map.find(& block_id)->second;
+    RecordPList::const_iterator & innercursor = inner_cursor_map.find(& block_id)->second;
     const unsigned int & quota_for_this = quota_map.find(&block_id)->second;
     unsigned int & quota_used = used_quota_map.find(&block_id)->second;
 
@@ -435,11 +435,11 @@ cBlocking_For_Training::create_set(pFunc mf,
     unsigned long pair_count = 0;
     const unsigned int base = 100000;
     unsigned int signal = 0;
-    map < string, RecordList >::iterator p;
+    map < string, RecordPList >::iterator p;
     //first round: using assigned quota
     std::cout << "Obtaining training pairs ..." << std::endl;
     for ( p = blocking_data.begin(); p != blocking_data.end(); ++p){
-        RecordList::const_iterator & outercursor = outer_cursor_map.find(& p->first)->second;
+        RecordPList::const_iterator & outercursor = outer_cursor_map.find(& p->first)->second;
         const unsigned int & quota_for_this = quota_map.find(&p->first)->second;
         const unsigned int & quota_used = used_quota_map.find(&p->first)->second;
         if ( outercursor == p->second.end() )  {
@@ -467,7 +467,7 @@ cBlocking_For_Training::create_set(pFunc mf,
 
     //second round: using free quota.
     for ( p = blocking_data.begin(); p != blocking_data.end(); ++p) {
-        RecordList::const_iterator & outercursor = outer_cursor_map.find(& p->first)->second;
+        RecordPList::const_iterator & outercursor = outer_cursor_map.find(& p->first)->second;
         unsigned int & quota_used = used_quota_map.find(&p->first)->second;
         if ( outercursor == p->second.end() ) {
             continue;
@@ -499,7 +499,7 @@ cBlocking_For_Training::create_set(pFunc mf,
 
 
 void
-find_rare_names_v2(const vector < RecordList * > &vec_pdest,
+find_rare_names_v2(const vector < RecordPList * > &vec_pdest,
                    const list< const Record* > & source ) {
 
     typedef std::pair < unsigned int, unsigned int > cWord_occurrence;
@@ -532,7 +532,7 @@ find_rare_names_v2(const vector < RecordList * > &vec_pdest,
         set <string> chosen_words;
         const unsigned int cindex = Record::get_index_by_name(blocking_columns[kkk]);
 
-        map < string, RecordList >::const_iterator p = fullname.get_block_map().begin(); 
+        map < string, RecordPList >::const_iterator p = fullname.get_block_map().begin(); 
         for (p; p != fullname.get_block_map().end() ; ++p) {
             size = p->second.size();
             position = prev_pos = 0;
@@ -577,7 +577,7 @@ find_rare_names_v2(const vector < RecordList * > &vec_pdest,
         num_chosen_words = 0;
         set < string > in_phrase_wordset;
 
-        for ( map < string, RecordList >::const_iterator p = fullname.get_block_map().begin(); p != fullname.get_block_map().end() ; ++p ) {
+        for ( map < string, RecordPList >::const_iterator p = fullname.get_block_map().begin(); p != fullname.get_block_map().end() ; ++p ) {
             const string & info = * (*(p->second.begin()))->get_data_by_index(cindex).at(0);
             in_phrase_wordset.clear();
             position = prev_pos = 0;
@@ -616,7 +616,7 @@ unsigned int
 create_tset02(list <pointer_pairs> & results,
               const list <const Record*> & reclist,
               const vector <string> & column_names,
-	      const vector < const RecordList * > & vec_prare_names,
+	      const vector < const RecordPList * > & vec_prare_names,
               const unsigned int limit) {
 
     //equal_indice should be the indices of the names in this case.
@@ -630,9 +630,9 @@ create_tset02(list <pointer_pairs> & results,
         column_indice.push_back(Record::get_index_by_name(*p));
     }
 
-    RecordList emptyone;
-    map <string, RecordList >::iterator pm;
-    map <string, RecordList >::const_iterator cpm;
+    RecordPList emptyone;
+    map <string, RecordPList >::iterator pm;
+    map <string, RecordPList >::const_iterator cpm;
     unsigned int count = 0;
 
     set < pointer_pairs > answer;
@@ -640,10 +640,10 @@ create_tset02(list <pointer_pairs> & results,
     for (unsigned int i = 0; i < column_names.size(); ++i) {
 
         const unsigned int col_index = column_indice.at(i);
-        map < string, RecordList > data_map;
+        map < string, RecordPList > data_map;
 
-        for ( RecordList::const_iterator p = vec_prare_names[i]->begin(); p != vec_prare_names[i]->end(); ++p ) {
-            data_map.insert(std::pair<string, RecordList >( * (*p)->get_data_by_index(col_index).at(0), emptyone));
+        for ( RecordPList::const_iterator p = vec_prare_names[i]->begin(); p != vec_prare_names[i]->end(); ++p ) {
+            data_map.insert(std::pair<string, RecordPList >( * (*p)->get_data_by_index(col_index).at(0), emptyone));
         }
 
         for (list<const Record*>::const_iterator q = reclist.begin(); q != reclist.end(); ++q ) {
@@ -654,8 +654,8 @@ create_tset02(list <pointer_pairs> & results,
         }
 
         for ( cpm = data_map.begin(); cpm != data_map.end(); ++cpm ) {
-            for (RecordList::const_iterator rr = cpm->second.begin(); rr != cpm->second.end(); ++rr ) {
-                RecordList::const_iterator ss = rr;
+            for (RecordPList::const_iterator rr = cpm->second.begin(); rr != cpm->second.end(); ++rr ) {
+                RecordPList::const_iterator ss = rr;
                 ++ss;
                 for ( ; ss != cpm->second.end(); ++ss) {
                     bool data_ok = true;
@@ -690,10 +690,10 @@ create_tset02(list <pointer_pairs> & results,
 unsigned int
 create_xset03(list <pointer_pairs> & results,
               const list <const Record*> & reclist,
-              const vector < const RecordList * > & vec_prare_names,
+              const vector < const RecordPList * > & vec_prare_names,
               const unsigned int limit ) {
 
-    RecordList pool;
+    RecordPList pool;
     for ( unsigned int i = 0; i < vec_prare_names.size(); ++i) {
         //pool.insert(vec_prare_names.at(i)->begin(), vec_prare_names.at(i)->end());
         pool.insert(pool.end(), vec_prare_names.at(i)->begin(), vec_prare_names.at(i)->end());
@@ -701,8 +701,8 @@ create_xset03(list <pointer_pairs> & results,
 
     unsigned int count = 0;
     const unsigned int base = 100000;
-    for ( RecordList::const_iterator p = pool.begin(); p != pool.end(); ++p ) {
-        RecordList::const_iterator q = p;
+    for ( RecordPList::const_iterator p = pool.begin(); p != pool.end(); ++p ) {
+        RecordPList::const_iterator q = p;
         for ( ++q; q != pool.end(); ++q ) {
             results.push_back(pointer_pairs(*p, *q));
             ++count;
@@ -725,13 +725,13 @@ cBlocking_For_Training::create_xset03_on_block(const string & block_id,
                                                const vector<const StringManipulator*>& pmanipulators_nonequal,
                                                const bool is_firstround) {
 
-    map < string, RecordList >::const_iterator pmap = blocking_data.find(block_id);
+    map < string, RecordPList >::const_iterator pmap = blocking_data.find(block_id);
     if ( pmap == blocking_data.end() )
         throw cException_Attribute_Not_In_Tree(block_id.c_str());
-    const RecordList & dataset = pmap->second;
+    const RecordPList & dataset = pmap->second;
 
-    RecordList::const_iterator & outercursor = outer_cursor_map.find(& block_id)->second;
-    RecordList::const_iterator & innercursor = inner_cursor_map.find(& block_id)->second;
+    RecordPList::const_iterator & outercursor = outer_cursor_map.find(& block_id)->second;
+    RecordPList::const_iterator & innercursor = inner_cursor_map.find(& block_id)->second;
     const unsigned int & quota_for_this = quota_map.find(&block_id)->second;
     unsigned int & quota_used = used_quota_map.find(&block_id)->second;
 
@@ -820,9 +820,9 @@ create_xset01(list <pointer_pairs> &results, const list <const Record *> & sourc
     //const unsigned int lnidx = Record::get_index_by_name(cLastname::static_get_class_name());
     cBlocking bl( source, blocking_column_names, pman, cPatent::static_get_class_name());
 
-    for ( map < string, RecordList>::const_iterator pm = bl.get_block_map().begin(); pm != bl.get_block_map().end(); ++pm ) {
-        for ( RecordList::const_iterator p = pm->second.begin(); p != pm->second.end(); ++p ) {
-            RecordList::const_iterator q = p;
+    for ( map < string, RecordPList>::const_iterator pm = bl.get_block_map().begin(); pm != bl.get_block_map().end(); ++pm ) {
+        for ( RecordPList::const_iterator p = pm->second.begin(); p != pm->second.end(); ++p ) {
+            RecordPList::const_iterator q = p;
             for ( ++q; q != pm->second.end(); ++q ) {
                 // now ok
                 results.push_back(pointer_pairs(*p, *q) );

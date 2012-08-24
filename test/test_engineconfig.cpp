@@ -55,9 +55,9 @@ setup_columns() {
 void
 rare_names(std::list<Record> all_records) {
 
-  RecordList rare_firstname_set;
-  RecordList rare_lastname_set;
-  std::vector<RecordList *> rare_pointer_vec;
+  RecordPList rare_firstname_set;
+  RecordPList rare_lastname_set;
+  std::vector<RecordPList *> rare_pointer_vec;
   rare_pointer_vec.push_back(&rare_firstname_set);
   rare_pointer_vec.push_back(&rare_lastname_set);
   list<const Record *> record_pointers;

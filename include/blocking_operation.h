@@ -359,13 +359,13 @@ class cBlocking_Operation_By_Coauthors : public cBlocking_Operation {
 private:
 
    /**
-    *  map < const Record *, RecordList, cSort_by_attrib > patent_tree:
+    *  map < const Record *, RecordPList, cSort_by_attrib > patent_tree:
     *  a binary tree to sort records by patent information.
     *  key = const Record pointer, value = list < const Record * >,
     *  comparison function = an object of cSort_by_attrib, which
     *  includes the column information.
     */
-    map < const Record *, RecordList, cSort_by_attrib > patent_tree;
+    map < const Record *, RecordPList, cSort_by_attrib > patent_tree;
 
    /**
     *  map < const Record *, const Record * > uid2uinv_tree:
@@ -396,11 +396,11 @@ private:
     void build_patent_tree(const list < const Record * > & allrec);
 
    /**
-    *  RecordList get_topN_coauthors( const Record * pRec, const unsigned int topN) const:
+    *  RecordPList get_topN_coauthors( const Record * pRec, const unsigned int topN) const:
     *  find the top N most prolific coauthors of the input pRec record
     *  pointer, and return a list of const Record pointers.
     */
-    RecordList get_topN_coauthors( const Record *, const unsigned int topN) const;
+    RecordPList get_topN_coauthors( const Record *, const unsigned int topN) const;
 
 
 public:
@@ -438,10 +438,10 @@ public:
     void build_uid2uinv_tree( const ClusterInfo &);
 
    /**
-    * const map < const Record *, RecordList, cSort_by_attrib > & get_patent_tree() const :
+    * const map < const Record *, RecordPList, cSort_by_attrib > & get_patent_tree() const :
     * get the reference of const patent tree
     */
-    const map < const Record *, RecordList, cSort_by_attrib > & get_patent_tree() const {
+    const map < const Record *, RecordPList, cSort_by_attrib > & get_patent_tree() const {
       return patent_tree;
     }
 

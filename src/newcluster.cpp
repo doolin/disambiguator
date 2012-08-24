@@ -4,13 +4,13 @@
 
 //static members initialization.
 const cRatios * Cluster::pratio = NULL;
-const map < const Record *, RecordList, cSort_by_attrib > * Cluster::reference_pointer = NULL;
+const map < const Record *, RecordPList, cSort_by_attrib > * Cluster::reference_pointer = NULL;
 
 
 /**
  * Aim: constructor of Cluster objects.
  */
-Cluster::Cluster(const ClusterHead & info, const RecordList & fellows)
+Cluster::Cluster(const ClusterHead & info, const RecordPList & fellows)
 		: m_info(info), m_fellows(fellows), m_mergeable(true), m_usable(true) {
 
   // No. Wrong. This is just bad design. You just don't require static
@@ -52,12 +52,12 @@ Cluster::merge(Cluster & mergee, const ClusterHead & info) {
 
 	for ( unsigned int i = 0 ; i < rec_size; ++i ) {
 		list < const Attribute ** > l1;
-		for ( RecordList::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p ) {
+		for ( RecordPList::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p ) {
 			l1.push_back( const_cast < const Attribute ** > ( &(*p)->get_attrib_pointer_by_index(i)  )   );
 		}
 
 		list < const Attribute ** > l2;
-		for ( RecordList::const_iterator p = mergee.m_fellows.begin(); p != mergee.m_fellows.end(); ++p ) {
+		for ( RecordPList::const_iterator p = mergee.m_fellows.begin(); p != mergee.m_fellows.end(); ++p ) {
 			l2.push_back( const_cast < const Attribute ** > ( &(*p)->get_attrib_pointer_by_index(i)  )   );
 		}
 		attrib_merge(l1, l2);
@@ -101,7 +101,7 @@ Cluster::change_mid_name()  {
 	map < const Attribute *, const Attribute *> last2mid;
 	map < const Attribute *, const Attribute * >::iterator q;
 
-	for ( RecordList::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p ) {
+	for ( RecordPList::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p ) {
 		const Attribute * pl = (*p)->get_attrib_pointer_by_index(lastname_index);
 		const Attribute * pm = (*p)->get_attrib_pointer_by_index(midname_index);
 		q = last2mid.find(pl);
@@ -119,7 +119,7 @@ Cluster::change_mid_name()  {
 	}
 
 	map < const Attribute *, const Attribute * >::const_iterator cq;
-	for ( RecordList::iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p ) {
+	for ( RecordPList::iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p ) {
 		const Attribute * pl = (*p)->get_attrib_pointer_by_index(lastname_index);
 		const Attribute * const & pm = (*p)->get_attrib_pointer_by_index(midname_index);
 		cq = last2mid.find(pl);
@@ -251,10 +251,10 @@ Cluster::self_repair() {
 	for ( unsigned int i = 0 ; i < rec_size; ++i ) {
 		list < const Attribute ** > l1;
 		list < const Attribute ** > l2;
-		RecordList::const_iterator p1 = this->m_fellows.begin();
+		RecordPList::const_iterator p1 = this->m_fellows.begin();
 		if ( p1 == this->m_fellows.end() )
 			break;
-		RecordList::const_iterator q2 = p1;
+		RecordPList::const_iterator q2 = p1;
 		++q2;
 		l2.push_back( const_cast < const Attribute ** > ( &(*p1)->get_attrib_pointer_by_index(i)  )   );
 		while ( q2 != this->m_fellows.end() ) {
@@ -302,7 +302,7 @@ Cluster::find_representative()  {
 	for ( unsigned int i = 0; i < nc; ++i )
 		indice.push_back ( Record::get_index_by_name( useful_columns[i]));
 
-	for ( RecordList::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p ) {
+	for ( RecordPList::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p ) {
 		for ( unsigned int i = 0 ; i < nc; ++i ) {
 			const Attribute * pA = (*p)->get_attrib_pointer_by_index(indice.at(i));
 			++ tracer.at(i)[pA];
@@ -324,7 +324,7 @@ Cluster::find_representative()  {
 
 	unsigned int m_cnt = 0;
 	const Record * mp = NULL;
-	for ( RecordList::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p ) {
+	for ( RecordPList::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p ) {
 		unsigned int c = 0;
 		for ( unsigned int i = 0 ; i < nc; ++i ) {
 			const Attribute * pA = (*p)->get_attrib_pointer_by_index(indice.at(i));
@@ -346,7 +346,7 @@ Cluster::update_year_range() {
 
 	static const unsigned int appyearindex = Record::get_index_by_name(cApplyYear::static_get_class_name());
 
-	RecordList::const_iterator rlit = this->m_fellows.begin();
+	RecordPList::const_iterator rlit = this->m_fellows.begin();
 	for (; rlit != this->m_fellows.end(); ++rlit ) {
 
 		const Attribute * pAttribYear = (*rlit)->get_attrib_pointer_by_index(appyearindex);
@@ -408,7 +408,7 @@ Cluster::update_locations() {
 
 	locs.clear();
 	static const unsigned int latindex = Record::get_index_by_name(cLatitude::static_get_class_name());
-	for ( RecordList::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p ) {
+	for ( RecordPList::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p ) {
 		const Attribute * pA = (*p)->get_attrib_pointer_by_index(latindex);
 		const cLatitude * pAttribLat = dynamic_cast< const cLatitude *> ( pA );
 		if ( pAttribLat == 0 ) {
@@ -426,7 +426,7 @@ void
 Cluster::add_uid2uinv( map < const Record *, const Record *> & uid2uinv ) const {
 
 	map < const Record *, const Record *>::iterator q;
-	for ( RecordList::const_iterator p = this->m_fellows.begin(); p != m_fellows.end(); ++p ) {
+	for ( RecordPList::const_iterator p = this->m_fellows.begin(); p != m_fellows.end(); ++p ) {
 		q = uid2uinv.find(*p);
 		if ( q != uid2uinv.end() )
 			throw cException_Other("Add uid: already exists.");

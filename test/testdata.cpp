@@ -80,10 +80,10 @@ Record * make_quuxalot_record() {
 }
 
 
-RecordList get_record_list() {
+RecordPList get_record_list() {
   Record * r1 = make_foobar_record();
   Record * r2 = make_quuxalot_record();
-  RecordList rl;
+  RecordPList rl;
   rl.push_back(r1);
   rl.push_back(r2);
   return rl;
@@ -93,7 +93,7 @@ RecordList get_record_list() {
 cBlocking_Operation_By_Coauthors get_blocker_coathor() {
 
   int num_coauthors_to_group = 4;
-  RecordList all_rec_pointers;
+  RecordPList all_rec_pointers;
   cBlocking_Operation_By_Coauthors blocker_coauthor(all_rec_pointers, num_coauthors_to_group);
   return blocker_coauthor;
 }

@@ -22,7 +22,7 @@ public:
     Attribute::register_class_names(get_column_names());
     Record * r = make_quuxalot_record();
     ClusterHead ch(r, 0.9953);
-    RecordList rl = get_record_list();
+    RecordPList rl = get_record_list();
     cBlocking_Operation_By_Coauthors  blocker_coauthor = get_blocker_coathor();
     Cluster::set_reference_patent_tree_pointer( blocker_coauthor.get_patent_tree());
     Cluster * c = new Cluster(ch, rl);

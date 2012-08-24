@@ -10,7 +10,7 @@ Record     * make_foobar_record(void);
 
 Record     * make_quuxalot_record(void);
 
-RecordList   get_record_list(void);
+RecordPList   get_record_list(void);
 
 cBlocking_Operation_By_Coauthors get_blocker_coathor(void);
 
