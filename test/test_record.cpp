@@ -35,7 +35,7 @@ public:
     temp_vec_attrib.push_back(country);
 
     Record tmprec(temp_vec_attrib);
-    std::cout << "Record..." << std::endl;
+    //std::cout << "Record..." << std::endl;
   }
 
 
@@ -60,7 +60,7 @@ public:
     temp_vec_attrib.push_back(country);
 
     Record tmprec(temp_vec_attrib);
-    std::cout << "Record..." << std::endl;
+    //std::cout << "Record..." << std::endl;
   }
 
 

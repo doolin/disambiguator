@@ -40,3 +40,6 @@ echo "strcmp95 test"
 echo "jwcmp test"
 `./jwcmp`
 
+echo "engine test"
+`./engine`
+
