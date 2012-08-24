@@ -2,9 +2,8 @@
 INCLUDES = -I../include -I/opt/local/include
 
 #CXXFLAGS = -Wall -Wextra -ansi -Wignored-qualifiers # -pedantic # -Wno-unused-parameter  -Wno-uninitialized # -Wno-ignored-qualifiers
-AM_CXXFLAGS = -Wall -Wextra -ansi  -Wformat-zero-length # -pedantic
+AM_CXXFLAGS = -O0 -g -Wall -Wextra -ansi  -Wformat-zero-length # -pedantic
 #CXXFLAGS = $(AM_CXXFLAGS)
-
 
 LDADD = ../src/libdisambiguation.a 
 AM_LDFLAGS = $(shell cppunit-config --libs)
@@ -12,7 +11,7 @@ AM_LDFLAGS = $(shell cppunit-config --libs)
 
 TESTS = distest idtest typedefs record blocking attribute stringmanipulator \
 	comparators comparesimilarities strcmp95 rarenames engineconfig           \
-	abbreviation misspell namecompare jwcmp similarity clusterhead cluster
+	abbreviation misspell namecompare jwcmp similarity clusterhead cluster engine
 
 bin_PROGRAMS = $(TESTS)
 
@@ -22,6 +21,7 @@ bin_PROGRAMS = $(TESTS)
 COMMON = testdata.cpp
 
 distest_SOURCES = test_initial.cpp
+engine_SOURCES = test_initial.cpp
 idtest_SOURCES = test_uniqueid.cpp
 typedefs_SOURCES = test_typedefs.cpp
 record_SOURCES = test_record.cpp

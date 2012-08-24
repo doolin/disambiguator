@@ -178,6 +178,31 @@ copyfile(const char * target, const char * source) {
 }
 
 
+// TODO: unit test this thing.
+std::vector<std::string>
+parse_column_names(std::string line) {
+
+  int pos = 0;
+  int prev_pos = 0;
+  const char * delim = ",";
+  const unsigned int delim_size = strlen(delim);
+  vector <string> total_col_names;
+
+  while (  pos != string::npos){
+      //std::cout << "pos " << pos << std::endl;
+      //std::cout << "string::npos " << std::string::npos << std::endl;
+      pos = line.find(delim, prev_pos);
+      string columnname;
+      if ( pos != string::npos )
+          columnname = line.substr( prev_pos, pos - prev_pos);
+      else
+          columnname = line.substr( prev_pos );
+      total_col_names.push_back(columnname);
+      prev_pos = pos + delim_size;
+      //std::cout << "columnname: " << columnname << std::endl;
+  }
+  return total_col_names;
+}
 
 
 /**
@@ -202,7 +227,7 @@ copyfile(const char * target, const char * source) {
 bool
 fetch_records_from_txt(list <Record> & source,
                        const char * txt_file,
-                       const vector<string> &requested_columns) {
+                       const vector<string> & requested_columns) {
 
     std::ifstream::sync_with_stdio(false);
     const char * delim = ",";    // this deliminator should never occur in the data.
@@ -225,6 +250,7 @@ fetch_records_from_txt(list <Record> & source,
     register size_t pos, prev_pos;
     pos = prev_pos = 0;
 
+#if 1
     while (  pos != string::npos){
         //std::cout << "pos " << pos << std::endl;
         //std::cout << "string::npos " << std::string::npos << std::endl;
@@ -238,6 +264,7 @@ fetch_records_from_txt(list <Record> & source,
         prev_pos = pos + delim_size;
         //std::cout << "columnname: " << columnname << std::endl;
     }
+#endif
 
     Attribute::register_class_names(requested_columns);
     const unsigned int num_cols = requested_columns.size();

@@ -126,4 +126,7 @@ void        build_patent_tree         (map < const Record *, RecordList, cSort_b
 
 string      check_file_existence      (const string & description);
 
+std::vector<std::string> parse_column_names(std::string line);
+
+
 #endif /* PATENT_ENGINE_H */
