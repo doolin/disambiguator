@@ -157,6 +157,21 @@ write_tset02(const char * current_file, list<RecordPairs> pair_list) {
 }
 
 
+void
+create_record_plist(const list<Record> & rl,  RecordPList & rpl) {
+
+    // Is this is the first and/or only place a RecordPList is
+    // created? If not, we're almost surely leaking memory...
+    // RecordList should be its own class, which can be queried
+    // for a list of pointers to records.
+    list<Record>::const_iterator p = rl.begin();
+    for (; p != rl.end(); ++p) {
+        rpl.push_back(&(*p));
+    }
+}
+
+
+
 // TODO: Move to training.cpp
 bool
 make_stable_training_sets_by_personal(const list <Record> & all_records,
@@ -179,6 +194,7 @@ make_stable_training_sets_by_personal(const list <Record> & all_records,
     //list < const Record*> record_pointers;
     RecordPList record_pointers;
 
+#if 1
     // Is this is the first and/or only place a RecordPList is
     // created? If not, we're almost surely leaking memory...
     // RecordList should be its own class, which can be queried
@@ -187,6 +203,9 @@ make_stable_training_sets_by_personal(const list <Record> & all_records,
     for (; p != all_records.end(); ++p) {
         record_pointers.push_back(&(*p));
     }
+#else
+    create_record_plist(all_records, record_pointers);
+#endif
 
     // rare_pointer_vec is output...?
     find_rare_names_v2(rare_pointer_vec, record_pointers);
@@ -197,51 +216,17 @@ make_stable_training_sets_by_personal(const list <Record> & all_records,
     list<RecordPairs> pair_list;
     pair_list.clear();
     // Where is const_rare_pointer_vec declared and initialized?
-    // TODO: Unit test this
-    // pair_list is probably output
+    // TODO: Unit test this, pair_list is probably output
     create_xset03(pair_list, record_pointers, const_rare_pointer_vec, limit);
-
     current_file = training_filenames.at(0).c_str();
-#if 0
-    std::ofstream outfile;
-    outfile.open(current_file);
-
-    if ( ! outfile.good() ) {
-        throw cException_File_Not_Found(current_file);
-    }
-
-
-    std::cout << "Creating " << current_file << " ..."
-              << __FILE__ << ":" << STRINGIZE(__LINE__) << std::endl;
-
-    PrintPair do_print(outfile, cUnique_Record_ID::static_get_class_name());
-    std::for_each(pair_list.begin(), pair_list.end(), do_print);
-    outfile.close();
-    std::cout << "Done" << std::endl;
-#else 
     write_xset03(current_file, pair_list);
-#endif
 
     pair_list.clear();
     // TODO: Create a unit test for this
     create_tset02(pair_list, record_pointers, rare_column_names, const_rare_pointer_vec, limit);
-
     current_file = training_filenames.at(1).c_str();
-#if 0
-    outfile.open(current_file);
-    if ( ! outfile.good() ) {
-        throw cException_File_Not_Found(current_file);
-    }
-
-    std::cout << "Creating " << current_file << " ..."
-              << __FILE__ << ":" << STRINGIZE(__LINE__) << std::endl;
-
-    std::for_each(pair_list.begin(), pair_list.end(), do_print);
-    outfile.close();
-    std::cout << "Done" << std::endl;
-#else
     write_tset02(current_file, pair_list);
-#endif
+
     return true;
 }
 
