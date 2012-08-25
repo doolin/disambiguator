@@ -42,12 +42,17 @@ make_changable_training_sets_by_patent(const list <const Record*> & record_point
     //xset01
     const string xset01_equal_name_array[] = {cApplyYear::static_get_class_name() };
     const string xset01_nonequal_name_array[] = { cAsgNum::static_get_class_name(), cCity::static_get_class_name() };
-    const vector <string> xset01_equal_name_vec (xset01_equal_name_array, xset01_equal_name_array + sizeof(xset01_equal_name_array)/sizeof(string));
-    const vector <string> xset01_nonequal_name_vec (xset01_nonequal_name_array, xset01_nonequal_name_array + sizeof(xset01_nonequal_name_array)/sizeof(string));
+
+    const vector <string> xset01_equal_name_vec (xset01_equal_name_array,
+        xset01_equal_name_array + sizeof(xset01_equal_name_array)/sizeof(string));
+
+    const vector <string> xset01_nonequal_name_vec (xset01_nonequal_name_array,
+        xset01_nonequal_name_array + sizeof(xset01_nonequal_name_array)/sizeof(string));
 
 
+    bft.create_set(&cBlocking_For_Training::create_xset01_on_block, xset01_equal_name_vec,
+        x_extract_equal, xset01_nonequal_name_vec, x_extract_nonequal);
 
-    bft.create_set(&cBlocking_For_Training::create_xset01_on_block, xset01_equal_name_vec, x_extract_equal, xset01_nonequal_name_vec, x_extract_nonequal);
     const char * current_file = training_filenames.at(0).c_str();
     outfile.open(current_file);
     if ( ! outfile.good() )
@@ -61,10 +66,15 @@ make_changable_training_sets_by_patent(const list <const Record*> & record_point
     bft.reset(blocking_column_names.size());
     const string tset05_equal_name_array[] = {};
     const string tset05_nonequal_name_array[] = {};
-    const vector <string> tset05_equal_name_vec (tset05_equal_name_array, tset05_equal_name_array + sizeof(tset05_equal_name_array)/sizeof(string));
-    const vector <string> tset05_nonequal_name_vec (tset05_nonequal_name_array, tset05_nonequal_name_array + sizeof(tset05_nonequal_name_array)/sizeof(string));
 
-    bft.create_set(&cBlocking_For_Training::create_tset05_on_block, tset05_equal_name_vec, t_extract_equal, tset05_nonequal_name_vec, t_extract_nonequal );
+    const vector <string> tset05_equal_name_vec (tset05_equal_name_array,
+        tset05_equal_name_array + sizeof(tset05_equal_name_array)/sizeof(string));
+
+    const vector <string> tset05_nonequal_name_vec (tset05_nonequal_name_array,
+        tset05_nonequal_name_array + sizeof(tset05_nonequal_name_array)/sizeof(string));
+
+    bft.create_set(&cBlocking_For_Training::create_tset05_on_block, tset05_equal_name_vec,
+        t_extract_equal, tset05_nonequal_name_vec, t_extract_nonequal );
 
     current_file = training_filenames.at(1).c_str();
     outfile.open(current_file);
@@ -172,13 +182,18 @@ ones_temporal_unique_coauthors (const Cluster & record_cluster,
         //end of year range check
     }
 
-    for ( RecordPList::const_iterator pqsa = qualified_same_author.begin(); pqsa != qualified_same_author.end(); ++pqsa) {
+    RecordPList::const_iterator pqsa = qualified_same_author.begin();
+    for (; pqsa != qualified_same_author.end(); ++pqsa) {
         const map < const Record *, RecordPList, cSort_by_attrib >::const_iterator tempi = complete_patent_tree.find(*pqsa);
         if ( tempi == complete_patent_tree.end() )
             throw cException_Other("patent not in patent tree.");
+
+
         const RecordPList & coauthor_per_patent = tempi->second;
-        for ( RecordPList::const_iterator pp = coauthor_per_patent.begin(); pp != coauthor_per_patent.end(); ++pp ) {
-            if ( *pp == *pqsa)
+
+        RecordPList::const_iterator pp = coauthor_per_patent.begin();
+        for (; pp != coauthor_per_patent.end(); ++pp ) {
+            if (*pp == *pqsa)
                 continue;
             map < const Record *, const Record *>::const_iterator tempi2 = complete_uid2uinv.find(*pp);
             if ( tempi2 == complete_uid2uinv.end() )
@@ -193,7 +208,6 @@ ones_temporal_unique_coauthors (const Cluster & record_cluster,
         ret1 = qualified_same_author.front();
 
     return std::pair < const Record * ,set < const Record * > >(ret1, ret2);
-
 }
 
 
@@ -225,11 +239,13 @@ one_step_postprocess(const list < Record > & all_records,
     const char * suffix = ".pplog";
     const string logfile = string(outputfile) + suffix ;
     //post_polish( cs, blocker_coauthor.get_uid2uinv_tree(), blocker_coauthor.get_patent_tree(), logfile);
-    post_polish( cs, uid2uinv, patent_tree, logfile);
+    post_polish(cs, uid2uinv, patent_tree, logfile);
     cs.output_results(outputfile);
 }
 
 
+// TODO: Move this function to disambiguate.cpp, that's the only
+// place it's used
 string
 remove_headtail_space(const string & s) {
 
@@ -252,7 +268,7 @@ remove_headtail_space(const string & s) {
 }
 
 
-void 
+void
 out_of_cluster_density(const ClusterSet & upper,
                        const ClusterSet & lower,
                        const cRatios & ratio, std::ofstream & ofile ) {
@@ -263,55 +279,69 @@ out_of_cluster_density(const ClusterSet & upper,
     map < const Record *, const Record *> upper_uid2uinv;
     const list < Cluster > & full_list = upper.get_set();
 
-    for ( list < Cluster >::const_iterator t = full_list.begin(); t != full_list.end(); ++t )
+    list < Cluster >::const_iterator t = full_list.begin();
+    for (; t != full_list.end(); ++t) {
         t->add_uid2uinv(upper_uid2uinv);
+    }
 
     unsigned int cluster_count = 0;
-    for ( list < Cluster >::const_iterator plower = lower.get_set().begin(); plower != lower.get_set().end(); ++plower ) {
-        ++ cluster_count;
-        if ( cluster_count % base == 0 )
-            std::cout << cluster_count << " clusters have been process for out-of-cluster density." << std::endl;
+
+    list < Cluster >::const_iterator plower = lower.get_set().begin();
+    for (; plower != lower.get_set().end(); ++plower ) {
+
+        ++cluster_count;
+        if (cluster_count % base == 0) {
+            std::cout << cluster_count
+                      << " clusters have been process for out-of-cluster density." << std::endl;
+        }
 
         const RecordPList & members = plower->get_fellows();
         const unsigned int member_size = members.size();
         //get prior values first
         map < const Record *, int > small_cluster_counts;
-        for ( RecordPList::const_iterator pm = members.begin(); pm != members.end(); ++pm) {
+
+        RecordPList::const_iterator pm = members.begin();
+        for (; pm != members.end(); ++pm) {
             map < const Record *, const Record *> ::const_iterator puinv = upper_uid2uinv.find( *pm);
-            if ( puinv == upper_uid2uinv.end() )
+            if (puinv == upper_uid2uinv.end()) {
                 throw cException_Other("Outer of cluster density: cannot find unique record id.");
+            }
             const Record * const inv = puinv->second;
             ++small_cluster_counts[inv];
         }
-        if ( small_cluster_counts.empty() )
+
+        if (small_cluster_counts.empty()) {
             throw cException_Other("Empty Cluster.");
-        if ( 1 == small_cluster_counts.size() )
-            continue;
+        }
+
+        if (1 == small_cluster_counts.size()) continue;
 
 
         double prior = 0;
-        for (map < const Record *, int >::const_iterator q = small_cluster_counts.begin(); q != small_cluster_counts.end(); ++q ) {
+
+        map < const Record *, int >::const_iterator q = small_cluster_counts.begin();
+        for (; q != small_cluster_counts.end(); ++q ) {
             prior += 1.0 * (q->second) * ( q->second - 1)/ member_size / ( member_size - 1);
         }
-        if ( prior >= 1 )
-            throw cException_Other("Prior > 1");
-
-        if ( prior > 0.1 )
-            prior = 0.1;
-        if ( prior == 0 )
-            prior = 0.1;
+        if (prior >= 1) throw cException_Other("Prior > 1");
+        if (prior > 0.1) prior = 0.1;
+        if (prior == 0) prior = 0.1;
 
         //disambiguate then.
         unsigned int cnt = 0;
         double sum_prob = 0;
-        for ( RecordPList::const_iterator pmouter = members.begin(); pmouter != members.end(); ++pmouter) {
+
+        // TODO: Factor this out, unit test it.
+        RecordPList::const_iterator pmouter = members.begin();
+        for (; pmouter != members.end(); ++pmouter) {
             const Record * const outerinv = upper_uid2uinv.find( *pmouter)->second;
+
             RecordPList::const_iterator pminner = pmouter;
-            for ( ++ pminner; pminner != members.end(); ++pminner) {
+            for (++pminner; pminner != members.end(); ++pminner) {
                 const Record * const innerinv = upper_uid2uinv.find( *pminner)->second;
-                if ( outerinv == innerinv )
+                if (outerinv == innerinv) {
                     continue;
-                else {
+                } else {
                     //disambiguate between records
                     ++cnt;
                     vector < unsigned int > sp = (*pmouter)->record_compare(**pminner);
@@ -322,13 +352,15 @@ out_of_cluster_density(const ClusterSet & upper,
             }
         }
 
-        if ( cnt == 0 ) {
+        if (cnt == 0) {
             throw cException_Other("Cluster has only one sub-cluster.");
         } else {
             const string & key = * plower->get_cluster_head().m_delegate->get_attrib_pointer_by_index(uid_index)->get_data().at(0);
             const double value = sum_prob / cnt;
             ofile << key <<" : " << value << ": ";
-            for ( map < const Record *, int >::const_iterator pc = small_cluster_counts.begin(); pc != small_cluster_counts.end(); ++pc ) {
+
+            map < const Record *, int >::const_iterator pc = small_cluster_counts.begin();
+            for (; pc != small_cluster_counts.end(); ++pc ) {
                 const string & ms = * pc->first->get_attrib_pointer_by_index(uid_index)->get_data().at(0);
                 ofile << ms << " , ";
             }
