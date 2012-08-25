@@ -31,7 +31,14 @@ function test_eighteen() {
   output=$dir"/final.txt"
   testfile="./data/final_eighteen.txt"
   results=`diff ${output} ${testfile}`
-  echo "diff resulted in $results"
+  #echo "diff resulted in $results"
+  echo ${#results}
+  if [[ $results ]] ; then
+    echo "diff resulted in $results"
+    echo $redf"failed"
+  else
+    echo $greenf"passed"
+  fi
 }
 
 function test_disambiguation() {
@@ -47,7 +54,13 @@ function test_disambiguation() {
   output=$dir"/final.txt"
   testfile="./data/final_berkeley.txt"
   results=`diff ${output} ${testfile}`
-  echo "diff resulted in $results"
+  echo ${#results}
+  if [ ${#results} > 0 ] ; then
+    echo "diff resulted in $results"
+    echo $redf"failed"
+  else
+    echo $greenf"passed"
+  fi
 }
 
 
