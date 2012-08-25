@@ -1,3 +1,4 @@
+/** @file */
 
 /**
  * Training:
@@ -29,11 +30,11 @@
  *
  *
  * Due to the limit of record pairs in each training set
- * ( > 1 million and <10 million in our case ), in order
+ * (> 1 million and <10 million in our case), in order
  * to obtain an unbiased training set, two rounds of pair
  * selections are involved. First, a certain quota, proportional
- * to the size of each block ( actually the square of the
- * size of the block ) is decided when pairs are chosen from
+ * to the size of each block (actually the square of the
+ * size of the block) is decided when pairs are chosen from
  * the block. Then pairs are chosen from blocks until their
  * quota are used up. This process starts from the first block
  * and ends till the last * block. Second, after that, if
@@ -265,13 +266,16 @@ unsigned int create_tset02      (list <RecordPairs> &results,
                                  const vector <string> & column_names,
                                  const vector < const RecordPList * > & vec_prare_names,
                                  const unsigned int limit );
-
+/**
+ * @todo Write some documentation
+ */
 unsigned int create_xset03      (list <RecordPairs> &results,
                                  const list <const Record*> & reclist,
                                  const vector < const RecordPList * > & vec_prare_names,
                                  const unsigned int limit );
 
-/** This function creates one of the training sets.
+/**
+ * This function creates one of the training sets.
  * @todo Write the documentation.
  */
 unsigned int create_xset01      (list <RecordPairs> &results,
