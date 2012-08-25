@@ -1,5 +1,10 @@
 #!/bin/sh
 
+
+source ./bashcolors.sh
+initializeANSI
+
+
 echo "Attribute test"
 `./attribute`
 
@@ -38,10 +43,10 @@ echo "strcmp95 test"
 `./strcmp95`
 
 echo "jwcmp test"
-`./jwcmp`
+./jwcmp
 
 echo "engine test"
-`./engine`
+./engine
 
 echo "integration test"
 source ./integration.sh

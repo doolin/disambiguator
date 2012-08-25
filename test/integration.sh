@@ -1,5 +1,8 @@
 #!/bin/bash
 
+source ./bashcolors.sh
+initializeANSI
+
 function test_jones() {
 
   current_dir=`pwd`
@@ -31,13 +34,9 @@ function test_eighteen() {
   echo "eighteen diff resulted in $results"
 }
 
-source ./bashcolors.sh
-initializeANSI
-
 
 testval=`test_jones`
-echo $cyanf"Jones result:  $testval"
-
+echo $cyanf"Jones:  $testval"
 testval=`test_eighteen`
 echo $yellowyf"Eighteen: $testval"
 
