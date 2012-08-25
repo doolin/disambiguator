@@ -334,7 +334,7 @@ fetch_records_from_txt(list <Record> & source,
 
     const unsigned int num_cols = requested_columns.size();
 
-#if 1
+#if 0
     for ( unsigned int i = 0; i < num_cols; ++i ) {
         unsigned int j;
         for (  j = 0; j < total_col_names.size(); ++j ) {
@@ -350,7 +350,7 @@ fetch_records_from_txt(list <Record> & source,
         }
     }
 #endif
-    //requested_column_indice = create_column_indices(requested_columns, total_col_names);
+    requested_column_indice = create_column_indices(requested_columns, total_col_names);
 
     Record::column_names = requested_columns;
 
