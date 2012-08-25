@@ -242,4 +242,6 @@
 #define  COLOR254 "\33[38;5;254m"
 #define  COLOR255 "\33[38;5;255m"
 
+#define  COLOR_RESET "\33[0m"
+
 #endif // INVENTIUM_COLORTEST_H

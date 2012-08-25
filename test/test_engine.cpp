@@ -1,9 +1,11 @@
+#include <cstdio>
 
 #include <cppunit/TestCase.h>
 
 #include <engine.h>
 
 #include "testdata.h"
+#include "colortest.h"
 
 class EngineTest : public CppUnit::TestCase {
 
@@ -14,7 +16,9 @@ private:
   std::vector<unsigned int> indices;
 
 public:
-  EngineTest(std::string name) : CppUnit::TestCase(name) {}
+  EngineTest(std::string name) : CppUnit::TestCase(name) {
+    fprintf(stdout, "%s\n", name.c_str());
+  }
 
   void set_up() {
     tcn = parse_column_names(LINE);
@@ -56,7 +60,7 @@ const std::string EngineTest::LINE  = "Firstname,Middlename,Lastname,Latitude,As
 void
 test_engine() {
 
-  EngineTest * et = new EngineTest(std::string("initial test"));
+  EngineTest * et = new EngineTest(std::string(COLOR216"initial test"COLOR_RESET));
   et->runTest();
   delete et;
 }
