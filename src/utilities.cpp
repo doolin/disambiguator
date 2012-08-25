@@ -157,19 +157,18 @@ write_tset02(const char * current_file, list<RecordPairs> pair_list) {
 }
 
 
+// Is this is the first and/or only place a RecordPList is
+// created? If not, we're almost surely leaking memory...
+// RecordList should be its own class, which can be queried
+// for a list of pointers to records.
 void
 create_record_plist(const list<Record> & rl,  RecordPList & rpl) {
 
-    // Is this is the first and/or only place a RecordPList is
-    // created? If not, we're almost surely leaking memory...
-    // RecordList should be its own class, which can be queried
-    // for a list of pointers to records.
     list<Record>::const_iterator p = rl.begin();
     for (; p != rl.end(); ++p) {
         rpl.push_back(&(*p));
     }
 }
-
 
 
 // TODO: Move to training.cpp
@@ -194,7 +193,7 @@ make_stable_training_sets_by_personal(const list <Record> & all_records,
     //list < const Record*> record_pointers;
     RecordPList record_pointers;
 
-#if 1
+#if 0
     // Is this is the first and/or only place a RecordPList is
     // created? If not, we're almost surely leaking memory...
     // RecordList should be its own class, which can be queried
