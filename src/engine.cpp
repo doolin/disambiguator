@@ -316,6 +316,7 @@ fetch_records_from_txt(list <Record> & source,
     }
 
     string line;
+
     //getline(instream, line);
     //if ( line != raw_txt_authenticator )
     //    throw cException_File_Not_Found("Specified file is not a valid one.");
@@ -325,7 +326,7 @@ fetch_records_from_txt(list <Record> & source,
     vector <string> total_col_names;
     getline(instream, line);
     register size_t pos, prev_pos;
-    pos = prev_pos = 0;
+    //pos = prev_pos = 0;
 
     total_col_names = parse_column_names(line);
 
@@ -339,23 +340,29 @@ fetch_records_from_txt(list <Record> & source,
     Attribute ** pointer_array; 
     pointer_array = instantiate_attributes(Record::column_names, num_cols);
 
-    pos = prev_pos = 0;
+    //pos = prev_pos = 0;
 
+    // TODO: See if this can be moved to the instantiate_attributes function.
+    // Or to it's own function which is called from instantiate attributes
     // always do this for all the attribute classes
     for ( unsigned int i = 0; i < num_cols; ++i ) {
         pointer_array[i]->check_interactive_consistency(Record::column_names);
     }
 
+    // TODO: Move this to its own function.
     std::cout << "Involved attributes are: ";
     for ( unsigned int i = 0; i < num_cols; ++i )
         std::cout << pointer_array[i]->get_class_name() << ", ";
     std::cout << std::endl;
 
+    // TODO: Move this to its own function.
     std::cout << "Polymorphic data types are: ";
     for ( unsigned int i = 0; i < num_cols; ++i )
         std::cout << typeid(*pointer_array[i]).name()<< ", ";
     std::cout << std::endl;
 
+    // TODO: Move to its own function, get it covered
+    // with a unit test, call it from somewhere else.
     std::cout << "Polymorphic data types are: ";
     vector <string> string_cache(num_cols);
     const unsigned int string_cache_size = 2048;
@@ -363,11 +370,10 @@ fetch_records_from_txt(list <Record> & source,
         string_cache.at(i).reserve(string_cache_size);
     }
 
-    std::cout << "Polymorphic data types are: ";
-    unsigned long size = 0;
+    //std::cout << "Polymorphic data types are: ";
     std::cout << "Reading " << txt_file << " ......"<< std::endl;
 
-    std::cout << "Polymorphic data types are: ";
+    unsigned long size = 0;
     const unsigned int base  =  100000;
     const Attribute * pAttrib;
     vector <const Attribute *> temp_vec_attrib;
@@ -377,7 +383,8 @@ fetch_records_from_txt(list <Record> & source,
     // into a string (line) until a delimitation character is found.
     // In this case, since a delimiter isn't given, it's assumed to be \n.
     std::cout << "Reading input data file..." << std::endl;
-    while (getline(instream, line) ) {
+    // TODO: Move all this to its own function
+    while (getline(instream, line)) {
 
         //std::cout << "line: " << line << std::endl;
 
@@ -385,7 +392,11 @@ fetch_records_from_txt(list <Record> & source,
         temp_vec_attrib.clear();
 
         // num_cols is obtained around Line 736 above
-        for ( unsigned int i = 0; i < num_cols ; ++i ) {
+        // TODO: Move all this to its own function as well,
+        // such that after some setup, it can be fed a line of
+        // data and get itself parsed correctly. The tricky
+        // part here is getting the right object copied back.
+        for (unsigned int i = 0; i < num_cols ; ++i) {
 
             // What does column_location point at?
             unsigned int column_location = 0;
@@ -416,6 +427,9 @@ fetch_records_from_txt(list <Record> & source,
             }
 
             // Link to the reset_data method
+            // Why is this here? What purpose is it serving? This smells.
+            // TODO: Figure out why this is here and see about putting
+            // it somewhere else.
             pointer_array[i]->reset_data(string_cache[i].c_str());
             // Link to the clone method
             pAttrib = pointer_array[i]->clone();    //HERE CREATED NEW CLASS INSTANCES.
@@ -426,25 +440,29 @@ fetch_records_from_txt(list <Record> & source,
         source.push_back( temprec );
 
         ++size;
-        if ( size % base == 0 )
+        if (size % base == 0) {
             std::cout << size << " records obtained." << std::endl;
+        }
     }
+
     std::cout << std::endl;
     std::cout << size << " records have been fetched from "<< txt_file << std::endl;
     Record::sample_record_pointer = & source.front();
 
-    for ( unsigned int i = 0; i < num_cols; ++i )
+    // TODO: Create a little function for this which can be unit tested
+    for (unsigned int i = 0; i < num_cols; ++i) {
         delete pointer_array[i];
+    }
     delete [] pointer_array;
 
-    for ( list< Record>::iterator ci = source.begin(); ci != source.end(); ++ci )
+    for ( list< Record>::iterator ci = source.begin(); ci != source.end(); ++ci ) {
         ci->reconfigure_record_for_interactives();
+    }
 
+    // TODO: Remove this code or put it somewhere else.
     std::cout << "Sample Record: " << __FILE__ << ":" << __LINE__ << "---------" << std::endl;
     Record::sample_record_pointer->print();
     std::cout << "-----------------" << std::endl;
-
-    //exit(0);
 
     return true;
 }
