@@ -116,6 +116,47 @@ make_changable_training_sets_by_patent(const list <const Record*> & record_point
 }
 
 
+// TODO: Call this file from `create_xset03`
+void
+write_xset03(const char * current_file, list<RecordPairs> pair_list) {
+
+    std::ofstream outfile;
+    outfile.open(current_file);
+
+    if (!outfile.good() ) {
+        exit_with_error("bad file stream", __FILE__, STRINGIZE(__LINE__));
+    }
+
+    std::cout << "Creating " << current_file << " ..."
+              << __FILE__ << ":" << STRINGIZE(__LINE__) << std::endl;
+
+    PrintPair do_print(outfile, cUnique_Record_ID::static_get_class_name());
+    std::for_each(pair_list.begin(), pair_list.end(), do_print);
+    outfile.close();
+    std::cout << "Done" << std::endl;
+}
+
+
+
+void
+write_tset02(const char * current_file, list<RecordPairs> pair_list) {
+
+    std::ofstream outfile;
+    outfile.open(current_file);
+    if (!outfile.good()) {
+        exit_with_error("bad file stream", __FILE__, STRINGIZE(__LINE__));
+    }
+
+    std::cout << "Creating " << current_file << " ..."
+              << __FILE__ << ":" << STRINGIZE(__LINE__) << std::endl;
+
+    PrintPair do_print(outfile, cUnique_Record_ID::static_get_class_name());
+    std::for_each(pair_list.begin(), pair_list.end(), do_print);
+    outfile.close();
+    std::cout << "Done" << std::endl;
+}
+
+
 // TODO: Move to training.cpp
 bool
 make_stable_training_sets_by_personal(const list <Record> & all_records,
@@ -128,21 +169,20 @@ make_stable_training_sets_by_personal(const list <Record> & all_records,
     RecordPList rare_firstname_set;
     RecordPList rare_lastname_set;
 
-    std::ofstream outfile;
-
-
     const char * current_file;
     vector<RecordPList *> rare_pointer_vec;
     rare_pointer_vec.push_back(&rare_firstname_set);
     rare_pointer_vec.push_back(&rare_lastname_set);
     const vector< const RecordPList * > const_rare_pointer_vec(rare_pointer_vec.begin(), rare_pointer_vec.end());
 
-    // This should be a RecordPList, check typedef in
-    // engine.h:25
-    list < const Record*> record_pointers;
+    // This should be a RecordPList, check typedef in engine.h:25
+    //list < const Record*> record_pointers;
+    RecordPList record_pointers;
 
     // Is this is the first and/or only place a RecordPList is
     // created? If not, we're almost surely leaking memory...
+    // RecordList should be its own class, which can be queried
+    // for a list of pointers to records.
     list<Record>::const_iterator p = all_records.begin();
     for (; p != all_records.end(); ++p) {
         record_pointers.push_back(&(*p));
@@ -150,17 +190,20 @@ make_stable_training_sets_by_personal(const list <Record> & all_records,
 
     // rare_pointer_vec is output...?
     find_rare_names_v2(rare_pointer_vec, record_pointers);
-    list<RecordPairs> pair_list;
     vector <string> rare_column_names;
     rare_column_names.push_back(string(cFirstname::static_get_class_name()));
     rare_column_names.push_back(string(cLastname::static_get_class_name()));
 
     // TODO: Refactor this into its own function
-    //xset03
+    list<RecordPairs> pair_list;
     pair_list.clear();
     // Where is const_rare_pointer_vec declared and initialized?
     // Create xset03 // Unit test this
+    // pair_list is probably output
     create_xset03(pair_list, record_pointers, const_rare_pointer_vec, limit);
+
+#if 0
+    std::ofstream outfile;
     current_file = training_filenames.at(0).c_str();
     outfile.open(current_file);
 
@@ -176,7 +219,9 @@ make_stable_training_sets_by_personal(const list <Record> & all_records,
     std::for_each(pair_list.begin(), pair_list.end(), do_print);
     outfile.close();
     std::cout << "Done" << std::endl;
-
+#else 
+    write_xset03(current_file, pair_list);
+#endif
 
     // TODO: Refactor this into its own function
     //tset02
@@ -185,6 +230,7 @@ make_stable_training_sets_by_personal(const list <Record> & all_records,
     create_tset02(pair_list, record_pointers, rare_column_names, const_rare_pointer_vec, limit);
 
     current_file = training_filenames.at(1).c_str();
+#if 0
     outfile.open(current_file);
     if ( ! outfile.good() ) {
         throw cException_File_Not_Found(current_file);
@@ -196,7 +242,9 @@ make_stable_training_sets_by_personal(const list <Record> & all_records,
     std::for_each(pair_list.begin(), pair_list.end(), do_print);
     outfile.close();
     std::cout << "Done" << std::endl;
-
+#else
+    write_tset02(current_file, pair_list);
+#endif
     return true;
 }
 

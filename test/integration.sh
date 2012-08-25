@@ -10,7 +10,7 @@ function test_disambiguation() {
   dir=$1 
   cd $dir
 
-  disambiguate engine.txt blocking6.txt > runtime.log
+  ~/src/disambiguator/src/disambiguate engine.txt blocking6.txt > runtime.log
 
   cd $current_dir
   output=$dir"/final.txt"
