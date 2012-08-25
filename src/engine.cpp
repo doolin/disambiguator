@@ -334,22 +334,6 @@ fetch_records_from_txt(list <Record> & source,
 
     const unsigned int num_cols = requested_columns.size();
 
-#if 0
-    for ( unsigned int i = 0; i < num_cols; ++i ) {
-        unsigned int j;
-        for (  j = 0; j < total_col_names.size(); ++j ) {
-            if ( requested_columns.at(i) == total_col_names.at(j) ) {
-                requested_column_indice.push_back(j);
-                break;
-            }
-        }
-        if ( j == total_col_names.size() ) {
-            std::cerr << "Critical Error in reading " << txt_file << std::endl
-            <<"Column names not available in the first line. Please Check the correctness." << std::endl;
-            throw cException_ColumnName_Not_Found(requested_columns.at(i).c_str());
-        }
-    }
-#endif
     requested_column_indice = create_column_indices(requested_columns, total_col_names);
 
     Record::column_names = requested_columns;
@@ -400,7 +384,7 @@ fetch_records_from_txt(list <Record> & source,
         }
     }
 #endif
-    // pointer_array = instantiate_attributes(Record::column_names, num_cols);
+    //pointer_array = instantiate_attributes(Record::column_names, num_cols);
 
 
     // always do this for all the attribute classes
