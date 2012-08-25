@@ -15,36 +15,40 @@ exit_with_error(const char * msg, const char * file, const char * line) {
 
 bool
 make_changable_training_sets_by_patent(const list <const Record*> & record_pointers,
-                                       const vector<string >& blocking_column_names,
+                                       const vector<string > & blocking_column_names,
                                        const vector < const StringManipulator *> & pstring_oper,
                                        const unsigned int limit,
                                        const vector <string> & training_filenames) {
 
-    if ( training_filenames.size() != 2 )
+    if (training_filenames.size() != 2) {
         throw cException_Other("Training: there should be 2 changeable training sets.");
-
+    }
 
     const bool is_coauthor_active = cCoauthor::static_is_comparator_activated();
     const bool is_class_active = cClass::static_is_comparator_activated();
 
-    if ( ! is_coauthor_active )
+    if (!is_coauthor_active) {
         cCoauthor::static_activate_comparator();
+    }
 
-    if ( ! is_class_active )
+    if (!is_class_active) {
         cClass::static_activate_comparator();
+    }
 
     const string uid_identifier = cUnique_Record_ID::static_get_class_name();
     cBlocking_For_Training bft (record_pointers, blocking_column_names, pstring_oper, uid_identifier, limit);
 
     StringRemainSame donotchange;
     vector <const StringManipulator*> t_extract_equal, t_extract_nonequal, x_extract_equal, x_extract_nonequal;
-    x_extract_equal.push_back(& donotchange);
-    x_extract_nonequal.push_back(& donotchange);
+    x_extract_equal.push_back(&donotchange);
+    x_extract_nonequal.push_back(&donotchange);
     x_extract_nonequal.push_back(&donotchange);
 
     std::ofstream outfile;
+
+    // TODO: Refactor into it's own function
     //xset01
-    const string xset01_equal_name_array[] = {cApplyYear::static_get_class_name() };
+    const string xset01_equal_name_array[] = { cApplyYear::static_get_class_name() };
     const string xset01_nonequal_name_array[] = { cAsgNum::static_get_class_name(), cCity::static_get_class_name() };
 
     const vector <string> xset01_equal_name_vec (xset01_equal_name_array,
@@ -54,18 +58,25 @@ make_changable_training_sets_by_patent(const list <const Record*> & record_point
         xset01_nonequal_name_array + sizeof(xset01_nonequal_name_array)/sizeof(string));
 
 
-    bft.create_set(&cBlocking_For_Training::create_xset01_on_block, xset01_equal_name_vec,
-        x_extract_equal, xset01_nonequal_name_vec, x_extract_nonequal);
+    bft.create_set(&cBlocking_For_Training::create_xset01_on_block,
+        xset01_equal_name_vec,
+        x_extract_equal,
+        xset01_nonequal_name_vec,
+        x_extract_nonequal);
 
     const char * current_file = training_filenames.at(0).c_str();
     outfile.open(current_file);
-    if ( ! outfile.good() )
+    if (!outfile.good()) {
         throw cException_File_Not_Found(current_file);
-    std::cout << "Creating " << current_file << " ..." << std::endl;
+    }
+
+    std::cout << "Creating " << current_file << " ..."
+              << __FILE__ << ":" << STRINGIZE(__LINE__) << std::endl;
     bft.print(outfile, uid_identifier);
     outfile.close();
     std::cout << "Done" << std::endl;
 
+    // TODO: Refactor into it's own function
     // tset05
     bft.reset(blocking_column_names.size());
     const string tset05_equal_name_array[] = {};
@@ -82,18 +93,24 @@ make_changable_training_sets_by_patent(const list <const Record*> & record_point
 
     current_file = training_filenames.at(1).c_str();
     outfile.open(current_file);
-    if ( ! outfile.good() )
+    if (!outfile.good()) {
         throw cException_File_Not_Found(current_file);
-    std::cout << "Creating " << current_file << " ..." << std::endl;
+    }
+
+    //std::cout << "Creating " << current_file << " ..." << std::endl;
+    std::cout << "Creating " << current_file << " ..."
+              << __FILE__ << ":" << STRINGIZE(__LINE__) << std::endl;
     bft.print(outfile, uid_identifier);
     outfile.close();
     std::cout << "Done" << std::endl;
 
-    if ( ! is_coauthor_active )
+    if (!is_coauthor_active) {
         cCoauthor::static_deactivate_comparator();
+    }
 
-    if ( ! is_class_active )
+    if (!is_class_active) {
         cClass::static_deactivate_comparator();
+    }
 
     return true;
 }
@@ -112,16 +129,24 @@ make_stable_training_sets_by_personal(const list <Record> & all_records,
     RecordPList rare_lastname_set;
 
     std::ofstream outfile;
-    PrintPair do_print(outfile, cUnique_Record_ID::static_get_class_name());
+
+
     const char * current_file;
     vector<RecordPList *> rare_pointer_vec;
     rare_pointer_vec.push_back(&rare_firstname_set);
     rare_pointer_vec.push_back(&rare_lastname_set);
     const vector< const RecordPList * > const_rare_pointer_vec(rare_pointer_vec.begin(), rare_pointer_vec.end());
 
+    // This should be a RecordPList, check typedef in
+    // engine.h:25
     list < const Record*> record_pointers;
-    for ( list<Record>::const_iterator p = all_records.begin(); p != all_records.end(); ++p )
+
+    // Is this is the first and/or only place a RecordPList is
+    // created? If not, we're almost surely leaking memory...
+    list<Record>::const_iterator p = all_records.begin();
+    for (; p != all_records.end(); ++p) {
         record_pointers.push_back(&(*p));
+    }
 
     find_rare_names_v2(rare_pointer_vec, record_pointers);
     list<RecordPairs> pair_list;
@@ -129,28 +154,43 @@ make_stable_training_sets_by_personal(const list <Record> & all_records,
     rare_column_names.push_back(string(cFirstname::static_get_class_name()));
     rare_column_names.push_back(string(cLastname::static_get_class_name()));
 
+    // TODO: Refactor this into its own function
     //xset03
     pair_list.clear();
+    // Create xset03 // Unit test this
     create_xset03(pair_list, record_pointers, const_rare_pointer_vec, limit);
     current_file = training_filenames.at(0).c_str();
     outfile.open(current_file);
-    if ( ! outfile.good() )
+
+    if ( ! outfile.good() ) {
         throw cException_File_Not_Found(current_file);
-    std::cout << "Creating " << current_file << " ..." << std::endl;
+    }
+
+
+    std::cout << "Creating " << current_file << " ..."
+              << __FILE__ << ":" << STRINGIZE(__LINE__) << std::endl;
+
+    PrintPair do_print(outfile, cUnique_Record_ID::static_get_class_name());
     std::for_each(pair_list.begin(), pair_list.end(), do_print);
     outfile.close();
     std::cout << "Done" << std::endl;
 
 
+    // TODO: Refactor this into its own function
     //tset02
     pair_list.clear();
+    // TODO: Create a unit test for this
     create_tset02(pair_list, record_pointers, rare_column_names, const_rare_pointer_vec, limit);
 
     current_file = training_filenames.at(1).c_str();
     outfile.open(current_file);
-    if ( ! outfile.good() )
+    if ( ! outfile.good() ) {
         throw cException_File_Not_Found(current_file);
-    std::cout << "Creating " << current_file << " ..." << std::endl;
+    }
+
+    std::cout << "Creating " << current_file << " ..."
+              << __FILE__ << ":" << STRINGIZE(__LINE__) << std::endl;
+
     std::for_each(pair_list.begin(), pair_list.end(), do_print);
     outfile.close();
     std::cout << "Done" << std::endl;

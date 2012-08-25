@@ -2,6 +2,7 @@
 #include <fstream>
 
 #include "training.h"
+#include "disambiguation.h"
 
 extern "C" {
   #include "strcmp95.h"
@@ -17,12 +18,13 @@ cBlocking::cBlocking (const list<const Record *> & psource,
     const string label_delim = cBlocking_Operation::delim;
     const unsigned int num_block_columns = blocking_column_names.size();
 
-    if (num_block_columns != pmanipulators.size())
+    if (num_block_columns != pmanipulators.size()) {
         throw cBlocking::cException_Blocking("Blocking Constructor Error.");
+    }
 
     cSort_by_attrib unique_comparator(unique_identifier);
     vector < unsigned int > blocking_indice;
-    for ( unsigned int i = 0; i < num_block_columns; ++i ) {
+    for (unsigned int i = 0; i < num_block_columns; ++i) {
         blocking_indice.push_back(Record::get_index_by_name(blocking_column_names.at(i)));
     }
 
@@ -141,8 +143,9 @@ void
 cBlocking_For_Training::print(std::ostream & os,
                               const string & unique_record_id_name) const {
 
-    if ( was_used == false )
+    if (was_used == false) {
         throw cException_Other("Training sets are not ready to be output yet.");
+    }
     PrintPair do_print(os, unique_record_id_name);
     std::for_each(chosen_pairs.begin(), chosen_pairs.end(), do_print);
 }
@@ -417,6 +420,9 @@ cBlocking_For_Training::create_set(pFunc mf,
     if ( nonequal_indice_names.size() != pmanipulators_nonequal.size() )
         throw cException_Other("Creating training error: # of nonequal_indice_names != # of nonequal_string manipulators.");
 
+    std::cout << "In cBlocking_For_Training::create_set..."
+              << __FILE__ << ":" << STRINGIZE(__LINE__) << std::endl;
+
     vector <unsigned int> equal_indice, nonequal_indice;
     for ( unsigned int i = 0; i < equal_indice_names.size(); ++i )
         equal_indice.push_back(Record::get_index_by_name(equal_indice_names[i]));
@@ -513,6 +519,7 @@ find_rare_names_v2(const vector < RecordPList * > &vec_pdest,
     const vector <const StringManipulator *> blocking_operator_pointers( num_columns_for_blocking, &do_not_change);
     cBlocking fullname(source, blocking_columns, blocking_operator_pointers, cUnique_Record_ID::static_get_class_name());
 
+    std::cout << "In find_rare_names_v2..." << __FILE__ << ":" << STRINGIZE(__LINE__) << std::endl;
 
     //step 2: build word map:
     //key = word,
@@ -611,12 +618,12 @@ find_rare_names_v2(const vector < RecordPList * > &vec_pdest,
     }
 }
 
-
+// TODO: Unit test this thing
 unsigned int
 create_tset02(list <RecordPairs> & results,
               const list <const Record*> & reclist,
               const vector <string> & column_names,
-	      const vector < const RecordPList * > & vec_prare_names,
+              const vector < const RecordPList * > & vec_prare_names,
               const unsigned int limit) {
 
     //equal_indice should be the indices of the names in this case.
@@ -624,6 +631,8 @@ create_tset02(list <RecordPairs> & results,
         std::cout << "ERROR: Number of input column names > size of vector of rare names." << std::endl;
         throw cException_Other("Wrong column names");
     }
+
+    std::cout << "In create_tset02..." << __FILE__ << ":" << STRINGIZE(__LINE__) << std::endl;
 
     vector < unsigned int > column_indice;
     for (vector<string>::const_iterator p = column_names.begin(); p != column_names.end(); ++p) {
@@ -687,6 +696,11 @@ create_tset02(list <RecordPairs> & results,
 }
 
 
+// http://google-styleguide.googlecode.com/svn/trunk/cppguide.xml?showone=Function_Parameter_Ordering#Function_Parameter_Ordering
+/**
+ * Called from utilities.cpp
+ * @return results
+ */
 unsigned int
 create_xset03(list <RecordPairs> & results,
               const list <const Record*> & reclist,
@@ -694,22 +708,27 @@ create_xset03(list <RecordPairs> & results,
               const unsigned int limit ) {
 
     RecordPList pool;
-    for ( unsigned int i = 0; i < vec_prare_names.size(); ++i) {
+    for (unsigned int i = 0; i < vec_prare_names.size(); ++i) {
         //pool.insert(vec_prare_names.at(i)->begin(), vec_prare_names.at(i)->end());
         pool.insert(pool.end(), vec_prare_names.at(i)->begin(), vec_prare_names.at(i)->end());
     }
 
+    std::cout << "In create_xset03..." << __FILE__ << ":" << STRINGIZE(__LINE__) << std::endl;
+
     unsigned int count = 0;
     const unsigned int base = 100000;
-    for ( RecordPList::const_iterator p = pool.begin(); p != pool.end(); ++p ) {
+    for (RecordPList::const_iterator p = pool.begin(); p != pool.end(); ++p) {
+
         RecordPList::const_iterator q = p;
-        for ( ++q; q != pool.end(); ++q ) {
+        for (++q; q != pool.end(); ++q) {
             results.push_back(RecordPairs(*p, *q));
             ++count;
-            if ( count % base == 0 )
+            if (count % base == 0) {
                 std::cout << "Xset03: " << count << " records obtained." << std::endl;
-            if ( count >= limit )
+            }
+            if (count >= limit) {
                 return count;
+            }
         }
     }
 
@@ -737,37 +756,39 @@ cBlocking_For_Training::create_xset03_on_block(const string & block_id,
 
     unsigned int count = 0;
 
-    while ( outercursor != dataset.end() ) {
+    while (outercursor != dataset.end()) {
 
-        if ( quota_used == quota_for_this ) {
+        if (quota_used == quota_for_this) {
             return count;
         }
+
         bool should_continue = false;
+
         if ( ( ! cursor_ok ( outercursor, innercursor, dataset) && ( ! move_cursor( outercursor, innercursor, dataset ))))
             break;
 
 
-        for ( unsigned int i = 0; i < equal_indice.size(); ++i) {
+        for (unsigned int i = 0; i < equal_indice.size(); ++i) {
             if ( (*outercursor)->get_data_by_index(equal_indice[i]).at(0) != (*innercursor)->get_data_by_index(equal_indice[i]).at(0) ) {
                 should_continue = true;
                 break;
             }
         }
 
-        if ( should_continue ) {
+        if (should_continue) {
             move_cursor ( outercursor, innercursor, dataset );
             continue;
         }
 
-        for ( unsigned int i = 0; i < nonequal_indice.size(); ++i) {
+        for (unsigned int i = 0; i < nonequal_indice.size(); ++i) {
             if ( (*outercursor)->get_data_by_index(nonequal_indice[i]).at(0) == (*innercursor)->get_data_by_index(nonequal_indice[i]).at(0) ) {
                 should_continue = true;
                 break;
             }
         }
 
-        if ( should_continue ) {
-            move_cursor ( outercursor, innercursor, dataset );
+        if (should_continue) {
+            move_cursor (outercursor, innercursor, dataset);
             continue;
         }
 
@@ -782,18 +803,16 @@ cBlocking_For_Training::create_xset03_on_block(const string & block_id,
             }
         }
 
-        if (should_select)    {
+        if (should_select) {
             chosen_pairs.push_back(RecordPairs(*outercursor, *innercursor));
             ++ quota_used;
             ++count;
         }
 
-        move_cursor ( outercursor, innercursor, dataset );
-
-
+        move_cursor (outercursor, innercursor, dataset);
     }
-    if (is_firstround)
-        quota_left += quota_for_this - count;
+
+    if (is_firstround) quota_left += quota_for_this - count;
 
     return count;
 }
@@ -809,7 +828,8 @@ unsigned int
 create_xset01(list <RecordPairs> &results, const list <const Record *> & source,
               const unsigned int limit) {
 
-    std::cout << " Creating xset01 ..." << std::endl;
+    //std::cout << " Creating xset01 ..." << std::endl;
+    std::cout << "In create_xset01..." << __FILE__ << ":" << STRINGIZE(__LINE__) << std::endl;
     results.clear();
     unsigned int count = 0;
     const unsigned int base = 100000;
