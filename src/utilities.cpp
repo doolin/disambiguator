@@ -112,7 +112,7 @@ make_stable_training_sets_by_personal(const list <Record> & all_records,
     RecordPList rare_lastname_set;
 
     std::ofstream outfile;
-    cPrint_Pair do_print(outfile, cUnique_Record_ID::static_get_class_name());
+    PrintPair do_print(outfile, cUnique_Record_ID::static_get_class_name());
     const char * current_file;
     vector<RecordPList *> rare_pointer_vec;
     rare_pointer_vec.push_back(&rare_firstname_set);

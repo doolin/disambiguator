@@ -56,7 +56,7 @@
 
 typedef std::pair< const Record *, const Record *> RecordPairs;
 
-struct cPrint_Pair {
+struct PrintPair {
 private:
     vector < unsigned int > indice;
     unsigned int single_index;
@@ -67,13 +67,13 @@ private:
     const bool is_vector;
 
 public:
-    cPrint_Pair(std::ostream & os, const vector < string > & vec_columnnames)
+    PrintPair(std::ostream & os, const vector < string > & vec_columnnames)
         : myos(os), primary_delim(","), secondary_delim( " | "), is_vector(true) {
         for ( vector<string>::const_iterator p = vec_columnnames.begin(); p != vec_columnnames.end() ; ++p )
             indice.push_back(Record::get_index_by_name(*p));
     }
 
-    cPrint_Pair(std::ostream & os, const string & col_name)
+    PrintPair(std::ostream & os, const string & col_name)
             : myos(os), primary_delim(","), secondary_delim( " | "), is_vector(false) {
         single_index = Record::get_index_by_name(col_name);
     }

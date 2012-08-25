@@ -143,7 +143,7 @@ cBlocking_For_Training::print(std::ostream & os,
 
     if ( was_used == false )
         throw cException_Other("Training sets are not ready to be output yet.");
-    cPrint_Pair do_print(os, unique_record_id_name);
+    PrintPair do_print(os, unique_record_id_name);
     std::for_each(chosen_pairs.begin(), chosen_pairs.end(), do_print);
 }
 
