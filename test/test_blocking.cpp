@@ -1,10 +1,8 @@
-
-#include <cppunit/Portability.h>
-#include <cppunit/portability/CppUnitSet.h>
-#include <cppunit/extensions/TestFactory.h>
-#include <cppunit/TestCase.h>
+/** @file */
 #include <string>
 #include <vector>
+
+#include <cppunit/TestCase.h>
 
 #include <attribute.h>
 #include <strcmp95.h>
@@ -40,6 +38,7 @@ public:
 };
 #endif
 
+#ifdef test_blocking_STANDALONE
 int
 main(int UP(argc), char ** UP(argv)) {
 
@@ -48,4 +47,4 @@ main(int UP(argc), char ** UP(argv)) {
   //delete bt;
   return 0;
 }
-
+#endif
