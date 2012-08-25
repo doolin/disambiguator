@@ -282,6 +282,65 @@ instantiate_attributes(std::vector<std::string> column_names, int num_cols) {
   return pointer_array;
 }
 
+
+vector <const Attribute *>
+parse_line(string line,
+           vector < unsigned int > requested_column_indice,
+           Attribute ** pointer_array,
+           unsigned int num_cols,
+           const char * delim,
+           vector<string> & string_cache) {
+
+  const unsigned int delim_size = strlen(delim);
+  vector <const Attribute *> temp_vec_attrib;
+  const Attribute * pAttrib;
+
+  for (unsigned int i = 0; i < num_cols ; ++i) {
+
+      // What does column_location point at?
+      unsigned int column_location = 0;
+      // Given the second iteration, what does prev_pos point at?
+      unsigned int pos = 0;
+      unsigned int prev_pos = 0;
+
+      // requested_column_indice is vector<unsigned int> defined
+      // around Line 738 above, see vector.at
+      while (column_location++ != requested_column_indice.at(i)) {
+          // See string.find: http://www.cplusplus.com/reference/string/string/find/
+          pos = line.find(delim, prev_pos);
+          // delim_size is defined above Line ~705
+          prev_pos = pos + delim_size;
+      }
+      pos = line.find(delim, prev_pos);
+
+      // Find a link to string::npos
+      if ( pos == string::npos ) {
+          // Find a link to .size for whatever type line is
+          if ( prev_pos != line.size() )
+              // Link to the substr method
+              string_cache[i] = line.substr(prev_pos);
+          else
+              string_cache[i] = "";
+      } else {
+          // This looks where the actual value is parsed
+          string_cache[i] = line.substr(prev_pos, pos - prev_pos);
+      }
+
+      // Link to the reset_data method
+      // Why is this here? What purpose is it serving? This smells.
+      // TODO: Figure out why this is here and see about putting
+      // it somewhere else.
+      pointer_array[i]->reset_data(string_cache[i].c_str());
+      // Link to the clone method
+      pAttrib = pointer_array[i]->clone();    //HERE CREATED NEW CLASS INSTANCES.
+      temp_vec_attrib.push_back(pAttrib);
+  }
+
+  return temp_vec_attrib;
+}
+
+
+
 /**
  * Aim: to fetch records from a txt format file into memory.
  * This is a very important function.
@@ -307,28 +366,20 @@ fetch_records_from_txt(list <Record> & source,
                        const vector<string> & requested_columns) {
 
     std::ifstream::sync_with_stdio(false);
-    const char * delim = ",";    // this deliminator should never occur in the data.
+    // the "," deliminator should never occur in the data.
+    const char * delim = ",";
     const unsigned int delim_size = strlen(delim);
-    std::ifstream instream(txt_file);
+    register size_t pos, prev_pos;
 
+    std::ifstream instream(txt_file);
     if (!instream.good()) {
         throw cException_File_Not_Found(txt_file);
     }
 
     string line;
-
-    //getline(instream, line);
-    //if ( line != raw_txt_authenticator )
-    //    throw cException_File_Not_Found("Specified file is not a valid one.");
-    //std::cout << "requested_columns.size: " << requested_columns.size << std::endl; 
-    //std::cout << "requested_columns[0]: " << requested_columns[0] << std::endl; 
-
-    vector <string> total_col_names;
     getline(instream, line);
-    register size_t pos, prev_pos;
-    //pos = prev_pos = 0;
 
-    total_col_names = parse_column_names(line);
+    vector<string> total_col_names = parse_column_names(line);
 
     Attribute::register_class_names(requested_columns);
     vector < unsigned int > requested_column_indice;
@@ -336,11 +387,9 @@ fetch_records_from_txt(list <Record> & source,
     requested_column_indice = create_column_indices(requested_columns, total_col_names);
 
     Record::column_names = requested_columns;
-
     Attribute ** pointer_array; 
     pointer_array = instantiate_attributes(Record::column_names, num_cols);
 
-    //pos = prev_pos = 0;
 
     // TODO: See if this can be moved to the instantiate_attributes function.
     // Or to it's own function which is called from instantiate attributes
@@ -396,6 +445,7 @@ fetch_records_from_txt(list <Record> & source,
         // such that after some setup, it can be fed a line of
         // data and get itself parsed correctly. The tricky
         // part here is getting the right object copied back.
+#if 1
         for (unsigned int i = 0; i < num_cols ; ++i) {
 
             // What does column_location point at?
@@ -435,6 +485,14 @@ fetch_records_from_txt(list <Record> & source,
             pAttrib = pointer_array[i]->clone();    //HERE CREATED NEW CLASS INSTANCES.
             temp_vec_attrib.push_back(pAttrib);
         }
+#else
+        temp_vec_attrib = parse_line(string line,
+                                     vector < unsigned int > requested_column_indice,
+                                     Attribute ** pointer_array,
+                                     unsigned int num_cols,
+                                     const char * delim,
+                                     vector<string> & string_cache);
+#endif
 
         Record temprec(temp_vec_attrib);
         source.push_back( temprec );

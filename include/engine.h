@@ -139,4 +139,12 @@ vector<unsigned int> create_column_indices(std::vector<std::string> requested_co
 
 Attribute ** instantiate_attributes(std::vector<std::string> column_names, int num_cols);
 
+vector <const Attribute *> parse_line(string line,
+           vector < unsigned int > requested_column_indice,
+           Attribute ** pointer_array,
+           unsigned int num_cols,
+           const char * delim,
+           vector<string> & string_cache);
+
+
 #endif /* PATENT_ENGINE_H */
