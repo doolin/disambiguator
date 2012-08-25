@@ -5,29 +5,35 @@
  *
  * xset01: non-match set of record pairs to train personal
  * information based on patent information
+ * xset01 is directly from each patent. By building a
+ * patent tree, it is obtained easily.
  *
  * xset03: non-match set of record pairs to train patent
  * information based on personal information
  *
+ * xset03 and tset02 are both from the rare name list.
+ * See find_rarename_v2 function for more information
+ */
+
+/**
  * tset02: match set of record pairs to train patent information
  * based on personal information
  *
  * tset05: match set of record pairs to train personal
  * information based on patent information
- *
- * xset03 and tset02 are both from the rare name list.
- * See find_rarename_v2 function for more information
- *
- * xset01 is directly from each patent. By building a
- * patent tree, it is obtained easily.
- *
+ */
+
+
+/**
  * tset05 is the only part that depends on the blocking mechanism,
  * therefore, the cBlocking part should be consistent with the
  * cBlocking_Operation object used for blocking.
  *
  * Actually, one can rewrite the whole DisambigTraining.h/cpp code
  * to abandon the cBlocking class, which is from legacy codes.
- *
+ */
+
+/**
  *
  * Due to the limit of record pairs in each training set
  * (> 1 million and <10 million in our case), in order
@@ -57,6 +63,7 @@
 typedef std::pair< const Record *, const Record *> RecordPairs;
 
 struct PrintPair {
+
 private:
     vector < unsigned int > indice;
     unsigned int single_index;
@@ -67,10 +74,14 @@ private:
     const bool is_vector;
 
 public:
+
     PrintPair(std::ostream & os, const vector < string > & vec_columnnames)
         : myos(os), primary_delim(","), secondary_delim( " | "), is_vector(true) {
-        for ( vector<string>::const_iterator p = vec_columnnames.begin(); p != vec_columnnames.end() ; ++p )
+
+        vector<string>::const_iterator p = vec_columnnames.begin();
+        for (; p != vec_columnnames.end() ; ++p) {
             indice.push_back(Record::get_index_by_name(*p));
+        }
     }
 
     PrintPair(std::ostream & os, const string & col_name)
@@ -79,17 +90,24 @@ public:
     }
 
     void operator() (const RecordPairs & source) {
-        if ( is_vector) {
-            for ( vector< unsigned int>::const_iterator p = indice.begin(); p != indice.end(); ++p )
+
+        if (is_vector) {
+
+            for (vector< unsigned int>::const_iterator p = indice.begin(); p != indice.end(); ++p) {
                 myos << * source.first->get_data_by_index(*p).at(0) << secondary_delim;
+            }
+
             myos << primary_delim;
-            for ( vector< unsigned int>::const_iterator p = indice.begin(); p != indice.end(); ++p )
+
+            for (vector< unsigned int>::const_iterator p = indice.begin(); p != indice.end(); ++p) {
                 myos << * source.second->get_data_by_index(*p).at(0) << secondary_delim;
+            }
+
             myos << '\n';
         }
         else {
             myos << * source.first->get_data_by_index(single_index).at(0) << primary_delim
-                    << * source.second->get_data_by_index(single_index).at(0)<<'\n';
+                 << * source.second->get_data_by_index(single_index).at(0)<<'\n';
         }
     }
 };
@@ -266,6 +284,7 @@ unsigned int create_tset02      (list <RecordPairs> &results,
                                  const vector <string> & column_names,
                                  const vector < const RecordPList * > & vec_prare_names,
                                  const unsigned int limit );
+
 /**
  * @todo Write some documentation
  */

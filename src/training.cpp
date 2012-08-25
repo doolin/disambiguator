@@ -283,7 +283,7 @@ cBlocking_For_Training::create_xset01_on_block(const string & block_id,
         }
 
         chosen_pairs.push_back(RecordPairs(*outercursor, *innercursor));
-        ++ quota_used;
+        ++quota_used;
         ++count;
 
         move_cursor ( outercursor, innercursor, dataset );
@@ -818,7 +818,7 @@ create_xset01(list <RecordPairs> &results, const list <const Record *> & source,
     const vector < const StringManipulator*> pman(1, &operator_no_change);
     //const unsigned int fnidx = Record::get_index_by_name(cFirstname::static_get_class_name());
     //const unsigned int lnidx = Record::get_index_by_name(cLastname::static_get_class_name());
-    cBlocking bl( source, blocking_column_names, pman, cPatent::static_get_class_name());
+    cBlocking bl(source, blocking_column_names, pman, cPatent::static_get_class_name());
 
     for ( map < string, RecordPList>::const_iterator pm = bl.get_block_map().begin(); pm != bl.get_block_map().end(); ++pm ) {
         for ( RecordPList::const_iterator p = pm->second.begin(); p != pm->second.end(); ++p ) {
