@@ -189,22 +189,8 @@ make_stable_training_sets_by_personal(const list <Record> & all_records,
     rare_pointer_vec.push_back(&rare_lastname_set);
     const vector< const RecordPList * > const_rare_pointer_vec(rare_pointer_vec.begin(), rare_pointer_vec.end());
 
-    // This should be a RecordPList, check typedef in engine.h:25
-    //list < const Record*> record_pointers;
     RecordPList record_pointers;
-
-#if 0
-    // Is this is the first and/or only place a RecordPList is
-    // created? If not, we're almost surely leaking memory...
-    // RecordList should be its own class, which can be queried
-    // for a list of pointers to records.
-    list<Record>::const_iterator p = all_records.begin();
-    for (; p != all_records.end(); ++p) {
-        record_pointers.push_back(&(*p));
-    }
-#else
     create_record_plist(all_records, record_pointers);
-#endif
 
     // rare_pointer_vec is output...?
     find_rare_names_v2(rare_pointer_vec, record_pointers);
