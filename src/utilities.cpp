@@ -194,17 +194,16 @@ make_stable_training_sets_by_personal(const list <Record> & all_records,
     rare_column_names.push_back(string(cFirstname::static_get_class_name()));
     rare_column_names.push_back(string(cLastname::static_get_class_name()));
 
-    // TODO: Refactor this into its own function
     list<RecordPairs> pair_list;
     pair_list.clear();
     // Where is const_rare_pointer_vec declared and initialized?
-    // Create xset03 // Unit test this
+    // TODO: Unit test this
     // pair_list is probably output
     create_xset03(pair_list, record_pointers, const_rare_pointer_vec, limit);
 
+    current_file = training_filenames.at(0).c_str();
 #if 0
     std::ofstream outfile;
-    current_file = training_filenames.at(0).c_str();
     outfile.open(current_file);
 
     if ( ! outfile.good() ) {
@@ -223,8 +222,6 @@ make_stable_training_sets_by_personal(const list <Record> & all_records,
     write_xset03(current_file, pair_list);
 #endif
 
-    // TODO: Refactor this into its own function
-    //tset02
     pair_list.clear();
     // TODO: Create a unit test for this
     create_tset02(pair_list, record_pointers, rare_column_names, const_rare_pointer_vec, limit);
