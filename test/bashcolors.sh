@@ -1,3 +1,13 @@
+#!/bin/bash
+
+# http://code.google.com/p/shunit2/source/browse/trunk/source/2.1/src/shunit2
+# return if shunit already loaded
+#[ -n "${SHUNIT_VERSION:-}" ] && exit 0
+#SHUNIT_VERSION='2.1.6'
+
+
+# These colors define how the output to the testing shell
+# scripts work.
 initializeANSI()
 {
   esc=""
@@ -7,6 +17,7 @@ initializeANSI()
   cyanf="${esc}[36m";    whitef="${esc}[37m"
 
   orangeyf="${esc}[38;05;214m";
+  yellowyf="${esc}[38;05;150m";
 
   blackb="${esc}[40m";   redb="${esc}[41m";    greenb="${esc}[42m"
   yellowb="${esc}[43m"   blueb="${esc}[44m";   purpleb="${esc}[45m"
