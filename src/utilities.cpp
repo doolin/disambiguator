@@ -85,8 +85,8 @@ make_changable_training_sets_by_patent(const list <const Record*> & record_point
 }
 
 
-
-bool 
+// TODO: Move to training.cpp
+bool
 make_stable_training_sets_by_personal(const list <Record> & all_records,
                                       const unsigned int limit,
                                       const vector <string> & training_filenames) {
@@ -110,7 +110,7 @@ make_stable_training_sets_by_personal(const list <Record> & all_records,
         record_pointers.push_back(&(*p));
 
     find_rare_names_v2(rare_pointer_vec, record_pointers);
-    list<pointer_pairs> pair_list;
+    list<RecordPairs> pair_list;
     vector <string> rare_column_names;
     rare_column_names.push_back(string(cFirstname::static_get_class_name()));
     rare_column_names.push_back(string(cLastname::static_get_class_name()));
@@ -146,13 +146,13 @@ make_stable_training_sets_by_personal(const list <Record> & all_records,
 
 
 
-std::pair < const Record *, set < const Record * > > 
+std::pair < const Record *, set < const Record * > >
 ones_temporal_unique_coauthors (const Cluster & record_cluster,
-                                const map < const Record *, 
+                                const map < const Record *,
                                 const Record *> & complete_uid2uinv,
                                 const map < const Record *, RecordPList, cSort_by_attrib > & complete_patent_tree,
-                                const unsigned int begin_year, 
-                                const unsigned int end_year, 
+                                const unsigned int begin_year,
+                                const unsigned int end_year,
                                 const unsigned int year_index ) {
 
     //[ begin_year, end_year )

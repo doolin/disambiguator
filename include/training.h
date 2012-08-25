@@ -53,7 +53,7 @@
 
 
 
-typedef std::pair< const Record *, const Record *> pointer_pairs;
+typedef std::pair< const Record *, const Record *> RecordPairs;
 
 struct cPrint_Pair {
 private:
@@ -77,7 +77,7 @@ public:
         single_index = Record::get_index_by_name(col_name);
     }
 
-    void operator() (const pointer_pairs & source) {
+    void operator() (const RecordPairs & source) {
         if ( is_vector) {
             for ( vector< unsigned int>::const_iterator p = indice.begin(); p != indice.end(); ++p )
                 myos << * source.first->get_data_by_index(*p).at(0) << secondary_delim;
@@ -127,12 +127,18 @@ protected:
     };
 
     map<string, RecordPList > blocking_data;
+
     map < const Record *, const string *> record2blockingstring;
+
     const vector <string> blocking_column_names;
+
     const vector<const StringManipulator*> string_manipulator_pointers;
 
 public:
-    explicit cBlocking(const list<const Record *> & psource, const vector<string> & blocking_column_names, const vector<const StringManipulator*>& pmanipulators, const string & unique_identifier );
+
+    explicit cBlocking(const list<const Record *> & psource, const vector<string> & blocking_column_names,
+        const vector<const StringManipulator*>& pmanipulators, const string & unique_identifier);
+
     const map<string, RecordPList > & get_block_map() const {return blocking_data;}
 };
 
@@ -141,36 +147,72 @@ public:
 class cBlocking_For_Training : public cBlocking {
 
 private:
+
     map<const string *, unsigned int, cBlocking::cString_Pointer_Compare> quota_map;
+
     map<const string *, unsigned int, cBlocking::cString_Pointer_Compare> used_quota_map;
+
     map<const string *, RecordPList::const_iterator, cBlocking::cString_Pointer_Compare> outer_cursor_map;
+
     map<const string *, RecordPList::const_iterator, cBlocking::cString_Pointer_Compare> inner_cursor_map;
+
     const unsigned int total_quota;
+
     unsigned int quota_left;
+
     bool was_used;
 
-    list <pointer_pairs> chosen_pairs;
+    list <RecordPairs> chosen_pairs;
 
-    bool move_cursor( RecordPList:: const_iterator & outer, RecordPList:: const_iterator & inner, const RecordPList & datarange);
-    bool cursor_ok( const RecordPList:: const_iterator & outer, const RecordPList:: const_iterator & inner, const RecordPList & datarange ) const {
+    bool move_cursor(RecordPList:: const_iterator & outer,
+        RecordPList:: const_iterator & inner, const RecordPList & datarange);
+
+    bool cursor_ok(const RecordPList:: const_iterator & outer,
+        const RecordPList:: const_iterator & inner, const RecordPList & datarange) const {
         return  ( outer != datarange.end() && inner != datarange.end() &&  inner != outer );
     }
 
 public:
-    typedef unsigned int(cBlocking_For_Training::*pFunc)(const string & block_id, const vector <unsigned int> & equal_indice, const vector<const StringManipulator*>& pmanipulators_equal,
-                                                            const vector <unsigned int> &nonequal_indice, const vector<const StringManipulator*>& pmanipulators_nonequal, const bool is_firstround);
+    typedef unsigned int(cBlocking_For_Training::*pFunc)(const string & block_id,
+        const vector <unsigned int> & equal_indice,
+        const vector<const StringManipulator*>& pmanipulators_equal,
+        const vector <unsigned int> &nonequal_indice,
+        const vector<const StringManipulator*>& pmanipulators_nonequal,
+        const bool is_firstround);
 
-    explicit cBlocking_For_Training( const list < const Record *> & source, const vector<string> & blocking_column_names,
-                                    const vector<const StringManipulator*>& pmanipulators, const string & unique_identifier, const unsigned int qt);
-    unsigned int create_xset01_on_block(const string & block_id, const vector <unsigned int> & equal_indice, const vector<const StringManipulator*>& pmanipulators_equal,
-                                        const vector <unsigned int> &nonequal_indice, const vector<const StringManipulator*>& pmanipulators_nonequal, const bool is_firstround);
-    unsigned int create_tset05_on_block(const string & block_id, const vector <unsigned int> & equal_indice, const vector<const StringManipulator*>& pmanipulators_equal,
-                                            const vector <unsigned int> &nonequal_indice, const vector<const StringManipulator*>& pmanipulators_nonequal, const bool is_firstround);
-    unsigned int create_xset03_on_block(const string & block_id, const vector <unsigned int> & equal_indice, const vector<const StringManipulator*>& pmanipulators_equal,
-                                            const vector <unsigned int> &nonequal_indice, const vector<const StringManipulator*>& pmanipulators_nonequal, const bool is_firstround);
-    unsigned int create_set(pFunc mf, const vector <string> & equal_indice_names, const vector<const StringManipulator*>& pmanipulators_equal,
-                                    const vector <string> & nonequal_indice_names, const vector<const StringManipulator*>& pmanipulators_nonequal );
+    explicit cBlocking_For_Training(const list < const Record *> & source,
+        const vector<string> & blocking_column_names,
+        const vector<const StringManipulator*>& pmanipulators,
+        const string & unique_identifier, const unsigned int qt);
+
+    unsigned int create_xset01_on_block(const string & block_id,
+        const vector <unsigned int> & equal_indice,
+        const vector<const StringManipulator*>& pmanipulators_equal,
+        const vector <unsigned int> &nonequal_indice,
+        const vector<const StringManipulator*>& pmanipulators_nonequal,
+        const bool is_firstround);
+
+    unsigned int create_tset05_on_block(const string & block_id,
+        const vector <unsigned int> & equal_indice,
+        const vector<const StringManipulator*>& pmanipulators_equal,
+        const vector <unsigned int> &nonequal_indice,
+        const vector<const StringManipulator*>& pmanipulators_nonequal,
+        const bool is_firstround);
+
+    unsigned int create_xset03_on_block(const string & block_id,
+        const vector <unsigned int> & equal_indice,
+        const vector<const StringManipulator*>& pmanipulators_equal,
+        const vector <unsigned int> &nonequal_indice,
+        const vector<const StringManipulator*>& pmanipulators_nonequal,
+        const bool is_firstround);
+
+    unsigned int create_set(pFunc mf, const vector <string> & equal_indice_names,
+        const vector<const StringManipulator*>& pmanipulators_equal,
+        const vector <string> & nonequal_indice_names,
+        const vector<const StringManipulator*>& pmanipulators_nonequal );
+
     void print (std::ostream & os, const string & unique_record_id_name ) const;
+
     void reset(const unsigned int num_cols);
 
 };
@@ -179,24 +221,37 @@ public:
 class cWorker_For_Training : public Thread {
 
 private:
+
   map<string, RecordPList> ::iterator *piter;
+
   cBlocking_For_Training::pFunc func;
+
   const vector < string > & m_equal_indice_names;
+
   const vector < const StringManipulator * > & m_pstringcontrol_equal;
+
   const vector < string > & m_non_equal_indice_names;
+
   const vector < const StringManipulator * > & m_pstringcontrol_nonequal;
 
   static pthread_mutex_t iter_mutex;
+
  public:
-  explicit cWorker_For_Training ( map < string, RecordPList>::iterator *inputiter, const cBlocking_For_Training::pFunc inputfun,
-                  const vector < string > & equal_indice_names, const vector < const StringManipulator * > & pmanipulators_equal, 
-                  const vector < string > & nonequal_indice_names, const vector < const StringManipulator * > & pmanipulators_nonequal )
-    : piter( inputiter ), func(inputfun), m_equal_indice_names(equal_indice_names), m_pstringcontrol_equal(pmanipulators_equal),
-    m_non_equal_indice_names( nonequal_indice_names ), m_pstringcontrol_nonequal(pmanipulators_nonequal) {};
+
+  explicit cWorker_For_Training(map < string, RecordPList>::iterator *inputiter,
+      const cBlocking_For_Training::pFunc inputfun,
+      const vector < string > & equal_indice_names,
+      const vector < const StringManipulator * > & pmanipulators_equal,
+      const vector < string > & nonequal_indice_names,
+      const vector < const StringManipulator * > & pmanipulators_nonequal)
+    : piter(inputiter), func(inputfun), m_equal_indice_names(equal_indice_names),
+    m_pstringcontrol_equal(pmanipulators_equal),
+    m_non_equal_indice_names(nonequal_indice_names),
+    m_pstringcontrol_nonequal(pmanipulators_nonequal) {};
+
   ~cWorker_For_Training() {};
+
   void run();
-
-
 };
 
 
@@ -205,13 +260,13 @@ private:
 void         find_rare_names_v2 (const vector < RecordPList * > &vec_pdest,
                                  const list< const Record* > & source);
 
-unsigned int create_tset02      (list <pointer_pairs> &results,
+unsigned int create_tset02      (list <RecordPairs> &results,
                                  const list <const Record*> & reclist,
                                  const vector <string> & column_names,
                                  const vector < const RecordPList * > & vec_prare_names,
                                  const unsigned int limit );
 
-unsigned int create_xset03      (list <pointer_pairs> &results,
+unsigned int create_xset03      (list <RecordPairs> &results,
                                  const list <const Record*> & reclist,
                                  const vector < const RecordPList * > & vec_prare_names,
                                  const unsigned int limit );
@@ -219,7 +274,7 @@ unsigned int create_xset03      (list <pointer_pairs> &results,
 /** This function creates one of the training sets.
  * @todo Write the documentation.
  */
-unsigned int create_xset01      (list <pointer_pairs> &results,
+unsigned int create_xset01      (list <RecordPairs> &results,
                                  const list <const Record *> & source,
                                  const unsigned int limit );
 

@@ -282,7 +282,7 @@ cBlocking_For_Training::create_xset01_on_block(const string & block_id,
             continue;
         }
 
-        chosen_pairs.push_back(pointer_pairs(*outercursor, *innercursor));
+        chosen_pairs.push_back(RecordPairs(*outercursor, *innercursor));
         ++ quota_used;
         ++count;
 
@@ -387,7 +387,7 @@ cBlocking_For_Training::create_tset05_on_block(const string & block_id,
         coauthors_num = pcouter->compare(*pcinner);
 
         if ( coauthors_num >= 2 ) {
-            chosen_pairs.push_back(pointer_pairs(*outercursor, *innercursor));
+            chosen_pairs.push_back(RecordPairs(*outercursor, *innercursor));
             ++ quota_used;
             ++count;
         }
@@ -613,7 +613,7 @@ find_rare_names_v2(const vector < RecordPList * > &vec_pdest,
 
 
 unsigned int
-create_tset02(list <pointer_pairs> & results,
+create_tset02(list <RecordPairs> & results,
               const list <const Record*> & reclist,
               const vector <string> & column_names,
 	      const vector < const RecordPList * > & vec_prare_names,
@@ -635,7 +635,7 @@ create_tset02(list <pointer_pairs> & results,
     map <string, RecordPList >::const_iterator cpm;
     unsigned int count = 0;
 
-    set < pointer_pairs > answer;
+    set < RecordPairs > answer;
     const unsigned int base = 100000;
     for (unsigned int i = 0; i < column_names.size(); ++i) {
 
@@ -666,7 +666,7 @@ create_tset02(list <pointer_pairs> & results,
                         }
                     }
                     if ( data_ok ) {
-                        answer.insert(pointer_pairs( *rr, *ss));
+                        answer.insert(RecordPairs( *rr, *ss));
                         ++count;
                         if ( count % base == 0 )
                             std::cout << "Tset02: " << count << " records obtained." << std::endl;
@@ -688,7 +688,7 @@ create_tset02(list <pointer_pairs> & results,
 
 
 unsigned int
-create_xset03(list <pointer_pairs> & results,
+create_xset03(list <RecordPairs> & results,
               const list <const Record*> & reclist,
               const vector < const RecordPList * > & vec_prare_names,
               const unsigned int limit ) {
@@ -704,7 +704,7 @@ create_xset03(list <pointer_pairs> & results,
     for ( RecordPList::const_iterator p = pool.begin(); p != pool.end(); ++p ) {
         RecordPList::const_iterator q = p;
         for ( ++q; q != pool.end(); ++q ) {
-            results.push_back(pointer_pairs(*p, *q));
+            results.push_back(RecordPairs(*p, *q));
             ++count;
             if ( count % base == 0 )
                 std::cout << "Xset03: " << count << " records obtained." << std::endl;
@@ -783,7 +783,7 @@ cBlocking_For_Training::create_xset03_on_block(const string & block_id,
         }
 
         if (should_select)    {
-            chosen_pairs.push_back(pointer_pairs(*outercursor, *innercursor));
+            chosen_pairs.push_back(RecordPairs(*outercursor, *innercursor));
             ++ quota_used;
             ++count;
         }
@@ -806,7 +806,7 @@ void cWorker_For_Training::run() {
 
 
 unsigned int
-create_xset01(list <pointer_pairs> &results, const list <const Record *> & source,
+create_xset01(list <RecordPairs> &results, const list <const Record *> & source,
               const unsigned int limit) {
 
     std::cout << " Creating xset01 ..." << std::endl;
@@ -825,7 +825,7 @@ create_xset01(list <pointer_pairs> &results, const list <const Record *> & sourc
             RecordPList::const_iterator q = p;
             for ( ++q; q != pm->second.end(); ++q ) {
                 // now ok
-                results.push_back(pointer_pairs(*p, *q) );
+                results.push_back(RecordPairs(*p, *q) );
                 ++count;
                 if ( count % base == 0)
                     std::cout << "xset01: " << count << " training pairs have been acquired." << std::endl;
