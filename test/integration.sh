@@ -34,12 +34,12 @@ echo $cyanf"Jones:  $testval"
 testdir=/var/share/patentdata/disambiguation/test/18
 testfile="./data/final_eighteen.txt"
 testval=`test_disambiguation $testdir $testfile`
-echo $yellowyf"Eighteen: $testval"
+echo $cyanf"Eighteen: $testval"
 
 testdir=/var/share/patentdata/disambiguation/experiments/earth/berkeley
 testfile="./data/final_berkeley.txt"
 testval=`test_disambiguation $testdir $testfile`
-echo $orangeyf"Berkeley: $testval"
+echo $cyanf"Berkeley: $testval"
 
 
 #echo "arg 0:  $0"
