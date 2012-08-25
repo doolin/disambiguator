@@ -266,8 +266,6 @@ Record::get_index_by_name(const string & inputstr) {
         }
     }
 
-#define STRINGIZE_DETAIL(x) #x
-#define STRINGIZE(x) STRINGIZE_DETAIL(x)
         string s = string("from ") + string(__FILE__) + string(":") 
                  + string(STRINGIZE(__LINE__)) + string("column name: ");
         s += inputstr;
