@@ -148,6 +148,7 @@ make_stable_training_sets_by_personal(const list <Record> & all_records,
         record_pointers.push_back(&(*p));
     }
 
+    // rare_pointer_vec is output...?
     find_rare_names_v2(rare_pointer_vec, record_pointers);
     list<RecordPairs> pair_list;
     vector <string> rare_column_names;
@@ -157,6 +158,7 @@ make_stable_training_sets_by_personal(const list <Record> & all_records,
     // TODO: Refactor this into its own function
     //xset03
     pair_list.clear();
+    // Where is const_rare_pointer_vec declared and initialized?
     // Create xset03 // Unit test this
     create_xset03(pair_list, record_pointers, const_rare_pointer_vec, limit);
     current_file = training_filenames.at(0).c_str();
