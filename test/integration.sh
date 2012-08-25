@@ -41,36 +41,41 @@ function test_eighteen() {
   fi
 }
 
+
 function test_disambiguation() {
 
-  #echo Directory: $1
   current_dir=`pwd`
-  dir=$1 #/var/share/patentdata/disambiguation/test/18
+  dir=$1 
   cd $dir
 
   disambiguate engine.txt blocking6.txt > runtime.log
 
   cd $current_dir
   output=$dir"/final.txt"
-  testfile="./data/final_berkeley.txt"
+  testfile=$2
   results=`diff ${output} ${testfile}`
-  echo ${#results}
-  if [ ${#results} > 0 ] ; then
-    echo "diff resulted in $results"
-    echo $redf"failed"
+  #echo ${#results}
+  if [[ $results ]] ; then
+    echo $redf"failed: diff results in $results"
   else
     echo $greenf"passed"
   fi
 }
 
 
-testval=`test_jones foo`
+testdir=/var/share/patentdata/disambiguation/test/synthetic/jones
+testfile="./data/final_jones.txt"
+testval=`test_disambiguation $testdir $testfile`
 echo $cyanf"Jones:  $testval"
-testval=`test_eighteen`
+
+testdir=/var/share/patentdata/disambiguation/test/18
+testfile="./data/final_eighteen.txt"
+testval=`test_disambiguation $testdir $testfile`
 echo $yellowyf"Eighteen: $testval"
 
 testdir=/var/share/patentdata/disambiguation/experiments/earth/berkeley
-testval=`test_disambiguation $testdir`
+testfile="./data/final_berkeley.txt"
+testval=`test_disambiguation $testdir $testfile`
 echo $orangeyf"Berkeley: $testval"
 
 
