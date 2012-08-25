@@ -1,7 +1,7 @@
 /** @file */
 
-#ifndef PATENT_DISAMBIGMAIN_H
-#define PATENT_DISAMBIGMAIN_H
+#ifndef PATENT_DISAMBIGUATE_H
+#define PATENT_DISAMBIGUATE_H
 
 namespace EngineConfiguration {
     bool config_engine( const char * filename, std::ostream & os );
@@ -35,6 +35,4 @@ namespace BlockingConfiguration {
 int Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigFile );
 
 
-
-
-#endif /* PATENT_DISAMBIGMAIN_H */
+#endif /* PATENT_DISAMBIGUATE_H */
