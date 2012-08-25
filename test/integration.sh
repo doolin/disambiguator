@@ -16,7 +16,7 @@ function test_jones() {
   output=$dir"/final.txt"
   testfile="./data/final_jones.txt"
   results=`diff ${output} ${testfile}`
-  echo "jones diff resulted in $results"
+  echo "diff resulted in $results"
 }
 
 function test_eighteen() {
@@ -31,14 +31,35 @@ function test_eighteen() {
   output=$dir"/final.txt"
   testfile="./data/final_eighteen.txt"
   results=`diff ${output} ${testfile}`
-  echo "eighteen diff resulted in $results"
+  echo "diff resulted in $results"
+}
+
+function test_disambiguation() {
+
+  #echo Directory: $1
+  current_dir=`pwd`
+  dir=$1 #/var/share/patentdata/disambiguation/test/18
+  cd $dir
+
+  disambiguate engine.txt blocking6.txt > runtime.log
+
+  cd $current_dir
+  output=$dir"/final.txt"
+  testfile="./data/final_berkeley.txt"
+  results=`diff ${output} ${testfile}`
+  echo "diff resulted in $results"
 }
 
 
-testval=`test_jones`
+testval=`test_jones foo`
 echo $cyanf"Jones:  $testval"
 testval=`test_eighteen`
 echo $yellowyf"Eighteen: $testval"
+
+testdir=/var/share/patentdata/disambiguation/experiments/earth/berkeley
+testval=`test_disambiguation $testdir`
+echo $orangeyf"Berkeley: $testval"
+
 
 #echo "arg 0:  $0"
 #echo "arg 1:  $1"
