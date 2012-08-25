@@ -39,7 +39,7 @@ testval=`test_jones`
 echo $cyanf"Jones result:  $testval"
 
 testval=`test_eighteen`
-echo $orangeyf"Eighteen: $testval"
+echo $yellowyf"Eighteen: $testval"
 
 #echo "arg 0:  $0"
 #echo "arg 1:  $1"

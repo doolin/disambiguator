@@ -43,3 +43,6 @@ echo "jwcmp test"
 echo "engine test"
 `./engine`
 
+echo "integration test"
+source ./integration.sh
+
