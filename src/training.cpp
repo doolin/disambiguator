@@ -703,21 +703,23 @@ create_tset02(list <RecordPairs> & results,
  */
 unsigned int
 create_xset03(list <RecordPairs> & results,
-              const list <const Record*> & reclist,
+              //const list <const Record*> & reclist,
               const vector < const RecordPList * > & vec_prare_names,
               const unsigned int limit ) {
 
     RecordPList pool;
     for (unsigned int i = 0; i < vec_prare_names.size(); ++i) {
-        //pool.insert(vec_prare_names.at(i)->begin(), vec_prare_names.at(i)->end());
         pool.insert(pool.end(), vec_prare_names.at(i)->begin(), vec_prare_names.at(i)->end());
     }
 
-    std::cout << "In create_xset03..." << __FILE__ << ":" << STRINGIZE(__LINE__) << std::endl;
+    std::cout << "In create_xset03..." << __FILE__
+              << ":" << STRINGIZE(__LINE__) << std::endl;
 
     unsigned int count = 0;
     const unsigned int base = 100000;
-    for (RecordPList::const_iterator p = pool.begin(); p != pool.end(); ++p) {
+
+    RecordPList::const_iterator p = pool.begin();
+    for (; p != pool.end(); ++p) {
 
         RecordPList::const_iterator q = p;
         for (++q; q != pool.end(); ++q) {

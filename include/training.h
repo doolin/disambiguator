@@ -289,7 +289,7 @@ unsigned int create_tset02      (list <RecordPairs> &results,
  * @todo Write some documentation
  */
 unsigned int create_xset03      (list <RecordPairs> &results,
-                                 const list <const Record*> & reclist,
+                                 //const list <const Record*> & reclist,
                                  const vector < const RecordPList * > & vec_prare_names,
                                  const unsigned int limit );
 

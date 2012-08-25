@@ -200,9 +200,8 @@ make_stable_training_sets_by_personal(const list <Record> & all_records,
 
     list<RecordPairs> pair_list;
     pair_list.clear();
-    // Where is const_rare_pointer_vec declared and initialized?
     // TODO: Unit test this, pair_list is probably output
-    create_xset03(pair_list, record_pointers, const_rare_pointer_vec, limit);
+    create_xset03(pair_list, /*record_pointers,*/ const_rare_pointer_vec, limit);
     current_file = training_filenames.at(0).c_str();
     write_xset03(current_file, pair_list);
 
