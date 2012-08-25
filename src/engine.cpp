@@ -344,7 +344,7 @@ fetch_records_from_txt(list <Record> & source,
 
     pos = prev_pos = 0;
 
-#if 1
+#if 0
     unsigned int position_in_ratios = 0;
 
     for (unsigned int i = 0; i < num_cols; ++i) {
@@ -384,7 +384,7 @@ fetch_records_from_txt(list <Record> & source,
         }
     }
 #endif
-    //pointer_array = instantiate_attributes(Record::column_names, num_cols);
+    pointer_array = instantiate_attributes(Record::column_names, num_cols);
 
 
     // always do this for all the attribute classes
