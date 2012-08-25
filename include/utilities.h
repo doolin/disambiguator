@@ -48,7 +48,7 @@ void   one_step_postprocess                     (const list < Record > & all_rec
                                                  const char * last_disambig_result,
                                                  const char * outputfile);
 
-string remove_headtail_space                    (const string & s);
+//string remove_headtail_space                    (const string & s);
 
 void   out_of_cluster_density                   (const ClusterSet & upper,
                                                  const ClusterSet & lower,

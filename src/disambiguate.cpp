@@ -20,6 +20,31 @@ using std::list;
 using std::string;
 
 
+// TODO: add a private header so this can be unit tested
+// This code is only used in this file
+//#include "private.h"
+string
+remove_headtail_space(const string & s) {
+
+    string::const_iterator istart = s.begin() , iend = s.end();
+    while (istart != iend) {
+        if (*istart != ' ') break;
+        ++istart;
+    }
+
+    while (iend != istart) {
+        --iend;
+        if( *iend != ' ' ) {
+            ++iend;
+            break;
+        }
+    }
+    string str_result(istart,iend);
+    return str_result;
+}
+
+
+
 
 namespace BlockingConfiguration {
     using std::string;

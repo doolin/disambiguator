@@ -244,30 +244,6 @@ one_step_postprocess(const list < Record > & all_records,
 }
 
 
-// TODO: Move this function to disambiguate.cpp, that's the only
-// place it's used
-string
-remove_headtail_space(const string & s) {
-
-    string::const_iterator istart = s.begin() , iend = s.end();
-    while( istart != iend ) {
-        if( *istart != ' ' )
-            break;
-        ++istart;
-    }
-
-    while( iend != istart ) {
-        --iend;
-        if( *iend != ' ' ) {
-            ++iend;
-            break;
-        }
-    }
-    string str_result(istart,iend);
-    return str_result;
-}
-
-
 void
 out_of_cluster_density(const ClusterSet & upper,
                        const ClusterSet & lower,
