@@ -331,61 +331,15 @@ fetch_records_from_txt(list <Record> & source,
 
     Attribute::register_class_names(requested_columns);
     vector < unsigned int > requested_column_indice;
-
     const unsigned int num_cols = requested_columns.size();
-
     requested_column_indice = create_column_indices(requested_columns, total_col_names);
 
     Record::column_names = requested_columns;
 
-
-
-    Attribute ** pointer_array = new Attribute *[num_cols];
-
-    pos = prev_pos = 0;
-
-#if 0
-    unsigned int position_in_ratios = 0;
-
-    for (unsigned int i = 0; i < num_cols; ++i) {
-
-        const int pos_in_query = Attribute::position_in_registry(Record::column_names[i]);
-        //std::cout << "pos_in_query: " << pos_in_query << std::endl;
-        //std::cout << "Record::column_names[i]: " << Record::column_names[i] << std::endl;
-
-        if ( pos_in_query == -1 ) {
-            for ( unsigned int j = 0; j < i; ++j )
-                delete pointer_array[j];
-            delete [] pointer_array;
-            throw cException_ColumnName_Not_Found(Record::column_names[i].c_str());
-        } else {
-            pointer_array[i] = create_attribute_instance ( Record::column_names[i].c_str() );
-        }
-
-#ifdef HLKJHLKJJHGKJHKJHKFHGFKHG
-        if ( Record::column_names[i] == cLongitude::class_name ) {
-            cLatitude::interactive_column_indice_in_query.push_back(i);
-        }
-        else if ( Record::column_names[i] == cStreet::class_name ) {
-            cLatitude::interactive_column_indice_in_query.push_back(i);
-        }
-        else if ( Record::column_names[i] == cCountry::class_name ) {
-            cLatitude::interactive_column_indice_in_query.push_back(i);
-        }
-        else if ( Record::column_names[i] == cAsgNum::class_name ) {
-            cAssignee::interactive_column_indice_in_query.push_back(i);
-        }
-#endif
-
-        // If this crashes, will need to add code in the function `create_attribute_instance`
-        if ( pointer_array[i]->get_attrib_group() != string("None") ) {
-            std::cout << "pointer_array[i]->get_attrib_group(): " << pointer_array[i]->get_attrib_group() << std::endl;
-            ++position_in_ratios;
-        }
-    }
-#endif
+    Attribute ** pointer_array; 
     pointer_array = instantiate_attributes(Record::column_names, num_cols);
 
+    pos = prev_pos = 0;
 
     // always do this for all the attribute classes
     for ( unsigned int i = 0; i < num_cols; ++i ) {
