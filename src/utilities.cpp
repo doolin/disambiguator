@@ -8,6 +8,10 @@
 #include "cluster.h"
 #include "postprocess.h"
 
+void
+exit_with_error(const char * msg, const char * file, const char * line) {
+  std::cerr << "Error: " << ", file: " << file << ":" << line << std::endl;
+}
 
 bool
 make_changable_training_sets_by_patent(const list <const Record*> & record_pointers,

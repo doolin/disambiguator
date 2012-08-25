@@ -55,5 +55,8 @@ void   out_of_cluster_density                   (const ClusterSet & upper,
                                                  const cRatios & ratio,
                                                  std::ofstream & ofile );
 
+void   exit_with_error                          (const char * s,
+                                                 const char * file,
+                                                 const char * line);
 
 #endif /* PATENT_UTILITIES_H */
