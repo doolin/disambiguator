@@ -303,12 +303,8 @@ parse_line(string line,
       unsigned int pos = 0;
       unsigned int prev_pos = 0;
 
-      // requested_column_indice is vector<unsigned int> defined
-      // around Line 738 above, see vector.at
       while (column_location++ != requested_column_indice.at(i)) {
-          // See string.find: http://www.cplusplus.com/reference/string/string/find/
           pos = line.find(delim, prev_pos);
-          // delim_size is defined above Line ~705
           prev_pos = pos + delim_size;
       }
       pos = line.find(delim, prev_pos);
@@ -318,6 +314,12 @@ parse_line(string line,
           // Find a link to .size for whatever type line is
           if ( prev_pos != line.size() )
               // Link to the substr method
+              // I don't understand why the work "link" keeps
+              // getting used for variable assignment.
+              // TODO: Write a blog post about this, and about the
+              // general notion of using generally accepted labels
+              // for common things instead fucking making up shit
+              // arbitrarily. It's variable assignment, not "linking".
               string_cache[i] = line.substr(prev_pos);
           else
               string_cache[i] = "";
@@ -329,10 +331,11 @@ parse_line(string line,
       // Link to the reset_data method
       // Why is this here? What purpose is it serving? This smells.
       // TODO: Figure out why this is here and see about putting
-      // it somewhere else.
+      // it somewhere else. Definitely unit test this 
       pointer_array[i]->reset_data(string_cache[i].c_str());
       // Link to the clone method
-      pAttrib = pointer_array[i]->clone();    //HERE CREATED NEW CLASS INSTANCES.
+      //HERE CREATED NEW CLASS INSTANCES.
+      pAttrib = pointer_array[i]->clone();
       temp_vec_attrib.push_back(pAttrib);
   }
 
@@ -342,10 +345,6 @@ parse_line(string line,
 
 
 /**
- * Aim: to fetch records from a txt format file into memory.
- * This is a very important function.
- *
- * Algorithm:
  * First of all, read the first line in the file. The first
  * line should include all the information of each column. ie. They
  * are usually the * column names. The format of the first line is
@@ -505,6 +504,8 @@ fetch_records_from_txt(list <Record> & source,
 
     std::cout << std::endl;
     std::cout << size << " records have been fetched from "<< txt_file << std::endl;
+
+    // TODO: What is this thing?
     Record::sample_record_pointer = & source.front();
 
     // TODO: Create a little function for this which can be unit tested
@@ -513,7 +514,8 @@ fetch_records_from_txt(list <Record> & source,
     }
     delete [] pointer_array;
 
-    for ( list< Record>::iterator ci = source.begin(); ci != source.end(); ++ci ) {
+    // TODO: Put this in it's own function and unit test it.
+    for (list< Record>::iterator ci = source.begin(); ci != source.end(); ++ci) {
         ci->reconfigure_record_for_interactives();
     }
 
@@ -549,6 +551,7 @@ create_attribute_instance ( const string & id ) {
     else if ( id == cStreet::static_get_class_name() ) {
         p = new cStreet;
     }
+
     else if ( id == cState::static_get_class_name() ) {
         p = new cState;
     }
@@ -566,8 +569,8 @@ create_attribute_instance ( const string & id ) {
     }
 
     //else if ( id == cAppDateStr::static_get_class_name() ) {
-//        p = new cAppDateStr;
-//    }
+    //   p = new cAppDateStr;
+    // }
     else if ( id == cAppDate::static_get_class_name() ) {
         p = new cAppDate;
     }
@@ -583,6 +586,7 @@ create_attribute_instance ( const string & id ) {
     else if ( id == cAssignee::static_get_class_name() ) {
         p = new cAssignee;
     }
+
     else if ( id == cAsgNum::static_get_class_name() ) {
         p = new cAsgNum;
     }
@@ -595,6 +599,7 @@ create_attribute_instance ( const string & id ) {
     else if ( id == cAppYear::static_get_class_name() ) {
         p = new cAppYear;
     }
+
     else if ( id == cGYear::static_get_class_name() ) {
         p = new cGYear;
     }
@@ -607,8 +612,9 @@ create_attribute_instance ( const string & id ) {
     else if ( id == cClass_M2::static_get_class_name() ) {
         p = new cClass_M2;
     }
-    else
+    else {
         p = NULL;
+    }
 
     return p;
 }
