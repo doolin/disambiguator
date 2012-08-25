@@ -327,7 +327,7 @@ fetch_records_from_txt(list <Record> & source,
     register size_t pos, prev_pos;
     pos = prev_pos = 0;
 
-#if 1
+#if 0
     while (  pos != string::npos){
         //std::cout << "pos " << pos << std::endl;
         //std::cout << "string::npos " << std::string::npos << std::endl;
@@ -342,7 +342,7 @@ fetch_records_from_txt(list <Record> & source,
         //std::cout << "columnname: " << columnname << std::endl;
     }
 #endif
-    //total_col_names = parse_column_names(line);
+    total_col_names = parse_column_names(line);
 
     Attribute::register_class_names(requested_columns);
     vector < unsigned int > requested_column_indice;
