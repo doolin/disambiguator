@@ -612,17 +612,13 @@ find_rare_names_v2(const vector < RecordPList * > &vec_pdest,
                     std::cout << "Number of chosen word: " << num_chosen_words << std::endl;
             }
         }
-        //for (set<string>::const_iterator qq = chosen_words.begin(); qq != chosen_words.end(); ++qq )
-            //std::cout << *qq << " , ";
-        //std::cout << std::endl;
-        //std::cout << "Number of chosen words = " << chosen_words.size() << std::endl;
 
         //step 4: find the name part that contains the words.
         outfile << blocking_columns.at(kkk) << ":" << '\n';
         num_chosen_words = 0;
         set < string > in_phrase_wordset;
 
-        for ( map < string, RecordPList >::const_iterator p = fullname.get_block_map().begin(); p != fullname.get_block_map().end() ; ++p ) {
+        for (map < string, RecordPList >::const_iterator p = fullname.get_block_map().begin(); p != fullname.get_block_map().end() ; ++p ) {
             const string & info = * (*(p->second.begin()))->get_data_by_index(cindex).at(0);
             in_phrase_wordset.clear();
             position = prev_pos = 0;
@@ -637,8 +633,6 @@ find_rare_names_v2(const vector < RecordPList * > &vec_pdest,
                 prev_pos = position + strlen(delim);
             } while ( position != string::npos);
 
-            //set_intersection(in_phrase_wordset.begin(), in_phrase_wordset.end(),
-            //                chosen_words.begin(), chosen_words.end(), back_inserter(temp_intersect));
             for ( set<string>::const_iterator pm = in_phrase_wordset.begin(); pm != in_phrase_wordset.end(); ++pm ) {
                 if ( chosen_words.find(*pm) != chosen_words.end() ) {
                     //vec_pdest[kkk]->insert(*p->second.begin());
@@ -656,6 +650,7 @@ find_rare_names_v2(const vector < RecordPList * > &vec_pdest,
     }
 }
 
+
 // TODO: Unit test this thing
 unsigned int
 create_tset02(list <RecordPairs> & results,
@@ -670,10 +665,13 @@ create_tset02(list <RecordPairs> & results,
         throw cException_Other("Wrong column names");
     }
 
-    std::cout << "In create_tset02..." << __FILE__ << ":" << STRINGIZE(__LINE__) << std::endl;
+    std::cout << "In create_tset02..." << __FILE__ << ":"
+              << STRINGIZE(__LINE__) << std::endl;
 
     vector < unsigned int > column_indice;
-    for (vector<string>::const_iterator p = column_names.begin(); p != column_names.end(); ++p) {
+
+    vector<string>::const_iterator p = column_names.begin();
+    for (; p != column_names.end(); ++p) {
         column_indice.push_back(Record::get_index_by_name(*p));
     }
 
@@ -730,7 +728,6 @@ create_tset02(list <RecordPairs> & results,
 
     results.insert(results.begin(), answer.begin(), answer.end());
     return count;
-
 }
 
 
