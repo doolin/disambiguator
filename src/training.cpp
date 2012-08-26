@@ -534,7 +534,7 @@ build_word_map(const cBlocking & fullname,
             }
 
             else {
-                ++ (pword_map->second.first);
+                ++(pword_map->second.first);
                 pword_map->second.second += size;
             }
             if (position == string::npos) break;
@@ -546,8 +546,8 @@ build_word_map(const cBlocking & fullname,
 
 
 void
-find_rare_names_v2(const vector < RecordPList * > &vec_pdest,
-                   const list< const Record* > & source ) {
+find_rare_names_v2(const vector < RecordPList * > & vec_pdest,
+                   const RecordPList & source ) {
 
     // step 1: build phrase map: key=phrase(here is firstname+lastname with
     // some delimiters). value= list of unique_ids (here is invnums)
