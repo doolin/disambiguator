@@ -274,6 +274,10 @@ private:
 };
 
 
+bool   make_stable_training_sets_by_personal    (const list <Record> & all_records,
+                                                 const unsigned int limit,
+                                                 const vector <string> & training_filenames);
+
 
 
 void         find_rare_names_v2 (const vector < RecordPList * > &vec_pdest,
