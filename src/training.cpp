@@ -553,9 +553,9 @@ choose_rare_words(const map<string, cWord_occurrence> word_map, set<string> & ch
 
     for (cpword_map = word_map.begin(); cpword_map != word_map.end(); ++cpword_map ) {
         // TODO: Replace these magic numbers with #defines in the header.
-        if (cpword_map->second.first < 4  &&
-            cpword_map->second.second > 6 &&
-            cpword_map->second.second < 100 ) {
+        if (cpword_map->second.first  < RARE_NAMES_FLOOR  &&
+            cpword_map->second.second > RARE_NAMES_UNIQUE &&
+            cpword_map->second.second < RARE_NAMES_MAX ) {
 
             chosen_words.insert(cpword_map->first);
             ++num_chosen_words;
@@ -594,8 +594,9 @@ find_rare_names_v2(const vector < RecordPList * > & vec_pdest,
     map < string, cWord_occurrence >::const_iterator cpword_map;
 
     const string rarename_txt = "Rare_Names.txt";
-    std::ofstream outfile ( rarename_txt.c_str() );
+    std::ofstream outfile(rarename_txt.c_str());
     std::cout << "Rare names are saved in the file " << rarename_txt << std::endl;
+
     for ( unsigned int kkk = 0; kkk < vec_pdest.size(); ++kkk) {
 
         map < string, cWord_occurrence > word_map;
@@ -604,7 +605,7 @@ find_rare_names_v2(const vector < RecordPList * > & vec_pdest,
 
         //step 3: find words whose unique phrase occurrence is low but total occurrence is not too low.
         set <string> chosen_words;
-#if 1
+#if 0
         unsigned int num_chosen_words = 0;
         const unsigned int base = 1000;
         for ( cpword_map = word_map.begin(); cpword_map != word_map.end(); ++cpword_map ) {
@@ -621,7 +622,8 @@ find_rare_names_v2(const vector < RecordPList * > & vec_pdest,
 
         //step 4: find the name part that contains the words.
         outfile << blocking_columns.at(kkk) << ":" << '\n';
-        num_chosen_words = 0;
+        unsigned int num_chosen_words = 0;
+        const unsigned int base = 1000;
         set < string > in_phrase_wordset;
 
         for (map < string, RecordPList >::const_iterator p = fullname.get_block_map().begin(); p != fullname.get_block_map().end() ; ++p ) {
