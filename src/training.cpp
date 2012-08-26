@@ -687,35 +687,40 @@ create_tset02(list <RecordPairs> & results,
         const unsigned int col_index = column_indice.at(i);
         map < string, RecordPList > data_map;
 
-        for ( RecordPList::const_iterator p = vec_prare_names[i]->begin(); p != vec_prare_names[i]->end(); ++p ) {
+        RecordPList::const_iterator p = vec_prare_names[i]->begin();
+        for (; p != vec_prare_names[i]->end(); ++p ) {
             data_map.insert(std::pair<string, RecordPList >( * (*p)->get_data_by_index(col_index).at(0), emptyone));
         }
 
-        for (list<const Record*>::const_iterator q = reclist.begin(); q != reclist.end(); ++q ) {
+        list<const Record*>::const_iterator q = reclist.begin();
+        for (; q != reclist.end(); ++q) {
             pm = data_map.find( * (*q)->get_data_by_index(col_index).at(0));
-            if ( pm != data_map.end() )
-                //pm->second.insert(*q);
-                pm->second.push_back(*q);
+            if (pm != data_map.end()) pm->second.push_back(*q);
         }
 
-        for ( cpm = data_map.begin(); cpm != data_map.end(); ++cpm ) {
-            for (RecordPList::const_iterator rr = cpm->second.begin(); rr != cpm->second.end(); ++rr ) {
+        for (cpm = data_map.begin(); cpm != data_map.end(); ++cpm) {
+
+            RecordPList::const_iterator rr = cpm->second.begin();
+            for (; rr != cpm->second.end(); ++rr ) {
                 RecordPList::const_iterator ss = rr;
                 ++ss;
-                for ( ; ss != cpm->second.end(); ++ss) {
+                for (; ss != cpm->second.end(); ++ss) {
                     bool data_ok = true;
-                    for ( unsigned int j = 0; j < column_indice.size(); ++j) {
+                    for (unsigned int j = 0; j < column_indice.size(); ++j) {
                         if ( (*rr)->get_data_by_index(column_indice.at(j)) != (*ss)->get_data_by_index(column_indice.at(j)) ) {
                             data_ok = false;
                             break;
                         }
                     }
-                    if ( data_ok ) {
+
+                    if (data_ok) {
                         answer.insert(RecordPairs( *rr, *ss));
                         ++count;
-                        if ( count % base == 0 )
+                        if (count % base == 0) {
                             std::cout << "Tset02: " << count << " records obtained." << std::endl;
-                        if ( count >= limit ) {
+                        }
+
+                        if (count >= limit) {
                             results.insert(results.begin(), answer.begin(), answer.end());
                             return count;
                         }
