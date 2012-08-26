@@ -1,5 +1,12 @@
 /** @file */
 
+#ifndef PATENT_TRAINING_H
+#define PATENT_TRAINING_H
+
+#define RARE_NAMES_FLOOR  4
+#define RARE_NAMES_UNIQUE 6
+#define RARE_NAMES_MAX    100
+
 /**
  * Training:
  *
@@ -50,9 +57,6 @@
  * all the quota are used up.
  */
 
-
-#ifndef PATENT_TRAINING_H
-#define PATENT_TRAINING_H
 
 #include "attribute.h"
 #include "engine.h"
