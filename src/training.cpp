@@ -504,11 +504,46 @@ cBlocking_For_Training::create_set(pFunc mf,
 }
 
 
+typedef std::pair < unsigned int, unsigned int > cWord_occurrence;
+
+void
+build_word_map(cBlocking & fullname,const unsigned int index, map<string, cWord_occurrence> word_map) {
+
+    unsigned int size;
+    const char * delim = " ";
+    size_t position, prev_pos;
+    map < string, cWord_occurrence >::iterator pword_map;
+
+    map < string, RecordPList >::const_iterator p = fullname.get_block_map().begin();
+    for (p; p != fullname.get_block_map().end() ; ++p) {
+        size = p->second.size();
+        position = prev_pos = 0;
+        const string & info = * (*(p->second.begin()))->get_data_by_index(index).at(0);
+        while ( true ) {
+            if ( info.size() == 0 )
+                break;
+            position = info.find(delim, prev_pos);
+            string temp = info.substr(prev_pos, position - prev_pos);
+            pword_map = word_map.find(temp);
+            if (pword_map == word_map.end()) {
+                word_map.insert(std::pair<string, cWord_occurrence>(temp, cWord_occurrence(1, size)) );
+            }
+            else {
+                ++ (pword_map->second.first);
+                pword_map->second.second += size;
+            }
+            if (position == string::npos) break;
+            prev_pos = position + strlen(delim);
+        }
+    }
+}
+
+
+
 void
 find_rare_names_v2(const vector < RecordPList * > &vec_pdest,
                    const list< const Record* > & source ) {
 
-    typedef std::pair < unsigned int, unsigned int > cWord_occurrence;
     // step 1: build phrase map: key=phrase(here is firstname+lastname with
     // some delimiters). value= list of unique_ids (here is invnums)
     const string blocks[] = {cFirstname::static_get_class_name(), cLastname::static_get_class_name()};
@@ -539,6 +574,7 @@ find_rare_names_v2(const vector < RecordPList * > &vec_pdest,
         set <string> chosen_words;
         const unsigned int cindex = Record::get_index_by_name(blocking_columns[kkk]);
 
+#if 1
         map < string, RecordPList >::const_iterator p = fullname.get_block_map().begin(); 
         for (p; p != fullname.get_block_map().end() ; ++p) {
             size = p->second.size();
@@ -550,22 +586,24 @@ find_rare_names_v2(const vector < RecordPList * > &vec_pdest,
                 position = info.find(delim, prev_pos);
                 string temp = info.substr(prev_pos, position - prev_pos);
                 pword_map = word_map.find(temp);
-                if ( pword_map == word_map.end() ) {
+                if (pword_map == word_map.end()) {
                     word_map.insert(std::pair<string, cWord_occurrence>(temp, cWord_occurrence(1, size)) );
                 }
                 else {
                     ++ (pword_map->second.first);
                     pword_map->second.second += size;
                 }
-                if ( position == string::npos )
-                    break;
+                if (position == string::npos) break;
                 prev_pos = position + strlen(delim);
             }
         }
+#else
+        build_word_map(fullname, word_map);
+#endif
 
+        //step 3: find words whose unique phrase occurrence is low but total occurrence is not too low.
         unsigned int num_chosen_words = 0;
         const unsigned int base = 1000;
-        //step 3: find words whose unique phrase occurrence is low but total occurrence is not too low.
         for ( cpword_map = word_map.begin(); cpword_map != word_map.end(); ++cpword_map ) {
             if (cpword_map->second.first < 4  && cpword_map->second.second > 6 && cpword_map->second.second < 100 ) {
                 chosen_words.insert(cpword_map->first);
