@@ -572,8 +572,8 @@ write_rare_words(const cBlocking & fullname,
     const set<string> & chosen_words,
     const unsigned int cindex,
     const vector<RecordPList*> & vec_pdest,
-    unsigned int kkk,
-    std::ofstream os) {
+    const unsigned int kkk,
+    std::ofstream & os) {
 
     unsigned int num_chosen_words = 0;
     const unsigned int base = 1000;
@@ -656,7 +656,7 @@ find_rare_names_v2(const vector < RecordPList * > & vec_pdest,
         //step 4: find the name part that contains the words.
         outfile << blocking_columns.at(kkk) << ":" << '\n';
 
-#if 1
+#if 0
         unsigned int num_chosen_words = 0;
         const unsigned int base = 1000;
         set <string> in_phrase_wordset;
@@ -689,7 +689,7 @@ find_rare_names_v2(const vector < RecordPList * > & vec_pdest,
             }
         }
 #else
-        write_rare_words(fullname, chosen_words, cindex, vec_pdest,kkk, outfile);
+        write_rare_words(fullname, chosen_words, cindex, vec_pdest, kkk, outfile);
 
 #endif
 
