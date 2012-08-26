@@ -544,6 +544,28 @@ build_word_map(const cBlocking & fullname,
 }
 
 
+void
+choose_rare_words(const map<string, cWord_occurrence> word_map, set<string> & chosen_words) {
+
+    unsigned int num_chosen_words = 0;
+    const unsigned int base = 1000;
+    map<string, cWord_occurrence>::const_iterator cpword_map;
+
+    for (cpword_map = word_map.begin(); cpword_map != word_map.end(); ++cpword_map ) {
+        // TODO: Replace these magic numbers with #defines in the header.
+        if (cpword_map->second.first < 4  &&
+            cpword_map->second.second > 6 &&
+            cpword_map->second.second < 100 ) {
+
+            chosen_words.insert(cpword_map->first);
+            ++num_chosen_words;
+            if ( num_chosen_words % base == 0 )
+                std::cout << "Number of chosen word: " << num_chosen_words << std::endl;
+        }
+    }
+
+}
+
 
 void
 find_rare_names_v2(const vector < RecordPList * > & vec_pdest,
@@ -582,6 +604,7 @@ find_rare_names_v2(const vector < RecordPList * > & vec_pdest,
 
         //step 3: find words whose unique phrase occurrence is low but total occurrence is not too low.
         set <string> chosen_words;
+#if 1
         unsigned int num_chosen_words = 0;
         const unsigned int base = 1000;
         for ( cpword_map = word_map.begin(); cpword_map != word_map.end(); ++cpword_map ) {
@@ -592,6 +615,9 @@ find_rare_names_v2(const vector < RecordPList * > & vec_pdest,
                     std::cout << "Number of chosen word: " << num_chosen_words << std::endl;
             }
         }
+#else
+        choose_rare_words(word_map, chosen_words);
+#endif
 
         //step 4: find the name part that contains the words.
         outfile << blocking_columns.at(kkk) << ":" << '\n';
