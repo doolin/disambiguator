@@ -597,36 +597,27 @@ find_rare_names_v2(const vector < RecordPList * > & vec_pdest,
     std::ofstream outfile(rarename_txt.c_str());
     std::cout << "Rare names are saved in the file " << rarename_txt << std::endl;
 
-    for ( unsigned int kkk = 0; kkk < vec_pdest.size(); ++kkk) {
+    for (unsigned int kkk = 0; kkk < vec_pdest.size(); ++kkk) {
 
         map < string, cWord_occurrence > word_map;
         const unsigned int cindex = Record::get_index_by_name(blocking_columns[kkk]);
         build_word_map(fullname, cindex, word_map);
 
-        //step 3: find words whose unique phrase occurrence is low but total occurrence is not too low.
+        //step 3: find words whose unique phrase occurrence is
+        //low but total occurrence is not too low.
         set <string> chosen_words;
-#if 0
-        unsigned int num_chosen_words = 0;
-        const unsigned int base = 1000;
-        for ( cpword_map = word_map.begin(); cpword_map != word_map.end(); ++cpword_map ) {
-            if (cpword_map->second.first < 4  && cpword_map->second.second > 6 && cpword_map->second.second < 100 ) {
-                chosen_words.insert(cpword_map->first);
-                ++num_chosen_words;
-                if ( num_chosen_words % base == 0 )
-                    std::cout << "Number of chosen word: " << num_chosen_words << std::endl;
-            }
-        }
-#else
         choose_rare_words(word_map, chosen_words);
-#endif
 
         //step 4: find the name part that contains the words.
         outfile << blocking_columns.at(kkk) << ":" << '\n';
+
+
         unsigned int num_chosen_words = 0;
         const unsigned int base = 1000;
-        set < string > in_phrase_wordset;
+        set <string> in_phrase_wordset;
 
-        for (map < string, RecordPList >::const_iterator p = fullname.get_block_map().begin(); p != fullname.get_block_map().end() ; ++p ) {
+        map < string, RecordPList >::const_iterator p = fullname.get_block_map().begin();
+        for (; p != fullname.get_block_map().end() ; ++p) {
             const string & info = * (*(p->second.begin()))->get_data_by_index(cindex).at(0);
             in_phrase_wordset.clear();
             position = prev_pos = 0;
@@ -641,14 +632,14 @@ find_rare_names_v2(const vector < RecordPList * > & vec_pdest,
                 prev_pos = position + strlen(delim);
             } while ( position != string::npos);
 
-            for ( set<string>::const_iterator pm = in_phrase_wordset.begin(); pm != in_phrase_wordset.end(); ++pm ) {
+            for (set<string>::const_iterator pm = in_phrase_wordset.begin(); pm != in_phrase_wordset.end(); ++pm) {
                 if ( chosen_words.find(*pm) != chosen_words.end() ) {
-                    //vec_pdest[kkk]->insert(*p->second.begin());
                     vec_pdest[kkk]->push_back(*p->second.begin());
                     outfile << * (*p->second.begin())->get_data_by_index(cindex).at(0) << " , ";
                     ++ num_chosen_words;
-                    if ( num_chosen_words % base == 0 )
+                    if (0 == (num_chosen_words % base)) {
                         std::cout << "Number of chosen phrases: " << num_chosen_words << std::endl;
+                    }
                     break;
                 }
             }
