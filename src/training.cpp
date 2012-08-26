@@ -509,7 +509,7 @@ typedef std::pair < unsigned int, unsigned int > cWord_occurrence;
 
 void
 build_word_map(const cBlocking & fullname,
-    const unsigned int index, map<string, cWord_occurrence> word_map) {
+    const unsigned int index, map<string, cWord_occurrence> & word_map) {
 
     unsigned int size;
     const char * delim = " ";
