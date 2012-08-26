@@ -575,44 +575,19 @@ find_rare_names_v2(const vector < RecordPList * > & vec_pdest,
     std::ofstream outfile ( rarename_txt.c_str() );
     std::cout << "Rare names are saved in the file " << rarename_txt << std::endl;
     for ( unsigned int kkk = 0; kkk < vec_pdest.size(); ++kkk) {
-        map < string, cWord_occurrence > word_map;
-        set <string> chosen_words;
-        const unsigned int cindex = Record::get_index_by_name(blocking_columns[kkk]);
 
-#if 1
-        map < string, RecordPList >::const_iterator p = fullname.get_block_map().begin(); 
-        for (p; p != fullname.get_block_map().end() ; ++p) {
-            size = p->second.size();
-            position = prev_pos = 0;
-            const string & info = * (*(p->second.begin()))->get_data_by_index(cindex).at(0);
-            while ( true ) {
-                if ( info.size() == 0 )
-                    break;
-                position = info.find(delim, prev_pos);
-                string temp = info.substr(prev_pos, position - prev_pos);
-                pword_map = word_map.find(temp);
-                if (pword_map == word_map.end()) {
-                    word_map.insert(std::pair<string, cWord_occurrence>(temp, cWord_occurrence(1, size)) );
-                }
-                else {
-                    ++ (pword_map->second.first);
-                    pword_map->second.second += size;
-                }
-                if (position == string::npos) break;
-                prev_pos = position + strlen(delim);
-            }
-        }
-#else
-        build_word_map(fullname, word_map);
-#endif
+        map < string, cWord_occurrence > word_map;
+        const unsigned int cindex = Record::get_index_by_name(blocking_columns[kkk]);
+        build_word_map(fullname, cindex, word_map);
 
         //step 3: find words whose unique phrase occurrence is low but total occurrence is not too low.
+        set <string> chosen_words;
         unsigned int num_chosen_words = 0;
         const unsigned int base = 1000;
         for ( cpword_map = word_map.begin(); cpword_map != word_map.end(); ++cpword_map ) {
             if (cpword_map->second.first < 4  && cpword_map->second.second > 6 && cpword_map->second.second < 100 ) {
                 chosen_words.insert(cpword_map->first);
-                ++ num_chosen_words;
+                ++num_chosen_words;
                 if ( num_chosen_words % base == 0 )
                     std::cout << "Number of chosen word: " << num_chosen_words << std::endl;
             }
