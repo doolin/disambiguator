@@ -508,7 +508,8 @@ cBlocking_For_Training::create_set(pFunc mf,
 typedef std::pair < unsigned int, unsigned int > cWord_occurrence;
 
 void
-build_word_map(cBlocking & fullname,const unsigned int index, map<string, cWord_occurrence> word_map) {
+build_word_map(const cBlocking & fullname,
+    const unsigned int index, map<string, cWord_occurrence> word_map) {
 
     unsigned int size;
     const char * delim = " ";
@@ -520,15 +521,18 @@ build_word_map(cBlocking & fullname,const unsigned int index, map<string, cWord_
         size = p->second.size();
         position = prev_pos = 0;
         const string & info = * (*(p->second.begin()))->get_data_by_index(index).at(0);
-        while ( true ) {
-            if ( info.size() == 0 )
-                break;
+
+        while (true) {
+
+            if (0 == info.size()) break;
             position = info.find(delim, prev_pos);
             string temp = info.substr(prev_pos, position - prev_pos);
             pword_map = word_map.find(temp);
+
             if (pword_map == word_map.end()) {
                 word_map.insert(std::pair<string, cWord_occurrence>(temp, cWord_occurrence(1, size)) );
             }
+
             else {
                 ++ (pword_map->second.first);
                 pword_map->second.second += size;
