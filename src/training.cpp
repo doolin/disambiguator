@@ -556,25 +556,17 @@ build_word_map(const cBlocking & fullname, const unsigned int index,
 
 
 void
-choose_rare_words(const map<string, WordCounts> word_map,
-    set<string> & chosen_words) {
+choose_rare_words(const WordCounter word_map,
+                  set<string> & chosen_words) {
 
-    unsigned int num_chosen_words = 0;
-    const unsigned int base = RARE_WORD_COUNTER;
-    map<string, WordCounts>::const_iterator cpword_map;
+    WordCounter::const_iterator wc;
 
-    for (cpword_map = word_map.begin(); cpword_map != word_map.end(); ++cpword_map ) {
-        if (cpword_map->second.first  < RARE_NAMES_FLOOR  &&
-            cpword_map->second.second > RARE_NAMES_UNIQUE &&
-            cpword_map->second.second < RARE_NAMES_MAX ) {
+    for (wc = word_map.begin(); wc != word_map.end(); ++wc) {
+        if (wc->second.first  < RARE_NAMES_FLOOR  &&
+            wc->second.second > RARE_NAMES_UNIQUE &&
+            wc->second.second < RARE_NAMES_MAX ) {
 
-            chosen_words.insert(cpword_map->first);
-            ++num_chosen_words;
-
-            if (num_chosen_words % base == 0) {
-                std::cout << "Number of chosen word: "
-                          << num_chosen_words << std::endl;
-            }
+            chosen_words.insert(wc->first);
         }
     }
 }

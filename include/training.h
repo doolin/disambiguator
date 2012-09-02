@@ -20,9 +20,11 @@ typedef Blocks::const_iterator blocks_citer_t;
 
 typedef std::pair<const Record *, const Record *> RecordPair;
 
+// These are used from finding "rare" words for building
+// the training match set.
 // Verify: pair < uint local_count, uint global_count >
 typedef std::pair < unsigned int, unsigned int > WordCounts;
-
+typedef std::map<std::string, WordCounts> WordCounter;
 
 /**
  * Training:
@@ -317,7 +319,7 @@ unsigned int create_xset03      (list <RecordPair> &results,
  *   "global" uniqueness is the number of instance of local
  * TODO: Unit test.
  */
-void         choose_rare_words  (const map<string, WordCounts> word_map,
+void         choose_rare_words  (const WordCounter word_map,
                                  set<string> & chosen_words);
 
 
