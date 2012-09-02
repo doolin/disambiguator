@@ -166,8 +166,7 @@ public:
     explicit cBlocking(const list<const Record *> & psource, const vector<string> & blocking_column_names,
         const vector<const StringManipulator*>& pmanipulators, const string & unique_identifier);
 
-    //const map<string, RecordPList > & get_block_map() const {return blocking_data;}
-    const Blocks & get_block_map() const {
+    const Blocks & get_blocks() const {
       return blocking_data;
     }
 };

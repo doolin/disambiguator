@@ -530,9 +530,8 @@ build_word_map(const cBlocking & fullname, const unsigned int index,
     size_t position, prev_pos;
     map < string, cWord_occurrence >::iterator pword_map;
 
-    //map < string, RecordPList >::const_iterator p = fullname.get_block_map().begin();
-    Blocks::const_iterator block = fullname.get_block_map().begin();
-    for (block; block != fullname.get_block_map().end() ; ++block) {
+    Blocks::const_iterator block = fullname.get_blocks().begin();
+    for (block; block != fullname.get_blocks().end() ; ++block) {
 
         size = block->second.size();
         position = prev_pos = 0;
@@ -597,8 +596,8 @@ write_rare_words(const cBlocking & fullname,
     set <string> in_phrase_wordset;
     const char * delim = " "; //Crappy style, #define this
 
-    map < string, RecordPList >::const_iterator p = fullname.get_block_map().begin();
-    for (; p != fullname.get_block_map().end() ; ++p) {
+    map < string, RecordPList >::const_iterator p = fullname.get_blocks().begin();
+    for (; p != fullname.get_blocks().end() ; ++p) {
 
         const string & info = * (*(p->second.begin()))->get_data_by_index(cindex).at(0);
         in_phrase_wordset.clear();
