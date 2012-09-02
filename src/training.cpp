@@ -580,6 +580,8 @@ choose_rare_words(const map<string, WordCounts> word_map,
 }
 
 
+// This function is doing more than writing out the rare names.
+// TODO: Refactor into something unit testable.
 void
 write_rare_words(const cBlocking & fullname,
     const set<string> & chosen_words,
@@ -718,7 +720,7 @@ create_tset02(list <RecordPair> & results,
     for (unsigned int i = 0; i < column_names.size(); ++i) {
 
         const unsigned int col_index = column_indice.at(i);
-        // TODO: Change to Blocks
+        // TODO: Change to Blocks data_map, then Blocks blocks;
         map < string, RecordPList > data_map;
 
         RecordPList::const_iterator p = vec_prare_names[i]->begin();
