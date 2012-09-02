@@ -65,7 +65,9 @@
 
 
 
-typedef std::pair< const Record *, const Record *> RecordPairs;
+typedef map<string, RecordPList> BlockTag;
+
+typedef std::pair<const Record *, const Record *> RecordPairs;
 
 struct PrintPair {
 

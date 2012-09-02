@@ -516,19 +516,24 @@ cBlocking_For_Training::create_set(pFunc mf,
 }
 
 
+// Verify: pair < uint local_count, uint global_count >
 typedef std::pair < unsigned int, unsigned int > cWord_occurrence;
 
+
+// word_map is output
 void
-build_word_map(const cBlocking & fullname,
-    const unsigned int index, map<string, cWord_occurrence> & word_map) {
+build_word_map(const cBlocking & fullname, const unsigned int index,
+    map<string, cWord_occurrence> & word_map) {
 
     unsigned int size;
     const char * delim = " ";
     size_t position, prev_pos;
     map < string, cWord_occurrence >::iterator pword_map;
 
-    map < string, RecordPList >::const_iterator p = fullname.get_block_map().begin();
+    //map < string, RecordPList >::const_iterator p = fullname.get_block_map().begin();
+    BlockTag::const_iterator p = fullname.get_block_map().begin();
     for (p; p != fullname.get_block_map().end() ; ++p) {
+
         size = p->second.size();
         position = prev_pos = 0;
         const string & info = * (*(p->second.begin()))->get_data_by_index(index).at(0);
@@ -662,6 +667,7 @@ find_rare_names_v2(const vector < RecordPList * > & vec_pdest,
 
         map < string, cWord_occurrence > word_map;
         const unsigned int cindex = Record::get_index_by_name(blocking_columns[kkk]);
+        // word_map is output
         build_word_map(fullname, cindex, word_map);
 
         //step 3: find words whose unique phrase occurrence is
