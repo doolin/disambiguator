@@ -594,16 +594,21 @@ write_rare_words(const cBlocking & fullname,
 
     map < string, RecordPList >::const_iterator p = fullname.get_block_map().begin();
     for (; p != fullname.get_block_map().end() ; ++p) {
+
         const string & info = * (*(p->second.begin()))->get_data_by_index(cindex).at(0);
         in_phrase_wordset.clear();
         position = prev_pos = 0;
+
         do {
             position = info.find(delim, prev_pos);
             string temp;
-            if ( position != string::npos)
+
+            if ( position != string::npos) {
                 temp = info.substr(prev_pos, position - prev_pos);
-            else
+            } else {
                 temp = info.substr(prev_pos);
+            }
+
             in_phrase_wordset.insert(temp);
             prev_pos = position + strlen(delim);
         } while ( position != string::npos);
@@ -907,7 +912,7 @@ pthread_mutex_t cWorker_For_Training::iter_mutex = PTHREAD_MUTEX_INITIALIZER;
 void cWorker_For_Training::run() {
 }
 
-
+#if 0
 unsigned int
 create_xset01(list <RecordPairs> &results, const list <const Record *> & source,
               const unsigned int limit) {
@@ -943,4 +948,4 @@ create_xset01(list <RecordPairs> &results, const list <const Record *> & source,
     std::cout << " xset01 done." << std::endl;
     return count;
 }
-
+#endif
