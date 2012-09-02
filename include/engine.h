@@ -74,6 +74,8 @@ public:
 // but what can you do?
 typedef map<const Record *, RecordPList, cSort_by_attrib> PatentTree;
 
+// Point a unique record at a unique inventor.
+typedef map < const Record *, const Record *> Uid2UinvTree;
 
 
 #include "string_manipulator.h"
