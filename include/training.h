@@ -8,6 +8,22 @@
 #define RARE_NAMES_MAX    100
 #define RARE_WORD_COUNTER 1000
 
+
+#include "attribute.h"
+#include "engine.h"
+#include "threading.h"
+
+
+
+typedef map<string, RecordPList> Blocks;
+typedef Blocks::const_iterator blocks_citer_t;
+
+typedef std::pair<const Record *, const Record *> RecordPair;
+
+// Verify: pair < uint local_count, uint global_count >
+typedef std::pair < unsigned int, unsigned int > WordCounts;
+
+
 /**
  * Training:
  *
@@ -26,7 +42,9 @@
 /**
  * tset02: match set of record pairs to train patent information
  * based on personal information
- *
+ */
+
+/**
  * tset05: match set of record pairs to train personal
  * information based on patent information
  */
@@ -56,22 +74,6 @@
  * possible pairs starting from the first block, until
  * all the quota are used up.
  */
-
-
-#include "attribute.h"
-#include "engine.h"
-#include "threading.h"
-
-
-
-typedef map<string, RecordPList> Blocks;
-typedef Blocks::const_iterator blocks_citer_t;
-
-typedef std::pair<const Record *, const Record *> RecordPair;
-
-// Verify: pair < uint local_count, uint global_count >
-typedef std::pair < unsigned int, unsigned int > WordCounts;
-
 
 
 struct PrintPair {
