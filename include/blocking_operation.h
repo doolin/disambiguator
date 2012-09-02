@@ -393,7 +393,7 @@ private:
     *  NOTE THAT the comparison function for the tree is determined
     *  in the constructor.
     */
-    void build_patent_tree(const list < const Record * > & allrec);
+    void build_patent_tree(const RecordPList & allrec);
 
    /**
     *  RecordPList get_topN_coauthors( const Record * pRec, const unsigned int topN) const:
@@ -434,21 +434,14 @@ public:
     * void build_uid2uinv_tree( const ClusterInfo & source):
     * build an internal unique record id to unique inventor
     * id map from a ClusterInfo object.
+    * TODO: Document side effects if produced
     */
     void build_uid2uinv_tree(const ClusterInfo &);
 
-   /**
-    * const map < const Record *, RecordPList, cSort_by_attrib > & get_patent_tree() const :
-    * get the reference of const patent tree
-    */
     const PatentTree & get_patent_tree() const {
       return patent_tree;
     }
 
-   /**
-    * map < const Record *, const Record * > & get_uid2uinv_tree():
-    * get the reference of the unique record id to unique inventor id tree.
-    */
     map < const Record *, const Record * > & get_uid2uinv_tree() {
       return uid2uinv_tree;
     }
