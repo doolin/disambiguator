@@ -42,7 +42,6 @@
  */
 
 /**
- *
  * Due to the limit of record pairs in each training set
  * (> 1 million and <10 million in our case), in order
  * to obtain an unbiased training set, two rounds of pair
@@ -71,7 +70,7 @@ typedef Blocks::const_iterator blocks_citer_t;
 typedef std::pair<const Record *, const Record *> RecordPair;
 
 // Verify: pair < uint local_count, uint global_count >
-typedef std::pair < unsigned int, unsigned int > cWord_occurrence;
+typedef std::pair < unsigned int, unsigned int > WordCounts;
 
 
 
@@ -316,7 +315,7 @@ unsigned int create_xset03      (list <RecordPair> &results,
  *   "global" uniqueness is the number of instance of local
  * TODO: Unit test.
  */
-void         choose_rare_words  (const map<string, cWord_occurrence> word_map,
+void         choose_rare_words  (const map<string, WordCounts> word_map,
                                  set<string> & chosen_words);
 
 
