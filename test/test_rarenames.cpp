@@ -16,15 +16,8 @@ using std::pair;
 
 class RarenamesTest : public CppUnit::TestCase {
 
-//    find_rare_names_v2(const vector < RecordList * > &vec_pdest,
-//                       const list< const Record* > & source )
-//  const vector < RecordList * > & vec_pdest;
-//  const list< const Record * > & source;
-
 public:
   RarenamesTest(string name) : CppUnit::TestCase(name) {}
-
-
 
  /**
   * The name_compare function builds a similarity
