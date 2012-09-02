@@ -41,12 +41,12 @@ class Record {
 
 
 private:
-    // TODO: s/vector_pdata/attributes/g
 
    /**
     * vector <const Attribute *> vector_pdata: the major data of the class,
     * which stores a vector of pointers of concrete attributes.
     */
+    // TODO: s/vector_pdata/attributes/g
     vector <const Attribute *> vector_pdata;
 
    /**
