@@ -531,12 +531,12 @@ build_word_map(const cBlocking & fullname, const unsigned int index,
     map < string, cWord_occurrence >::iterator pword_map;
 
     //map < string, RecordPList >::const_iterator p = fullname.get_block_map().begin();
-    BlockTag::const_iterator p = fullname.get_block_map().begin();
-    for (p; p != fullname.get_block_map().end() ; ++p) {
+    Blocks::const_iterator block = fullname.get_block_map().begin();
+    for (block; block != fullname.get_block_map().end() ; ++block) {
 
-        size = p->second.size();
+        size = block->second.size();
         position = prev_pos = 0;
-        const string & info = * (*(p->second.begin()))->get_data_by_index(index).at(0);
+        const string & info = * (*(block->second.begin()))->get_data_by_index(index).at(0);
 
         while (true) {
 

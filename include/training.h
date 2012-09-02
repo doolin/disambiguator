@@ -65,7 +65,7 @@
 
 
 
-typedef map<string, RecordPList> BlockTag;
+typedef map<string, RecordPList> Blocks;
 
 typedef std::pair<const Record *, const Record *> RecordPairs;
 
@@ -153,7 +153,7 @@ protected:
         cException_Tree_Key_Mismatch(const char* errmsg): cAbstract_Exception(errmsg) {};
     };
 
-    map<string, RecordPList > blocking_data;
+    Blocks blocking_data;
 
     map < const Record *, const string *> record2blockingstring;
 
@@ -166,7 +166,10 @@ public:
     explicit cBlocking(const list<const Record *> & psource, const vector<string> & blocking_column_names,
         const vector<const StringManipulator*>& pmanipulators, const string & unique_identifier);
 
-    const map<string, RecordPList > & get_block_map() const {return blocking_data;}
+    //const map<string, RecordPList > & get_block_map() const {return blocking_data;}
+    const Blocks & get_block_map() const {
+      return blocking_data;
+    }
 };
 
 
