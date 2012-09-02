@@ -1,20 +1,19 @@
 #include <string>
 #include <vector>
 
-#include <cppunit/Portability.h>
-#include <cppunit/portability/CppUnitSet.h>
-#include <cppunit/extensions/TestFactory.h>
 #include <cppunit/TestCase.h>
 
 #include <disambiguation.h>
 #include <engine.h>
 
+#include "record.h"
+
 class RecordTest : public CppUnit::TestCase { 
 
-public: 
+public:
   RecordTest(std::string name) : CppUnit::TestCase(name) {}
 
-  void make_foobar_record() {
+  Record make_foobar_record() {
 
     cFirstname  * firstname   = new cFirstname("Foo");
     cMiddlename * middlename  = new cMiddlename("X");
@@ -36,10 +35,11 @@ public:
 
     Record tmprec(temp_vec_attrib);
     //std::cout << "Record..." << std::endl;
+    return tmprec;
   }
 
 
-  void make_quuxalot_record() {
+  Record make_quuxalot_record() {
 
     cFirstname  * firstname   = new cFirstname("Quux");
     cMiddlename * middlename  = new cMiddlename("A");
@@ -61,6 +61,7 @@ public:
 
     Record tmprec(temp_vec_attrib);
     //std::cout << "Record..." << std::endl;
+    return tmprec;
   }
 
 
@@ -93,6 +94,19 @@ public:
     delete rc;
   }
 
+  void test_get_data_by_index() {
+    Record foobar = make_foobar_record();
+    Record quux = make_quuxalot_record();
+    const vector<const string *> data = quux.get_data_by_index(1);
+    vector<const string *>::const_iterator it = data.begin();
+
+    // Ok, so there's no data to print. Some other things have to
+    // happen first.
+    for (; it != data.end(); ++it) {
+      std::cout << "data: " << *it << std::endl;
+    }
+  }
+
   void runTest() {
     // Just o get startes...
     CPPUNIT_ASSERT( 1  == 1 );
@@ -101,6 +115,7 @@ public:
     make_quuxalot_record();
     attribute_record();
     read_records();
+    test_get_data_by_index();
   }
 };
 
