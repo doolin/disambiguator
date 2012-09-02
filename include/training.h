@@ -66,8 +66,14 @@
 
 
 typedef map<string, RecordPList> Blocks;
+typedef Blocks::const_iterator blocks_citer_t;
 
-typedef std::pair<const Record *, const Record *> RecordPairs;
+typedef std::pair<const Record *, const Record *> RecordPair;
+
+// Verify: pair < uint local_count, uint global_count >
+typedef std::pair < unsigned int, unsigned int > cWord_occurrence;
+
+
 
 struct PrintPair {
 
@@ -96,7 +102,7 @@ public:
         single_index = Record::get_index_by_name(col_name);
     }
 
-    void operator() (const RecordPairs & source) {
+    void operator() (const RecordPair & source) {
 
         if (is_vector) {
 
@@ -191,7 +197,7 @@ private:
 
     bool was_used;
 
-    list <RecordPairs> chosen_pairs;
+    list <RecordPair> chosen_pairs;
 
     bool move_cursor(RecordPList::const_iterator & outer,
         RecordPList:: const_iterator & inner, const RecordPList & datarange);
@@ -286,7 +292,7 @@ bool   make_stable_training_sets_by_personal    (const list <Record> & all_recor
 void         find_rare_names_v2 (const vector < RecordPList * > &vec_pdest,
                                  const list< const Record* > & source);
 
-unsigned int create_tset02      (list <RecordPairs> &results,
+unsigned int create_tset02      (list <RecordPair> &results,
                                  const RecordPList & reclist,
                                  const vector <string> & column_names,
                                  const vector < const RecordPList * > & vec_prare_names,
@@ -295,7 +301,7 @@ unsigned int create_tset02      (list <RecordPairs> &results,
 /**
  * @todo Write some documentation
  */
-unsigned int create_xset03      (list <RecordPairs> &results,
+unsigned int create_xset03      (list <RecordPair> &results,
                                  //const list <const Record*> & reclist,
                                  const vector < const RecordPList * > & vec_prare_names,
                                  const unsigned int limit );

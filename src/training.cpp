@@ -292,7 +292,7 @@ cBlocking_For_Training::create_xset01_on_block(const string & block_id,
             continue;
         }
 
-        chosen_pairs.push_back(RecordPairs(*outercursor, *innercursor));
+        chosen_pairs.push_back(RecordPair(*outercursor, *innercursor));
         ++quota_used;
         ++count;
 
@@ -402,7 +402,7 @@ cBlocking_For_Training::create_tset05_on_block(const string & block_id,
         coauthors_num = pcouter->compare(*pcinner);
 
         if ( coauthors_num >= 2 ) {
-            chosen_pairs.push_back(RecordPairs(*outercursor, *innercursor));
+            chosen_pairs.push_back(RecordPair(*outercursor, *innercursor));
             ++ quota_used;
             ++count;
         }
@@ -516,10 +516,6 @@ cBlocking_For_Training::create_set(pFunc mf,
 }
 
 
-// Verify: pair < uint local_count, uint global_count >
-typedef std::pair < unsigned int, unsigned int > cWord_occurrence;
-
-
 // word_map is output
 void
 build_word_map(const cBlocking & fullname, const unsigned int index,
@@ -574,8 +570,10 @@ choose_rare_words(const map<string, cWord_occurrence> word_map, set<string> & ch
 
             chosen_words.insert(cpword_map->first);
             ++num_chosen_words;
-            if ( num_chosen_words % base == 0 )
+
+            if (num_chosen_words % base == 0) {
                 std::cout << "Number of chosen word: " << num_chosen_words << std::endl;
+            }
         }
     }
 
@@ -686,7 +684,7 @@ find_rare_names_v2(const vector < RecordPList * > & vec_pdest,
 
 // TODO: Unit test this thing
 unsigned int
-create_tset02(list <RecordPairs> & results,
+create_tset02(list <RecordPair> & results,
               const list <const Record*> & reclist,
               const vector <string> & column_names,
               const vector < const RecordPList * > & vec_prare_names,
@@ -713,7 +711,7 @@ create_tset02(list <RecordPairs> & results,
     map <string, RecordPList >::const_iterator cpm;
     unsigned int count = 0;
 
-    set < RecordPairs > answer;
+    set < RecordPair > answer;
     const unsigned int base = 100000;
     for (unsigned int i = 0; i < column_names.size(); ++i) {
 
@@ -747,7 +745,7 @@ create_tset02(list <RecordPairs> & results,
                     }
 
                     if (data_ok) {
-                        answer.insert(RecordPairs( *rr, *ss));
+                        answer.insert(RecordPair( *rr, *ss));
                         ++count;
                         if (count % base == 0) {
                             std::cout << "Tset02: " << count << " records obtained." << std::endl;
@@ -775,7 +773,7 @@ create_tset02(list <RecordPairs> & results,
  * @return results
  */
 unsigned int
-create_xset03(list <RecordPairs> & results,
+create_xset03(list <RecordPair> & results,
               //const list <const Record*> & reclist,
               const vector < const RecordPList * > & vec_prare_names,
               const unsigned int limit ) {
@@ -796,7 +794,7 @@ create_xset03(list <RecordPairs> & results,
 
         RecordPList::const_iterator q = p;
         for (++q; q != pool.end(); ++q) {
-            results.push_back(RecordPairs(*p, *q));
+            results.push_back(RecordPair(*p, *q));
             ++count;
             if (count % base == 0) {
                 std::cout << "Xset03: " << count << " records obtained." << std::endl;
@@ -812,7 +810,7 @@ create_xset03(list <RecordPairs> & results,
 
 
 void
-write_xset03(const char * current_file, list<RecordPairs> pair_list) {
+write_xset03(const char * current_file, list<RecordPair> pair_list) {
 
     std::ofstream outfile;
     outfile.open(current_file);
@@ -833,7 +831,7 @@ write_xset03(const char * current_file, list<RecordPairs> pair_list) {
 
 
 void
-write_tset02(const char * current_file, list<RecordPairs> pair_list) {
+write_tset02(const char * current_file, list<RecordPair> pair_list) {
 
     std::ofstream outfile;
     outfile.open(current_file);
@@ -887,7 +885,7 @@ make_stable_training_sets_by_personal(const list <Record> & all_records,
     rare_column_names.push_back(string(cFirstname::static_get_class_name()));
     rare_column_names.push_back(string(cLastname::static_get_class_name()));
 
-    list<RecordPairs> pair_list;
+    list<RecordPair> pair_list;
     pair_list.clear();
     // TODO: Unit test this, pair_list is probably output
     create_xset03(pair_list, /*record_pointers,*/ const_rare_pointer_vec, limit);
