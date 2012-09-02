@@ -1,12 +1,10 @@
 
-// https://bitbucket.org/doolin/disambiguator/src/450cd6c85791/src/training.cpp#cl-501
-
 #include <string>
 #include <fstream>
 
-#include <cppunit/Portability.h>
-#include <cppunit/portability/CppUnitSet.h>
-#include <cppunit/extensions/TestFactory.h>
+//#include <cppunit/Portability.h>
+//#include <cppunit/portability/CppUnitSet.h>
+//#include <cppunit/extensions/TestFactory.h>
 #include <cppunit/TestCase.h>
 
 #include "training.h"
@@ -16,6 +14,7 @@ extern "C" {
 }
 
 using std::string;
+using std::pair;
 
 
 class RarenamesTest : public CppUnit::TestCase {
@@ -26,7 +25,7 @@ class RarenamesTest : public CppUnit::TestCase {
 //  const list< const Record * > & source;
 
 public:
-  RarenamesTest(std::string name) : CppUnit::TestCase(name) {}
+  RarenamesTest(string name) : CppUnit::TestCase(name) {}
 
 
 
@@ -40,6 +39,27 @@ public:
     CPPUNIT_ASSERT(1 == 1);
   }
 
+  void test_choose_rare_words() {
+
+    WordCounter wc;
+    wc.insert (pair<string, WordCounts> (string("foo"),   WordCounts(1,2)));
+    wc.insert (pair<string, WordCounts> (string("bar"),   WordCounts(1,88)));
+    wc.insert (pair<string, WordCounts> (string("baz"),   WordCounts(1,200)));
+    wc.insert (pair<string, WordCounts> (string("quux"),  WordCounts(5,2)));
+    wc.insert (pair<string, WordCounts> (string("red"),   WordCounts(5,88)));
+    wc.insert (pair<string, WordCounts> (string("black"), WordCounts(5,200)));
+
+    std::set<std::string> rarewords;
+    choose_rare_words(wc, rarewords);
+
+    CPPUNIT_ASSERT(0 == rarewords.count("foo"));
+    CPPUNIT_ASSERT(1 == rarewords.count("bar"));
+    CPPUNIT_ASSERT(0 == rarewords.count("baz"));
+    CPPUNIT_ASSERT(0 == rarewords.count("quux"));
+    CPPUNIT_ASSERT(0 == rarewords.count("red"));
+    CPPUNIT_ASSERT(0 == rarewords.count("black"));
+  }
+
 };
 
 
@@ -47,6 +67,7 @@ void test_rarenames() {
 
   RarenamesTest * rt = new RarenamesTest(std::string("initial test"));
   rt->test_rarename();
+  rt->test_choose_rare_words();
   delete rt;
 }
 

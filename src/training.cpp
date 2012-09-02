@@ -518,8 +518,9 @@ cBlocking_For_Training::create_set(pFunc mf,
 
 // word_map is output
 void
-build_word_map(const cBlocking & fullname, const unsigned int index,
-    map<string, WordCounts> & word_map) {
+build_word_map(const cBlocking & fullname,
+               const unsigned int index,
+               WordCounter & word_map) {
 
     unsigned int size;
     const char * delim = " ";
@@ -554,6 +555,15 @@ build_word_map(const cBlocking & fullname, const unsigned int index,
     }
 }
 
+
+void
+print_rare_names(const set<string> & rarenames) {
+
+  set<string>::const_iterator it = rarenames.begin();
+  for (; it != rarenames.end(); ++it) {
+    std::cout << *it << std::endl;
+  }
+}
 
 void
 choose_rare_words(const WordCounter word_map,
