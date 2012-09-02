@@ -197,7 +197,7 @@ post_polish(ClusterSet & m, map < const Record *,
 
 
 
-                    double first_score = strcmp95_modified(pfirst->c_str(), qfirst->c_str() );
+                    double first_score = strcmp95_modified(pfirst->c_str(), qfirst->c_str());
                     double last_score = strcmp95_modified(plast->c_str(), qlast->c_str());
 
                     if ( first_score > threshold  && last_score > threshold  ) {
@@ -218,14 +218,19 @@ post_polish(ClusterSet & m, map < const Record *,
                             //continue;
                             throw cException_Attribute_Not_In_Tree("Record pointer not in tree.");
                         }
+
+                        // TODO: Move this to its own function.
+                        // need to do 4 things:
+                        // 1. merge,
+                        // 2. delete/update from cluster_set,
+                        // 3. update record2cluster,
+                        // 4. and update uid2uiv map
+
                         Cluster_Container::iterator pmergee = z->second;
-
-                        // need to do 4 things: merge, delete/update from cluster_set, update record2cluster, and update uid2uiv map
-
-                        //1, merge
+                        //1. merge
                         pmerger->merge(*pmergee, pmerger->get_cluster_head());
 
-                        //2, delete from record2cluster;
+                        //2. delete from record2cluster;
                         const Record * newhead = pmerger->get_cluster_head().m_delegate;
                         record2cluster.erase(*s);
                         if ( *r != newhead ) {
@@ -235,7 +240,7 @@ post_polish(ClusterSet & m, map < const Record *,
                         }
 
 
-                        //3, update the uid2uinv map;
+                        //3. update the uid2uinv map;
                         for ( RecordPList::const_iterator p = pmerger->get_fellows().begin(); p != pmerger->get_fellows().end(); ++p ) {
                             map < const Record *, const Record *>::iterator t = uid2uinv.find(*p);
                             if ( t == uid2uinv.end() )
@@ -243,7 +248,7 @@ post_polish(ClusterSet & m, map < const Record *,
                             t->second = pmerger->get_cluster_head().m_delegate;
                         }
 
-                        //4, delete from cluster_set
+                        //4. delete from cluster_set
                         m.get_modifiable_set().erase(pmergee);
 
 
