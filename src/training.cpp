@@ -806,8 +806,6 @@ create_xset03(list <RecordPairs> & results,
 }
 
 
-// TODO: Call this file from `create_xset03`, will require an API
-// change to the signature of cerate_xset03.
 void
 write_xset03(const char * current_file, list<RecordPairs> pair_list) {
 
@@ -862,14 +860,10 @@ create_record_plist(const list<Record> & rl,  RecordPList & rpl) {
 }
 
 
-// TODO: Move to training.cpp
 bool
 make_stable_training_sets_by_personal(const list <Record> & all_records,
                                       const unsigned int limit,
                                       const vector <string> & training_filenames) {
-
-    //if ( training_filenames.size() != 2 )
-        //throw cException_Other("Training: there should be 2 changeable training sets.");
 
     RecordPList rare_firstname_set;
     RecordPList rare_lastname_set;
@@ -883,7 +877,6 @@ make_stable_training_sets_by_personal(const list <Record> & all_records,
     RecordPList record_pointers;
     create_record_plist(all_records, record_pointers);
 
-    // rare_pointer_vec is output...?
     find_rare_names_v2(rare_pointer_vec, record_pointers);
     vector <string> rare_column_names;
     rare_column_names.push_back(string(cFirstname::static_get_class_name()));
@@ -911,41 +904,3 @@ pthread_mutex_t cWorker_For_Training::iter_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 void cWorker_For_Training::run() {
 }
-
-#if 0
-unsigned int
-create_xset01(list <RecordPairs> &results, const list <const Record *> & source,
-              const unsigned int limit) {
-
-    //std::cout << " Creating xset01 ..." << std::endl;
-    std::cout << "In create_xset01..." << __FILE__ << ":" << STRINGIZE(__LINE__) << std::endl;
-    results.clear();
-    unsigned int count = 0;
-    const unsigned int base = 100000;
-    StringRemainSame operator_no_change;
-    const vector <string> blocking_column_names(1, cPatent::static_get_class_name());
-    const vector < const StringManipulator*> pman(1, &operator_no_change);
-    //const unsigned int fnidx = Record::get_index_by_name(cFirstname::static_get_class_name());
-    //const unsigned int lnidx = Record::get_index_by_name(cLastname::static_get_class_name());
-    cBlocking bl(source, blocking_column_names, pman, cPatent::static_get_class_name());
-
-    for ( map < string, RecordPList>::const_iterator pm = bl.get_block_map().begin(); pm != bl.get_block_map().end(); ++pm ) {
-        for ( RecordPList::const_iterator p = pm->second.begin(); p != pm->second.end(); ++p ) {
-            RecordPList::const_iterator q = p;
-            for ( ++q; q != pm->second.end(); ++q ) {
-                // now ok
-                results.push_back(RecordPairs(*p, *q) );
-                ++count;
-                if ( count % base == 0)
-                    std::cout << "xset01: " << count << " training pairs have been acquired." << std::endl;
-                if ( count == limit ) {
-                    std::cout << " xset01 done." << std::endl;
-                    return count;
-                }
-            }
-        }
-    }
-    std::cout << " xset01 done." << std::endl;
-    return count;
-}
-#endif
