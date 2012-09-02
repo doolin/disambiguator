@@ -10,6 +10,10 @@
 #include <set>
 #include <algorithm>
 
+// Can't use <cstdint> until c++11 is better supported
+//#include <cstdint>
+#include <stdint.h>
+
 #include "typedefs.h"
 #include "record.h"
 #include "threading.h"

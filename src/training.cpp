@@ -9,10 +9,62 @@ extern "C" {
   #include "strcmp95.h"
 }
 
+
+void
+cBlocking::group_records(const RecordPList & records,
+                         uint32_t num_block_columns,
+                         const vector<const StringManipulator*> & pmanipulators,
+                         vector<uint32_t> & blocking_indice) {
+
+    //map<string, RecordPList >::iterator b_iter;
+    Blocks::iterator b_iter;
+    //const map<string, RecordPList >::key_compare bmap_compare = blocking_data.key_comp();
+    const Blocks::key_compare bmap_compare = blocking_data.key_comp();
+    std::cout << "cBlocking::cBlocking ..." << std::endl;
+    unsigned int count = 0;
+    const unsigned int base = 100000;
+    const string label_delim = cBlocking_Operation::delim;
+
+    RecordPList::const_iterator record = records.begin();
+    for (; record != records.end(); ++record ) {
+        string label;
+
+        for (unsigned int i = 0; i < num_block_columns; ++i) {
+            const vector < const string * > & source_data = (*record)->get_data_by_index(blocking_indice.at(i));
+
+            if (source_data.size() == 0) {
+                throw cException_Vector_Data( (*record)->get_column_names().at(blocking_indice.at(i)).c_str());
+            }
+
+            vector < const string* > :: const_iterator q = source_data.begin();
+            label += pmanipulators.at(i)->manipulate(**q);
+            label += label_delim;
+        }
+
+        b_iter = blocking_data.lower_bound(label);
+        if (b_iter != blocking_data.end() && !bmap_compare(label, b_iter->first)) {
+            b_iter->second.push_back(*record);
+        }
+        else {
+            RecordPList tempset;
+            tempset.push_back(*record);
+            b_iter = blocking_data.insert(b_iter, std::pair< string, RecordPList >(label, tempset));
+        }
+
+        record2blockingstring.insert(std::pair<const Record*, const string *>(*record, &(b_iter->first)));
+        ++count;
+        if (count % base == 0) {
+            std::cout << count << " records have been grouped into blocks." << std::endl;
+        }
+    }
+}
+
+
+
 // TODO: Find a way to refactor these functions out of the constructor.
 cBlocking::cBlocking (const RecordPList & records,
                       const vector<string> & blocking_column_names,
-                      const vector<const StringManipulator*>& pmanipulators,
+                      const vector<const StringManipulator*> & pmanipulators,
                       const string & unique_identifier)
                     : blocking_column_names(blocking_column_names), string_manipulator_pointers(pmanipulators) {
 
@@ -564,6 +616,7 @@ print_rare_names(const set<string> & rarenames) {
     std::cout << *it << std::endl;
   }
 }
+
 
 void
 choose_rare_words(const WordCounter word_map,

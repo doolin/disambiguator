@@ -23,7 +23,7 @@ typedef std::pair<const Record *, const Record *> RecordPair;
 // These are used from finding "rare" words for building
 // the training match set.
 // Verify: pair < uint local_count, uint global_count >
-typedef std::pair < unsigned int, unsigned int > WordCounts;
+typedef std::pair < uint32_t, uint32_t > WordCounts;
 typedef std::map<std::string, WordCounts> WordCounter;
 
 /**
@@ -81,8 +81,8 @@ typedef std::map<std::string, WordCounts> WordCounter;
 struct PrintPair {
 
 private:
-    vector < unsigned int > indice;
-    unsigned int single_index;
+    vector<uint32_t> indice;
+    uint32_t single_index;
     std::ostream & myos;
 
     const char * primary_delim;
@@ -109,19 +109,18 @@ public:
 
         if (is_vector) {
 
-            for (vector< unsigned int>::const_iterator p = indice.begin(); p != indice.end(); ++p) {
+            for (vector< uint32_t>::const_iterator p = indice.begin(); p != indice.end(); ++p) {
                 myos << * source.first->get_data_by_index(*p).at(0) << secondary_delim;
             }
 
             myos << primary_delim;
 
-            for (vector< unsigned int>::const_iterator p = indice.begin(); p != indice.end(); ++p) {
+            for (vector< uint32_t>::const_iterator p = indice.begin(); p != indice.end(); ++p) {
                 myos << * source.second->get_data_by_index(*p).at(0) << secondary_delim;
             }
 
             myos << '\n';
-        }
-        else {
+        } else {
             myos << * source.first->get_data_by_index(single_index).at(0) << primary_delim
                  << * source.second->get_data_by_index(single_index).at(0)<<'\n';
         }
@@ -131,7 +130,7 @@ public:
 
 class cException_Reach_Limit: public cAbstract_Exception {
 public:
-    cException_Reach_Limit(const char* errmsg): cAbstract_Exception(errmsg) {};
+    cException_Reach_Limit(const char * errmsg): cAbstract_Exception(errmsg) {};
 };
 
 
@@ -186,17 +185,17 @@ class cBlocking_For_Training : public cBlocking {
 
 private:
 
-    map<const string *, unsigned int, cBlocking::cString_Pointer_Compare> quota_map;
+    map<const string *, uint32_t, cBlocking::cString_Pointer_Compare> quota_map;
 
-    map<const string *, unsigned int, cBlocking::cString_Pointer_Compare> used_quota_map;
+    map<const string *, uint32_t, cBlocking::cString_Pointer_Compare> used_quota_map;
 
     map<const string *, RecordPList::const_iterator, cBlocking::cString_Pointer_Compare> outer_cursor_map;
 
     map<const string *, RecordPList::const_iterator, cBlocking::cString_Pointer_Compare> inner_cursor_map;
 
-    const unsigned int total_quota;
+    const uint32_t total_quota;
 
-    unsigned int quota_left;
+    uint32_t quota_left;
 
     bool was_used;
 
@@ -211,40 +210,40 @@ private:
     }
 
 public:
-    typedef unsigned int(cBlocking_For_Training::*pFunc)(const string & block_id,
-        const vector <unsigned int> & equal_indice,
+    typedef uint32_t(cBlocking_For_Training::*pFunc)(const string & block_id,
+        const vector <uint32_t> & equal_indice,
         const vector<const StringManipulator*>& pmanipulators_equal,
-        const vector <unsigned int> &nonequal_indice,
+        const vector <uint32_t> &nonequal_indice,
         const vector<const StringManipulator*>& pmanipulators_nonequal,
         const bool is_firstround);
 
     explicit cBlocking_For_Training(const list < const Record *> & source,
         const vector<string> & blocking_column_names,
         const vector<const StringManipulator*>& pmanipulators,
-        const string & unique_identifier, const unsigned int qt);
+        const string & unique_identifier, const uint32_t qt);
 
-    unsigned int create_xset01_on_block(const string & block_id,
-        const vector <unsigned int> & equal_indice,
+    uint32_t create_xset01_on_block(const string & block_id,
+        const vector <uint32_t> & equal_indice,
         const vector<const StringManipulator*>& pmanipulators_equal,
-        const vector <unsigned int> &nonequal_indice,
+        const vector <uint32_t> &nonequal_indice,
         const vector<const StringManipulator*>& pmanipulators_nonequal,
         const bool is_firstround);
 
-    unsigned int create_tset05_on_block(const string & block_id,
-        const vector <unsigned int> & equal_indice,
+    uint32_t create_tset05_on_block(const string & block_id,
+        const vector <uint32_t> & equal_indice,
         const vector<const StringManipulator*>& pmanipulators_equal,
-        const vector <unsigned int> &nonequal_indice,
+        const vector <uint32_t> &nonequal_indice,
         const vector<const StringManipulator*>& pmanipulators_nonequal,
         const bool is_firstround);
 
-    unsigned int create_set(pFunc mf, const vector <string> & equal_indice_names,
+    uint32_t create_set(pFunc mf, const vector <string> & equal_indice_names,
         const vector<const StringManipulator*>& pmanipulators_equal,
         const vector <string> & nonequal_indice_names,
         const vector<const StringManipulator*>& pmanipulators_nonequal );
 
     void print (std::ostream & os, const string & unique_record_id_name ) const;
 
-    void reset(const unsigned int num_cols);
+    void reset(const uint32_t num_cols);
 
 };
 
@@ -287,7 +286,7 @@ private:
 
 
 bool   make_stable_training_sets_by_personal    (const list <Record> & all_records,
-                                                 const unsigned int limit,
+                                                 const uint32_t limit,
                                                  const vector <string> & training_filenames);
 
 
@@ -295,19 +294,19 @@ bool   make_stable_training_sets_by_personal    (const list <Record> & all_recor
 void         find_rare_names_v2 (const vector < RecordPList * > &vec_pdest,
                                  const list< const Record* > & source);
 
-unsigned int create_tset02      (list <RecordPair> &results,
+uint32_t create_tset02      (list <RecordPair> &results,
                                  const RecordPList & reclist,
                                  const vector <string> & column_names,
                                  const vector < const RecordPList * > & vec_prare_names,
-                                 const unsigned int limit );
+                                 const uint32_t limit );
 
 /**
  * @todo Write some documentation
  */
-unsigned int create_xset03      (list <RecordPair> &results,
+uint32_t create_xset03      (list <RecordPair> &results,
                                  //const list <const Record*> & reclist,
                                  const vector < const RecordPList * > & vec_prare_names,
-                                 const unsigned int limit );
+                                 const uint32_t limit );
 
 
 /**
