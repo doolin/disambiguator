@@ -95,11 +95,11 @@ cBlocking::cBlocking (const RecordPList & records,
         for (unsigned int i = 0; i < num_block_columns; ++i) {
             const vector < const string * > & source_data = (*record)->get_data_by_index(blocking_indice.at(i));
 
-            if (source_data.size() == 0) {
+            if (0 == source_data.size()) {
                 throw cException_Vector_Data( (*record)->get_column_names().at(blocking_indice.at(i)).c_str());
             }
 
-            vector < const string* > :: const_iterator q = source_data.begin();
+            vector<const string*>::const_iterator q = source_data.begin();
             label += pmanipulators.at(i)->manipulate(**q);
             label += label_delim;
         }
@@ -694,7 +694,10 @@ find_rare_names_v2(const vector < RecordPList * > & vec_pdest,
 
     // step 1: build phrase map: key=phrase(here is firstname+lastname with
     // some delimiters). value= list of unique_ids (here is invnums)
-    const string blocks[] = {cFirstname::static_get_class_name(), cLastname::static_get_class_name()};
+    const string blocks[] = {
+      cFirstname::static_get_class_name(),
+      cLastname::static_get_class_name()
+    };
 
     const unsigned int num_columns_for_blocking = sizeof(blocks)/sizeof(string);
     const vector <string> blocking_columns(blocks, blocks + num_columns_for_blocking);
