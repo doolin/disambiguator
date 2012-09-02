@@ -130,7 +130,8 @@ void        build_patent_tree         (PatentTree & patent_tree,
                                        const list < Record > & all_records);
 
 void        build_patent_tree         (PatentTree & patent_tree,
-                                       const list < const Record * > & all_rec_pointers);
+                                       const RecordPList & all_rec_pointers);
+                                       //const list < const Record * > & all_rec_pointers);
 
 string      check_file_existence      (const string & description);
 
