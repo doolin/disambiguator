@@ -18,7 +18,7 @@ Cluster::Cluster(const ClusterHead & info, const RecordPList & fellows)
   // amazingly bad practice. If this class **NEEDS** this static member
   // set as a precondition, then the class is designed WRONG. By definition,
   // WRONG. This is WRONG DESIGN.
-	if ( NULL == reference_pointer ) {
+	if (NULL == reference_pointer) {
 		throw cException_Other("Critical Error: Patent tree reference pointer is not set yet.");
   }
 
@@ -42,23 +42,26 @@ Cluster::Cluster(const ClusterHead & info, const RecordPList & fellows)
 void
 Cluster::merge(Cluster & mergee, const ClusterHead & info) {
 
-	if ( this->m_mergeable == false )
+	if (this->m_mergeable == false) {
 		throw cException_Empty_Cluster("Merging error: merger is empty.");
+  }
 
-	if ( mergee.m_mergeable == false )
+	if (mergee.m_mergeable == false) {
 		throw cException_Empty_Cluster("Merging error: mergEE is empty.");
+  }
 
 	static const unsigned int rec_size = Record::record_size();
 
-	for ( unsigned int i = 0 ; i < rec_size; ++i ) {
+	for (unsigned int i = 0 ; i < rec_size; ++i) {
+
 		list < const Attribute ** > l1;
-		for ( RecordPList::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p ) {
-			l1.push_back( const_cast < const Attribute ** > ( &(*p)->get_attrib_pointer_by_index(i)  )   );
+		for (RecordPList::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p) {
+			l1.push_back(const_cast < const Attribute ** > (&(*p)->get_attrib_pointer_by_index(i)));
 		}
 
 		list < const Attribute ** > l2;
-		for ( RecordPList::const_iterator p = mergee.m_fellows.begin(); p != mergee.m_fellows.end(); ++p ) {
-			l2.push_back( const_cast < const Attribute ** > ( &(*p)->get_attrib_pointer_by_index(i)  )   );
+		for (RecordPList::const_iterator p = mergee.m_fellows.begin(); p != mergee.m_fellows.end(); ++p) {
+			l2.push_back(const_cast < const Attribute ** > (&(*p)->get_attrib_pointer_by_index(i)));
 		}
 		attrib_merge(l1, l2);
 	}
@@ -93,8 +96,7 @@ Cluster::change_mid_name()  {
 
 	// The folowing step actually changes the raw data. Changes the
   // abbreviated middlename to a longer one if possible.
-	if ( ! cMiddlename::is_enabled() )
-		return;
+	if (!cMiddlename::is_enabled()) return;
 
 	static const unsigned int midname_index = Record::get_index_by_name(cMiddlename::static_get_class_name());
 	static const unsigned int lastname_index = Record::get_index_by_name(cLastname::static_get_class_name());
@@ -119,12 +121,15 @@ Cluster::change_mid_name()  {
 	}
 
 	map < const Attribute *, const Attribute * >::const_iterator cq;
-	for ( RecordPList::iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p ) {
+
+  RecordPList::iterator p = this->m_fellows.begin();
+	for (; p != this->m_fellows.end(); ++p) {
 		const Attribute * pl = (*p)->get_attrib_pointer_by_index(lastname_index);
 		const Attribute * const & pm = (*p)->get_attrib_pointer_by_index(midname_index);
 		cq = last2mid.find(pl);
+
 		//skip empty middle names.
-		if ( pm->is_informative() && pm != cq->second ) {
+		if (pm->is_informative() && pm != cq->second) {
 			cq->second->add_attrib(1);
 			pm->reduce_attrib(1);
 			const Attribute* & rpm = const_cast < const Attribute* & > (pm);
@@ -143,8 +148,10 @@ Cluster::~Cluster() {}
 //copy constructor
 Cluster::Cluster( const Cluster & rhs ) : m_info(rhs.m_info), m_fellows(rhs.m_fellows), m_mergeable(true),
 		first_patent_year ( rhs.first_patent_year ), last_patent_year ( rhs.last_patent_year ) {
-	if ( rhs.m_mergeable == false )
+
+	if (rhs.m_mergeable == false) {
 		throw cException_Other("Cluster Copy Constructor error.");
+  }
 }
 
 
@@ -168,14 +175,15 @@ Cluster::disambiguate(const Cluster & rhs,
 	static const double max_threshold = 0.999;
 
 
-	if ( pratio == NULL)
+	if (pratio == NULL) {
 		throw cException_Other("Critical: ratios map is not set yet.");
+  }
 
-	if ( this->m_mergeable == false ) {
+	if (this->m_mergeable == false) {
 		throw cException_Empty_Cluster("Comparison error: lhs is empty.");
 	}
 
-	if ( rhs.m_mergeable == false ) {
+	if (rhs.m_mergeable == false) {
 		throw cException_Empty_Cluster("Comparison error: rhs is empty.");
 	}
 
@@ -183,8 +191,8 @@ Cluster::disambiguate(const Cluster & rhs,
 	const Attribute * this_country = this->m_info.m_delegate->get_attrib_pointer_by_index(country_index);
 	const Attribute * rhs_country = rhs.m_info.m_delegate->get_attrib_pointer_by_index(country_index);
 
-	for ( unsigned int i = 0; i < sizeof(asian_countries)/sizeof(string); ++i ) {
-		if ( this_country == rhs_country && * this_country->get_data().at(0) == asian_countries[i] ) {
+	for (unsigned int i = 0; i < sizeof(asian_countries)/sizeof(string); ++i) {
+		if (this_country == rhs_country && *this_country->get_data().at(0) == asian_countries[i]) {
 			threshold = asian_threshold > mutual_threshold ? asian_threshold : mutual_threshold;
 			break;
 		}
@@ -193,22 +201,22 @@ Cluster::disambiguate(const Cluster & rhs,
 	unsigned int gap = this->patents_gap(rhs);
 	bool location_penalize = false;
 	const unsigned int common_locs = num_common_elements(this->locs.begin(), this->locs.end(), rhs.locs.begin(), rhs.locs.end(), 1 );
-	if ( gap == 0 && common_locs == 0 )
-		location_penalize = true;
+
+	if (gap == 0 && common_locs == 0) location_penalize = true;
+
 	static const unsigned int max_gap = 20;
-	if ( gap > max_gap )
-		gap = max_gap;
+
+	if (gap > max_gap) gap = max_gap;
 
 	double prior_to_use = prior;
 	double threshold_to_use = threshold;
 
-	threshold_to_use = threshold + ( max_threshold - threshold ) * gap / max_gap;
+	threshold_to_use = threshold + (max_threshold - threshold) * gap / max_gap;
 
-	if ( prior_to_use == 0 )
-		prior_to_use = 0.01;
+	if (prior_to_use == 0) prior_to_use = 0.01;
 
-	if ( location_penalize ) {
-		const double t = threshold_to_use + ( max_threshold - threshold_to_use ) / 2;
+	if (location_penalize) {
+		const double t = threshold_to_use + (max_threshold - threshold_to_use) / 2;
 		threshold_to_use = t;
 	}
 
@@ -249,28 +257,32 @@ Cluster::self_repair() {
 
 	const unsigned int rec_size = Record::record_size();
 	for ( unsigned int i = 0 ; i < rec_size; ++i ) {
+
 		list < const Attribute ** > l1;
 		list < const Attribute ** > l2;
 		RecordPList::const_iterator p1 = this->m_fellows.begin();
-		if ( p1 == this->m_fellows.end() )
-			break;
+
+		if (p1 == this->m_fellows.end()) break;
+
 		RecordPList::const_iterator q2 = p1;
 		++q2;
 		l2.push_back( const_cast < const Attribute ** > ( &(*p1)->get_attrib_pointer_by_index(i)  )   );
-		while ( q2 != this->m_fellows.end() ) {
-			l1.push_back( const_cast < const Attribute ** > ( &(*p1)->get_attrib_pointer_by_index(i)  )   );
+
+		while (q2 != this->m_fellows.end()) {
+			l1.push_back(const_cast < const Attribute ** > ( &(*p1)->get_attrib_pointer_by_index(i)  )   );
 			l2.pop_front();
-			l2.push_back( const_cast < const Attribute ** > ( &(*q2)->get_attrib_pointer_by_index(i)  )   );
+			l2.push_back(const_cast < const Attribute ** > ( &(*q2)->get_attrib_pointer_by_index(i)  )   );
 			attrib_merge(l1, l2);
 			++p1;
 			++q2;
 		}
 	}
+
 	//if it has not been merged before and m_usable is false, reset to usable.
 	this->update_year_range();
 	this->update_locations();
-	if ( m_usable == false && ! m_fellows.empty())
-		m_usable = true;
+
+	if (m_usable == false && !m_fellows.empty()) m_usable = true;
 }
 
 
@@ -324,14 +336,16 @@ Cluster::find_representative()  {
 
 	unsigned int m_cnt = 0;
 	const Record * mp = NULL;
-	for ( RecordPList::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p ) {
+	for (RecordPList::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p) {
 		unsigned int c = 0;
-		for ( unsigned int i = 0 ; i < nc; ++i ) {
+
+		for (unsigned int i = 0 ; i < nc; ++i) {
 			const Attribute * pA = (*p)->get_attrib_pointer_by_index(indice.at(i));
-			if ( pA == most.at(i) )
+			if (pA == most.at(i))
 				++c;
 		}
-		if ( c > m_cnt ) {
+
+		if (c > m_cnt) {
 			m_cnt = c;
 			mp = *p;
 		}
@@ -385,20 +399,22 @@ Cluster::is_valid_year() const {
 
 
 unsigned int
-Cluster::patents_gap( const Cluster & rhs) const {
+Cluster::patents_gap(const Cluster & rhs) const {
 
-	if ( ! this->is_valid_year() || ! rhs.is_valid_year() )
-		return 0;
+	if (!this->is_valid_year() || !rhs.is_valid_year()) return 0;
 
 	unsigned int x = 0;
 
-	if ( this->first_patent_year > rhs.last_patent_year )
+  // ABS...? AYFKM...?
+	if (this->first_patent_year > rhs.last_patent_year)
 		x = this->first_patent_year - rhs.last_patent_year ;
-	else if  ( this->last_patent_year < rhs.first_patent_year )
+	else if  (this->last_patent_year < rhs.first_patent_year)
 		x = rhs.first_patent_year - this->last_patent_year ;
 
-	if ( x > 500 )
+	if ( x > 500 ) {
 		throw cException_Other("Patent gap error.");
+  }
+
 	return x;
 }
 
@@ -408,29 +424,36 @@ Cluster::update_locations() {
 
 	locs.clear();
 	static const unsigned int latindex = Record::get_index_by_name(cLatitude::static_get_class_name());
-	for ( RecordPList::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p ) {
+
+  RecordPList::const_iterator p = this->m_fellows.begin();
+	for (; p != this->m_fellows.end(); ++p ) {
+
 		const Attribute * pA = (*p)->get_attrib_pointer_by_index(latindex);
 		const cLatitude * pAttribLat = dynamic_cast< const cLatitude *> ( pA );
-		if ( pAttribLat == 0 ) {
+
+		if (pAttribLat == 0) {
 			(*p)->print();
 			std::cerr << "Data type is " << typeid(*pA).name() << std::endl;
 			throw cException_Other("bad cast from cAttrib to cLatitude. Cluster::update_location error.");
 		}
-		if ( pAttribLat->is_informative() )
-			locs.insert(pAttribLat);
+		if (pAttribLat->is_informative()) locs.insert(pAttribLat);
 	}
 }
 
 
 void
-Cluster::add_uid2uinv( map < const Record *, const Record *> & uid2uinv ) const {
+Cluster::add_uid2uinv(Uid2UinvTree & uid2uinv ) const {
 
-	map < const Record *, const Record *>::iterator q;
-	for ( RecordPList::const_iterator p = this->m_fellows.begin(); p != m_fellows.end(); ++p ) {
+	Uid2UinvTree::iterator q;
+
+  RecordPList::const_iterator p = this->m_fellows.begin();
+	for (; p != m_fellows.end(); ++p ) {
+
 		q = uid2uinv.find(*p);
-		if ( q != uid2uinv.end() )
+		if (q != uid2uinv.end()) {
 			throw cException_Other("Add uid: already exists.");
-		else
+    } else {
 			uid2uinv.insert(std::pair<const Record *, const Record *>(*p, this->m_info.m_delegate));
+    }
 	}
 }
