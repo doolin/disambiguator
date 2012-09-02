@@ -167,10 +167,6 @@ public:
  *        configured attribute. Default implementation is throwing an error. Overide if necessary.
  */
 
-/**
- *        8. virtual const vector <const string*> & get_data() const = 0:
- *        The most commonly used function. Get the vector of string pointers. Implemented in child classes.
- */
 
 /**
  *        9. virtual const vector <const Attribute *> & get_interactive_vector():
@@ -300,7 +296,14 @@ public:
     virtual const Attribute*  config_interactive (const vector <const Attribute *> & UP(inputvec)) const {
       throw cException_No_Interactives(get_class_name().c_str()); return NULL;
     };
+
+   /**
+    * virtual const vector <const string*> & get_data() const = 0:
+    * The most commonly used function. Get the vector of string
+    * pointers. Implemented in child classes.
+    */
     virtual const vector <const string*> & get_data() const = 0;
+
     virtual const vector <const Attribute *> & get_interactive_vector() const { throw cException_No_Interactives(get_class_name().c_str()); };
 
     virtual const string & get_class_name() const = 0;
@@ -1059,11 +1062,18 @@ protected:
 
 private:
 
-    //const vector < const string *> & get_data() const {throw cException_Other ("No vector data. Invalid operation."); return Attribute::get_data();}
-    //do not override the get_data() function because it is used to initially load data from the txt file.
+    //const vector < const string *> & get_data() const {
+    //throw cException_Other ("No vector data. Invalid operation.");
+    //return Attribute::get_data();
+    //}
+    //do not override the get_data() function because it
+    //is used to initially load data from the txt file.
+
 public:
 
-    const set < const string *> * get_attrib_set_pointer() const { return & attrib_set;}
+    const set < const string *> * get_attrib_set_pointer() const {
+      return & attrib_set;
+    }
 
     unsigned int compare(const Attribute & right_hand_side) const {
         if ( ! this->is_comparator_activated () )
@@ -1090,6 +1100,7 @@ public:
         }
     }
 
+
     bool split_string(const char* inputdata) {
         try {
             Attribute::split_string(inputdata);
@@ -1109,9 +1120,14 @@ public:
         return true;
     }
 
-    bool operator < ( const Attribute & rhs ) const { return this->attrib_set < dynamic_cast< const AttribType & >(rhs).attrib_set;}
+
+    bool operator < ( const Attribute & rhs ) const {
+      return this->attrib_set < dynamic_cast< const AttribType & >(rhs).attrib_set;
+    }
+
 
     void print( std::ostream & os ) const {
+
         set < const string * >::const_iterator p = attrib_set.begin();
         os << this->get_class_name() << ": ";
         if ( p == attrib_set.end() ) {
@@ -1134,7 +1150,11 @@ public:
         }
         os << std::endl;
     }
-    bool is_informative() const { return false;}
+
+
+    bool is_informative() const {
+      return false;
+    }
 };
 
 
