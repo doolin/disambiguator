@@ -442,7 +442,7 @@ public:
       return patent_tree;
     }
 
-    map < const Record *, const Record * > & get_uid2uinv_tree() {
+    Uid2UinvTree & get_uid2uinv_tree() {
       return uid2uinv_tree;
     }
 
