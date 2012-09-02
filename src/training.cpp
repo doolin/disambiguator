@@ -579,29 +579,31 @@ build_word_map(const cBlocking & fullname,
     size_t position, prev_pos;
     map < string, WordCounts >::iterator pword_map;
 
-    Blocks::const_iterator block = fullname.get_blocks().begin();
+    //Blocks::const_iterator block = fullname.get_blocks().begin();
+    blocks_citer_t block = fullname.get_blocks().begin();
     for (block; block != fullname.get_blocks().end() ; ++block) {
 
         size = block->second.size();
         position = prev_pos = 0;
-        const string & info = * (*(block->second.begin()))->get_data_by_index(index).at(0);
+        const string & info = *(*(block->second.begin()))->get_data_by_index(index).at(0);
 
         while (true) {
 
             if (0 == info.size()) break;
+
             position = info.find(delim, prev_pos);
             string temp = info.substr(prev_pos, position - prev_pos);
             pword_map = word_map.find(temp);
 
             if (pword_map == word_map.end()) {
                 word_map.insert(std::pair<string, WordCounts>(temp, WordCounts(1, size)) );
-            }
-
-            else {
+            } else {
                 ++(pword_map->second.first);
                 pword_map->second.second += size;
             }
+
             if (position == string::npos) break;
+
             prev_pos = position + strlen(delim);
         }
     }
@@ -673,13 +675,15 @@ write_rare_words(const cBlocking & fullname,
             prev_pos = position + strlen(delim);
         } while (position != string::npos);
 
-        for (set<string>::const_iterator pm = in_phrase_wordset.begin(); pm != in_phrase_wordset.end(); ++pm) {
+        set<string>::const_iterator pm = in_phrase_wordset.begin();
+        for (; pm != in_phrase_wordset.end(); ++pm) {
             if ( chosen_words.find(*pm) != chosen_words.end() ) {
                 vec_pdest[kkk]->push_back(*block->second.begin());
                 os << * (*block->second.begin())->get_data_by_index(cindex).at(0) << " , ";
                 ++ num_chosen_words;
                 if (0 == (num_chosen_words % base)) {
-                    std::cout << "Number of chosen phrases: " << num_chosen_words << std::endl;
+                    std::cout << "Number of chosen phrases: "
+                              << num_chosen_words << std::endl;
                 }
                 break;
             }
@@ -715,8 +719,8 @@ find_rare_names_v2(const vector < RecordPList * > & vec_pdest,
     const char * delim = " ";
     size_t position, prev_pos;
     // TODO: Change to WordOccurrence typedef
-    map < string, WordCounts >::iterator pword_map;
-    map < string, WordCounts >::const_iterator cpword_map;
+    WordCounter::iterator pword_map;
+    WordCounter::const_iterator cpword_map;
 
     const string rarename_txt = "Rare_Names.txt";
     std::ofstream outfile(rarename_txt.c_str());
@@ -724,7 +728,7 @@ find_rare_names_v2(const vector < RecordPList * > & vec_pdest,
 
     for (unsigned int kkk = 0; kkk < vec_pdest.size(); ++kkk) {
 
-        map < string, WordCounts > word_map;
+        WordCounter word_map;
         const unsigned int cindex = Record::get_index_by_name(blocking_columns[kkk]);
         // word_map is output
         build_word_map(fullname, cindex, word_map);
