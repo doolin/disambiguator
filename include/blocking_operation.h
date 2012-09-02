@@ -413,14 +413,14 @@ public:
     * of clustering from the previous disambiguation.
     * coauthors = number of coauthors for blocking information extraction.
     */
-    cBlocking_Operation_By_Coauthors(const list < const Record * > & allrec,
+    cBlocking_Operation_By_Coauthors(const RecordPList & allrec,
         const ClusterInfo& cluster, const unsigned int coauthors);
 
    /**
     * cBlocking_Operation_By_Coauthors(const list < const Record * > & allrec,
     * const unsigned int coauthors): the second constructor.
     */
-    cBlocking_Operation_By_Coauthors(const list < const Record * > & allrec,
+    cBlocking_Operation_By_Coauthors(const RecordPList & allrec,
         const unsigned int num_coauthors);
 
    /**
