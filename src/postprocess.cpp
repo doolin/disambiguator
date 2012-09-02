@@ -5,54 +5,40 @@
 #include "fileoper.h"
 
 extern "C" {
-    #include "strcmp95.h"
+  #include "strcmp95.h"
 }
-
-#if 0
-ClusterSet & ClusterSet::convert_from_ClusterInfo( const ClusterInfo * ps) {
-    if ( ps == NULL )
-        throw cException_Other("NULL pointer.");
-
-    this->consolidated.clear();
-
-    for ( map < string, ClusterInfo::cRecGroup >::const_iterator p = ps->get_cluster_map().begin(); p != ps->get_cluster_map().end(); ++p ) {
-        for ( ClusterInfo::cRecGroup::const_iterator q = p->second.begin(); q != p->second.end(); ++q ) {
-            //this->consolidated.insert(*q);
-            this->consolidated.push_back(*q);
-        }
-    }
-    return *this;
-}
-#endif
 
 
 void
 find_associated_nodes(const Cluster & center,
-                      const map < const Record *, const Record *> & uid2uinv,
-                      const map < const Record *, RecordPList, cSort_by_attrib > & patent_tree,
+                      const Uid2UinvTree & uid2uinv,
+                      const PatentTree & patent_tree,
                       set < const Record * > & associated_delegates) {
 
     associated_delegates.clear();
 
-    for ( RecordPList::const_iterator p = center.get_fellows().begin(); p != center.get_fellows().end(); ++p ) {
-        map < const Record *, RecordPList, cSort_by_attrib >::const_iterator ipat = patent_tree.find(*p);
-        if ( ipat == patent_tree.end() ) {
+    for (RecordPList::const_iterator p = center.get_fellows().begin(); p != center.get_fellows().end(); ++p ) {
+
+        PatentTree::const_iterator ipat = patent_tree.find(*p);
+        if (ipat == patent_tree.end()) {
             (*p)->print();
             throw cException_Attribute_Not_In_Tree("Cannot find the patent.");
         }
 
-        for ( RecordPList::const_iterator cgi = ipat->second.begin(); cgi != ipat->second.end(); ++cgi ) {
-            if ( *cgi == *p )
-                continue;
-            map < const Record *, const Record *>::const_iterator q = uid2uinv.find(*cgi);
-            if ( q == uid2uinv.end() )
+        for (RecordPList::const_iterator cgi = ipat->second.begin(); cgi != ipat->second.end(); ++cgi) {
+
+            if ( *cgi == *p ) continue;
+
+            Uid2UinvTree::const_iterator q = uid2uinv.find(*cgi);
+            if (q == uid2uinv.end()) {
                 throw cException_Attribute_Not_In_Tree("Cannot find the unique record pointer.");
+            }
             associated_delegates.insert(q->second);
         }
 
     }
 
-    for ( RecordPList::const_iterator p = center.get_fellows().begin(); p != center.get_fellows().end(); ++p ) {
+    for (RecordPList::const_iterator p = center.get_fellows().begin(); p != center.get_fellows().end(); ++p) {
         associated_delegates.erase(*p);
     }
 }
@@ -60,7 +46,7 @@ find_associated_nodes(const Cluster & center,
 
 void
 post_polish(ClusterSet & m,
-            map < const Record *, const Record *> & uid2uinv,
+            Uid2UinvTree & uid2uinv,
             const PatentTree & patent_tree,
             const string & logfile) {
 
@@ -95,7 +81,7 @@ post_polish(ClusterSet & m,
     map < const Record *, Cluster_Container::iterator >::const_iterator z;
 
     for ( Cluster_Container ::iterator p = m.get_modifiable_set().begin(); p != m.get_modifiable_set().end(); ++p ) {
-        record2cluster.insert( std::pair < const Record *, Cluster_Container::iterator > (p->get_cluster_head().m_delegate, p ) );
+        record2cluster.insert(std::pair < const Record *, Cluster_Container::iterator > (p->get_cluster_head().m_delegate, p ) );
     }
 
     unsigned int round_cnt;
@@ -312,8 +298,10 @@ ClusterSet::read_from_file(const char * filename,
     std::ifstream infile ( filename);
 
     if (infile.good()) {
+
         string filedata;
         while ( getline(infile, filedata)) {
+
             register size_t pos = 0, prev_pos = 0;
             pos = filedata.find(ClusterInfo::primary_delim, prev_pos);
             string keystring = filedata.substr( prev_pos, pos - prev_pos);
@@ -336,14 +324,16 @@ ClusterSet::read_from_file(const char * filename,
                 tempv.push_back(value);
                 prev_pos = pos + secondary_delim_size;
             }
+
             ClusterHead th(key, val);
             Cluster tempc(th, tempv);
             tempc.self_repair();
             this->consolidated.push_back(tempc);
 
             ++count;
-            if ( count % base == 0 )
+            if ( count % base == 0 ) {
                 std::cout << count << " records have been loaded from the cluster file. " << std::endl;
+            }
         }
         std::cout << "Totally, " << count << " records have been loaded from " << filename << std::endl;
     }
