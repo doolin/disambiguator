@@ -718,6 +718,7 @@ create_tset02(list <RecordPair> & results,
     for (unsigned int i = 0; i < column_names.size(); ++i) {
 
         const unsigned int col_index = column_indice.at(i);
+        // TODO: Change to Blocks
         map < string, RecordPList > data_map;
 
         RecordPList::const_iterator p = vec_prare_names[i]->begin();
@@ -725,7 +726,7 @@ create_tset02(list <RecordPair> & results,
             data_map.insert(std::pair<string, RecordPList >( * (*p)->get_data_by_index(col_index).at(0), emptyone));
         }
 
-        list<const Record*>::const_iterator q = reclist.begin();
+        RecordPList::const_iterator q = reclist.begin();
         for (; q != reclist.end(); ++q) {
             pm = data_map.find( * (*q)->get_data_by_index(col_index).at(0));
             if (pm != data_map.end()) pm->second.push_back(*q);
