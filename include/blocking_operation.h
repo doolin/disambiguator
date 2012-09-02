@@ -365,7 +365,7 @@ private:
     *  comparison function = an object of cSort_by_attrib, which
     *  includes the column information.
     */
-    map < const Record *, RecordPList, cSort_by_attrib > patent_tree;
+    PatentTree patent_tree;
 
    /**
     *  map < const Record *, const Record * > uid2uinv_tree:
@@ -435,13 +435,13 @@ public:
     * build an internal unique record id to unique inventor
     * id map from a ClusterInfo object.
     */
-    void build_uid2uinv_tree( const ClusterInfo &);
+    void build_uid2uinv_tree(const ClusterInfo &);
 
    /**
     * const map < const Record *, RecordPList, cSort_by_attrib > & get_patent_tree() const :
     * get the reference of const patent tree
     */
-    const map < const Record *, RecordPList, cSort_by_attrib > & get_patent_tree() const {
+    const PatentTree & get_patent_tree() const {
       return patent_tree;
     }
 

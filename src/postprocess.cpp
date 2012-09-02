@@ -59,9 +59,9 @@ find_associated_nodes(const Cluster & center,
 
 
 void
-post_polish(ClusterSet & m, map < const Record *,
-            const Record *> & uid2uinv,
-            const map < const Record *, RecordPList, cSort_by_attrib > & patent_tree,
+post_polish(ClusterSet & m,
+            map < const Record *, const Record *> & uid2uinv,
+            const PatentTree & patent_tree,
             const string & logfile) {
 
     std::cout << "Starting post processing ... ..." << std::endl;

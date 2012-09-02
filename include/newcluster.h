@@ -44,7 +44,7 @@ private:
   * a pointer that points to a patent tree, which can be obtained in
   * a cBlocking_Operation_By_Coauthor object.
   */
-  static const map < const Record *, RecordPList, cSort_by_attrib > * reference_pointer;
+  static const PatentTree * reference_pointer;
 
   //Cluster & operator = ( const Cluster &): forbid the assignment operation.
   Cluster & operator = ( const Cluster &);
@@ -122,7 +122,7 @@ public:
   //const map < const Record *, RecordPList, cSort_by_attrib > & reference_patent_tree):
   //set the patent tree pointer.
   static void set_reference_patent_tree_pointer(
-      const map < const Record *, RecordPList, cSort_by_attrib > & reference_patent_tree) {
+      const PatentTree & reference_patent_tree) {
     reference_pointer = & reference_patent_tree;
   }
 

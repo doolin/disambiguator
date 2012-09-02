@@ -28,7 +28,8 @@ public:
 
 void post_polish(ClusterSet & m,
                  map < const Record *, const Record *> & uid2uinv,
-                 const map < const Record *, RecordPList, cSort_by_attrib > & patent_tree,
+                 const PatentTree & patent_tree,
+                 //const map < const Record *, RecordPList, cSort_by_attrib > & patent_tree,
                  const string & logfile);
 
 
