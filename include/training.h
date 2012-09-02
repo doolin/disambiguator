@@ -224,12 +224,14 @@ public:
         const vector<const StringManipulator*>& pmanipulators_nonequal,
         const bool is_firstround);
 
+#if 0
     unsigned int create_xset03_on_block(const string & block_id,
         const vector <unsigned int> & equal_indice,
         const vector<const StringManipulator*>& pmanipulators_equal,
         const vector <unsigned int> &nonequal_indice,
         const vector<const StringManipulator*>& pmanipulators_nonequal,
         const bool is_firstround);
+#endif
 
     unsigned int create_set(pFunc mf, const vector <string> & equal_indice_names,
         const vector<const StringManipulator*>& pmanipulators_equal,

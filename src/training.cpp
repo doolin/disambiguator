@@ -315,8 +315,11 @@ cBlocking_For_Training::create_tset05_on_block(const string & block_id,
                                                const bool is_firstround) {
 
     map < string, RecordPList>::const_iterator pmap = blocking_data.find(block_id);
-    if ( pmap == blocking_data.end() )
+
+    if (pmap == blocking_data.end()) {
         throw cException_Attribute_Not_In_Tree(block_id.c_str());
+    }
+
     const RecordPList & dataset = pmap->second;
 
     RecordPList::const_iterator & outercursor = outer_cursor_map.find(& block_id)->second;
@@ -334,6 +337,7 @@ cBlocking_For_Training::create_tset05_on_block(const string & block_id,
         if ( quota_used == quota_for_this ) {
             return count;
         }
+
         bool should_continue = false;
         if ( ( ! cursor_ok ( outercursor, innercursor, dataset) && ( ! move_cursor( outercursor, innercursor, dataset ))))
             break;
@@ -394,6 +398,7 @@ cBlocking_For_Training::create_tset05_on_block(const string & block_id,
                 break;
         }
         */
+
         coauthors_num = pcouter->compare(*pcinner);
 
         if ( coauthors_num >= 2 ) {
@@ -405,8 +410,8 @@ cBlocking_For_Training::create_tset05_on_block(const string & block_id,
         move_cursor ( outercursor, innercursor, dataset );
 
     }
-    if (is_firstround)
-        quota_left += quota_for_this - count;
+
+    if (is_firstround) quota_left += quota_for_this - count;
 
     return count;
 }
@@ -796,14 +801,15 @@ create_xset03(list <RecordPairs> & results,
 }
 
 
-// TODO: Call this file from `create_xset03`
+// TODO: Call this file from `create_xset03`, will require an API
+// change to the signature of cerate_xset03.
 void
 write_xset03(const char * current_file, list<RecordPairs> pair_list) {
 
     std::ofstream outfile;
     outfile.open(current_file);
 
-    if (!outfile.good() ) {
+    if (!outfile.good()) {
         exit_with_error("bad file stream", __FILE__, STRINGIZE(__LINE__));
     }
 
@@ -895,6 +901,7 @@ make_stable_training_sets_by_personal(const list <Record> & all_records,
 }
 
 
+#if 0
 unsigned int
 cBlocking_For_Training::create_xset03_on_block(const string & block_id,
                                                const vector <unsigned int> & equal_indice,
@@ -975,6 +982,7 @@ cBlocking_For_Training::create_xset03_on_block(const string & block_id,
 
     return count;
 }
+#endif
 
 
 pthread_mutex_t cWorker_For_Training::iter_mutex = PTHREAD_MUTEX_INITIALIZER;
