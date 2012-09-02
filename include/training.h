@@ -6,7 +6,7 @@
 #define RARE_NAMES_FLOOR  4
 #define RARE_NAMES_UNIQUE 6
 #define RARE_NAMES_MAX    100
-
+#define RARE_WORD_COUNTER 1000
 
 /**
  * Training:
@@ -305,5 +305,19 @@ unsigned int create_xset03      (list <RecordPair> &results,
                                  //const list <const Record*> & reclist,
                                  const vector < const RecordPList * > & vec_prare_names,
                                  const unsigned int limit );
+
+
+/**
+ * map.first is the actual word under consideration.
+ * map.second, the occurrences, tracks the "local" and "global"
+ *   uniqueness of the word (or name) in map.first.
+ *   TODO: Verify the following:
+ *   "local" uniqueness is instances of the word.
+ *   "global" uniqueness is the number of instance of local
+ * TODO: Unit test.
+ */
+void         choose_rare_words  (const map<string, cWord_occurrence> word_map,
+                                 set<string> & chosen_words);
+
 
 #endif /* PATENT_TRAINING_H */

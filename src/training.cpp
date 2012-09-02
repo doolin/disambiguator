@@ -559,11 +559,10 @@ void
 choose_rare_words(const map<string, cWord_occurrence> word_map, set<string> & chosen_words) {
 
     unsigned int num_chosen_words = 0;
-    const unsigned int base = 1000;
+    const unsigned int base = RARE_WORD_COUNTER;
     map<string, cWord_occurrence>::const_iterator cpword_map;
 
     for (cpword_map = word_map.begin(); cpword_map != word_map.end(); ++cpword_map ) {
-        // TODO: Replace these magic numbers with #defines in the header.
         if (cpword_map->second.first  < RARE_NAMES_FLOOR  &&
             cpword_map->second.second > RARE_NAMES_UNIQUE &&
             cpword_map->second.second < RARE_NAMES_MAX ) {
@@ -576,7 +575,6 @@ choose_rare_words(const map<string, cWord_occurrence> word_map, set<string> & ch
             }
         }
     }
-
 }
 
 
