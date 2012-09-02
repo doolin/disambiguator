@@ -577,9 +577,8 @@ build_word_map(const cBlocking & fullname,
     uint32_t size;
     const char * delim = " ";
     size_t position, prev_pos;
-    map < string, WordCounts >::iterator pword_map;
+    WordCounter::iterator pword_map;
 
-    //Blocks::const_iterator block = fullname.get_blocks().begin();
     blocks_citer_t block = fullname.get_blocks().begin();
     for (block; block != fullname.get_blocks().end() ; ++block) {
 
