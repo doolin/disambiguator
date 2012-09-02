@@ -42,7 +42,7 @@ function test_disambiguation() {
 
 # TODO: Create an array for the test directories and files,
 # then loop it to run the tests.
-testdir=/var/share/patentdata/disambiguation/test/synthetic/jones
+testdir=/data/patentdata/disambiguation/test/synthetic/jones
 testfile="./data/final_jones.txt"
 testval=`test_disambiguation $testdir $testfile`
 echo $cyanf"## Jones"
@@ -50,7 +50,7 @@ echo $testval
 
 echo
 
-testdir=/var/share/patentdata/disambiguation/test/18
+testdir=/data/patentdata/disambiguation/test/18
 testfile="./data/final_eighteen.txt"
 testval=`test_disambiguation $testdir $testfile`
 echo $cyanf"## Eighteen"
@@ -58,7 +58,7 @@ echo $testval
 
 echo
 
-testdir=/var/share/patentdata/disambiguation/experiments/earth/berkeley
+testdir=/data/patentdata/disambiguation/experiments/earth/berkeley
 finalfile="./data/final_berkeley.txt"
 rarenamefile="./data/rare_names_berkeley.txt"
 testval=`test_disambiguation $testdir $finalfile $rarenamefile`
