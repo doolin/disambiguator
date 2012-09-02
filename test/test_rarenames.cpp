@@ -2,9 +2,6 @@
 #include <string>
 #include <fstream>
 
-//#include <cppunit/Portability.h>
-//#include <cppunit/portability/CppUnitSet.h>
-//#include <cppunit/extensions/TestFactory.h>
 #include <cppunit/TestCase.h>
 
 #include "training.h"
