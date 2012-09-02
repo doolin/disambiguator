@@ -134,7 +134,7 @@ public:
   */
   void change_mid_name();
 
-  void add_uid2uinv( map < const Record *, const Record *> & uid2uinv) const;
+  void add_uid2uinv(Uid2UinvTree & uid2uinv) const;
 };
 
 
@@ -143,7 +143,7 @@ public:
  */
 class cException_Empty_Cluster : public cAbstract_Exception {
 public:
-  cException_Empty_Cluster(const char* errmsg): cAbstract_Exception(errmsg) {};
+  cException_Empty_Cluster(const char * errmsg): cAbstract_Exception(errmsg) {};
 };
 
 

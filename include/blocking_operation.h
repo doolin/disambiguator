@@ -372,7 +372,7 @@ private:
     *  a binary tree that maps a unique record pointer to its
     *  unique inventor record pointer.
     */
-    map < const Record *, const Record * > uid2uinv_tree;
+    Uid2UinvTree uid2uinv_tree;
 
    /**
     *  map < const Record *, unsigned int > uinv2count_tree:
