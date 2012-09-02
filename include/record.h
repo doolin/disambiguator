@@ -25,7 +25,6 @@ using std::set;
 
 
 /**
- * definition of Record class.
  * The Record class is used to save a real line of record which
  * includes multiple concrete attributes.
  */
@@ -39,7 +38,6 @@ class Record {
     friend class cSort_by_attrib;
 
     friend class cRatioComponent;
-
 
 
 private:
@@ -71,6 +69,7 @@ private:
     static const Record * sample_record_pointer;
 
 public:
+
    /**
     * Public:
     *  Record(const vector <const Attribute *>& input_vec):
@@ -109,38 +108,20 @@ public:
     *  then the return value is a vector < uint32_t > = [ Firstname, Assignee, Class];
     */
     vector <uint32_t> record_compare_by_attrib_indice (const Record &rhs,
-        const vector < uint32_t > & attrib_indice_to_compare) const;
+        const vector<uint32_t> & attrib_indice_to_compare) const;
 
 
-/**
- * static uint32_t get_index_by_name(const string & inputstr):
- * get the index of the attribute whose specifier is "inputstr"
- */
-
-/**
- * const Attribute * const & get_attrib_pointer_by_index(const uint32_t i) const:
- *  get the reference of the const pointer to a const attribute based on its index.
- *  Returning of reference is critical,
- *  because this allows modification of the attribute pointer in the vector.
- *
- * const vector < const Attribute*> & get_attrib_vector () const:
- * returns the vector of attribute pointers.
- *
- * void print( std::ostream & os ) const:
- * output the record to an output stream, like std::cout or ofstream.
- *
- * void print() const:
- * output the record to std::cout. Used mainly for debug purpose.
- *
- * static const vector < string > & get_column_names():
- * get the attribute names vector.
- *
- * uint32_t informative_attributes() const:
- * count the number of informative attributes (those containing
- * "something" rather than empty strings).
- */
-
+   /**
+    * get the index of the attribute whose specifier is "inputstr"
+    */
     static uint32_t get_index_by_name(const string & inputstr);
+
+   /**
+    * uint32_t informative_attributes() const:
+    * count the number of informative attributes (those containing
+    * "something" rather than empty strings).
+    */
+    uint32_t informative_attributes() const;
 
    /**
     * const vector <const string * > & get_data_by_index(const uint32_t i) const:
@@ -157,78 +138,105 @@ public:
       return vector_pdata.at(i)->get_data();
     };
 
+
+   /**
+    * const Attribute * const & get_attrib_pointer_by_index(const uint32_t i) const:
+    *  get the reference of the const pointer to a const attribute based on its index.
+    *  Returning of reference is critical,
+    *  because this allows modification of the attribute pointer in the vector.
+    */
     //return a reference is very important, because the content can be changed.
-    const Attribute * const & get_attrib_pointer_by_index(const uint32_t i) const {return vector_pdata.at(i);}
-    const vector < const Attribute*> & get_attrib_vector () const { return vector_pdata;}
+    const Attribute * const & get_attrib_pointer_by_index(const uint32_t i) const {
+      return vector_pdata.at(i);
+    }
+
+
+    const vector<const Attribute*> & get_attrib_vector () const {
+      return vector_pdata;
+    }
+
+
     void print( std::ostream & os ) const;
 
-    void print() const; //{ this->print(std::cout);}
-    static const vector < string > & get_column_names() { return column_names;}
-    uint32_t informative_attributes() const;
+    void print() const;
 
 
-/**
- * uint32_t record_exact_compare(const Record & rhs ) const:
- * compare (*this) with rhs and return the number of attributes that are exactly the same.
- */
-
-/**
- * void set_attrib_pointer_by_index( const Attribute * pa, const uint32_t i ):
- * modify the attribute vector, setting the ith element to pa
- */
-
-/**
- * static void clean_member_attrib_pool():
- * clear all the members static attribute pool.
- * This is EXTREMELY dangerous, unless its functionality is fully understood.
- */
-
-/**
- * static uint32_t record_size():
- * returns the number of attributes of a record.
- */
-
-/**
- * static void update_active_similarity_names():
- * update the static member "active_similarity_names"
- * by checking the comparator of each attribute.
- */
-
-/**
- * static const vector < string > & get_similarity_names():
- * get the names of the active similarity profile attributes.
- */
+    static const vector<string> & get_column_names() {
+      return column_names;
+    }
 
 
-/**
- * static uint32_t get_similarity_index_by_name(const string & inputstr):
- * get the index of an attribute in the ACTIVE similarity profile.
- */
-
-
+   /**
+    * uint32_t record_exact_compare(const Record & rhs ) const:
+    * compare (*this) with rhs and return the number of attributes that are exactly the same.
+    */
     uint32_t record_exact_compare(const Record & rhs ) const;
 
-    void set_attrib_pointer_by_index( const Attribute * pa, const uint32_t i ) { vector_pdata.at(i) = pa;}
+   /**
+    * void set_attrib_pointer_by_index( const Attribute * pa, const uint32_t i ):
+    * modify the attribute vector, setting the ith element to pa
+    */
+    void set_attrib_pointer_by_index(const Attribute * pa, const uint32_t i) {
+      vector_pdata.at(i) = pa;
+    }
 
+
+   /**
+    * static void clean_member_attrib_pool():
+    * clear all the members static attribute pool.
+    * This is EXTREMELY dangerous, unless its functionality is fully understood.
+    */
     static void clean_member_attrib_pool();
 
-    static uint32_t record_size() { return column_names.size();}
 
+   /**
+    * static uint32_t record_size():
+    * returns the number of attributes of a record.
+    *
+    * TODO: This is only used in two places in the clustering
+    * code, it can probably be (carefully) removed. Also, the
+    * name needs to be changed to get_number_of_attributes();
+    */
+    static uint32_t record_size() {
+      return column_names.size();
+    }
+
+
+   /**
+    * static void update_active_similarity_names():
+    * update the static member "active_similarity_names"
+    * by checking the comparator of each attribute.
+    */
     static void update_active_similarity_names();
 
-    static const vector < string > & get_similarity_names() { return active_similarity_names;}
 
+   /**
+    * static const vector < string > & get_similarity_names():
+    * get the names of the active similarity profile attributes.
+    */
+    static const vector<string> & get_similarity_names() {
+      return active_similarity_names;
+    }
+
+
+   /**
+    * static uint32_t get_similarity_index_by_name(const string & inputstr):
+    * get the index of an attribute in the ACTIVE similarity profile.
+    */
     static uint32_t get_similarity_index_by_name(const string & inputstr);
 
-/**
- * static const Record & get_sample_record():
- * return the sample record object for external use.
- */
-    static const Record & get_sample_record() { return *sample_record_pointer;}
+
+   /**
+    * static const Record & get_sample_record():
+    * return the sample record object for external use.
+    */
+    static const Record & get_sample_record() {
+      return *sample_record_pointer;
+    }
 
     void reconfigure_record_for_interactives() const;
 
-    static void activate_comparators_by_name ( const vector < string > &);
+    static void activate_comparators_by_name (const vector<string> &);
 };
 
 #endif /* PATENT_RECORD_H */
