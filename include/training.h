@@ -7,6 +7,7 @@
 #define RARE_NAMES_UNIQUE 6
 #define RARE_NAMES_MAX    100
 
+
 /**
  * Training:
  *
@@ -123,15 +124,16 @@ public:
 };
 
 
-// forward declaration
-// TODO: Apparently, these are not needed...
-//class cCluster_Info;
 
 class cBlocking {
+
 //    friend class cCluster_Info;
+
 private:
     cBlocking ( const cBlocking &);
+
 protected:
+
     class cException_Blocking: public cAbstract_Exception {
     public:
         cException_Blocking (const char * errmsg) : cAbstract_Exception(errmsg) {};
@@ -139,7 +141,7 @@ protected:
 
     class cString_Pointer_Compare{
     public:
-        bool operator() ( const string * p1, const string *p2 ) const {
+        bool operator() (const string * p1, const string *p2) const {
             return (*p1) < (*p2);
         }
     };
@@ -187,10 +189,10 @@ private:
 
     list <RecordPairs> chosen_pairs;
 
-    bool move_cursor(RecordPList:: const_iterator & outer,
+    bool move_cursor(RecordPList::const_iterator & outer,
         RecordPList:: const_iterator & inner, const RecordPList & datarange);
 
-    bool cursor_ok(const RecordPList:: const_iterator & outer,
+    bool cursor_ok(const RecordPList::const_iterator & outer,
         const RecordPList:: const_iterator & inner, const RecordPList & datarange) const {
         return  ( outer != datarange.end() && inner != datarange.end() &&  inner != outer );
     }

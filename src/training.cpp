@@ -24,6 +24,7 @@ cBlocking::cBlocking (const RecordPList & records,
     }
 
     cSort_by_attrib unique_comparator(unique_identifier);
+
     vector < unsigned int > blocking_indice;
     for (unsigned int i = 0; i < num_block_columns; ++i) {
         blocking_indice.push_back(Record::get_index_by_name(blocking_column_names.at(i)));
@@ -46,21 +47,17 @@ cBlocking::cBlocking (const RecordPList & records,
                 throw cException_Vector_Data( (*record)->get_column_names().at(blocking_indice.at(i)).c_str());
             }
 
-            //for ( vector <string> :: const_iterator q = source_data.begin(); q != source_data.end(); ++q ) {
             vector < const string* > :: const_iterator q = source_data.begin();
             label += pmanipulators.at(i)->manipulate(**q);
             label += label_delim;
-            //}
         }
 
         b_iter = blocking_data.lower_bound(label);
-        if ( b_iter != blocking_data.end() && ! bmap_compare(label, b_iter->first) ) {
-            //b_iter->second.insert(*p);
+        if (b_iter != blocking_data.end() && !bmap_compare(label, b_iter->first)) {
             b_iter->second.push_back(*record);
         }
         else {
             RecordPList tempset;
-            //tempset.insert( *record );
             tempset.push_back(*record);
             b_iter = blocking_data.insert(b_iter, std::pair< string, RecordPList >(label, tempset));
         }
@@ -104,13 +101,16 @@ cBlocking_For_Training::reset(const unsigned int num_cols) {
     }
 
     for ( map<string, RecordPList >::const_iterator cpm = blocking_data.begin(); cpm != blocking_data.end(); ++ cpm) {
+
         unsigned int quota_for_this = 0;
+
         if ( cpm->first != nullstring ) {
             quota_for_this = 1.0 * total_quota / quota_distributor * cpm->second.size() * ( cpm->second.size() -1 ) ;
             temp_sum += quota_for_this;
-        }
-        else
+        } else {
             quota_for_this = 0;
+        }
+
         const string * pstr = &cpm->first;
         quota_map.insert(std::pair<const string *, unsigned int>(pstr, quota_for_this) );
         used_quota_map.insert(std::pair<const string *, unsigned int>(pstr, 0 ) );
@@ -251,6 +251,7 @@ cBlocking_For_Training::create_xset01_on_block(const string & block_id,
         std::cout << "----------------<= inner"<<std::endl;
 
         */
+
         /*
         for ( vector<string>::const_iterator pinner = (*innercursor)->get_data_by_index(coauthors_index).begin();
                 pinner != (*innercursor)->get_data_by_index(coauthors_index).end(); ++ pinner) {
@@ -262,11 +263,10 @@ cBlocking_For_Training::create_xset01_on_block(const string & block_id,
         */
 
         unsigned int common_coauthors = pcouter->compare(*pcinner);
-        if ( common_coauthors > 0 )
-            should_continue = true;
+        if (common_coauthors > 0) should_continue = true;
 
-        if ( should_continue ) {
-            move_cursor ( outercursor, innercursor, dataset );
+        if (should_continue) {
+            move_cursor (outercursor, innercursor, dataset);
             continue;
         }
 
@@ -299,8 +299,8 @@ cBlocking_For_Training::create_xset01_on_block(const string & block_id,
         move_cursor ( outercursor, innercursor, dataset );
 
     }
-    if (is_firstround)
-        quota_left += quota_for_this - count;
+
+    if (is_firstround) quota_left += quota_for_this - count;
 
     return count;
 }
