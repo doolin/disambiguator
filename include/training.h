@@ -171,8 +171,15 @@ protected:
 
 public:
 
-    explicit cBlocking(const list<const Record *> & psource, const vector<string> & blocking_column_names,
-        const vector<const StringManipulator*>& pmanipulators, const string & unique_identifier);
+    explicit cBlocking(const RecordPList & psource,
+                       const vector<string> & blocking_column_names,
+                       const vector<const StringManipulator*>& pmanipulators,
+                       const string & unique_identifier);
+
+    void group_records(const RecordPList & records,
+                       uint32_t num_block_columns,
+                       const vector<const StringManipulator*> & pmanipulators,
+                       vector<uint32_t> & blocking_indice);
 
     const Blocks & get_blocks() const {
       return blocking_data;
