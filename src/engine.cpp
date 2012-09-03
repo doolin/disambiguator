@@ -179,7 +179,6 @@ copyfile(const char * target, const char * source) {
 }
 
 
-// TODO: unit test this thing.
 std::vector<std::string>
 parse_column_names(std::string line) {
 
@@ -208,21 +207,25 @@ parse_column_names(std::string line) {
 
 
 
+// TODO: Unit test this thing.
 vector<uint32_t>
 create_column_indices(std::vector<std::string> requested_columns,
     std::vector<std::string> total_col_names) {
 
   std::vector<uint32_t> rci;
   const uint32_t num_cols = requested_columns.size();
-  for ( uint32_t i = 0; i < num_cols; ++i ) {
+
+  for (uint32_t i = 0; i < num_cols; ++i) {
+
       uint32_t j;
-      for (  j = 0; j < total_col_names.size(); ++j ) {
-          if ( requested_columns.at(i) == total_col_names.at(j) ) {
+      for (j = 0; j < total_col_names.size(); ++j) {
+          if (requested_columns.at(i) == total_col_names.at(j)) {
               rci.push_back(j);
               break;
           }
       }
-      if ( j == total_col_names.size() ) {
+
+      if (j == total_col_names.size()) {
           std::cerr << "Critical Error in reading data input file" << std::endl
           <<"Column names not available in the first line. Please Check the correctness." << std::endl;
           throw cException_ColumnName_Not_Found(requested_columns.at(i).c_str());
@@ -287,7 +290,7 @@ instantiate_attributes(std::vector<std::string> column_names, int num_cols) {
 
 vector <const Attribute *>
 parse_line(string line,
-           vector < uint32_t > requested_column_indice,
+           vector<uint32_t> requested_column_indice,
            Attribute ** pointer_array,
            uint32_t num_cols,
            const char * delim,
@@ -309,12 +312,14 @@ parse_line(string line,
           pos = line.find(delim, prev_pos);
           prev_pos = pos + delim_size;
       }
+
       pos = line.find(delim, prev_pos);
 
       // Find a link to string::npos
-      if ( pos == string::npos ) {
+      if (pos == string::npos) {
+
           // Find a link to .size for whatever type line is
-          if ( prev_pos != line.size() )
+          if ( prev_pos != line.size() ) {
               // Link to the substr method
               // I don't understand why the work "link" keeps
               // getting used for variable assignment.
@@ -323,8 +328,10 @@ parse_line(string line,
               // for common things instead fucking making up shit
               // arbitrarily. It's variable assignment, not "linking".
               string_cache[i] = line.substr(prev_pos);
-          else
+          } else {
               string_cache[i] = "";
+          }
+
       } else {
           // This looks where the actual value is parsed
           string_cache[i] = line.substr(prev_pos, pos - prev_pos);
@@ -359,7 +366,6 @@ parse_line(string line,
  * and save them in appropriate attributes.
  * Finally, do some concrete class related stuff, like setting
  * static members and run reconfigurations.
- *
  */
 bool
 fetch_records_from_txt(list <Record> & source,
@@ -379,11 +385,10 @@ fetch_records_from_txt(list <Record> & source,
 
     string line;
     getline(instream, line);
-
     vector<string> total_col_names = parse_column_names(line);
 
     Attribute::register_class_names(requested_columns);
-    vector < uint32_t > requested_column_indice;
+    vector<uint32_t> requested_column_indice;
     const uint32_t num_cols = requested_columns.size();
     requested_column_indice = create_column_indices(requested_columns, total_col_names);
 
@@ -488,7 +493,7 @@ fetch_records_from_txt(list <Record> & source,
         }
 #else
         temp_vec_attrib = parse_line(string line,
-                                     vector < uint32_t > requested_column_indice,
+                                     vector<uint32_t> requested_column_indice,
                                      Attribute ** pointer_array,
                                      uint32_t num_cols,
                                      const char * delim,
