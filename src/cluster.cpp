@@ -2,7 +2,7 @@
 
 #include "cluster.h"
 #include "engine.h"
-#include "fileoper.h"
+//#include "fileoper.h"
 #include "ratios.h"
 #include "newcluster.h"
 // TODO: Looks like the worker.h file is only included here,

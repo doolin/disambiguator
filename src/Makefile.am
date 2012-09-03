@@ -27,10 +27,10 @@ INCLUDES = -I/usr/local/include -I$(CPLEXINCLUDE) -I$(CONCERTINCLUDE) -I../inclu
 
 noinst_LIBRARIES = libdisambiguation.a
 libdisambiguation_a_SOURCES = disambiguate.cpp cluster.cpp comparators.cpp attribute.cpp \
-                              engine.cpp fileoper.cpp blocking_operation.cpp newcluster.cpp \
+                              engine.cpp blocking_operation.cpp newcluster.cpp \
                               postprocess.cpp ratios.cpp ratio_smoothing.cpp \
                               training.cpp utilities.cpp threading.cpp strcmp95.c record.cpp \
-                              string_manipulator.cpp record_reconfigurator.cpp
+                              string_manipulator.cpp record_reconfigurator.cpp #fileoper.cpp
 
 #libdisambiguation_a_CXXFLAGS = -O0 -pg a
 libdisambiguation_a_CPPFLAGS = -Wall -Wextra -fno-inline $(INCLUDES) -DIL_STD -L/usr/local/lib -DNDEBUG -w #-Wno-ignored-qualifiers 
