@@ -8,6 +8,8 @@
 
 #include "record.h"
 
+#include "record_private.h"
+
 class RecordTest : public CppUnit::TestCase { 
 
 public:
@@ -97,6 +99,7 @@ public:
   void test_get_data_by_index() {
     Record foobar = make_foobar_record();
     Record quux = make_quuxalot_record();
+
     const vector<const string *> data = quux.get_data_by_index(1);
     vector<const string *>::const_iterator it = data.begin();
 
@@ -106,6 +109,16 @@ public:
       std::cout << "data: " << *it << std::endl;
     }
   }
+
+  void test_parse_column_names() {
+
+    string names("Lastname,Firstname");
+    vector<string> columns = parse_column_names(names);
+
+    CPPUNIT_ASSERT(string("Lastname") == columns[0]);
+    CPPUNIT_ASSERT(string("Firstname") == columns[1]);
+  }
+
 
   void runTest() {
     // Just o get startes...

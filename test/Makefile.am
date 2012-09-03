@@ -1,5 +1,5 @@
 
-INCLUDES = -I../include -I/opt/local/include
+INCLUDES = -I../include -I/opt/local/include -I../src
 
 #CXXFLAGS = -Wall -Wextra -ansi -Wignored-qualifiers # -pedantic # -Wno-unused-parameter  -Wno-uninitialized # -Wno-ignored-qualifiers
 AM_CXXFLAGS = -O0 -g -Wall -Wextra -ansi  -Wformat-zero-length # -pedantic
