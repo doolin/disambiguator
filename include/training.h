@@ -301,7 +301,7 @@ bool   make_stable_training_sets_by_personal    (const list <Record> & all_recor
 void         find_rare_names_v2 (const vector < RecordPList * > &vec_pdest,
                                  const list< const Record* > & source);
 
-uint32_t create_tset02      (list <RecordPair> &results,
+uint32_t     create_tset02      (list <RecordPair> &results,
                                  const RecordPList & reclist,
                                  const vector <string> & column_names,
                                  const vector < const RecordPList * > & vec_prare_names,
@@ -310,7 +310,7 @@ uint32_t create_tset02      (list <RecordPair> &results,
 /**
  * @todo Write some documentation
  */
-uint32_t create_xset03      (list <RecordPair> &results,
+uint32_t     create_xset03      (list <RecordPair> &results,
                                  //const list <const Record*> & reclist,
                                  const vector < const RecordPList * > & vec_prare_names,
                                  const uint32_t limit );
@@ -320,10 +320,10 @@ uint32_t create_xset03      (list <RecordPair> &results,
  * map.first is the actual word under consideration.
  * map.second, the occurrences, tracks the "local" and "global"
  *   uniqueness of the word (or name) in map.first.
- *   TODO: Verify the following:
+ *
+ * TODO: Verify the following:
  *   "local" uniqueness is instances of the word.
  *   "global" uniqueness is the number of instance of local
- * TODO: Unit test.
  */
 void         choose_rare_words  (const WordCounter word_map,
                                  set<string> & chosen_words);
