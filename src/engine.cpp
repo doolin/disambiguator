@@ -352,6 +352,36 @@ parse_line(string line,
 }
 
 
+void
+print_involved_attributes(Attribute ** pointer_array,
+    uint32_t num_cols) {
+
+    std::cout << "Involved attributes are: ";
+    for (uint32_t i = 0; i < num_cols; ++i) {
+        std::cout << pointer_array[i]->get_class_name() << ", ";
+    }
+    std::cout << std::endl;
+}
+
+
+void
+print_polymorphic_data_types(Attribute ** pointer_array,
+    uint32_t num_cols) {
+
+    std::cout << "Polymorphic data types are: ";
+    for (uint32_t i = 0; i < num_cols; ++i) {
+        std::cout << typeid(*pointer_array[i]).name()<< ", ";
+    }
+    std::cout << std::endl;
+}
+
+
+void
+check_interactive_consistency(Attribute ** pointer_array,
+    uint32_t num_cols) {
+
+}
+
 
 /**
  * First of all, read the first line in the file. The first
@@ -400,21 +430,9 @@ fetch_records_from_txt(list <Record> & source,
     // TODO: See if this can be moved to the instantiate_attributes function.
     // Or to it's own function which is called from instantiate attributes
     // always do this for all the attribute classes
-    for ( uint32_t i = 0; i < num_cols; ++i ) {
+    for (uint32_t i = 0; i < num_cols; ++i) {
         pointer_array[i]->check_interactive_consistency(Record::column_names);
     }
-
-    // TODO: Move this to its own function.
-    std::cout << "Involved attributes are: ";
-    for ( uint32_t i = 0; i < num_cols; ++i )
-        std::cout << pointer_array[i]->get_class_name() << ", ";
-    std::cout << std::endl;
-
-    // TODO: Move this to its own function.
-    std::cout << "Polymorphic data types are: ";
-    for ( uint32_t i = 0; i < num_cols; ++i )
-        std::cout << typeid(*pointer_array[i]).name()<< ", ";
-    std::cout << std::endl;
 
     // TODO: Move to its own function, get it covered
     // with a unit test, call it from somewhere else.
