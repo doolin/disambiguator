@@ -24,11 +24,12 @@ using std::set;
  * Algorithm: STL map find.
  */
 double
-fetch_ratio(const vector < unsigned int > & ratio_to_lookup,
-            const map < vector  < unsigned int>,
-            double, SimilarityCompare > & ratiosmap ) {
+fetch_ratio(const vector < uint32_t > & ratio_to_lookup,
+            const map <SimilarityProfile, double, SimilarityCompare > & ratiosmap ) {
+            //const map <vector <uint32_t>, double, SimilarityCompare > & ratiosmap ) {
 
-    map < vector < unsigned int >, double, SimilarityCompare >::const_iterator p = ratiosmap.find( ratio_to_lookup);
+    //map < vector <uint32_t>, double, SimilarityCompare >::const_iterator p = ratiosmap.find( ratio_to_lookup);
+    map <SimilarityProfile, double, SimilarityCompare >::const_iterator p = ratiosmap.find( ratio_to_lookup);
     if ( p == ratiosmap.end())
         return 0;
     else
@@ -46,10 +47,10 @@ disambiguate_by_set (const Record * key1,
                      const double prior,
                      const cRatios & ratio,  const double mutual_threshold ) {
 
-    static const unsigned int firstname_index = Record::get_similarity_index_by_name(cFirstname::static_get_class_name());
-    static const unsigned int midname_index = Record::get_similarity_index_by_name(cMiddlename::static_get_class_name());
-    static const unsigned int lastname_index = Record::get_similarity_index_by_name(cLastname::static_get_class_name());
-    static const unsigned int country_index = Record::get_index_by_name(cCountry::static_get_class_name());
+    static const uint32_t firstname_index = Record::get_similarity_index_by_name(cFirstname::static_get_class_name());
+    static const uint32_t midname_index = Record::get_similarity_index_by_name(cMiddlename::static_get_class_name());
+    static const uint32_t lastname_index = Record::get_similarity_index_by_name(cLastname::static_get_class_name());
+    static const uint32_t country_index = Record::get_index_by_name(cCountry::static_get_class_name());
     static const bool country_check = true;
 
 
@@ -64,7 +65,7 @@ disambiguate_by_set (const Record * key1,
         }
 
 
-        vector < unsigned int > screen_sp = key1->record_compare(*key2);
+        vector < uint32_t > screen_sp = key1->record_compare(*key2);
         const double screen_r = fetch_ratio(screen_sp, ratio.get_ratios_map());
         const double screen_p = 1.0 / ( 1.0 + ( 1.0 - prior )/ prior / screen_r );
         if ( screen_p < 0.3 || screen_sp.at(firstname_index) == 0 || screen_sp.at(midname_index) == 0 || screen_sp.at(lastname_index) == 0 )
@@ -76,12 +77,12 @@ disambiguate_by_set (const Record * key1,
     const double threshold = max_val <double> (minimum_threshold, mutual_threshold * cohesion1 * cohesion2);
     static const cException_Unknown_Similarity_Profile except(" Fatal Error in Disambig by set.");
 
-    const unsigned int match1_size = match1.size();
-    const unsigned int match2_size = match2.size();
+    const uint32_t match1_size = match1.size();
+    const uint32_t match2_size = match2.size();
 
-    //const unsigned int required_candidates = static_cast< unsigned int > ( 1.0 * sqrt(1.0 * match1_size * match2_size ));
-    //const unsigned int candidates_for_averaging = 2 * required_candidates - 1 ;
-    unsigned int candidates_for_averaging = match1_size * match2_size / 4 ;
+    //const uint32_t required_candidates = static_cast< uint32_t > ( 1.0 * sqrt(1.0 * match1_size * match2_size ));
+    //const uint32_t candidates_for_averaging = 2 * required_candidates - 1 ;
+    uint32_t candidates_for_averaging = match1_size * match2_size / 4 ;
     if ( candidates_for_averaging == 0 )
         candidates_for_averaging = 1;
     if ( candidates_for_averaging == 0 )
@@ -91,9 +92,9 @@ disambiguate_by_set (const Record * key1,
 
     double interactive = 0;
     double cumulative_interactive = 0;
-    unsigned int qualified_count = 0;
+    uint32_t qualified_count = 0;
     //double required_interactives = 0;
-    //unsigned int required_cnt = 0;
+    //uint32_t required_cnt = 0;
     for ( RecordPList::const_iterator p = match1.begin(); p != match1.end(); ++p ) {
         for ( RecordPList::const_iterator q = match2.begin(); q != match2.end(); ++q ) {
 
@@ -106,7 +107,7 @@ disambiguate_by_set (const Record * key1,
 
 
 
-            vector< unsigned int > tempsp = (*p)->record_compare(* *q);
+            vector< uint32_t > tempsp = (*p)->record_compare(* *q);
             if ( tempsp.at(firstname_index) == 0 || tempsp.at(midname_index) == 0 || tempsp.at(lastname_index) == 0 )
                 return std::pair<const Record *, double> (NULL, 0);
 
@@ -185,35 +186,36 @@ parse_column_names(std::string line) {
   int pos = 0;
   int prev_pos = 0;
   const char * delim = ",";
-  const unsigned int delim_size = strlen(delim);
+  const uint32_t delim_size = strlen(delim);
   vector <string> total_col_names;
 
-  while (  pos != string::npos){
-      //std::cout << "pos " << pos << std::endl;
-      //std::cout << "string::npos " << std::string::npos << std::endl;
-      pos = line.find(delim, prev_pos);
+  while (pos != string::npos) {
+
       string columnname;
-      if ( pos != string::npos )
-          columnname = line.substr( prev_pos, pos - prev_pos);
-      else
-          columnname = line.substr( prev_pos );
+
+      pos = line.find(delim, prev_pos);
+      if (pos != string::npos) {
+          columnname = line.substr(prev_pos, pos - prev_pos);
+      } else {
+          columnname = line.substr(prev_pos );
+      }
+
       total_col_names.push_back(columnname);
       prev_pos = pos + delim_size;
-      //std::cout << "columnname: " << columnname << std::endl;
   }
   return total_col_names;
 }
 
 
 
-vector<unsigned int>
+vector<uint32_t>
 create_column_indices(std::vector<std::string> requested_columns,
     std::vector<std::string> total_col_names) {
 
-  std::vector<unsigned int> rci;
-  const unsigned int num_cols = requested_columns.size();
-  for ( unsigned int i = 0; i < num_cols; ++i ) {
-      unsigned int j;
+  std::vector<uint32_t> rci;
+  const uint32_t num_cols = requested_columns.size();
+  for ( uint32_t i = 0; i < num_cols; ++i ) {
+      uint32_t j;
       for (  j = 0; j < total_col_names.size(); ++j ) {
           if ( requested_columns.at(i) == total_col_names.at(j) ) {
               rci.push_back(j);
@@ -235,11 +237,11 @@ instantiate_attributes(std::vector<std::string> column_names, int num_cols) {
 
   Attribute ** pointer_array = new Attribute *[num_cols];
 
-  unsigned int pos =  0;
-  unsigned int prev_pos = 0;
-  unsigned int position_in_ratios = 0;
+  uint32_t pos =  0;
+  uint32_t prev_pos = 0;
+  uint32_t position_in_ratios = 0;
 
-  for (unsigned int i = 0; i < num_cols; ++i) {
+  for (uint32_t i = 0; i < num_cols; ++i) {
 
       //std::cout << "column_names[i]: " << column_names[i] << std::endl;
       const int pos_in_query = Attribute::position_in_registry(column_names[i]);
@@ -247,7 +249,7 @@ instantiate_attributes(std::vector<std::string> column_names, int num_cols) {
       //std::cout << "column_names[i]: " << column_names[i] << std::endl;
 
       if ( pos_in_query == -1 ) {
-          for ( unsigned int j = 0; j < i; ++j )
+          for ( uint32_t j = 0; j < i; ++j )
               delete pointer_array[j];
           delete [] pointer_array;
           throw cException_ColumnName_Not_Found(column_names[i].c_str());
@@ -285,23 +287,23 @@ instantiate_attributes(std::vector<std::string> column_names, int num_cols) {
 
 vector <const Attribute *>
 parse_line(string line,
-           vector < unsigned int > requested_column_indice,
+           vector < uint32_t > requested_column_indice,
            Attribute ** pointer_array,
-           unsigned int num_cols,
+           uint32_t num_cols,
            const char * delim,
            vector<string> & string_cache) {
 
-  const unsigned int delim_size = strlen(delim);
+  const uint32_t delim_size = strlen(delim);
   vector <const Attribute *> temp_vec_attrib;
   const Attribute * pAttrib;
 
-  for (unsigned int i = 0; i < num_cols ; ++i) {
+  for (uint32_t i = 0; i < num_cols ; ++i) {
 
       // What does column_location point at?
-      unsigned int column_location = 0;
+      uint32_t column_location = 0;
       // Given the second iteration, what does prev_pos point at?
-      unsigned int pos = 0;
-      unsigned int prev_pos = 0;
+      uint32_t pos = 0;
+      uint32_t prev_pos = 0;
 
       while (column_location++ != requested_column_indice.at(i)) {
           pos = line.find(delim, prev_pos);
@@ -367,7 +369,7 @@ fetch_records_from_txt(list <Record> & source,
     std::ifstream::sync_with_stdio(false);
     // the "," deliminator should never occur in the data.
     const char * delim = ",";
-    const unsigned int delim_size = strlen(delim);
+    const uint32_t delim_size = strlen(delim);
     register size_t pos, prev_pos;
 
     std::ifstream instream(txt_file);
@@ -381,8 +383,8 @@ fetch_records_from_txt(list <Record> & source,
     vector<string> total_col_names = parse_column_names(line);
 
     Attribute::register_class_names(requested_columns);
-    vector < unsigned int > requested_column_indice;
-    const unsigned int num_cols = requested_columns.size();
+    vector < uint32_t > requested_column_indice;
+    const uint32_t num_cols = requested_columns.size();
     requested_column_indice = create_column_indices(requested_columns, total_col_names);
 
     Record::column_names = requested_columns;
@@ -393,19 +395,19 @@ fetch_records_from_txt(list <Record> & source,
     // TODO: See if this can be moved to the instantiate_attributes function.
     // Or to it's own function which is called from instantiate attributes
     // always do this for all the attribute classes
-    for ( unsigned int i = 0; i < num_cols; ++i ) {
+    for ( uint32_t i = 0; i < num_cols; ++i ) {
         pointer_array[i]->check_interactive_consistency(Record::column_names);
     }
 
     // TODO: Move this to its own function.
     std::cout << "Involved attributes are: ";
-    for ( unsigned int i = 0; i < num_cols; ++i )
+    for ( uint32_t i = 0; i < num_cols; ++i )
         std::cout << pointer_array[i]->get_class_name() << ", ";
     std::cout << std::endl;
 
     // TODO: Move this to its own function.
     std::cout << "Polymorphic data types are: ";
-    for ( unsigned int i = 0; i < num_cols; ++i )
+    for ( uint32_t i = 0; i < num_cols; ++i )
         std::cout << typeid(*pointer_array[i]).name()<< ", ";
     std::cout << std::endl;
 
@@ -413,8 +415,8 @@ fetch_records_from_txt(list <Record> & source,
     // with a unit test, call it from somewhere else.
     std::cout << "Polymorphic data types are: ";
     vector <string> string_cache(num_cols);
-    const unsigned int string_cache_size = 2048;
-    for ( unsigned int i = 0; i < num_cols; ++i ) {
+    const uint32_t string_cache_size = 2048;
+    for ( uint32_t i = 0; i < num_cols; ++i ) {
         string_cache.at(i).reserve(string_cache_size);
     }
 
@@ -422,7 +424,7 @@ fetch_records_from_txt(list <Record> & source,
     std::cout << "Reading " << txt_file << " ......"<< std::endl;
 
     unsigned long size = 0;
-    const unsigned int base  =  100000;
+    const uint32_t base  =  100000;
     const Attribute * pAttrib;
     vector <const Attribute *> temp_vec_attrib;
     //vector <const Attribute *> Latitude_interactive_attribute_pointers;
@@ -445,14 +447,14 @@ fetch_records_from_txt(list <Record> & source,
         // data and get itself parsed correctly. The tricky
         // part here is getting the right object copied back.
 #if 1
-        for (unsigned int i = 0; i < num_cols ; ++i) {
+        for (uint32_t i = 0; i < num_cols ; ++i) {
 
             // What does column_location point at?
-            unsigned int column_location = 0;
+            uint32_t column_location = 0;
             // Given the second iteration, what does prev_pos point at?
             pos = prev_pos = 0;
 
-            // requested_column_indice is vector<unsigned int> defined
+            // requested_column_indice is vector<uint32_t> defined
             // around Line 738 above, see vector.at
             while (column_location++ != requested_column_indice.at(i)) {
                 // See string.find: http://www.cplusplus.com/reference/string/string/find/
@@ -486,9 +488,9 @@ fetch_records_from_txt(list <Record> & source,
         }
 #else
         temp_vec_attrib = parse_line(string line,
-                                     vector < unsigned int > requested_column_indice,
+                                     vector < uint32_t > requested_column_indice,
                                      Attribute ** pointer_array,
-                                     unsigned int num_cols,
+                                     uint32_t num_cols,
                                      const char * delim,
                                      vector<string> & string_cache);
 #endif
@@ -509,7 +511,7 @@ fetch_records_from_txt(list <Record> & source,
     Record::sample_record_pointer = & source.front();
 
     // TODO: Create a little function for this which can be unit tested
-    for (unsigned int i = 0; i < num_cols; ++i) {
+    for (uint32_t i = 0; i < num_cols; ++i) {
         delete pointer_array[i];
     }
     delete [] pointer_array;
@@ -631,7 +633,7 @@ reconfigure_interactives (const Record_Reconfigurator * pc,
 void
 cAssignee::configure_assignee( const list < const Record *> & recs) {
 
-    static const unsigned int asgnumidx = Record::get_index_by_name(cAsgNum::static_get_class_name());
+    static const uint32_t asgnumidx = Record::get_index_by_name(cAsgNum::static_get_class_name());
 
     for ( list< const Record *>::const_iterator p = recs.begin(); p != recs.end(); ++p ) {
         const cAsgNum * pasgnum = dynamic_cast < const cAsgNum *> ( (*p)->get_attrib_pointer_by_index(asgnumidx) );
