@@ -207,11 +207,6 @@ public:
  *        in child classes, so this function has to be overridden in child class.
  */
 
-/**
- *        16. virtual int exact_compare( const Attribute & rhs ):
- *        To check if this attribute is exactly the same as rhs.
- *        -1 means disabled. 0 = not exact match. 1 = exact match.
- */
 
 
 /*
@@ -304,7 +299,9 @@ public:
     */
     virtual const vector <const string*> & get_data() const = 0;
 
-    virtual const vector <const Attribute *> & get_interactive_vector() const { throw cException_No_Interactives(get_class_name().c_str()); };
+    virtual const vector <const Attribute *> & get_interactive_vector() const {
+      throw cException_No_Interactives(get_class_name().c_str());
+    };
 
     virtual const string & get_class_name() const = 0;
     virtual bool is_comparator_activated() const = 0;
@@ -324,15 +321,25 @@ public:
     virtual unsigned int get_attrib_max_value() const {
       throw cException_Invalid_Function(get_class_name().c_str());
     };
+
+
+   /**
+    *        16. virtual int exact_compare( const Attribute & rhs ):
+    *        To check if this attribute is exactly the same as rhs.
+    *        -1 means disabled. 0 = not exact match. 1 = exact match.
+    */
     // -1 means no exact_compare. 0 = not the same 1= exact same
-    virtual int exact_compare( const Attribute & UP(rhs)) const { return -1; }
+    virtual int exact_compare( const Attribute & UP(rhs)) const {
+      return -1;
+    }
+
     virtual const string * add_string( const string & str ) const = 0;
 
     virtual bool operator < ( const Attribute & rhs ) const = 0;
 
     virtual bool is_informative() const {
-        if (  get_data().empty() || get_data().at(0)->empty() )
-            return false;
+
+        if (get_data().empty() || get_data().at(0)->empty()) return false;
         return true;
     }
 
@@ -364,73 +371,74 @@ public:
  *
  *
  * Private:
- *         static const string class_name:
- *         the name specifier of each concrete attribute class.
+ * static const string class_name:
+ * the name specifier of each concrete attribute class.
  */
 
 /**
- *         static unsigned int column_index_in_query:s
- *         the location of each attribute in accordance with the reading sequence.
+ * static unsigned int column_index_in_query:s
+ * the location of each attribute in accordance with the reading sequence.
  */
 
 /**
- *         static const string interactive_column_names[]:
- *         column names that have interaction with the current attribute type. Pay attention to the sequence!!!!
+ * static const string interactive_column_names[]:
+ * column names that have interaction with the current attribute type.
+ * Pay attention to the sequence!!!!
  */
 
 /**
- *         static const unsigned int num_of_interactive_columns;
- *         number of columns that have interaction with the current attribute type.
+ * static const unsigned int num_of_interactive_columns;
+ * number of columns that have interaction with the current attribute type.
  */
 
 /**
- *         static vector <unsigned int> interactive_column_indice_in_query:
- *         indice of the attributes that have interaction with the
- *         current attributes, as displayed while being read.
+ * static vector <unsigned int> interactive_column_indice_in_query:
+ * indice of the attributes that have interaction with the
+ * current attributes, as displayed while being read.
  */
 
 /**
- *         static bool bool_interactive_consistency_checked:
- *         whether the interactive attributes are read the same sequence
- *         as assigned in the interactive_column_names variable.
+ * static bool bool_interactive_consistency_checked:
+ * whether the interactive attributes are read the same sequence
+ * as assigned in the interactive_column_names variable.
  */
 
 /**
- *         static bool bool_is_enabled:
- *         whether the attribute is enabled for reading. Maybe not useful now.
+ * static bool bool_is_enabled:
+ * whether the attribute is enabled for reading. Maybe not useful now.
  */
 
 /**
- *         static bool bool_comparator_activated:
- *         whether the attribute type will be compared.
+ * static bool bool_comparator_activated:
+ * whether the attribute type will be compared.
  */
 
 /**
- *         static const string attrib_group:
- *         the attribute group of the concrete attribute class.
+ * static const string attrib_group:
+ * the attribute group of the concrete attribute class.
  */
 
 /*
- *         static set < string > data_pool:
- *         pooling system for the data that are used in THIS
- *         certain entire concrete attribute CLASS ONLY.
+ * static set < string > data_pool:
+ * pooling system for the data that are used in THIS
+ * certain entire concrete attribute CLASS ONLY.
  */
 
 /**
- *         static map < Derived, int > attrib_pool:
- *         pooling system for the attribute objects that are used in the
- *         entire attribute class only, with reference-counting.
+ * static map < Derived, int > attrib_pool:
+ * pooling system for the attribute objects that are used in the
+ * entire attribute class only, with reference-counting.
  */
 
 /**
- *         static pthread_rwlock_t attrib_pool_structure_lock:
- *         read-write lock of the attrib_pool that synchronize
- *         deletion and insertion of new attribute objects.
+ * static pthread_rwlock_t attrib_pool_structure_lock:
+ * read-write lock of the attrib_pool that synchronize
+ * deletion and insertion of new attribute objects.
  */
 
 /**
- *         static pthread_mutex_t attrib_pool_count_lock: mutex of attrib_pool
- *         that synchronize modification of reference-counting.
+ * static pthread_mutex_t attrib_pool_count_lock: mutex of attrib_pool
+ * that synchronize modification of reference-counting.
  */
 
 /*
@@ -511,16 +519,19 @@ public:
  */
 
 /**
- * void check_interactive_consistency(const vector <string> & query_columns): polymorphic version of the above function.
+ * void check_interactive_consistency(const vector <string> & query_columns):
+ * polymorphic version of the above function.
  */
 
 
 /*
- * bool has_checked_interactive_consistency(): check if the class interactive consistency is checked.
+ * bool has_checked_interactive_consistency():
+ * check if the class interactive consistency is checked.
  */
 
 /**
- * static bool is_enabled(): check if the class is enabled for use.
+ * static bool is_enabled():
+ * check if the class is enabled for use.
  */
 
 /**
@@ -528,64 +539,85 @@ public:
  */
 
 /**
- * static bool static_is_comparator_activated(): check if the comparison function for the class is activated.
+ * static bool static_is_comparator_activated():
+ * check if the comparison function for the class is activated.
  */
 
 /**
- * bool is_comparator_activated(): polymorphic version of the above function.
+ * bool is_comparator_activated():
+ * polymorphic version of the above function.
  */
 
 /**
- * static void activate_comparator(): activate the comparison function for the class.
+ * static void activate_comparator():
+ * activate the comparison function for the class.
  */
 
 /**
- * static void deactivate_comparator(): de-activate the comparison function for the class.
+ * static void deactivate_comparator():
+ * de-activate the comparison function for the class.
  */
 
 /**
- * void print( std::ostream & os ) const: print the current object to output stream os, usually std::cout.
+ * void print( std::ostream & os ) const:
+ * print the current object to output stream os, usually std::cout.
  */
 
 /**
- * static const string & static_get_attrib_group(): get the specifier of the attribute group of the class.
+ * static const string & static_get_attrib_group():
+ * get the specifier of the attribute group of the class.
  */
 
 
 /*
- * const string & get_attrib_group() const: polymorphic version of the above function.
+ * const string & get_attrib_group() const:
+ * polymorphic version of the above function.
  */
 
 /**
- * static const string * static_add_string ( const string & str ): copy the string "str" to the data pool, and returns the pointer to the newly added string.
+ * static const string * static_add_string ( const string & str ):
+ * copy the string "str" to the data pool, and returns the
+ * pointer to the newly added string.
  */
 
 /**
- * static const string * static_find_string( const string & str) : find the string "str" in the data pool, and returns the pointer to it if success or NULL if failure.
+ * static const string * static_find_string( const string & str):
+ * find the string "str" in the data pool, and returns the
+ * pointer to it if success or NULL if failure.
  */
 
 /**
- * const string * add_string ( const string & str ): polymorphic version of the above static version.
+ * const string * add_string ( const string & str ):
+ * polymorphic version of the above static version.
  */
 
 /**
- * static const Attribute * static_clone_by_data( const vector < string > & str ): add or create an attribute object by the str data, returns the pointer to the object.
+ * static const Attribute * static_clone_by_data( const vector < string > & str ):
+ * add or create an attribute object by the str data, returns
+ * the pointer to the object.
  */
 
 /**
- * static int static_clean_attrib_pool(): remove the objects whose reference counter = 0, returns the number of removed objects.
+ * static int static_clean_attrib_pool():
+ * remove the objects whose reference counter = 0,
+ * returns the number of removed objects.
  */
 
 /**
- * int clean_attrib_pool() const: polymorphic version of the above function
+ * int clean_attrib_pool() const:
+ * polymorphic version of the above function
  */
 
 /**
- * const Attribute * reduce_attrib(unsigned int n) const: deduct the reference counter of this object by n, and returns the pointer to this object. Null if removed.
+ * const Attribute * reduce_attrib(unsigned int n) const:
+ * deduct the reference counter of this object by n,
+ * and returns the pointer to this object. Null if removed.
  */
 
 /**
- * const Attribute * add_attrib(unsigned int n) const: add the reference counter of this object by n, and returns the pointer to this object.
+ * const Attribute * add_attrib(unsigned int n) const:
+ * add the reference counter of this object by n, and
+ * returns the pointer to this object.
  */
 
 
@@ -611,7 +643,8 @@ private:
 
     static bool bool_comparator_activated;
 
-    static const string attrib_group;    //attribute group used for ratios purpose;
+    //attribute group used for ratios purpose;
+    static const string attrib_group;
 
 public:
 
@@ -628,24 +661,14 @@ public:
     unsigned int compare(const Attribute & UP(rhs)) const {
         throw cException_No_Comparision_Function(class_name.c_str());
     };
-    //static const unsigned int get_interactive_column_number() { return num_of_interactive_columns;};
-    static unsigned int get_interactive_column_number() { return num_of_interactive_columns;};
-    static void static_check_interactive_consistency( const vector <string> & UP(query_columns) ) {
 
-#if 0
-           if ( interactive_column_indice_in_query.size() != get_interactive_column_number() )
-               throw cException_Insufficient_Interactives(class_name.c_str());
-           for ( unsigned int i = 0; i < num_of_interactive_columns; ++i) {
-               unsigned int temp_index = find(query_columns.begin(), query_columns.end(), interactive_column_names[i]) - query_columns.begin();
-               if ( temp_index < query_columns.size() )
-                   interactive_column_indice_in_query[i] = temp_index;
-               else
-                   throw cException_Insufficient_Interactives(class_name.c_str());
-           }
-#endif
+    static unsigned int get_interactive_column_number() {
+      return num_of_interactive_columns;
+    };
 
-           bool_interactive_consistency_checked = true;
-       }
+    static void static_check_interactive_consistency(const vector<string> & UP(query_columns)) {
+      bool_interactive_consistency_checked = true;
+    }
 
     void check_interactive_consistency(const vector <string> & query_columns) {
       static_check_interactive_consistency(query_columns);
@@ -656,52 +679,72 @@ public:
     }
 
     static bool is_enabled() { return bool_is_enabled; }
-    //
-    //static void enable() { bool_is_enabled = true;}
-    static bool static_is_comparator_activated() {return bool_comparator_activated;}
 
-    bool is_comparator_activated() const { return bool_comparator_activated;}
+    //static void enable() { bool_is_enabled = true;}
+    static bool static_is_comparator_activated() {
+      return bool_comparator_activated;
+    }
+
+    bool is_comparator_activated() const {
+      return bool_comparator_activated;
+    }
 
     static void static_activate_comparator() {
-        if ( attrib_group == INERT_ATTRIB_GROUP_IDENTIFIER )
-            return;
-            //throw cException_No_Comparision_Function ( ( string("Attribute GROUP is not set properly. Attribute = ") + class_name + string(" Group = ") + attrib_group ).c_str());
+
+        if ( attrib_group == INERT_ATTRIB_GROUP_IDENTIFIER ) return;
+
         bool_comparator_activated = true;
-        std::cout << static_get_class_name() << " comparison is active now." << std::endl;
+        std::cout << static_get_class_name()
+                  << " comparison is active now." << std::endl;
         Record_update_active_similarity_names() ;
     }
 
     static void static_deactivate_comparator() {
+
         if ( attrib_group == INERT_ATTRIB_GROUP_IDENTIFIER ) return;
-           //throw cException_No_Comparision_Function ( ( string("Attribute GROUP is not set properly. Attribute = ") + class_name + string(" Group = ") + attrib_group ).c_str());
+
         bool_comparator_activated = false;
-        std::cout << static_get_class_name() << " comparison is deactivated." << std::endl;
+        std::cout << static_get_class_name()
+                  << " comparison is deactivated." << std::endl;
         Record_update_active_similarity_names() ;
     }
 
-    void activate_comparator() const { this->static_activate_comparator(); }
-    void deactivate_comparator() const { this->static_deactivate_comparator();}
+    void activate_comparator() const {
+      this->static_activate_comparator();
+    }
+
+    void deactivate_comparator() const {
+      this->static_deactivate_comparator();
+    }
 
     void print( std::ostream & os ) const {
+
         vector < const string * >::const_iterator p = this->get_data().begin();
         os << class_name << ": ";
         os << "Data Type = " << typeid(*this).name() << ", ";
+
         if ( p == this->get_data().end() ) {
             os << "Empty attribute." << std::endl;
             return;
         }
+
         os << "raw data = " << **p << ", Derivatives = ";
         for ( ++p; p != this->get_data().end(); ++p )
             os << **p << " | ";
         os << std::endl;
     }
 
-    static const string & static_get_attrib_group() { return attrib_group; };
+    static const string & static_get_attrib_group() {
+      return attrib_group;
+    };
 
-    const string & get_attrib_group() const { return attrib_group;}
+    const string & get_attrib_group() const {
+      return attrib_group;
+    }
 
     static vector < string > static_get_interactive_column_names() {
-        vector < string > res ( interactive_column_names, interactive_column_names + num_of_interactive_columns);
+        vector<string> res (interactive_column_names,
+            interactive_column_names + num_of_interactive_columns);
         return res;
     }
 
@@ -730,7 +773,10 @@ private:
 protected:
 
 public:
-    const Attribute *  get_effective_pointer() const { return this; };
+
+    const Attribute *  get_effective_pointer() const {
+      return this;
+    };
 
     static void clear_data_pool() {
       data_pool.clear();
@@ -744,13 +790,14 @@ public:
     Attribute_Intermediary(const char * source = NULL )
         :    Attribute_Basic<Derived> (source){}
 
-    static const Derived * static_add_attrib( const Derived & d , const unsigned int n ) {
+    static const Derived * static_add_attrib(const Derived & d , const unsigned int n) {
+
         pthread_rwlock_rdlock(& attrib_pool_structure_lock);
         typename map < Derived, int >::iterator p = attrib_pool.find( d );
         const bool is_end = ( p == attrib_pool.end() );
         pthread_rwlock_unlock(& attrib_pool_structure_lock);
 
-        if ( is_end ) {
+        if (is_end) {
             pthread_rwlock_wrlock(& attrib_pool_structure_lock);
             p = attrib_pool.insert(std::pair<Derived, int>(d, 0) ).first;
             pthread_rwlock_unlock(& attrib_pool_structure_lock);
@@ -762,7 +809,8 @@ public:
         return &(p->first);
     }
 
-    static const Derived * static_find_attrib ( const Derived & d) {
+    static const Derived * static_find_attrib (const Derived & d) {
+
         pthread_rwlock_rdlock(& attrib_pool_structure_lock);
         register typename map < Derived, int >::iterator p = attrib_pool.find( d );
         if ( p == attrib_pool.end() ) {
@@ -773,18 +821,18 @@ public:
         return &(p->first);
     }
 
-    static const Derived * static_reduce_attrib( const Derived & d , const unsigned int n) {
+    static const Derived * static_reduce_attrib(const Derived & d , const unsigned int n) {
+
         pthread_rwlock_rdlock ( & attrib_pool_structure_lock);
         // cppcheck complains about declaring register.
         //register typename map < Derived, int >::iterator p = attrib_pool.find( d );
         typename map < Derived, int >::iterator p = attrib_pool.find( d );
         const bool is_end = ( p == attrib_pool.end() );
         pthread_rwlock_unlock (& attrib_pool_structure_lock);
-        if ( is_end ) {
-            d.print(std::cout);
-            //const string * t = * ( d.get_attrib_set_pointer()->begin() );
 
-            throw cException_Other("Error: attrib not exist!");
+        if ( is_end ) {
+          d.print(std::cout);
+          throw cException_Other("Error: attrib not exist!");
         }
 
 
@@ -823,10 +871,10 @@ public:
         // -Wextra complains about register declaration
         //register set< string >::iterator p = data_pool.find(str);
         set< string >::iterator p = data_pool.find(str);
+
         if ( p == data_pool.end() ) {
             return NULL;
-        }
-        else {
+        } else {
             return &(*p);
         }
     }
@@ -864,7 +912,9 @@ public:
         return cnt;
     }
 
-    int clean_attrib_pool() const { return static_clean_attrib_pool(); }
+    int clean_attrib_pool() const {
+      return static_clean_attrib_pool();
+    }
 
     const Attribute * reduce_attrib(unsigned int n) const {
         return static_reduce_attrib( dynamic_cast< const Derived &> (*this), n);
@@ -1290,7 +1340,9 @@ private:
     }
 
 public:
-    const Attribute *  get_effective_pointer() const { return pAttrib;}
+    const Attribute *  get_effective_pointer() const {
+      return pAttrib;
+    }
 
     const string * add_string ( const string & str ) const  {
         return Attribute_Intermediary<ConcreteType>::static_add_string ( str );
@@ -1316,7 +1368,9 @@ public:
         return true;
     }
 
-    bool operator < (const Attribute&) const {throw cException_Other("operator less than. Operation forbidden.");}
+    bool operator < (const Attribute&) const {
+      throw cException_Other("operator less than. Operation forbidden.");
+    }
 
     const vector <const Attribute *> & get_interactive_vector() const {
         return inter_vecs;
