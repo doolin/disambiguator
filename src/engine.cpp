@@ -377,8 +377,15 @@ print_polymorphic_data_types(Attribute ** pointer_array,
 
 void
 check_interactive_consistency(Attribute ** pointer_array,
-    uint32_t num_cols) {
+    uint32_t num_cols,
+    std::vector<std::string> column_names) {
 
+    // TODO: See if this can be moved to the instantiate_attributes function.
+    // Or to it's own function which is called from instantiate attributes
+    // always do this for all the attribute classes
+    for (uint32_t i = 0; i < num_cols; ++i) {
+        pointer_array[i]->check_interactive_consistency(column_names);
+    }
 }
 
 
