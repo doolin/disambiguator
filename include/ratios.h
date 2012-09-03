@@ -15,7 +15,8 @@ using std::string;
 using std::set;
 using std::map;
 
-
+typedef std::pair<string, string> TrainingPair;
+typedef std::list<TrainingPair> TrainingPairs;
 
 /**
  * cMonotonic_Similarity_Compare:
@@ -135,19 +136,18 @@ public:
  *        const string attrib_group:
  *            the attribute GROUP identifier for which the
  *            cRatioComponent object represents.
+ */
+
+
+/**
+ * map < cSimilarity_With_Monotonicity_Dimension, MonotonicSet > similarity_map:
+ *       a map of similarity profiles and their monotonic set for a certain dimension.
  *
- *        const map < string, const Record *> * puid_tree:
- *            the pointer to a map of unique record id string to
- *            its correspoinding record pointer.
+ * vector < string > attrib_names:
+ *     attribute names that belong the the atribute group.
  *
- *        map < cSimilarity_With_Monotonicity_Dimension, MonotonicSet > similarity_map:
- *              a map of similarity profiles and their monotonic set for a certain dimension.
- *
- *        vector < string > attrib_names:
- *            attribute names that belong the the atribute group.
- *
-*        map < vector < unsigned int > , unsigned int, SimilarityCompare > x_counts, m_counts:
- *              maps of similarity profiles to their occurrences in non-match and match training sets.
+ * map < vector < unsigned int > , unsigned int, SimilarityCompare > x_counts, m_counts:
+ *       maps of similarity profiles to their occurrences in non-match and match training sets.
  */
 
 /**
@@ -189,7 +189,12 @@ private:
 
     const string attrib_group;
 
-    const map < string, const Record *> * puid_tree;
+   /**
+    * const map < string, const Record *> * puid_tree:
+    * the pointer to a map of unique record id string to
+    * its correspoinding record pointer.
+    */
+    const map<string, const Record *> * puid_tree;
 
     map < cSimilarity_With_Monotonicity_Dimension, MonotonicSet > similarity_map;
 
@@ -349,12 +354,6 @@ public:
     */
     void write_ratios_file(const char * filename) const;
     //unsigned int get_final_order () const {return final_root_order;}
-
-   /**
-    * TODO: FIXME: document this method.
-    */
-    void inter_extra_polation(const vector < unsigned int >& max_similarity,
-                             const vector < unsigned int > & min_similarity);
 
    /**
     * Requires global configuration of requisite matrices and data structures
