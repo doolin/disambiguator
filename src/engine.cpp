@@ -206,8 +206,7 @@ parse_column_names(std::string line) {
 }
 
 
-
-// TODO: Unit test this thing.
+// Change the name to "index_columns"
 vector<uint32_t>
 create_column_indices(std::vector<std::string> requested_columns,
     std::vector<std::string> total_col_names) {
@@ -219,7 +218,10 @@ create_column_indices(std::vector<std::string> requested_columns,
 
       uint32_t j;
       for (j = 0; j < total_col_names.size(); ++j) {
-          if (requested_columns.at(i) == total_col_names.at(j)) {
+
+          // .at() is just too precious...
+          //if (requested_columns.at(i) == total_col_names.at(j)) {
+          if (requested_columns[i] == total_col_names[j]) {
               rci.push_back(j);
               break;
           }

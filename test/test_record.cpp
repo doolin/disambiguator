@@ -8,7 +8,7 @@
 
 #include "record.h"
 
-#include "record_private.h"
+#include <record_private.h>
 
 class RecordTest : public CppUnit::TestCase { 
 
@@ -120,6 +120,26 @@ public:
   }
 
 
+  void test_create_column_indices() {
+
+    vector<string> requested_columns;
+    requested_columns.push_back("Firstname");
+    requested_columns.push_back("Lastname");
+    requested_columns.push_back("Middlename");
+
+    vector<string> total_col_names;
+    total_col_names.push_back("Lastname");
+    total_col_names.push_back("Firstname");
+    total_col_names.push_back("Middlename");
+
+    vector<uint32_t> rci =  create_column_indices(requested_columns, total_col_names);
+
+    CPPUNIT_ASSERT(1 == rci[0]);
+    CPPUNIT_ASSERT(0 == rci[1]);
+    CPPUNIT_ASSERT(2 == rci[2]);
+
+  }
+
   void runTest() {
     // Just o get startes...
     CPPUNIT_ASSERT( 1  == 1 );
@@ -129,6 +149,8 @@ public:
     attribute_record();
     read_records();
     test_get_data_by_index();
+    test_create_column_indices();
+    test_parse_column_names();
   }
 };
 
