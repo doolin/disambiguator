@@ -15,7 +15,7 @@ using std::list;
 class Record;
 
 const Record * retrieve_record_pointer_by_unique_id(const string & uid,
-                                                    const map <string, const Record*> & uid_tree);
+                                                    const map<string, const Record*> & uid_tree);
 
 void           create_btree_uid2record_pointer     (map<string, const Record *> & uid_tree,
                                                     const list<Record> & reclist,
