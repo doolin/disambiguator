@@ -248,10 +248,7 @@ instantiate_attributes(std::vector<std::string> column_names, int num_cols) {
 
   for (uint32_t i = 0; i < num_cols; ++i) {
 
-      //std::cout << "column_names[i]: " << column_names[i] << std::endl;
       const int pos_in_query = Attribute::position_in_registry(column_names[i]);
-      //std::cout << "pos_in_query: " << pos_in_query << std::endl;
-      //std::cout << "column_names[i]: " << column_names[i] << std::endl;
 
       if ( pos_in_query == -1 ) {
           for ( uint32_t j = 0; j < i; ++j )
@@ -405,7 +402,6 @@ fetch_records_from_txt(list <Record> & source,
                        const vector<string> & requested_columns) {
 
     std::ifstream::sync_with_stdio(false);
-    // the "," deliminator should never occur in the data.
     const char * delim = ",";
     const uint32_t delim_size = strlen(delim);
     register size_t pos, prev_pos;
@@ -428,24 +424,17 @@ fetch_records_from_txt(list <Record> & source,
     Attribute ** pointer_array; 
     pointer_array = instantiate_attributes(Record::column_names, num_cols);
 
-
-    // TODO: See if this can be moved to the instantiate_attributes function.
-    // Or to it's own function which is called from instantiate attributes
-    // always do this for all the attribute classes
-    for (uint32_t i = 0; i < num_cols; ++i) {
-        pointer_array[i]->check_interactive_consistency(Record::column_names);
-    }
+    check_interactive_consistency(pointer_array, num_cols, Record::column_names);
 
     // TODO: Move to its own function, get it covered
     // with a unit test, call it from somewhere else.
     std::cout << "Polymorphic data types are: ";
     vector <string> string_cache(num_cols);
     const uint32_t string_cache_size = 2048;
-    for ( uint32_t i = 0; i < num_cols; ++i ) {
+    for (uint32_t i = 0; i < num_cols; ++i) {
         string_cache.at(i).reserve(string_cache_size);
     }
 
-    //std::cout << "Polymorphic data types are: ";
     std::cout << "Reading " << txt_file << " ......"<< std::endl;
 
     unsigned long size = 0;
@@ -461,16 +450,9 @@ fetch_records_from_txt(list <Record> & source,
     // TODO: Move all this to its own function
     while (getline(instream, line)) {
 
-        //std::cout << "line: " << line << std::endl;
-
-        // vector.clear is an stl method, calls all destructors
         temp_vec_attrib.clear();
 
-        // num_cols is obtained around Line 736 above
-        // TODO: Move all this to its own function as well,
-        // such that after some setup, it can be fed a line of
-        // data and get itself parsed correctly. The tricky
-        // part here is getting the right object copied back.
+        // TODO: Move all this to its own function as well
 #if 1
         for (uint32_t i = 0; i < num_cols ; ++i) {
 
@@ -555,6 +537,11 @@ fetch_records_from_txt(list <Record> & source,
 }
 
 
+/**
+ * This is wrong design. At this level, there is no code which
+ * should ever look like the following. If this is the only
+ * way to implement the design, then the design is broken.
+ */
 Attribute *
 create_attribute_instance ( const string & id ) {
 
