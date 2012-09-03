@@ -11,7 +11,6 @@
 #include "record.h"
 #include "engine.h"
 #include "attribute.h"
-//#include "fileoper.h"
 #include "cluster.h"
 #include "ratios.h"
 #include "newcluster.h"

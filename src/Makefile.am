@@ -30,7 +30,7 @@ libdisambiguation_a_SOURCES = disambiguate.cpp cluster.cpp comparators.cpp attri
                               engine.cpp blocking_operation.cpp newcluster.cpp \
                               postprocess.cpp ratios.cpp ratio_smoothing.cpp \
                               training.cpp utilities.cpp threading.cpp strcmp95.c record.cpp \
-                              string_manipulator.cpp record_reconfigurator.cpp #fileoper.cpp
+                              string_manipulator.cpp record_reconfigurator.cpp
 
 #libdisambiguation_a_CXXFLAGS = -O0 -pg a
 libdisambiguation_a_CPPFLAGS = -Wall -Wextra -fno-inline $(INCLUDES) -DIL_STD -L/usr/local/lib -DNDEBUG -w #-Wno-ignored-qualifiers 

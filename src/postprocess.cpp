@@ -3,7 +3,6 @@
 #include "postprocess.h"
 
 #include "cluster.h"
-//#include "fileoper.h"
 
 extern "C" {
   #include "strcmp95.h"
