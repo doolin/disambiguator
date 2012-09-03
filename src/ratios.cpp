@@ -11,10 +11,12 @@ const uint32_t cRatioComponent::laplace_base = 5;
 
 
 vector<uint32_t>
-get_max_similarity(const vector < string > & attrib_names)  {
+get_max_similarity(const vector<string> & attrib_names)  {
 
     vector < uint32_t > sp;
-    for ( vector < string > :: const_iterator p = attrib_names.begin(); p != attrib_names.end(); ++p ) {
+
+    vector<string>::const_iterator p = attrib_names.begin();
+    for (; p != attrib_names.end(); ++p) {
         const Attribute * pAttrib = Record::get_sample_record().get_attrib_pointer_by_index(Record::get_index_by_name(*p));
         const uint32_t max_entry = pAttrib->get_attrib_max_value();
         sp.push_back(max_entry);
@@ -24,57 +26,66 @@ get_max_similarity(const vector < string > & attrib_names)  {
 
 
 void
-cRatioComponent::sp_stats (const list<std::pair<string, string> > & trainpairs,
-                           map < SimilarityProfile, uint32_t, SimilarityCompare > & sp_counts ) const {
+print_similarity_profile_size() {
 
-    const vector < uint32_t > & component_indice_in_record = get_component_positions_in_record();
-    //const list <Record > & source = *psource;
-    //cSort_by_attrib unique_comparator(unique_identifier);
-    //const uint32_t unique_index = Record::get_index_by_name(unique_identifier);
-
-    /*
-    map <string, const Record *> dict;
-    map<string, const Record *>::iterator pm;
-    for ( list<Record>::const_iterator p = source.begin(); p != source.end(); ++p ) {
-        const Attribute *pAttrib = p->get_attrib_pointer_by_index(unique_index); 
-        if ( pAttrib->get_data().size() != 1 ) 
-            throw cException_Vector_Data(pAttrib->get_class_name().c_str());
-        const string & info = pAttrib->get_data().at(0);
-        pm = dict.find( info);
-        if ( pm != dict.end() )
-            throw cException_Invalid_Attribute_For_Sort( pAttrib->get_class_name().c_str());
-        dict.insert(std::pair<string, const Record*>(info, &(*p) ));
+   /*
+    // TODO: Make this a print function
+    //debug only
+    std::cout << "Size of Similarity Profile = "<< similarity_profile.size() << ". Similarity Profile = ";
+    for ( vector <uint32_t >::const_iterator tt = similarity_profile.begin(); tt != similarity_profile.end(); ++tt ) {
+        std::cout << *tt << ":";
     }
-     */
+    std::cout << std::endl;
+    //end of debug
+    */
+}
 
-    const map <string, const Record *> & dict = *puid_tree;
+
+cRatioComponent::cRatioComponent(const map < string, const Record * > & uid_tree,
+                                 const string & groupname)
+            : attrib_group(groupname), puid_tree(&uid_tree), is_ready(false) {
+};
+
+
+void
+cRatioComponent::sp_stats (const list<std::pair<string, string> > & trainpairs,
+                           map<SimilarityProfile, uint32_t, SimilarityCompare> & sp_counts) const {
+
+    const vector<uint32_t> & component_indice_in_record = get_component_positions_in_record();
+
+    // RecordIndex
+    const map<string, const Record *> & dict = *puid_tree;
     map<string, const Record *>::const_iterator pm;
-    map < SimilarityProfile, uint32_t, SimilarityCompare >::iterator psp;
-    for ( list< std::pair<string, string> >::const_iterator p = trainpairs.begin(); p != trainpairs.end(); ++p ) {
+    map<SimilarityProfile, uint32_t, SimilarityCompare >::iterator psp;
+
+    list< std::pair<string, string> >::const_iterator p = trainpairs.begin();
+    for (; p != trainpairs.end(); ++p) {
+
         pm = dict.find(p->first);
-        if ( pm == dict.end() )
+
+        if (pm == dict.end()) {
             throw cException_Attribute_Not_In_Tree( ( string("\"") + p->first + string ("\"") ).c_str() );
+        }
+
         const Record *plhs = pm->second;
         pm = dict.find(p->second);
-        if ( pm == dict.end() )
-            throw cException_Attribute_Not_In_Tree( ( string("\"") + p->second + string ("\"") ).c_str() );
-        const Record *prhs = pm->second;
 
-        SimilarityProfile similarity_profile = plhs->record_compare_by_attrib_indice(*prhs, component_indice_in_record);
-        /*
-        //debug only
-        std::cout << "Size of Similarity Profile = "<< similarity_profile.size() << ". Similarity Profile = ";
-        for ( vector <uint32_t >::const_iterator tt = similarity_profile.begin(); tt != similarity_profile.end(); ++tt ) {
-            std::cout << *tt << ":";
+        if (pm == dict.end()) {
+            throw cException_Attribute_Not_In_Tree( ( string("\"") + p->second + string ("\"") ).c_str() );
         }
-        std::cout << std::endl;
-        //end of debug
-        */
-        psp = sp_counts.find(similarity_profile);
-        if ( psp == sp_counts.end() )
-            sp_counts.insert( std::pair < SimilarityProfile, uint32_t >(similarity_profile, 1));
-        else {
-            ++ (psp->second);
+
+        const Record *prhs = pm->second;
+        SimilarityProfile sp = plhs->record_compare_by_attrib_indice(*prhs, component_indice_in_record);
+
+        // debug
+        // print_similarity_profile_size();
+
+        psp = sp_counts.find(sp);
+
+        if (psp == sp_counts.end()) {
+            sp_counts.insert(std::pair < SimilarityProfile, uint32_t >(sp, 1));
+        } else {
+            ++(psp->second);
         }
     }
 }
@@ -102,11 +113,11 @@ cRatioComponent::read_train_pairs(list<std::pair<string, string> > & trainpairs,
             prev_pos = pos + delim_size;
             pos = filedata.find(delim, prev_pos);
             string secondstring = filedata.substr(prev_pos, pos);
-            trainpairs.push_back( std::pair<string, string>(firststring, secondstring) );
+            trainpairs.push_back(std::pair<string, string>(firststring, secondstring) );
         }
-        std::cout << txt_file << " has been loaded as the " << attrib_group << " part of the training sets."<< std::endl;
-    }
-    else {
+        std::cout << txt_file << " has been loaded as the "
+                  << attrib_group << " part of the training sets."<< std::endl;
+    } else {
         throw cException_File_Not_Found(txt_file);
     }
 }
@@ -117,13 +128,12 @@ cRatioComponent::stats_output(const char * filename) const {
 
     std::ofstream ostream (filename);
 
-    const string nmc = "Non-Match Counts";
-    const string mc = "Match Counts";
+    const string nmc     = "Non-Match Counts";
+    const string mc      = "Match Counts";
     const string splabel = "Similarity Profiles";
-    const string delim = " | ";
+    const string delim   = " | ";
 
     ostream << splabel  << "(";
-
     vector < uint32_t >:: const_iterator tt = this->positions_in_record.begin(); 
     for (tt; tt != this->positions_in_record.end(); ++tt )
         ostream << Record::get_column_names().at(*tt) << ",";
@@ -281,11 +291,6 @@ cRatioComponent::prepare(const char * x_file,
 }
 
 
-cRatioComponent::cRatioComponent(const map < string, const Record * > & uid_tree,
-                                 const string & groupname)
-            : attrib_group(groupname), puid_tree(&uid_tree), is_ready(false) {
-};
-
 
 /**
  * This should probably be `set_similarity_info` because
@@ -321,7 +326,7 @@ cRatioComponent::get_similarity_info() {
 }
 
 
-/** 
+/**
  * TODO: Describe the purpose of having all this code in the constructor.
  *
  * @param const vector <const cRatioComponent *> & component_pointer_vector
@@ -381,11 +386,7 @@ cRatios::cRatios(const vector < const cRatioComponent *> & component_pointer_vec
     }
 #endif
 
-    // smoothing here
     smooth();
-    //const vector < uint32_t > max_similarity = get_max_similarity( this->attrib_names);
-    //const vector < uint32_t > min_similarity ( max_similarity.size(), 0);
-    //inter_extra_polation(max_similarity, min_similarity);
 
     write_ratios_file(filename);
     x_counts.clear();
