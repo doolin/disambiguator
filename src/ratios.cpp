@@ -7,16 +7,16 @@
 
 const char * cRatios::primary_delim = "#";
 const char * cRatios::secondary_delim = ",";
-const unsigned int cRatioComponent::laplace_base = 5;
+const uint32_t cRatioComponent::laplace_base = 5;
 
 
-vector < unsigned int >
+vector<uint32_t>
 get_max_similarity(const vector < string > & attrib_names)  {
 
-    vector < unsigned int > sp;
+    vector < uint32_t > sp;
     for ( vector < string > :: const_iterator p = attrib_names.begin(); p != attrib_names.end(); ++p ) {
         const Attribute * pAttrib = Record::get_sample_record().get_attrib_pointer_by_index(Record::get_index_by_name(*p));
-        const unsigned int max_entry = pAttrib->get_attrib_max_value();
+        const uint32_t max_entry = pAttrib->get_attrib_max_value();
         sp.push_back(max_entry);
     }
     return sp;
@@ -24,13 +24,13 @@ get_max_similarity(const vector < string > & attrib_names)  {
 
 
 void
-cRatioComponent::sp_stats (const list<std::pair<string, string> > & trainpairs, 
-                           map < SimilarityProfile, unsigned int, SimilarityCompare > & sp_counts ) const {
+cRatioComponent::sp_stats (const list<std::pair<string, string> > & trainpairs,
+                           map < SimilarityProfile, uint32_t, SimilarityCompare > & sp_counts ) const {
 
-    const vector < unsigned int > & component_indice_in_record = get_component_positions_in_record();
+    const vector < uint32_t > & component_indice_in_record = get_component_positions_in_record();
     //const list <Record > & source = *psource;
     //cSort_by_attrib unique_comparator(unique_identifier);
-    //const unsigned int unique_index = Record::get_index_by_name(unique_identifier);
+    //const uint32_t unique_index = Record::get_index_by_name(unique_identifier);
 
     /*
     map <string, const Record *> dict;
@@ -49,7 +49,7 @@ cRatioComponent::sp_stats (const list<std::pair<string, string> > & trainpairs,
 
     const map <string, const Record *> & dict = *puid_tree;
     map<string, const Record *>::const_iterator pm;
-    map < SimilarityProfile, unsigned int, SimilarityCompare >::iterator psp;
+    map < SimilarityProfile, uint32_t, SimilarityCompare >::iterator psp;
     for ( list< std::pair<string, string> >::const_iterator p = trainpairs.begin(); p != trainpairs.end(); ++p ) {
         pm = dict.find(p->first);
         if ( pm == dict.end() )
@@ -64,7 +64,7 @@ cRatioComponent::sp_stats (const list<std::pair<string, string> > & trainpairs,
         /*
         //debug only
         std::cout << "Size of Similarity Profile = "<< similarity_profile.size() << ". Similarity Profile = ";
-        for ( vector <unsigned int >::const_iterator tt = similarity_profile.begin(); tt != similarity_profile.end(); ++tt ) {
+        for ( vector <uint32_t >::const_iterator tt = similarity_profile.begin(); tt != similarity_profile.end(); ++tt ) {
             std::cout << *tt << ":";
         }
         std::cout << std::endl;
@@ -72,7 +72,7 @@ cRatioComponent::sp_stats (const list<std::pair<string, string> > & trainpairs,
         */
         psp = sp_counts.find(similarity_profile);
         if ( psp == sp_counts.end() )
-            sp_counts.insert( std::pair < SimilarityProfile, unsigned int >(similarity_profile, 1));
+            sp_counts.insert( std::pair < SimilarityProfile, uint32_t >(similarity_profile, 1));
         else {
             ++ (psp->second);
         }
@@ -88,7 +88,7 @@ cRatioComponent::read_train_pairs(list<std::pair<string, string> > & trainpairs,
               << ", " << __FILE__ << ":" << __LINE__ << std::endl;
 
     static const char * delim = ",";
-    static const unsigned int delim_size = strlen(delim);
+    static const uint32_t delim_size = strlen(delim);
 
     std::ifstream::sync_with_stdio(false);
     std::ifstream infile(txt_file);
@@ -124,17 +124,17 @@ cRatioComponent::stats_output(const char * filename) const {
 
     ostream << splabel  << "(";
 
-    vector < unsigned int >:: const_iterator tt = this->positions_in_record.begin(); 
+    vector < uint32_t >:: const_iterator tt = this->positions_in_record.begin(); 
     for (tt; tt != this->positions_in_record.end(); ++tt )
         ostream << Record::get_column_names().at(*tt) << ",";
     ostream << ")";
 
     ostream << delim << mc << delim << nmc << '\n';
-    map < vector < unsigned int >, unsigned int  >::const_iterator pm;
-    map < vector < unsigned int >, double>::const_iterator p;
+    map < vector < uint32_t >, uint32_t  >::const_iterator pm;
+    map < vector < uint32_t >, double>::const_iterator p;
 
     for (p = this->ratio_map.begin(); p != this->ratio_map.end(); ++p) {
-        for ( vector <unsigned int >::const_iterator q = p->first.begin(); q != p->first.end(); ++q )
+        for ( vector <uint32_t >::const_iterator q = p->first.begin(); q != p->first.end(); ++q )
             ostream << *q << ",";
         ostream << delim;
         pm = this->m_counts.find(p->first);
@@ -147,7 +147,7 @@ cRatioComponent::stats_output(const char * filename) const {
         p = this->ratio_map.find(pm->first);
         if ( p != this->ratio_map.end())
             continue;
-        for ( vector <unsigned int >::const_iterator q = pm->first.begin(); q != pm->first.end(); ++q )
+        for ( vector <uint32_t >::const_iterator q = pm->first.begin(); q != pm->first.end(); ++q )
             ostream << *q << ",";
         ostream << delim;
         ostream << pm->second << delim;
@@ -158,7 +158,7 @@ cRatioComponent::stats_output(const char * filename) const {
         p = this->ratio_map.find(pm->first);
         if ( p != this->ratio_map.end())
             continue;
-        for ( vector <unsigned int >::const_iterator q = pm->first.begin(); q != pm->first.end(); ++q )
+        for ( vector <uint32_t >::const_iterator q = pm->first.begin(); q != pm->first.end(); ++q )
             ostream << *q << ",";
         ostream << delim;
         ostream << 0 << delim;
@@ -192,11 +192,11 @@ cRatioComponent::prepare(const char * x_file,
     std::cout << "Match unique profile number = " << m_counts.size() << std::endl;
 
     // laplace correction
-    map < vector < unsigned int >, unsigned int, SimilarityCompare >::const_iterator p, q;
+    map < vector < uint32_t >, uint32_t, SimilarityCompare >::const_iterator p, q;
 
-    const unsigned int count_to_consider = 100;
+    const uint32_t count_to_consider = 100;
     // This is probably also a SimilarityProfile
-    set < vector < unsigned int >, SimilarityCompare > all_possible;
+    set < vector < uint32_t >, SimilarityCompare > all_possible;
 
     for ( p = x_counts.begin(); p != x_counts.end(); ++p ) {
         if ( m_counts.find(p->first) == m_counts.end() && p->second < count_to_consider )
@@ -212,16 +212,16 @@ cRatioComponent::prepare(const char * x_file,
             all_possible.insert(p->first);
     }
 
-    for (set< vector < unsigned int >, SimilarityCompare >::const_iterator ps = all_possible.begin(); ps != all_possible.end(); ++ps ) {
-        map < vector < unsigned int >, unsigned int, SimilarityCompare >::iterator p = x_counts.find(*ps);
+    for (set< vector < uint32_t >, SimilarityCompare >::const_iterator ps = all_possible.begin(); ps != all_possible.end(); ++ps ) {
+        map < vector < uint32_t >, uint32_t, SimilarityCompare >::iterator p = x_counts.find(*ps);
         if ( p == x_counts.end() )
-            x_counts.insert(std::pair< vector< unsigned int>, unsigned int >(*ps, laplace_base));
+            x_counts.insert(std::pair< vector< uint32_t>, uint32_t >(*ps, laplace_base));
         else
             p->second += laplace_base;
 
         p = m_counts.find(*ps);
         if ( p == m_counts.end() )
-            m_counts.insert(std::pair< vector< unsigned int>, unsigned int >(*ps, laplace_base));
+            m_counts.insert(std::pair< vector< uint32_t>, uint32_t >(*ps, laplace_base));
         else
             p->second += laplace_base;
     }
@@ -231,8 +231,8 @@ cRatioComponent::prepare(const char * x_file,
     std::cout << "Match unique profile number = " << m_counts.size() << std::endl;
     //ratios = count of match / count of non-match;
 
-    unsigned int num_xcount_without_mcount = 0;
-    unsigned int num_mcount_without_xcount = 0;
+    uint32_t num_xcount_without_mcount = 0;
+    uint32_t num_mcount_without_xcount = 0;
 
     for ( p = x_counts.begin(); p != x_counts.end(); ++p ) {
         q = m_counts.find( p->first );
@@ -243,7 +243,7 @@ cRatioComponent::prepare(const char * x_file,
         }
     }
 
-    for (map < vector < unsigned int >, unsigned int, SimilarityCompare >::iterator pp = x_counts.begin(); pp != x_counts.end();) {
+    for (map < vector < uint32_t >, uint32_t, SimilarityCompare >::iterator pp = x_counts.begin(); pp != x_counts.end();) {
         if ( ratio_map.find( pp->first ) == ratio_map.end() ) {
             x_counts.erase ( pp++ );
             ++num_xcount_without_mcount;
@@ -252,7 +252,7 @@ cRatioComponent::prepare(const char * x_file,
             ++pp;
     }
 
-    for ( map < vector < unsigned int >, unsigned int, SimilarityCompare >::iterator qq = m_counts.begin(); qq != m_counts.end();  ) {
+    for ( map < vector < uint32_t >, uint32_t, SimilarityCompare >::iterator qq = m_counts.begin(); qq != m_counts.end();  ) {
         if ( ratio_map.find( qq->first ) == ratio_map.end() ) {
             m_counts.erase ( qq++ );
             ++num_mcount_without_xcount;
@@ -302,7 +302,7 @@ cRatioComponent::get_similarity_info() {
     //const Record & sample_record = psource->front();
     const Record & sample_record = Record::get_sample_record();
     static const string useless_group_label = "None";
-    unsigned int ratios_pos = 0, record_pos = 0;
+    uint32_t ratios_pos = 0, record_pos = 0;
 
     for (vector<const Attribute*>::const_iterator p = sample_record.vector_pdata.begin();
 		    p != sample_record.vector_pdata.end(); ++p) {
@@ -336,7 +336,7 @@ cRatios::cRatios(const vector < const cRatioComponent *> & component_pointer_vec
                  const Record & rec) {
 
     std::cout << "Creating the final version ratios file ..." << std::endl;
-    unsigned int ratio_size = 0;
+    uint32_t ratio_size = 0;
 
     std::cout << "filename: " << filename << std::endl;
 
@@ -347,11 +347,11 @@ cRatios::cRatios(const vector < const cRatioComponent *> & component_pointer_vec
     }
 
     attrib_names.resize(ratio_size, "Invalid Attribute");
-    static const unsigned int impossible_value = 10000;
-    vector<unsigned int> null_vect (ratio_size, impossible_value);
-    final_ratios.insert( std::pair<  vector <unsigned int> , double > (null_vect, 1) );
-    x_counts.insert(std::pair<  vector <unsigned int> , unsigned int > (null_vect, 0));
-    m_counts.insert(std::pair<  vector <unsigned int> , unsigned int > (null_vect, 0));
+    static const uint32_t impossible_value = 10000;
+    vector<uint32_t> null_vect (ratio_size, impossible_value);
+    final_ratios.insert( std::pair<  vector <uint32_t> , double > (null_vect, 1) );
+    x_counts.insert(std::pair<  vector <uint32_t> , uint32_t > (null_vect, 0));
+    m_counts.insert(std::pair<  vector <uint32_t> , uint32_t > (null_vect, 0));
 
     //vector< const cRatioComponent *>::const_iterator p = component_pointer_vector.begin(); 
     p = component_pointer_vector.begin(); 
@@ -366,9 +366,9 @@ cRatios::cRatios(const vector < const cRatioComponent *> & component_pointer_vec
 #if 1
     if (final_ratios.size() > 0) {
       // now checking the final ratios
-      //const vector < unsigned int > & firstline = final_ratios.begin()->first;
+      //const vector < uint32_t > & firstline = final_ratios.begin()->first;
       map < const SimilarityProfile, double, SimilarityCompare>::const_iterator firstline = final_ratios.begin();
-      //vector< unsigned int >::const_iterator k = firstline.begin(); 
+      //vector< uint32_t >::const_iterator k = firstline.begin(); 
       SimilarityProfile vec = (*firstline).first;
       SimilarityProfile::const_iterator k = vec.begin(); 
       //for (k; k < firstline.end(); ++k) {
@@ -383,8 +383,8 @@ cRatios::cRatios(const vector < const cRatioComponent *> & component_pointer_vec
 
     // smoothing here
     smooth();
-    //const vector < unsigned int > max_similarity = get_max_similarity( this->attrib_names);
-    //const vector < unsigned int > min_similarity ( max_similarity.size(), 0);
+    //const vector < uint32_t > max_similarity = get_max_similarity( this->attrib_names);
+    //const vector < uint32_t > min_similarity ( max_similarity.size(), 0);
     //inter_extra_polation(max_similarity, min_similarity);
 
     write_ratios_file(filename);
@@ -416,7 +416,7 @@ print_similarity(const SimilarityProfile & s) {
 
 
 void
-print_value(unsigned int i) {
+print_value(uint32_t i) {
   std::cout << "From " << __FUNCTION__ << ", " << __FILE__ << ":" << __LINE__ << std::endl;
   std::cout << "Value: " << i << std::endl;
 }
@@ -434,11 +434,11 @@ print_map(std::map < SimilarityProfile, double, comparator > m) {
 */
 
 void
-print_map(std::map < SimilarityProfile, unsigned int, SimilarityCompare > m) {
+print_map(std::map < SimilarityProfile, uint32_t, SimilarityCompare > m) {
 
   std::cout << "From " << __FILE__ << ":" << __LINE__ << std::endl;
 
-  std::map < SimilarityProfile, unsigned int, SimilarityCompare >::const_iterator mi = m.begin();
+  std::map < SimilarityProfile, uint32_t, SimilarityCompare >::const_iterator mi = m.begin();
   for (mi; mi != m.end(); ++mi) {
     print_similarity((*mi).first);
     print_value((*mi).second);
@@ -451,11 +451,11 @@ cRatios::More_Components(const cRatioComponent & additional_component) {
 
     map < SimilarityProfile, double, SimilarityCompare > temp_ratios;
 
-    map < vector < unsigned int >, unsigned int, SimilarityCompare > temp_x_counts, temp_m_counts;
-    const vector < unsigned int > & temp_pos_in_rec = additional_component.get_component_positions_in_record();
-    const vector < unsigned int > & positions_in_ratios = additional_component.get_component_positions_in_ratios();
+    map < vector < uint32_t >, uint32_t, SimilarityCompare > temp_x_counts, temp_m_counts;
+    const vector < uint32_t > & temp_pos_in_rec = additional_component.get_component_positions_in_record();
+    const vector < uint32_t > & positions_in_ratios = additional_component.get_component_positions_in_ratios();
 
-    for ( unsigned int k = 0; k < positions_in_ratios.size(); ++k ) {
+    for ( uint32_t k = 0; k < positions_in_ratios.size(); ++k ) {
         attrib_names.at( positions_in_ratios.at(k) ) = Record::get_column_names().at(temp_pos_in_rec.at(k) );
     }
 
@@ -465,18 +465,18 @@ cRatios::More_Components(const cRatioComponent & additional_component) {
     for (map < SimilarityProfile, double, SimilarityCompare >::iterator p = final_ratios.begin();
 		    p != final_ratios.end(); ++p ) {
 
-        vector < unsigned int > key = p->first;
+        vector < uint32_t > key = p->first;
 
         for (map < SimilarityProfile, double, SimilarityCompare >::const_iterator vv = additional_component.get_ratios_map().begin();
              vv != additional_component.get_ratios_map().end(); ++vv) {
 
-            for ( unsigned int j = 0; j < vv->first.size(); ++j ) {
+            for ( uint32_t j = 0; j < vv->first.size(); ++j ) {
                 key.at( positions_in_ratios.at(j) ) = vv->first.at(j);
             }
 
             temp_ratios.insert(std::pair < SimilarityProfile, double >(key, p->second * vv->second));
-            temp_x_counts.insert(std::pair < vector < unsigned int >, unsigned int >(key, this->x_counts.find(p->first)->second + additional_component.get_x_counts().find(vv->first)->second ) );
-            temp_m_counts.insert(std::pair < vector < unsigned int >, unsigned int >(key, this->m_counts.find(p->first)->second + additional_component.get_m_counts().find(vv->first)->second ) );
+            temp_x_counts.insert(std::pair < vector < uint32_t >, uint32_t >(key, this->x_counts.find(p->first)->second + additional_component.get_x_counts().find(vv->first)->second ) );
+            temp_m_counts.insert(std::pair < vector < uint32_t >, uint32_t >(key, this->m_counts.find(p->first)->second + additional_component.get_m_counts().find(vv->first)->second ) );
         }
     }
 
@@ -526,8 +526,8 @@ cRatios::read_ratios_file(const char * filename) {
 
     std::ifstream::sync_with_stdio(false);
     std::ifstream infile (filename);
-    const unsigned int primary_delim_size = strlen(primary_delim);
-    const unsigned int secondary_delim_size = strlen(secondary_delim);
+    const uint32_t primary_delim_size = strlen(primary_delim);
+    const uint32_t secondary_delim_size = strlen(secondary_delim);
 
     if ( ! infile.good() )
         throw cException_File_Not_Found(filename);
