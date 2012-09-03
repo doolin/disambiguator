@@ -317,8 +317,9 @@ Record::activate_comparators_by_name (const vector < string > & inputvec) {
 void
 Record::reconfigure_record_for_interactives() const {
 
-    for ( vector <const Attribute *>::const_iterator cipa = vector_pdata.begin(); cipa != vector_pdata.end(); ++cipa ) {
-        (*cipa)->reconfigure_for_interactives( this);
+    vector <const Attribute *>::const_iterator cipa = vector_pdata.begin();
+    for (; cipa != vector_pdata.end(); ++cipa) {
+        (*cipa)->reconfigure_for_interactives(this);
     }
 }
 

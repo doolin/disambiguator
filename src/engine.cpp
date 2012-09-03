@@ -521,7 +521,9 @@ fetch_records_from_txt(list <Record> & source,
     std::cout << std::endl;
     std::cout << size << " records have been fetched from "<< txt_file << std::endl;
 
-    // TODO: What is this thing?
+    // TODO: This thing evidently is some sort of "insta-record" for
+    // handiness elsewhere in the code.
+    // TODO: Get rid of this thing.
     Record::sample_record_pointer = & source.front();
 
     // TODO: Create a little function for this which can be unit tested
@@ -531,14 +533,11 @@ fetch_records_from_txt(list <Record> & source,
     delete [] pointer_array;
 
     // TODO: Put this in it's own function and unit test it.
+    // It's spinning the whole record list. It needs to go
+    // somewhere else, probably in the calling function.
     for (list< Record>::iterator ci = source.begin(); ci != source.end(); ++ci) {
         ci->reconfigure_record_for_interactives();
     }
-
-    // TODO: Remove this code or put it somewhere else.
-    std::cout << "Sample Record: " << __FILE__ << ":" << __LINE__ << "---------" << std::endl;
-    Record::sample_record_pointer->print();
-    std::cout << "-----------------" << std::endl;
 
     return true;
 }
