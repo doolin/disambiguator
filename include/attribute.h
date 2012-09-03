@@ -882,39 +882,36 @@ public:
  * Third layer of the attribute hierarchy. Specifically
  * designed to handle the data storage issue.
  */
-
-/**
- * Private:
- * static vector < const string * > temporary_storage:
- * static member temporarily used for data loading.
- *
- * Protected:
- * vector < const string * > & get_data_modifiable():
- * still used for data loading only.
- *
- * Public:
- */
-
-/**
- * const vector < const string * > & get_data() const:
- * override the base function and throw an error,
- * indicating that this function should be forbidden
- * for this class and its child classes.
- */
 template < typename AttribType >
 class Attribute_Set_Intermediary : public Attribute_Intermediary<AttribType> {
 
 private:
+
+   /**
+    * Private:
+    * static vector < const string * > temporary_storage:
+    * static member temporarily used for data loading.
+    */
     static vector < const string * > temporary_storage;
 
 protected:
 
+   /**
+    * vector < const string * > & get_data_modifiable():
+    * still used for data loading only.
+    */
     vector < const string * > & get_data_modifiable() {
       return temporary_storage;
     }
 
 public:
 
+   /**
+    * const vector < const string * > & get_data() const:
+    * override the base function and throw an error,
+    * indicating that this function should be forbidden
+    * for this class and its child classes.
+    */
     const vector < const string * > & get_data() const {
       throw cException_Invalid_Function("Function Disabled");
     }
@@ -927,15 +924,6 @@ public:
  * Private:
  */
 
-/**
- * vector < const string * > vector_string_pointers: the real data member.
- */
-
-
-/**
- * protected:
- * vector < const string * > & get_data_modifiable(): for data loading only.
- */
 
 /**
  * Public:
@@ -953,11 +941,20 @@ class Attribute_Vector_Intermediary: public Attribute_Intermediary<AttribType> {
 
 private:
 
-    vector < const string * > vector_string_pointers;
+   /**
+    * vector < const string * > vector_string_pointers: the real data member.
+    */
+    vector<const string *> vector_string_pointers;
 
 protected:
 
-    vector < const string * > & get_data_modifiable() { return vector_string_pointers;}
+   /**
+    * protected:
+    * vector < const string * > & get_data_modifiable(): for data loading only.
+    */
+    vector < const string * > & get_data_modifiable() {
+      return vector_string_pointers;
+    }
 
 public:
 
@@ -985,44 +982,15 @@ public:
  * comparison behavior is to find the number of common elements between two records,
  * and whose merging behavior is grouping all distinct values together
  * for each cluster ( or disambiguated and grouped records ).
- *
- * Protected:
- *
- * set < const string * > attrib_set:
- * this is the actual data member that will be used in the storage
- * and comparison of its concrete subclasses. Instead, the data
- * member in the base Attribute class, "data", should not be used unless necessary.
  */
+
 
 /**
  *  const Attribute * attrib_merge ( const Attribute & right_hand_side) const:
  *  the polymorphic attribute merge function customized for set mode. Override in the child class if necessary.
  */
 
-/**
- * Private:
- */
 
-
-/**
- * Public:
- *
- * const set < const string *> * get_attrib_set_pointer() const:
- * to get the pointer to the std::set, which stores all the data
- * for this mode. This overrides the function in the base class.
- */
-
-/**
- * unsigned int compare(const Attribute & right_hand_side) const:
- * The default comparison function of the set mode, which returns
- * the number of common elements between two classes.
- * Override it in the child class if other scoring method is used.
- */
-
-/**
- * bool split_string(const char* inputdata):
- * polymorphic function to extract data from the input string.
- */
 
 /**
  * bool operator < ( const Attribute & rhs ) const:
@@ -1036,17 +1004,18 @@ public:
  * or std::cout if outputting to the screen.
  */
 
-/**
- * bool is_informative() const:
- * polymorphic function, returning false, indicating that this
- * type of class does not support this function.
- */
-
-
 template < typename AttribType >
 class Attribute_Set_Mode : public Attribute_Set_Intermediary < AttribType > {
+
 protected:
-    set < const string * > attrib_set;
+
+   /**
+    * set < const string * > attrib_set:
+    * this is the actual data member that will be used in the storage
+    * and comparison of its concrete subclasses. Instead, the data
+    * member in the base Attribute class, "data", should not be used unless necessary.
+    */
+    set <const string *> attrib_set;
 
     const Attribute * attrib_merge ( const Attribute & right_hand_side) const {
         const AttribType & rhs = dynamic_cast< const AttribType & > (right_hand_side);
@@ -1071,10 +1040,22 @@ private:
 
 public:
 
+   /**
+    * const set < const string *> * get_attrib_set_pointer() const:
+    * to get the pointer to the std::set, which stores all the data
+    * for this mode. This overrides the function in the base class.
+    */
     const set < const string *> * get_attrib_set_pointer() const {
       return & attrib_set;
     }
 
+
+   /**
+    * unsigned int compare(const Attribute & right_hand_side) const:
+    * The default comparison function of the set mode, which returns
+    * the number of common elements between two classes.
+    * Override it in the child class if other scoring method is used.
+    */
     unsigned int compare(const Attribute & right_hand_side) const {
         if ( ! this->is_comparator_activated () )
             throw cException_No_Comparision_Function(this->static_get_class_name().c_str());
@@ -1101,16 +1082,24 @@ public:
     }
 
 
+   /**
+    * bool split_string(const char* inputdata):
+    * polymorphic function to extract data from the input string.
+    */
     bool split_string(const char* inputdata) {
+
         try {
             Attribute::split_string(inputdata);
+        } catch ( const cException_Vector_Data & except) {
+            //std::cout << "cClass allows vector data.
+            //This info should be disabled in the real run."
+            //<< std::endl;
         }
-        catch ( const cException_Vector_Data & except) {
-            //std::cout << "cClass allows vector data. This info should be disabled in the real run." << std::endl;
-        }
+
         //const string raw(inputdata);
         this->attrib_set.clear();
-        for ( vector < const string *>::const_iterator p = this->get_data_modifiable().begin(); p != this->get_data_modifiable().end(); ++p ) {
+        vector < const string *>::const_iterator p = this->get_data_modifiable().begin();
+        for (; p != this->get_data_modifiable().end(); ++p) {
             if ( (*p)->empty() )
                 continue;
             this->attrib_set.insert(*p);
@@ -1152,6 +1141,11 @@ public:
     }
 
 
+   /**
+    * bool is_informative() const:
+    * polymorphic function, returning false, indicating that this
+    * type of class does not support this function.
+    */
     bool is_informative() const {
       return false;
     }
