@@ -41,25 +41,23 @@ print_similarity_profile_size() {
 }
 
 
-cRatioComponent::cRatioComponent(const map<string, const Record *> & uid_tree,
+cRatioComponent::cRatioComponent(const RecordIndex & uid_tree,
                                  const string & groupname)
             : attrib_group(groupname), puid_tree(&uid_tree), is_ready(false) {
 };
 
 
 void
-//cRatioComponent::sp_stats (const list<std::pair<string, string> > & trainpairs,
 cRatioComponent::sp_stats (const TrainingPairs & trainpairs,
                            map<SimilarityProfile, uint32_t, SimilarityCompare> & sp_counts) const {
 
     const vector<uint32_t> & component_indice_in_record = get_component_positions_in_record();
 
-    // RecordIndex
-    const map<string, const Record *> & dict = *puid_tree;
-    map<string, const Record *>::const_iterator pm;
+    const RecordIndex & dict = *puid_tree;
+    RecordIndex::const_iterator pm;
+    // SPCountsIndex
     map<SimilarityProfile, uint32_t, SimilarityCompare >::iterator psp;
 
-    //list< std::pair<string, string> >::const_iterator p = trainpairs.begin();
     TrainingPairs::const_iterator p = trainpairs.begin();
     for (; p != trainpairs.end(); ++p) {
 
@@ -138,8 +136,8 @@ cRatioComponent::stats_output(const char * filename) const {
     const string delim   = " | ";
 
     ostream << splabel  << "(";
-    vector<uint32_t>:: const_iterator tt = this->positions_in_record.begin(); 
-    for (tt; tt != this->positions_in_record.end(); ++tt )
+    vector<uint32_t>::const_iterator tt = this->positions_in_record.begin(); 
+    for (tt; tt != this->positions_in_record.end(); ++tt)
         ostream << Record::get_column_names().at(*tt) << ",";
     ostream << ")";
 
@@ -213,7 +211,8 @@ cRatioComponent::prepare(const char * x_file,
     std::cout << "Match unique profile number = " << m_counts.size() << std::endl;
 
     // laplace correction
-    map <SimilarityProfile, uint32_t, SimilarityCompare >::const_iterator p, q;
+    // SPCountsIndex
+    map<SimilarityProfile, uint32_t, SimilarityCompare >::const_iterator p, q;
 
     const uint32_t count_to_consider = 100;
     // This is probably also a SimilarityProfile
@@ -232,16 +231,20 @@ cRatioComponent::prepare(const char * x_file,
             all_possible.insert(p->first);
     }
 
-    for (set< vector < uint32_t >, SimilarityCompare >::const_iterator ps = all_possible.begin(); ps != all_possible.end(); ++ps ) {
-        map < vector < uint32_t >, uint32_t, SimilarityCompare >::iterator p = x_counts.find(*ps);
+    set<vector<uint32_t>, SimilarityCompare >::const_iterator ps = all_possible.begin();
+    for (; ps != all_possible.end(); ++ps) {
+
+        // SPCountsIndex
+        map<SimilarityProfile, uint32_t, SimilarityCompare >::iterator p = x_counts.find(*ps);
+
         if ( p == x_counts.end() )
-            x_counts.insert(std::pair< vector< uint32_t>, uint32_t >(*ps, laplace_base));
+            x_counts.insert(std::pair<vector<uint32_t>, uint32_t>(*ps, laplace_base));
         else
             p->second += laplace_base;
 
         p = m_counts.find(*ps);
         if ( p == m_counts.end() )
-            m_counts.insert(std::pair< vector< uint32_t>, uint32_t >(*ps, laplace_base));
+            m_counts.insert(std::pair<vector<uint32_t>, uint32_t>(*ps, laplace_base));
         else
             p->second += laplace_base;
     }
@@ -259,41 +262,51 @@ cRatioComponent::prepare(const char * x_file,
         if ( q == m_counts.end() ) 
             continue;
         else {
-            ratio_map.insert(std::pair< SimilarityProfile, double >(p->first, 1.0 * q->second / p->second) );
+            ratio_map.insert(std::pair<SimilarityProfile, double>(p->first, 1.0 * q->second / p->second) );
         }
     }
 
-    for (map < vector < uint32_t >, uint32_t, SimilarityCompare >::iterator pp = x_counts.begin(); pp != x_counts.end();) {
-        if ( ratio_map.find( pp->first ) == ratio_map.end() ) {
+    map<SimilarityProfile, uint32_t, SimilarityCompare>::iterator pp = x_counts.begin();
+    for (; pp != x_counts.end(); ) {
+
+        // This needs to be a "contains" macro or something...
+        if (ratio_map.find(pp->first) == ratio_map.end()) {
             x_counts.erase ( pp++ );
             ++num_xcount_without_mcount;
-        }
-        else
+        } else {
             ++pp;
+        }
     }
 
-    for ( map < vector < uint32_t >, uint32_t, SimilarityCompare >::iterator qq = m_counts.begin(); qq != m_counts.end();  ) {
+    map<SimilarityProfile, uint32_t, SimilarityCompare >::iterator qq = m_counts.begin();
+    for (; qq != m_counts.end(); ) {
         if ( ratio_map.find( qq->first ) == ratio_map.end() ) {
             m_counts.erase ( qq++ );
             ++num_mcount_without_xcount;
-        }
-        else
+        } else {
             ++qq;
+        }
     }
 
     std::cout << num_xcount_without_mcount << " non-match similarity profiles and "
-            << num_mcount_without_xcount << " match similarity profiles are discarded." << std::endl;
+              << num_mcount_without_xcount << " match similarity profiles are discarded."
+              << std::endl;
 
-    if ( num_xcount_without_mcount > 5 || num_mcount_without_xcount > 5 ) {
-        std::cout << "WARNING: THIS STEP IS SKIPPED FOR DEBUG BUT SHALL BE ENABLED IN THE REAL PROGRAM, UNLESS SMOOTHING AND INTER-EXTRA-POLATIONS ARE AVAILABLE."<<std::endl;
-        std::cout << "Discovered " << num_xcount_without_mcount << " non-match similarity profiles that are not available in matched ones. "
-        << std::endl << "And " << num_mcount_without_xcount << " match similarity profiles that are not available in non-match ones."
-        << std::endl;
-        //throw cException_Partial_SP_Missing(attrib_group.c_str());
+    if (num_xcount_without_mcount > 5 || num_mcount_without_xcount > 5) {
+
+        std::cout << "WARNING: THIS STEP IS SKIPPED FOR DEBUG BUT SHALL BE "
+                  << "ENABLED IN THE REAL PROGRAM, UNLESS SMOOTHING AND "
+                  << "INTER-EXTRA-POLATIONS ARE AVAILABLE."
+                  << std::endl;
+
+        std::cout << "Discovered " << num_xcount_without_mcount
+                  << " non-match similarity profiles that are not available in matched ones. "
+                  << std::endl 
+                  << "And " 
+                  << num_mcount_without_xcount 
+                  << " match similarity profiles that are not available in non-match ones."
+                  << std::endl;
     }
-
-        //std::cout << "Exiting line 251 " << __FILE__ << std::endl;
-        //exit(0);
 
     smooth();
     similarity_map.clear();
@@ -314,24 +327,25 @@ cRatioComponent::get_similarity_info() {
     positions_in_ratios.clear();
     positions_in_record.clear();
     attrib_names.clear();
-    //const Record & sample_record = psource->front();
     const Record & sample_record = Record::get_sample_record();
     static const string useless_group_label = "None";
     uint32_t ratios_pos = 0, record_pos = 0;
 
-    for (vector<const Attribute*>::const_iterator p = sample_record.vector_pdata.begin();
-		    p != sample_record.vector_pdata.end(); ++p) {
+    vector<const Attribute*>::const_iterator p = sample_record.vector_pdata.begin();
+    for (; p != sample_record.vector_pdata.end(); ++p) {
+
         const string & info = (*p)->get_attrib_group();
         bool comparator_activated = (*p)->is_comparator_activated();
-        //std::cout << (*p)->get_class_name() << std::endl;
-        if ( info == attrib_group && comparator_activated) {
+
+        if (info == attrib_group && comparator_activated) {
             positions_in_ratios.push_back(ratios_pos);
             positions_in_record.push_back(record_pos);
             attrib_names.push_back(Record::get_column_names().at(record_pos));
         }
-        if ( info != useless_group_label && comparator_activated )
-            ++ratios_pos;
-        ++ record_pos;
+
+        if (info != useless_group_label && comparator_activated) ++ratios_pos;
+
+        ++record_pos;
     }
 }
 
@@ -445,7 +459,7 @@ print_map(std::map < SimilarityProfile, double, comparator > m) {
 */
 
 void
-print_map(std::map<SimilarityProfile, uint32_t, SimilarityCompare > m) {
+print_map(std::map<SimilarityProfile, uint32_t, SimilarityCompare> m) {
 
   std::cout << "From " << __FILE__ << ":" << __LINE__ << std::endl;
 
@@ -462,7 +476,8 @@ cRatios::More_Components(const cRatioComponent & additional_component) {
 
     map<SimilarityProfile, double, SimilarityCompare> temp_ratios;
 
-    map < vector < uint32_t >, uint32_t, SimilarityCompare > temp_x_counts, temp_m_counts;
+    map<SimilarityProfile, uint32_t, SimilarityCompare> temp_x_counts, temp_m_counts;
+
     const vector < uint32_t > & temp_pos_in_rec = additional_component.get_component_positions_in_record();
     const vector < uint32_t > & positions_in_ratios = additional_component.get_component_positions_in_ratios();
 
@@ -473,21 +488,23 @@ cRatios::More_Components(const cRatioComponent & additional_component) {
     std::cout << "From cRatios::More_Components: final_ratios.size(): " << final_ratios.size()
 	      << ", " << __FILE__ << ":" << __LINE__ << std::endl;
 
-    for (map < SimilarityProfile, double, SimilarityCompare >::iterator p = final_ratios.begin();
-		    p != final_ratios.end(); ++p ) {
+    map<SimilarityProfile, double, SimilarityCompare >::iterator p = final_ratios.begin();
+    for (; p != final_ratios.end(); ++p) {
 
         vector < uint32_t > key = p->first;
 
-        for (map < SimilarityProfile, double, SimilarityCompare >::const_iterator vv = additional_component.get_ratios_map().begin();
-             vv != additional_component.get_ratios_map().end(); ++vv) {
+        map<SimilarityProfile, double, SimilarityCompare >::const_iterator vv = additional_component.get_ratios_map().begin();
+        for (; vv != additional_component.get_ratios_map().end(); ++vv) {
 
-            for ( uint32_t j = 0; j < vv->first.size(); ++j ) {
-                key.at( positions_in_ratios.at(j) ) = vv->first.at(j);
+            for (uint32_t j = 0; j < vv->first.size(); ++j) {
+                key.at(positions_in_ratios.at(j)) = vv->first.at(j);
             }
 
-            temp_ratios.insert(std::pair<SimilarityProfile, double >(key, p->second * vv->second));
-            temp_x_counts.insert(std::pair<vector < uint32_t >, uint32_t >(key, this->x_counts.find(p->first)->second + additional_component.get_x_counts().find(vv->first)->second ) );
-            temp_m_counts.insert(std::pair<vector < uint32_t >, uint32_t >(key, this->m_counts.find(p->first)->second + additional_component.get_m_counts().find(vv->first)->second ) );
+            temp_ratios.insert(std::pair<SimilarityProfile, double>(key, p->second * vv->second));
+            temp_x_counts.insert(std::pair<vector<uint32_t>, uint32_t >(key,
+                  this->x_counts.find(p->first)->second + additional_component.get_x_counts().find(vv->first)->second));
+            temp_m_counts.insert(std::pair<vector<uint32_t>, uint32_t >(key,
+                  this->m_counts.find(p->first)->second + additional_component.get_m_counts().find(vv->first)->second));
         }
     }
 
@@ -540,25 +557,24 @@ cRatios::read_ratios_file(const char * filename) {
     const uint32_t primary_delim_size = strlen(primary_delim);
     const uint32_t secondary_delim_size = strlen(secondary_delim);
 
-    if ( ! infile.good() )
-        throw cException_File_Not_Found(filename);
+    if (!infile.good()) throw cException_File_Not_Found(filename);
 
     string filedata;
     register size_t pos, prev_pos;
     getline(infile, filedata);
     pos = prev_pos = 0;
 
-    while ( ( pos = filedata.find(secondary_delim, prev_pos) ) != string::npos ) {
+    while ((pos = filedata.find(secondary_delim, prev_pos)) != string::npos) {
         attrib_names.push_back(filedata.substr(prev_pos, pos - prev_pos));
         prev_pos = pos + secondary_delim_size;
     }
 
     SimilarityProfile key;
-    while ( getline(infile, filedata)) {
+    while (getline(infile, filedata)) {
 
         key.clear();
         pos = prev_pos = 0;
-        while ( ( pos = filedata.find(secondary_delim, prev_pos) ) != string::npos ) {
+        while ((pos = filedata.find(secondary_delim, prev_pos)) != string::npos) {
             key.push_back(atoi(filedata.substr(prev_pos, pos - prev_pos).c_str()));
             prev_pos = pos + secondary_delim_size;
         }
@@ -581,9 +597,9 @@ cRatios::read_ratios_file(const char * filename) {
 
 const Record *
 retrieve_record_pointer_by_unique_id(const string & uid,
-                                     const map <string, const Record*> & uid_tree) {
+                                     const RecordIndex & uid_tree) {
 
-    map <string, const Record *>::const_iterator cpm = uid_tree.find(uid);
+    RecordIndex::const_iterator cpm = uid_tree.find(uid);
 
     if (cpm == uid_tree.end())
         throw cException_Attribute_Not_In_Tree(uid.c_str());
@@ -593,13 +609,13 @@ retrieve_record_pointer_by_unique_id(const string & uid,
 
 
 void
-create_btree_uid2record_pointer(map<string, const Record *> & uid_tree,
+create_btree_uid2record_pointer(RecordIndex & uid_tree,
                                 const list<Record> & record_list,
                                 const string & uid_name ) {
 
 
     uid_tree.clear();
-    const unsigned int uid_index = Record::get_index_by_name(uid_name);
+    const uint32_t uid_index = Record::get_index_by_name(uid_name);
     cException_Vector_Data except(uid_name.c_str());
 
     // RecordIndex
@@ -619,6 +635,6 @@ create_btree_uid2record_pointer(map<string, const Record *> & uid_tree,
             throw cException_Duplicate_Attribute_In_Tree(label.c_str());
 	      }
 
-        uid_tree.insert(std::pair< string, const Record *>(label, &(*record)));
+        uid_tree.insert(std::pair<string, const Record *>(label, &(*record)));
     }
 }
