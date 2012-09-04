@@ -51,14 +51,13 @@ cRatioComponent::cRatioComponent(const RecordIndex & uid_tree,
 
 void
 cRatioComponent::sp_stats (const TrainingPairs & trainpairs,
-                           map<SimilarityProfile, uint32_t, SimilarityCompare> & sp_counts) const {
+                           SPCountsIndex & sp_counts) const {
 
     const vector<uint32_t> & component_indice_in_record = get_component_positions_in_record();
 
     const RecordIndex & dict = *puid_tree;
     RecordIndex::const_iterator pm;
-    // SPCountsIndex
-    map<SimilarityProfile, uint32_t, SimilarityCompare >::iterator psp;
+    SPCountsIndex::iterator psp;
 
     TrainingPairs::const_iterator p = trainpairs.begin();
     for (; p != trainpairs.end(); ++p) {
