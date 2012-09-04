@@ -65,14 +65,16 @@ cRatioComponent::sp_stats (const TrainingPairs & trainpairs,
         pm = dict.find(p->first);
 
         if (pm == dict.end()) {
-            throw cException_Attribute_Not_In_Tree( ( string("\"") + p->first + string ("\"") ).c_str() );
+            throw cException_Attribute_Not_In_Tree(
+                (string("\"") + p->first + string ("\"") ).c_str());
         }
 
         const Record *plhs = pm->second;
         pm = dict.find(p->second);
 
         if (pm == dict.end()) {
-            throw cException_Attribute_Not_In_Tree( ( string("\"") + p->second + string ("\"") ).c_str() );
+            throw cException_Attribute_Not_In_Tree(
+                (string("\"") + p->second + string ("\"") ).c_str());
         }
 
         const Record *prhs = pm->second;
