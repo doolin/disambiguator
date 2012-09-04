@@ -274,16 +274,17 @@ cRatioComponent::prepare(const char * x_file,
     uint32_t num_xcount_without_mcount = 0;
     uint32_t num_mcount_without_xcount = 0;
 
-    for ( p = x_counts.begin(); p != x_counts.end(); ++p ) {
+    for (p = x_counts.begin(); p != x_counts.end(); ++p) {
         q = m_counts.find( p->first );
-        if ( q == m_counts.end() ) 
+        if (q == m_counts.end()) 
             continue;
         else {
-            ratio_map.insert(std::pair<SimilarityProfile, double>(p->first, 1.0 * q->second / p->second) );
+            ratio_map.insert(std::pair<SimilarityProfile, double>
+                (p->first, 1.0 * q->second / p->second));
         }
     }
 
-    map<SimilarityProfile, uint32_t, SimilarityCompare>::iterator pp = x_counts.begin();
+    SPCountsIndex::iterator pp = x_counts.begin();
     for (; pp != x_counts.end(); ) {
 
         // This needs to be a "contains" macro or something...
@@ -295,9 +296,10 @@ cRatioComponent::prepare(const char * x_file,
         }
     }
 
-    map<SimilarityProfile, uint32_t, SimilarityCompare >::iterator qq = m_counts.begin();
+    SPCountsIndex::iterator qq = m_counts.begin();
     for (; qq != m_counts.end(); ) {
-        if ( ratio_map.find( qq->first ) == ratio_map.end() ) {
+
+        if (ratio_map.find(qq->first) == ratio_map.end() ) {
             m_counts.erase ( qq++ );
             ++num_mcount_without_xcount;
         } else {
