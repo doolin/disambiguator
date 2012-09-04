@@ -31,26 +31,26 @@ typedef map<string, const Record *> RecordIndex;
  * for associated containers, i.e., map or set.
  *
  * Private:
- *         unsigned int compare_entry: the position of interest.
+ *         uint32_t compare_entry: the position of interest.
  *
  * Public:
  *    bool operator() ( const SimilarityProfile * p1, const SimilarityProfile * p2 ) const:
  *        to compare the two similarity profiles at the position of compare_entry.
  *
- *    cMonotonic_Similarity_Compare( const unsigned int entry): constructor
+ *    cMonotonic_Similarity_Compare( const uint32_t entry): constructor
  *
- *    void reset_entry( const unsigned int entry): reset the variable compare_entry to the input entry.
+ *    void reset_entry( const uint32_t entry): reset the variable compare_entry to the input entry.
  */
 struct cMonotonic_Similarity_Compare {
 
 private:
-    unsigned int compare_entry;
+    uint32_t compare_entry;
 public:
     bool operator() ( const SimilarityProfile * p1, const SimilarityProfile * p2 ) const {
         return p1->at(compare_entry) < p2->at(compare_entry);
     }
-    cMonotonic_Similarity_Compare( const unsigned int entry) : compare_entry(entry) {};
-    void reset_entry( const unsigned int entry) { compare_entry = entry;}
+    cMonotonic_Similarity_Compare( const uint32_t entry) : compare_entry(entry) {};
+    void reset_entry( const uint32_t entry) { compare_entry = entry;}
 };
 
 
@@ -72,7 +72,7 @@ typedef set< const SimilarityProfile *, cMonotonic_Similarity_Compare> Monotonic
  * Private:
  *         const SimilarityProfile * psim: pointer to a similarity profile.
  *
- *         unsigned int monotonic_dimension: an entry in which
+ *         uint32_t monotonic_dimension: an entry in which
  *         comparison of similarity profiles will skip.
  *
  *         bool compare_without_primary( const SimilarityProfile * p1, const SimilarityProfile * p2 ) const:
@@ -82,9 +82,9 @@ typedef set< const SimilarityProfile *, cMonotonic_Similarity_Compare> Monotonic
  *        bool operator < ( const cSimilarity_With_Monotonicity_Dimension & rhs) const:
  *            comparison function that is used only in map/set.
  *
- *        const unsigned int get_monotonic_dimension() const: return the monotunic_dimension
+ *        const uint32_t get_monotonic_dimension() const: return the monotunic_dimension
  *
- *        cSimilarity_With_Monotonicity_Dimension( const SimilarityProfile * p, const unsigned int dm ):
+ *        cSimilarity_With_Monotonicity_Dimension( const SimilarityProfile * p, const uint32_t dm ):
  *                constructor.
  *
  * Use of the above classes is primarily in the DisambigRatioSmoothing.cpp.
@@ -96,12 +96,12 @@ struct cSimilarity_With_Monotonicity_Dimension {
 
 private:
     const SimilarityProfile * psim;
-    unsigned int monotonic_dimension;
+    uint32_t monotonic_dimension;
     bool compare_without_primary( const SimilarityProfile * p1, const SimilarityProfile * p2 ) const;
 public:
     bool operator < ( const cSimilarity_With_Monotonicity_Dimension & rhs) const;
-    const unsigned int get_monotonic_dimension() const {return monotonic_dimension;}
-    explicit cSimilarity_With_Monotonicity_Dimension( const SimilarityProfile * p, const unsigned int dm )
+    const uint32_t get_monotonic_dimension() const {return monotonic_dimension;}
+    explicit cSimilarity_With_Monotonicity_Dimension( const SimilarityProfile * p, const uint32_t dm )
         : psim ( p ), monotonic_dimension(dm) {}
 };
 
@@ -130,10 +130,10 @@ public:
 
 
 /*
- *         vector < unsigned int > positions_in_ratios:
+ *         vector < uint32_t > positions_in_ratios:
  *             positions of the current components in the complete similarity profile.
  *
- *         vector < unsigned int > positions_in_record:
+ *         vector < uint32_t > positions_in_record:
  *             position of the current components in the Record::column_names.
  *
  *        const string attrib_group:
@@ -149,7 +149,7 @@ public:
  * vector < string > attrib_names:
  *     attribute names that belong the the atribute group.
  *
- * map < vector < unsigned int > , unsigned int, SimilarityCompare > x_counts, m_counts:
+ * map < vector < uint32_t > , uint32_t, SimilarityCompare > x_counts, m_counts:
  *       maps of similarity profiles to their occurrences in non-match and match training sets.
  */
 
@@ -171,11 +171,11 @@ class cRatioComponent {
     };
 
 private:
-   /**  static const unsigned int laplace_base:
+   /**  static const uint32_t laplace_base:
     *  a value used for laplacian operations of
     *  obtained similarity profiles to get a ratio.
     */
-    static const unsigned int laplace_base;
+    static const uint32_t laplace_base;
 
    /**
     *  map < SimilarityProfile, double, SimilarityCompare > ratio_map:
@@ -188,9 +188,9 @@ private:
     // SPRatiosIndex
     map< SimilarityProfile, double, SimilarityCompare > ratio_map;
 
-    vector < unsigned int > positions_in_ratios;
+    vector < uint32_t > positions_in_ratios;
 
-    vector< unsigned int > positions_in_record;
+    vector< uint32_t > positions_in_record;
 
     const string attrib_group;
 
@@ -214,11 +214,11 @@ private:
     bool is_ready;
 
     // SPCountsIndex
-    map <vector<unsigned int>, unsigned int, SimilarityCompare > x_counts, m_counts;
+    map <vector<uint32_t>, uint32_t, SimilarityCompare > x_counts, m_counts;
 
    /**
     *  void sp_stats (const list<std::pair<string, string> > & trainpairs,
-    *   map < vector < unsigned int > , unsigned int, SimilarityCompare > & sp_counts ) const:
+    *   map < vector < uint32_t > , uint32_t, SimilarityCompare > & sp_counts ) const:
     *   read a list of pairs of unique record numbers that are selected as
     *   training sets, and do pairwise comparison in the specified
     *   attribute group. Then the statistics of the appearing similarity
@@ -226,7 +226,7 @@ private:
     *   in the map of similarity profiles to their occurrences "sp_counts".
     */
      void sp_stats (const list<std::pair<string, string> > & trainpairs,
-       map<vector<unsigned int> , unsigned int, SimilarityCompare> & sp_counts) const;
+       map<vector<uint32_t> , uint32_t, SimilarityCompare> & sp_counts) const;
 
     void read_train_pairs(list<std::pair<string, string> > & trainpairs, const char * txt_file) const;
 
@@ -266,28 +266,28 @@ public:
    /**
     * TODO: FIXME: Document this method.
     */
-    const map < vector < unsigned int >, unsigned int, SimilarityCompare > & get_x_counts() const {
+    const map < vector < uint32_t >, uint32_t, SimilarityCompare > & get_x_counts() const {
       return x_counts;
     }
 
    /**
     * TODO: FIXME: Document this method.
     */
-    const map < vector < unsigned int >, unsigned int, SimilarityCompare > & get_m_counts() const {
+    const map < vector < uint32_t >, uint32_t, SimilarityCompare > & get_m_counts() const {
       return m_counts;
     }
 
    /**
     * TODO: FIXME: document this method.
     */
-    const vector < unsigned int > & get_component_positions_in_ratios() const {
+    const vector < uint32_t > & get_component_positions_in_ratios() const {
       return positions_in_ratios;
     };
 
    /**
     * TODO: FIXME: document this method.
     */
-    const vector < unsigned int > & get_component_positions_in_record() const {
+    const vector < uint32_t > & get_component_positions_in_record() const {
       return positions_in_record;
     };
 
@@ -315,10 +315,10 @@ private:
     */
     map < SimilarityProfile, double, SimilarityCompare > final_ratios;
     vector < string > attrib_names;
-    unsigned int ratio_size;
+    uint32_t ratio_size;
     //vector <double> coeffs;
-    //unsigned int final_root_order;
-    map < vector < unsigned int > , unsigned int, SimilarityCompare > x_counts, m_counts;
+    //uint32_t final_root_order;
+    map < vector < uint32_t > , uint32_t, SimilarityCompare > x_counts, m_counts;
     map < cSimilarity_With_Monotonicity_Dimension, MonotonicSet > similarity_map;
 
     void More_Components( const cRatioComponent & additional_component);
@@ -360,7 +360,7 @@ public:
     * TODO: FIXME: document this method.
     */
     void write_ratios_file(const char * filename) const;
-    //unsigned int get_final_order () const {return final_root_order;}
+    //uint32_t get_final_order () const {return final_root_order;}
 
    /**
     * Requires global configuration of requisite matrices and data structures
@@ -371,23 +371,25 @@ public:
    /**
     * TODO: FIXME: document this method.
     */
-    const vector < string > & get_attrib_names() const { return attrib_names;}
+    const vector<string> & get_attrib_names() const {
+      return attrib_names;
+    }
 };
 
 
-vector < unsigned int > get_max_similarity(const vector < string > & attrib_names) ;
+vector<uint32_t> get_max_similarity                   (const vector < string > & attrib_names) ;
 
-const Record * retrieve_record_pointer_by_unique_id(const string & uid,
-                                                    const map<string, const Record*> & uid_tree);
+const Record *   retrieve_record_pointer_by_unique_id (const string & uid,
+                                                       const RecordIndex & uid_tree);
 
-void           create_btree_uid2record_pointer     (map<string, const Record *> & uid_tree,
-                                                    const list<Record> & reclist,
-                                                    const string & uid_name );
+void             create_btree_uid2record_pointer      (RecordIndex & uid_tree,
+                                                       const list<Record> & reclist,
+                                                       const string & uid_name );
 
-bool           dump_match                          (const char * sqlite3_target,
-                                                    const char * tablename,
-                                                    const char * txt_source,
-                                                    const string & unique_record_name,
-                                                    const string & unique_inventor_name);
+bool             dump_match                           (const char * sqlite3_target,
+                                                       const char * tablename,
+                                                       const char * txt_source,
+                                                       const string & unique_record_name,
+                                                       const string & unique_inventor_name);
 
 #endif /* PATENT_RATIOS_H */
