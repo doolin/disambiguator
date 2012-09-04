@@ -622,10 +622,11 @@ retrieve_record_pointer_by_unique_id(const string & uid,
 
     RecordIndex::const_iterator cpm = uid_tree.find(uid);
 
-    if (cpm == uid_tree.end())
+    if (cpm == uid_tree.end()) {
         throw cException_Attribute_Not_In_Tree(uid.c_str());
-    else
+    } else {
         return cpm->second;
+    }
 }
 
 
