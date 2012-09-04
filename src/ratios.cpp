@@ -28,16 +28,18 @@ get_max_similarity(const vector<string> & attrib_names)  {
 void
 print_similarity_profile_size() {
 
-   /*
-    // TODO: Make this a print function
-    //debug only
-    std::cout << "Size of Similarity Profile = "<< similarity_profile.size() << ". Similarity Profile = ";
-    for ( vector <uint32_t >::const_iterator tt = similarity_profile.begin(); tt != similarity_profile.end(); ++tt ) {
+#if 0
+    std::cout << "Size of Similarity Profile = "
+              <<  similarity_profile.size()
+              << ". Similarity Profile = ";
+
+    vector <uint32_t >::const_iterator tt = similarity_profile.begin();
+    for (tt != similarity_profile.end(); ++tt) {
         std::cout << *tt << ":";
     }
     std::cout << std::endl;
-    //end of debug
-    */
+#endif
+
 }
 
 
