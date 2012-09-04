@@ -20,7 +20,7 @@ typedef std::list<TrainingPair> TrainingPairs;
 
 typedef map<string, const Record *> RecordIndex;
 
-typedef map<SimilarityProfile, double, SimilarityCompare> RatiosIndex;
+typedef map<SimilarityProfile, double, SimilarityCompare> SPRatiosIndex;
 typedef map<SimilarityProfile, sp_count_t, SimilarityCompare> SPCountsIndex;
 
 
@@ -34,26 +34,36 @@ typedef map<SimilarityProfile, sp_count_t, SimilarityCompare> SPCountsIndex;
 struct cMonotonic_Similarity_Compare {
 
 private:
-/**
- * uint32_t compare_entry: the position of interest.
- */
+
+   /**
+    * uint32_t compare_entry: the position of interest.
+    */
     uint32_t compare_entry;
 
-/**
- * Public:
- *    bool operator() ( const SimilarityProfile * p1, const SimilarityProfile * p2 ) const:
- *        to compare the two similarity profiles at the position of compare_entry.
- *
- *    cMonotonic_Similarity_Compare( const uint32_t entry): constructor
- *
- *    void reset_entry( const uint32_t entry): reset the variable compare_entry to the input entry.
- */
 public:
-    bool operator() ( const SimilarityProfile * p1, const SimilarityProfile * p2 ) const {
+
+   /**
+    * bool operator() (const SimilarityProfile * p1, const SimilarityProfile * p2) const:
+    * to compare the two similarity profiles at the position of compare_entry.
+    */
+    bool operator() (const SimilarityProfile * p1, const SimilarityProfile * p2) const {
         return p1->at(compare_entry) < p2->at(compare_entry);
     }
-    cMonotonic_Similarity_Compare( const uint32_t entry) : compare_entry(entry) {};
-    void reset_entry( const uint32_t entry) { compare_entry = entry;}
+
+
+   /**
+    * cMonotonic_Similarity_Compare(const uint32_t entry): constructor
+    */
+    cMonotonic_Similarity_Compare(const uint32_t entry)
+      : compare_entry(entry) {};
+
+   /**
+    * void reset_entry(const uint32_t entry):
+    * reset the variable compare_entry to the input entry.
+    */
+    void reset_entry(const uint32_t entry) {
+      compare_entry = entry;
+    }
 };
 
 
@@ -98,14 +108,26 @@ typedef set<const SimilarityProfile *, cMonotonic_Similarity_Compare> MonotonicS
 struct cSimilarity_With_Monotonicity_Dimension {
 
 private:
+
     const SimilarityProfile * psim;
+
     uint32_t monotonic_dimension;
-    bool compare_without_primary( const SimilarityProfile * p1, const SimilarityProfile * p2 ) const;
+
+    bool compare_without_primary(const SimilarityProfile * p1,
+        const SimilarityProfile * p2 ) const;
+
+
 public:
-    bool operator < ( const cSimilarity_With_Monotonicity_Dimension & rhs) const;
-    const uint32_t get_monotonic_dimension() const {return monotonic_dimension;}
-    explicit cSimilarity_With_Monotonicity_Dimension( const SimilarityProfile * p, const uint32_t dm )
-        : psim ( p ), monotonic_dimension(dm) {}
+
+    bool operator < (const cSimilarity_With_Monotonicity_Dimension & rhs) const;
+
+    const uint32_t get_monotonic_dimension() const {
+      return monotonic_dimension;
+    }
+
+    explicit cSimilarity_With_Monotonicity_Dimension(
+        const SimilarityProfile * p, const uint32_t dm)
+        : psim (p), monotonic_dimension(dm) {}
 };
 
 
@@ -132,16 +154,20 @@ public:
  */
 
 
-/*
- *         vector < uint32_t > positions_in_ratios:
- *             positions of the current components in the complete similarity profile.
- *
- *         vector < uint32_t > positions_in_record:
- *             position of the current components in the Record::column_names.
- *
- *        const string attrib_group:
- *            the attribute GROUP identifier for which the
- *            cRatioComponent object represents.
+/**
+ * vector < uint32_t > positions_in_ratios:
+ * positions of the current components in the complete similarity profile.
+ */
+
+/**
+ * vector < uint32_t > positions_in_record:
+ * position of the current components in the Record::column_names.
+ */
+
+/**
+ * const string attrib_group:
+ * the attribute GROUP identifier for which the
+ * cRatioComponent object represents.
  */
 
 
@@ -170,10 +196,12 @@ class cRatioComponent {
 
     class cException_Partial_SP_Missing : public cAbstract_Exception {
     public:
-        cException_Partial_SP_Missing(const char* errmsg): cAbstract_Exception(errmsg){};
+        cException_Partial_SP_Missing(const char* errmsg)
+          : cAbstract_Exception(errmsg){};
     };
 
 private:
+
    /**  static const uint32_t laplace_base:
     *  a value used for laplacian operations of
     *  obtained similarity profiles to get a ratio.
@@ -189,11 +217,12 @@ private:
     */
     //map < SimilarityProfile, double, SimilarityCompare > ratio_map;
     // SPRatiosIndex
-    map< SimilarityProfile, double, SimilarityCompare > ratio_map;
+    //map< SimilarityProfile, double, SimilarityCompare > ratio_map;
+    SPRatiosIndex ratio_map;
 
-    vector < uint32_t > positions_in_ratios;
+    vector<uint32_t> positions_in_ratios;
 
-    vector< uint32_t > positions_in_record;
+    vector<uint32_t> positions_in_record;
 
     const string attrib_group;
 
@@ -205,9 +234,9 @@ private:
     //const map<string, const Record *> * puid_tree;
     const RecordIndex * puid_tree;
 
-    map < cSimilarity_With_Monotonicity_Dimension, MonotonicSet > similarity_map;
+    map<cSimilarity_With_Monotonicity_Dimension, MonotonicSet> similarity_map;
 
-    vector < string > attrib_names;
+    vector<string> attrib_names;
 
    /**
     * bool is_ready:
@@ -217,7 +246,8 @@ private:
     bool is_ready;
 
     // SPCountsIndex
-    map <vector<uint32_t>, uint32_t, SimilarityCompare > x_counts, m_counts;
+    //map <vector<uint32_t>, uint32_t, SimilarityCompare > x_counts, m_counts;
+    SPCountsIndex x_counts, m_counts;
 
    /**
     *  void sp_stats (const list<std::pair<string, string> > & trainpairs,
@@ -228,10 +258,10 @@ private:
     *   profiles ( part of a complete similarity profile ) are stored
     *   in the map of similarity profiles to their occurrences "sp_counts".
     */
-     void sp_stats (const list<std::pair<string, string> > & trainpairs,
-       map<vector<uint32_t> , uint32_t, SimilarityCompare> & sp_counts) const;
+     void sp_stats (const TrainingPairs & trainpairs, SPCountsIndex & sp_counts) const;
 
-    void read_train_pairs(list<std::pair<string, string> > & trainpairs, const char * txt_file) const;
+    //void read_train_pairs(list<std::pair<string, string> > & trainpairs, const char * txt_file) const;
+    void read_train_pairs(TrainingPairs & trainpairs, const char * txt_file) const;
 
     void get_similarity_info();
 
@@ -239,7 +269,8 @@ public:
 
     class cException_Ratios_Not_Ready : public cAbstract_Exception {
       public:
-        cException_Ratios_Not_Ready(const char* errmsg): cAbstract_Exception(errmsg){};
+        cException_Ratios_Not_Ready(const char* errmsg)
+          : cAbstract_Exception(errmsg) {};
     };
 
    /**
@@ -248,63 +279,48 @@ public:
     *  @param uid_tree  map of unique record id string to its record pointer.
     *  @param groupname attribute group name.
     */
-    explicit cRatioComponent(const map < string, const Record * > & uid_tree, const string & groupname);
+    explicit cRatioComponent(const RecordIndex & uid_tree, const string & groupname);
 
    /**
     * TODO: FIXME: Document this method.
     */
     void prepare(const char* x_flie, const char * m_file);
 
-   /**
-    * TODO: FIXME: Document this method.
-    */
-    const map < SimilarityProfile, double, SimilarityCompare > & get_ratios_map() const {
-        if ( is_ready )
+    const SPRatiosIndex & get_ratios_map() const {
+
+        if (is_ready) {
             return ratio_map;
-        else {
+        } else {
             throw cException_Ratios_Not_Ready("Ratio component map is not ready.");
         }
     }
 
-   /**
-    * TODO: FIXME: Document this method.
-    */
-    const map < vector < uint32_t >, uint32_t, SimilarityCompare > & get_x_counts() const {
+    const SPCountsIndex & get_x_counts() const {
       return x_counts;
     }
 
-   /**
-    * TODO: FIXME: Document this method.
-    */
-    const map < vector < uint32_t >, uint32_t, SimilarityCompare > & get_m_counts() const {
+    const SPCountsIndex & get_m_counts() const {
       return m_counts;
     }
 
-   /**
-    * TODO: FIXME: document this method.
-    */
-    const vector < uint32_t > & get_component_positions_in_ratios() const {
+    const vector<uint32_t> & get_component_positions_in_ratios() const {
       return positions_in_ratios;
     };
 
-   /**
-    * TODO: FIXME: document this method.
-    */
-    const vector < uint32_t > & get_component_positions_in_record() const {
+    const vector<uint32_t> & get_component_positions_in_record() const {
       return positions_in_record;
     };
 
     void smooth();
 
    /**
-    * TODO: FIXME: document this method.
+    * Write count statistics to a file.
     */
-    void stats_output( const char * ) const;
+    void stats_output(const char *) const;
 
-   /**
-    * TODO: FIXME: document this method.
-    */
-    const vector < string > & get_attrib_names() const { return attrib_names;}
+    const vector<string> & get_attrib_names() const {
+      return attrib_names;
+    }
 };
 
 
@@ -316,17 +332,22 @@ private:
     * final_ratios map takes a similarity vector as a key for the similarity
     * value, with the appropriate similarity comparator.
     */
-    map < SimilarityProfile, double, SimilarityCompare > final_ratios;
-    vector < string > attrib_names;
-    uint32_t ratio_size;
-    //vector <double> coeffs;
-    //uint32_t final_root_order;
-    map < vector < uint32_t > , uint32_t, SimilarityCompare > x_counts, m_counts;
-    map < cSimilarity_With_Monotonicity_Dimension, MonotonicSet > similarity_map;
+    SPRatiosIndex final_ratios;
 
-    void More_Components( const cRatioComponent & additional_component);
+    vector<string> attrib_names;
+
+    uint32_t ratio_size;
+
+    SPCountsIndex x_counts, m_counts;
+
+    map<cSimilarity_With_Monotonicity_Dimension, MonotonicSet > similarity_map;
+
+    void More_Components(const cRatioComponent & additional_component);
+
     void Get_Coefficients();
+
     static const char * primary_delim;
+
     static const char * secondary_delim;
 
 public:
@@ -334,25 +355,23 @@ public:
    /**
     * TODO: FIXME: document this constructor.
     */
-    cRatios(const vector < const cRatioComponent *> & component_vector,
+    cRatios(const vector<const cRatioComponent *> & component_vector,
             const char * filename,
             const Record & record);
 
    /**
     * TODO: FIXME: document this constructor.
     */
-    cRatios( const char *filename);
+    cRatios(const char *filename);
 
    /**
     * The getter for the ratios map, i.e., the lookup table for the
     * computed similarity ratios in Torvik's terminology.
     */
-    const map < SimilarityProfile, double, SimilarityCompare > & get_ratios_map() const {
+    const SPRatiosIndex & get_ratios_map() const {
         return final_ratios;
     }
 
-
-    //const vector <double> & get_coefficients_vector() const { return coeffs;}
 
    /**
     * The ratios file name is keyed to the current round of disambiguation.
@@ -363,7 +382,6 @@ public:
     * TODO: FIXME: document this method.
     */
     void write_ratios_file(const char * filename) const;
-    //uint32_t get_final_order () const {return final_root_order;}
 
    /**
     * Requires global configuration of requisite matrices and data structures
