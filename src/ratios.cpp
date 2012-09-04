@@ -13,7 +13,7 @@ const uint32_t cRatioComponent::laplace_base = 5;
 vector<uint32_t>
 get_max_similarity(const vector<string> & attrib_names)  {
 
-    vector < uint32_t > sp;
+    vector<uint32_t> sp;
 
     vector<string>::const_iterator p = attrib_names.begin();
     for (; p != attrib_names.end(); ++p) {
@@ -33,7 +33,7 @@ print_similarity_profile_size() {
               <<  similarity_profile.size()
               << ". Similarity Profile = ";
 
-    vector <uint32_t >::const_iterator tt = similarity_profile.begin();
+    vector<uint32_t>::const_iterator tt = similarity_profile.begin();
     for (tt != similarity_profile.end(); ++tt) {
         std::cout << *tt << ":";
     }
@@ -86,7 +86,7 @@ cRatioComponent::sp_stats (const TrainingPairs & trainpairs,
         psp = sp_counts.find(sp);
 
         if (psp == sp_counts.end()) {
-            sp_counts.insert(std::pair < SimilarityProfile, uint32_t >(sp, 1));
+            sp_counts.insert(std::pair<SimilarityProfile, uint32_t>(sp, 1));
         } else {
             ++(psp->second);
         }
@@ -167,7 +167,7 @@ cRatioComponent::stats_output(const char * filename) const {
 
         if (p != this->ratio_map.end()) continue;
 
-        for (vector <uint32_t >::const_iterator q = pm->first.begin(); q != pm->first.end(); ++q) {
+        for (vector<uint32_t>::const_iterator q = pm->first.begin(); q != pm->first.end(); ++q) {
             ostream << *q << ",";
         }
 
@@ -184,7 +184,7 @@ cRatioComponent::stats_output(const char * filename) const {
             continue;
         }
 
-        for (vector <uint32_t >::const_iterator q = pm->first.begin(); q != pm->first.end(); ++q) {
+        for (vector<uint32_t>::const_iterator q = pm->first.begin(); q != pm->first.end(); ++q) {
             ostream << *q << ",";
         }
 
@@ -249,8 +249,7 @@ cRatioComponent::prepare(const char * x_file,
 
     for (; ps != all_possible.end(); ++ps) {
 
-        // SPCountsIndex
-        map<SimilarityProfile, uint32_t, SimilarityCompare >::iterator p = x_counts.find(*ps);
+        SPCountsIndex::iterator p = x_counts.find(*ps);
 
         if (x_counts.end() == p) {
             x_counts.insert(std::pair<vector<uint32_t>, uint32_t>(*ps, laplace_base));
