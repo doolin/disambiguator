@@ -110,16 +110,17 @@ cRatioComponent::read_train_pairs(TrainingPairs & trainpairs,
     if (infile.good()) {
 
         string filedata;
-        while ( getline(infile, filedata)) {
+
+        while (getline(infile, filedata)) {
             register size_t pos = 0, prev_pos = 0;
             pos = filedata.find(delim, prev_pos);
             string firststring = filedata.substr( prev_pos, pos - prev_pos);
             prev_pos = pos + delim_size;
             pos = filedata.find(delim, prev_pos);
             string secondstring = filedata.substr(prev_pos, pos);
-            //trainpairs.push_back(std::pair<string, string>(firststring, secondstring) );
             trainpairs.push_back(TrainingPair(firststring, secondstring));
         }
+
         std::cout << txt_file << " has been loaded as the "
                   << attrib_group << " part of the training sets."<< std::endl;
     } else {
@@ -140,17 +141,20 @@ cRatioComponent::stats_output(const char * filename) const {
 
     ostream << splabel  << "(";
     vector<uint32_t>::const_iterator tt = this->positions_in_record.begin(); 
-    for (tt; tt != this->positions_in_record.end(); ++tt)
+    for (tt; tt != this->positions_in_record.end(); ++tt) {
         ostream << Record::get_column_names().at(*tt) << ",";
+    }
     ostream << ")";
 
     ostream << delim << mc << delim << nmc << '\n';
-    map < vector<uint32_t>, uint32_t>::const_iterator pm;
-    map < vector<uint32_t>, double>::const_iterator p;
+    map<vector<uint32_t>, uint32_t>::const_iterator pm;
+    map<vector<uint32_t>, double>::const_iterator p;
 
     for (p = this->ratio_map.begin(); p != this->ratio_map.end(); ++p) {
-        for ( vector <uint32_t >::const_iterator q = p->first.begin(); q != p->first.end(); ++q )
+        for (vector <uint32_t >::const_iterator q = p->first.begin(); q != p->first.end(); ++q ) {
             ostream << *q << ",";
+        }
+
         ostream << delim;
         pm = this->m_counts.find(p->first);
         ostream << pm->second << delim;
@@ -160,10 +164,13 @@ cRatioComponent::stats_output(const char * filename) const {
 
     for (pm = this->m_counts.begin(); pm != this->m_counts.end(); ++pm ) {
         p = this->ratio_map.find(pm->first);
-        if ( p != this->ratio_map.end())
-            continue;
-        for ( vector <uint32_t >::const_iterator q = pm->first.begin(); q != pm->first.end(); ++q )
+
+        if (p != this->ratio_map.end()) continue;
+
+        for (vector <uint32_t >::const_iterator q = pm->first.begin(); q != pm->first.end(); ++q) {
             ostream << *q << ",";
+        }
+
         ostream << delim;
         ostream << pm->second << delim;
         ostream << 0 << '\n';
