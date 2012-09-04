@@ -20,19 +20,26 @@ typedef std::list<TrainingPair> TrainingPairs;
 
 typedef map<string, const Record *> RecordIndex;
 
+typedef map<SimilarityProfile, double, SimilarityCompare> RatiosIndex;
+typedef map<SimilarityProfile, sp_count_t, SimilarityCompare> SPCountsIndex;
+
 
 /**
- * cMonotonic_Similarity_Compare:
- *
  * For two given similarity profiles, it only compares the
  * scores at a certain position.
  *
  * This class should ONLY serve as a comparison functor
  * for associated containers, i.e., map or set.
- *
- * Private:
- *         uint32_t compare_entry: the position of interest.
- *
+ */
+struct cMonotonic_Similarity_Compare {
+
+private:
+/**
+ * uint32_t compare_entry: the position of interest.
+ */
+    uint32_t compare_entry;
+
+/**
  * Public:
  *    bool operator() ( const SimilarityProfile * p1, const SimilarityProfile * p2 ) const:
  *        to compare the two similarity profiles at the position of compare_entry.
@@ -41,10 +48,6 @@ typedef map<string, const Record *> RecordIndex;
  *
  *    void reset_entry( const uint32_t entry): reset the variable compare_entry to the input entry.
  */
-struct cMonotonic_Similarity_Compare {
-
-private:
-    uint32_t compare_entry;
 public:
     bool operator() ( const SimilarityProfile * p1, const SimilarityProfile * p2 ) const {
         return p1->at(compare_entry) < p2->at(compare_entry);
@@ -58,7 +61,7 @@ public:
  * MonotonicSet:
  * members in this set is sorted by a given similarity entry in an ascending way.
  */
-typedef set< const SimilarityProfile *, cMonotonic_Similarity_Compare> MonotonicSet;
+typedef set<const SimilarityProfile *, cMonotonic_Similarity_Compare> MonotonicSet;
 
 
 /**

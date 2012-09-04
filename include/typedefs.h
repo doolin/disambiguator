@@ -22,6 +22,5 @@ typedef uint32_t sp_count_t;
 typedef sp_count_t m_count_t;
 typedef sp_count_t n_count_t;
 
-//typedef map<const Record *, RecordList, cSort_by_attrib> PatentTree;
 
 #endif /* PATENT_TYPEDEFS_H */
