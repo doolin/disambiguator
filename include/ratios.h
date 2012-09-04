@@ -18,6 +18,9 @@ using std::map;
 typedef std::pair<string, string> TrainingPair;
 typedef std::list<TrainingPair> TrainingPairs;
 
+typedef map<string, const Record *> RecordIndex;
+
+
 /**
  * cMonotonic_Similarity_Compare:
  *
@@ -181,11 +184,13 @@ private:
     *  Value = ratio,
     *  Comparator = SimilarityCompare
     */
-    map < SimilarityProfile, double, SimilarityCompare > ratio_map;
+    //map < SimilarityProfile, double, SimilarityCompare > ratio_map;
+    // SPRatiosIndex
+    map< SimilarityProfile, double, SimilarityCompare > ratio_map;
 
     vector < unsigned int > positions_in_ratios;
 
-    vector < unsigned int > positions_in_record;
+    vector< unsigned int > positions_in_record;
 
     const string attrib_group;
 
@@ -194,7 +199,8 @@ private:
     * the pointer to a map of unique record id string to
     * its correspoinding record pointer.
     */
-    const map<string, const Record *> * puid_tree;
+    //const map<string, const Record *> * puid_tree;
+    const RecordIndex * puid_tree;
 
     map < cSimilarity_With_Monotonicity_Dimension, MonotonicSet > similarity_map;
 
@@ -207,19 +213,20 @@ private:
     */
     bool is_ready;
 
-    map < vector < unsigned int > , unsigned int, SimilarityCompare > x_counts, m_counts;
+    // SPCountsIndex
+    map <vector<unsigned int>, unsigned int, SimilarityCompare > x_counts, m_counts;
 
- /**
- *  void sp_stats (const list<std::pair<string, string> > & trainpairs,
-        map < vector < unsigned int > , unsigned int, SimilarityCompare > & sp_counts ) const:
- *      read a list of pairs of unique record numbers that are selected as
- *      training sets, and do pairwise comparison in the specified
- *      attribute group. Then the statistics of the appearing similarity
- *      profiles ( part of a complete similarity profile ) are stored
- *      in the map of similarity profiles to their occurrences "sp_counts".
- */
+   /**
+    *  void sp_stats (const list<std::pair<string, string> > & trainpairs,
+    *   map < vector < unsigned int > , unsigned int, SimilarityCompare > & sp_counts ) const:
+    *   read a list of pairs of unique record numbers that are selected as
+    *   training sets, and do pairwise comparison in the specified
+    *   attribute group. Then the statistics of the appearing similarity
+    *   profiles ( part of a complete similarity profile ) are stored
+    *   in the map of similarity profiles to their occurrences "sp_counts".
+    */
      void sp_stats (const list<std::pair<string, string> > & trainpairs,
-       map < vector < unsigned int > , unsigned int, SimilarityCompare > & sp_counts ) const;
+       map<vector<unsigned int> , unsigned int, SimilarityCompare> & sp_counts) const;
 
     void read_train_pairs(list<std::pair<string, string> > & trainpairs, const char * txt_file) const;
 
@@ -370,23 +377,6 @@ public:
 
 vector < unsigned int > get_max_similarity(const vector < string > & attrib_names) ;
 
-
-//#ifndef PATENT_FILEOPER_H
-//#define PATENT_FILEOPER_H
-
-//#include <iostream>
-//#include <map>
-//#include <set>
-//#include <list>
-
-
-//using std::string;
-//using std::set;
-//using std::map;
-//using std::list;
-
-//class Record;
-
 const Record * retrieve_record_pointer_by_unique_id(const string & uid,
                                                     const map<string, const Record*> & uid_tree);
 
@@ -399,7 +389,5 @@ bool           dump_match                          (const char * sqlite3_target,
                                                     const char * txt_source,
                                                     const string & unique_record_name,
                                                     const string & unique_inventor_name);
-
-//#endif /* PATENT_FILEOPER_H */
 
 #endif /* PATENT_RATIOS_H */

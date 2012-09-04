@@ -41,14 +41,15 @@ print_similarity_profile_size() {
 }
 
 
-cRatioComponent::cRatioComponent(const map < string, const Record * > & uid_tree,
+cRatioComponent::cRatioComponent(const map<string, const Record *> & uid_tree,
                                  const string & groupname)
             : attrib_group(groupname), puid_tree(&uid_tree), is_ready(false) {
 };
 
 
 void
-cRatioComponent::sp_stats (const list<std::pair<string, string> > & trainpairs,
+//cRatioComponent::sp_stats (const list<std::pair<string, string> > & trainpairs,
+cRatioComponent::sp_stats (const TrainingPairs & trainpairs,
                            map<SimilarityProfile, uint32_t, SimilarityCompare> & sp_counts) const {
 
     const vector<uint32_t> & component_indice_in_record = get_component_positions_in_record();
@@ -58,7 +59,8 @@ cRatioComponent::sp_stats (const list<std::pair<string, string> > & trainpairs,
     map<string, const Record *>::const_iterator pm;
     map<SimilarityProfile, uint32_t, SimilarityCompare >::iterator psp;
 
-    list< std::pair<string, string> >::const_iterator p = trainpairs.begin();
+    //list< std::pair<string, string> >::const_iterator p = trainpairs.begin();
+    TrainingPairs::const_iterator p = trainpairs.begin();
     for (; p != trainpairs.end(); ++p) {
 
         pm = dict.find(p->first);
@@ -92,7 +94,7 @@ cRatioComponent::sp_stats (const list<std::pair<string, string> > & trainpairs,
 
 
 void
-cRatioComponent::read_train_pairs(list<std::pair<string, string> > & trainpairs, 
+cRatioComponent::read_train_pairs(TrainingPairs & trainpairs,
                                   const char * txt_file) const {
 
     std::cout << "Reading training pairs from " << txt_file
@@ -105,6 +107,7 @@ cRatioComponent::read_train_pairs(list<std::pair<string, string> > & trainpairs,
     std::ifstream infile(txt_file);
 
     if (infile.good()) {
+
         string filedata;
         while ( getline(infile, filedata)) {
             register size_t pos = 0, prev_pos = 0;
@@ -113,7 +116,8 @@ cRatioComponent::read_train_pairs(list<std::pair<string, string> > & trainpairs,
             prev_pos = pos + delim_size;
             pos = filedata.find(delim, prev_pos);
             string secondstring = filedata.substr(prev_pos, pos);
-            trainpairs.push_back(std::pair<string, string>(firststring, secondstring) );
+            //trainpairs.push_back(std::pair<string, string>(firststring, secondstring) );
+            trainpairs.push_back(TrainingPair(firststring, secondstring));
         }
         std::cout << txt_file << " has been loaded as the "
                   << attrib_group << " part of the training sets."<< std::endl;
@@ -134,14 +138,14 @@ cRatioComponent::stats_output(const char * filename) const {
     const string delim   = " | ";
 
     ostream << splabel  << "(";
-    vector < uint32_t >:: const_iterator tt = this->positions_in_record.begin(); 
+    vector<uint32_t>:: const_iterator tt = this->positions_in_record.begin(); 
     for (tt; tt != this->positions_in_record.end(); ++tt )
         ostream << Record::get_column_names().at(*tt) << ",";
     ostream << ")";
 
     ostream << delim << mc << delim << nmc << '\n';
-    map < vector < uint32_t >, uint32_t  >::const_iterator pm;
-    map < vector < uint32_t >, double>::const_iterator p;
+    map < vector<uint32_t>, uint32_t>::const_iterator pm;
+    map < vector<uint32_t>, double>::const_iterator p;
 
     for (p = this->ratio_map.begin(); p != this->ratio_map.end(); ++p) {
         for ( vector <uint32_t >::const_iterator q = p->first.begin(); q != p->first.end(); ++q )
@@ -153,7 +157,7 @@ cRatioComponent::stats_output(const char * filename) const {
         ostream << pm->second << '\n';
     }
 
-    for ( pm = this->m_counts.begin(); pm != this->m_counts.end(); ++pm ) {
+    for (pm = this->m_counts.begin(); pm != this->m_counts.end(); ++pm ) {
         p = this->ratio_map.find(pm->first);
         if ( p != this->ratio_map.end())
             continue;
@@ -164,12 +168,18 @@ cRatioComponent::stats_output(const char * filename) const {
         ostream << 0 << '\n';
     }
 
-    for ( pm = this->x_counts.begin(); pm != this->x_counts.end(); ++pm ) {
+    for (pm = this->x_counts.begin(); pm != this->x_counts.end(); ++pm ) {
+
         p = this->ratio_map.find(pm->first);
-        if ( p != this->ratio_map.end())
+
+        if (p != this->ratio_map.end()) {
             continue;
-        for ( vector <uint32_t >::const_iterator q = pm->first.begin(); q != pm->first.end(); ++q )
+        }
+
+        for (vector <uint32_t >::const_iterator q = pm->first.begin(); q != pm->first.end(); ++q) {
             ostream << *q << ",";
+        }
+
         ostream << delim;
         ostream << 0 << delim;
         ostream << pm->second << '\n';
@@ -182,7 +192,8 @@ void
 cRatioComponent::prepare(const char * x_file,
                          const char * m_file) {
 
-    list<std::pair<string, string> > x_list, m_list;
+    //list<std::pair<string, string>> x_list, m_list;
+    TrainingPairs x_list, m_list;
     x_counts.clear();
     m_counts.clear();
     ratio_map.clear();
@@ -202,12 +213,11 @@ cRatioComponent::prepare(const char * x_file,
     std::cout << "Match unique profile number = " << m_counts.size() << std::endl;
 
     // laplace correction
-    map < vector < uint32_t >, uint32_t, SimilarityCompare >::const_iterator p, q;
+    map <SimilarityProfile, uint32_t, SimilarityCompare >::const_iterator p, q;
 
     const uint32_t count_to_consider = 100;
     // This is probably also a SimilarityProfile
-    set < vector < uint32_t >, SimilarityCompare > all_possible;
-
+    set <vector<uint32_t>, SimilarityCompare > all_possible;
     for ( p = x_counts.begin(); p != x_counts.end(); ++p ) {
         if ( m_counts.find(p->first) == m_counts.end() && p->second < count_to_consider )
             continue;
@@ -215,7 +225,7 @@ cRatioComponent::prepare(const char * x_file,
             all_possible.insert(p->first);
     }
 
-    for ( p = m_counts.begin(); p != m_counts.end(); ++p ) {
+    for (p = m_counts.begin(); p != m_counts.end(); ++p ) {
         if ( x_counts.find(p->first) == x_counts.end() && p->second < count_to_consider )
             continue;
         else
@@ -435,11 +445,11 @@ print_map(std::map < SimilarityProfile, double, comparator > m) {
 */
 
 void
-print_map(std::map < SimilarityProfile, uint32_t, SimilarityCompare > m) {
+print_map(std::map<SimilarityProfile, uint32_t, SimilarityCompare > m) {
 
   std::cout << "From " << __FILE__ << ":" << __LINE__ << std::endl;
 
-  std::map < SimilarityProfile, uint32_t, SimilarityCompare >::const_iterator mi = m.begin();
+  std::map<SimilarityProfile, uint32_t, SimilarityCompare>::const_iterator mi = m.begin();
   for (mi; mi != m.end(); ++mi) {
     print_similarity((*mi).first);
     print_value((*mi).second);
@@ -450,7 +460,7 @@ print_map(std::map < SimilarityProfile, uint32_t, SimilarityCompare > m) {
 void
 cRatios::More_Components(const cRatioComponent & additional_component) {
 
-    map < SimilarityProfile, double, SimilarityCompare > temp_ratios;
+    map<SimilarityProfile, double, SimilarityCompare> temp_ratios;
 
     map < vector < uint32_t >, uint32_t, SimilarityCompare > temp_x_counts, temp_m_counts;
     const vector < uint32_t > & temp_pos_in_rec = additional_component.get_component_positions_in_record();
@@ -475,9 +485,9 @@ cRatios::More_Components(const cRatioComponent & additional_component) {
                 key.at( positions_in_ratios.at(j) ) = vv->first.at(j);
             }
 
-            temp_ratios.insert(std::pair < SimilarityProfile, double >(key, p->second * vv->second));
-            temp_x_counts.insert(std::pair < vector < uint32_t >, uint32_t >(key, this->x_counts.find(p->first)->second + additional_component.get_x_counts().find(vv->first)->second ) );
-            temp_m_counts.insert(std::pair < vector < uint32_t >, uint32_t >(key, this->m_counts.find(p->first)->second + additional_component.get_m_counts().find(vv->first)->second ) );
+            temp_ratios.insert(std::pair<SimilarityProfile, double >(key, p->second * vv->second));
+            temp_x_counts.insert(std::pair<vector < uint32_t >, uint32_t >(key, this->x_counts.find(p->first)->second + additional_component.get_x_counts().find(vv->first)->second ) );
+            temp_m_counts.insert(std::pair<vector < uint32_t >, uint32_t >(key, this->m_counts.find(p->first)->second + additional_component.get_m_counts().find(vv->first)->second ) );
         }
     }
 
@@ -508,7 +518,7 @@ cRatios::write_ratios_file(const char * filename) const {
     outfile << primary_delim << "VALUE" << '\n';
 
     // The actual values..
-    map < SimilarityProfile, double, SimilarityCompare >::const_iterator q = final_ratios.begin();
+    map<SimilarityProfile, double, SimilarityCompare>::const_iterator q = final_ratios.begin();
     for (q; q != final_ratios.end(); ++q) {
         SimilarityProfile::const_iterator pint = q->first.begin(); 
         for (pint; pint != q->first.end(); ++pint) {
@@ -537,6 +547,7 @@ cRatios::read_ratios_file(const char * filename) {
     register size_t pos, prev_pos;
     getline(infile, filedata);
     pos = prev_pos = 0;
+
     while ( ( pos = filedata.find(secondary_delim, prev_pos) ) != string::npos ) {
         attrib_names.push_back(filedata.substr(prev_pos, pos - prev_pos));
         prev_pos = pos + secondary_delim_size;
@@ -573,7 +584,8 @@ retrieve_record_pointer_by_unique_id(const string & uid,
                                      const map <string, const Record*> & uid_tree) {
 
     map <string, const Record *>::const_iterator cpm = uid_tree.find(uid);
-    if ( cpm == uid_tree.end())
+
+    if (cpm == uid_tree.end())
         throw cException_Attribute_Not_In_Tree(uid.c_str());
     else
         return cpm->second;
@@ -590,6 +602,7 @@ create_btree_uid2record_pointer(map<string, const Record *> & uid_tree,
     const unsigned int uid_index = Record::get_index_by_name(uid_name);
     cException_Vector_Data except(uid_name.c_str());
 
+    // RecordIndex
     map <string, const Record *>::iterator pm;
     list<Record>::const_iterator record;
     for (record = record_list.begin(); record != record_list.end(); ++record ) {
@@ -599,12 +612,12 @@ create_btree_uid2record_pointer(map<string, const Record *> & uid_tree,
         const string & label = *pattrib->get_data().at(0);
         pm = uid_tree.find(label);
 
-        if ( pm != uid_tree.end()) {
+        if (pm != uid_tree.end()) {
             // This will throw on two records having the same Unique_Record_ID
-	    // TODO: Document where Unique_Record_ID is assigned (probably
-	    // in preprocessing consolidation.
+	          // TODO: Document where Unique_Record_ID is assigned (probably
+	          // in preprocessing consolidation.
             throw cException_Duplicate_Attribute_In_Tree(label.c_str());
-	}
+	      }
 
         uid_tree.insert(std::pair< string, const Record *>(label, &(*record)));
     }
