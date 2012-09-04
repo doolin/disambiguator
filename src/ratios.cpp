@@ -379,7 +379,7 @@ cRatioComponent::get_similarity_info() {
  *
  * @param const Record & rec
  */
-cRatios::cRatios(const vector < const cRatioComponent *> & component_pointer_vector,
+cRatios::cRatios(const vector<const cRatioComponent *> & component_pointer_vector,
                  const char * filename,
                  const Record & rec) {
 
@@ -389,19 +389,21 @@ cRatios::cRatios(const vector < const cRatioComponent *> & component_pointer_vec
     std::cout << "filename: " << filename << std::endl;
 
     vector< const cRatioComponent *>::const_iterator p = component_pointer_vector.begin(); 
+
     for (p; p != component_pointer_vector.end(); ++p ) {
-        std::cout << " Size of Ratio Component = " << (*p)->get_ratios_map().size() << std::endl;
+        std::cout << " Size of Ratio Component = "
+                  << (*p)->get_ratios_map().size() << std::endl;
         ratio_size += (*p)->get_component_positions_in_ratios().size();
     }
 
     attrib_names.resize(ratio_size, "Invalid Attribute");
     static const uint32_t impossible_value = 10000;
     vector<uint32_t> null_vect (ratio_size, impossible_value);
-    final_ratios.insert( std::pair<  vector <uint32_t> , double > (null_vect, 1) );
-    x_counts.insert(std::pair<  vector <uint32_t> , uint32_t > (null_vect, 0));
-    m_counts.insert(std::pair<  vector <uint32_t> , uint32_t > (null_vect, 0));
 
-    //vector< const cRatioComponent *>::const_iterator p = component_pointer_vector.begin(); 
+    final_ratios.insert(std::pair<vector<uint32_t>, double > (null_vect, 1) );
+    x_counts.insert(std::pair<vector<uint32_t>, uint32_t > (null_vect, 0));
+    m_counts.insert(std::pair<vector<uint32_t>, uint32_t > (null_vect, 0));
+
     p = component_pointer_vector.begin(); 
     for (p; p != component_pointer_vector.end(); ++p ) {
         More_Components(**p);
