@@ -221,42 +221,49 @@ cRatioComponent::prepare(const char * x_file,
     std::cout << "Match unique profile number = " << m_counts.size() << std::endl;
 
     // laplace correction
-    // SPCountsIndex
-    map<SimilarityProfile, uint32_t, SimilarityCompare >::const_iterator p, q;
-
+    SPCountsIndex::const_iterator p, q;
     const uint32_t count_to_consider = 100;
-    // This is probably also a SimilarityProfile
     set <vector<uint32_t>, SimilarityCompare > all_possible;
-    for ( p = x_counts.begin(); p != x_counts.end(); ++p ) {
-        if ( m_counts.find(p->first) == m_counts.end() && p->second < count_to_consider )
+
+    for (p = x_counts.begin(); p != x_counts.end(); ++p) {
+
+        if (m_counts.find(p->first) == m_counts.end() &&
+            p->second < count_to_consider ) {
             continue;
-        else
+        } else {
             all_possible.insert(p->first);
+        }
     }
 
-    for (p = m_counts.begin(); p != m_counts.end(); ++p ) {
-        if ( x_counts.find(p->first) == x_counts.end() && p->second < count_to_consider )
+    for (p = m_counts.begin(); p != m_counts.end(); ++p) {
+
+        if (x_counts.find(p->first) == x_counts.end() &&
+            p->second < count_to_consider ) {
             continue;
-        else
+        } else {
             all_possible.insert(p->first);
+        }
     }
 
     set<vector<uint32_t>, SimilarityCompare >::const_iterator ps = all_possible.begin();
+
     for (; ps != all_possible.end(); ++ps) {
 
         // SPCountsIndex
         map<SimilarityProfile, uint32_t, SimilarityCompare >::iterator p = x_counts.find(*ps);
 
-        if ( p == x_counts.end() )
+        if (x_counts.end() == p) {
             x_counts.insert(std::pair<vector<uint32_t>, uint32_t>(*ps, laplace_base));
-        else
+        } else {
             p->second += laplace_base;
+        }
 
         p = m_counts.find(*ps);
-        if ( p == m_counts.end() )
+        if (m_counts.end() == p) {
             m_counts.insert(std::pair<vector<uint32_t>, uint32_t>(*ps, laplace_base));
-        else
+        } else {
             p->second += laplace_base;
+        }
     }
 
     std::cout << "AFTER LAPLACE CORRECTION:" << std::endl;
