@@ -467,24 +467,24 @@ print_value(uint32_t i) {
   std::cout << "Value: " << i << std::endl;
 }
 
-/*
-void
-print_map(std::map < SimilarityProfile, double, comparator > m) {
 
-  std::map < SimilarityProfile, double, comparator >::const_iterator mi = m.begin();
+void
+print_map(SPRatiosIndex & m) {
+
+  SPRatiosIndex::const_iterator mi = m.begin();
   for (mi; mi != m.end(); ++mi) {
     print_similarity((*mi).first);
     print_value((*mi).second);
   }
 }
-*/
+
 
 void
-print_map(std::map<SimilarityProfile, uint32_t, SimilarityCompare> m) {
+print_map(SPCountsIndex & m) {
 
   std::cout << "From " << __FILE__ << ":" << __LINE__ << std::endl;
 
-  std::map<SimilarityProfile, uint32_t, SimilarityCompare>::const_iterator mi = m.begin();
+  SPCountsIndex::const_iterator mi = m.begin();
   for (mi; mi != m.end(); ++mi) {
     print_similarity((*mi).first);
     print_value((*mi).second);
@@ -495,15 +495,15 @@ print_map(std::map<SimilarityProfile, uint32_t, SimilarityCompare> m) {
 void
 cRatios::More_Components(const cRatioComponent & additional_component) {
 
-    map<SimilarityProfile, double, SimilarityCompare> temp_ratios;
+    SPRatiosIndex temp_ratios;
 
-    map<SimilarityProfile, uint32_t, SimilarityCompare> temp_x_counts, temp_m_counts;
+    SPCountsIndex temp_x_counts, temp_m_counts;
 
-    const vector < uint32_t > & temp_pos_in_rec = additional_component.get_component_positions_in_record();
-    const vector < uint32_t > & positions_in_ratios = additional_component.get_component_positions_in_ratios();
+    const vector<uint32_t> & temp_pos_in_rec = additional_component.get_component_positions_in_record();
+    const vector<uint32_t> & positions_in_ratios = additional_component.get_component_positions_in_ratios();
 
-    for ( uint32_t k = 0; k < positions_in_ratios.size(); ++k ) {
-        attrib_names.at( positions_in_ratios.at(k) ) = Record::get_column_names().at(temp_pos_in_rec.at(k) );
+    for (uint32_t k = 0; k < positions_in_ratios.size(); ++k) {
+        attrib_names.at(positions_in_ratios.at(k)) = Record::get_column_names().at(temp_pos_in_rec.at(k) );
     }
 
     std::cout << "From cRatios::More_Components: final_ratios.size(): " << final_ratios.size()
@@ -639,8 +639,7 @@ create_btree_uid2record_pointer(RecordIndex & uid_tree,
     const uint32_t uid_index = Record::get_index_by_name(uid_name);
     cException_Vector_Data except(uid_name.c_str());
 
-    // RecordIndex
-    map <string, const Record *>::iterator pm;
+    RecordIndex::iterator pm;
     list<Record>::const_iterator record;
     for (record = record_list.begin(); record != record_list.end(); ++record ) {
 
