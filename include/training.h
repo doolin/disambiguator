@@ -23,7 +23,7 @@ typedef std::pair<const Record *, const Record *> RecordPair;
 // These are used from finding "rare" words for building
 // the training match set.
 // Verify: pair < uint local_count, uint global_count >
-typedef std::pair < uint32_t, uint32_t > WordCounts;
+typedef std::pair< uint32_t, uint32_t> WordCounts;
 typedef std::map<std::string, WordCounts> WordCounter;
 
 /**
@@ -91,7 +91,7 @@ private:
 
 public:
 
-    PrintPair(std::ostream & os, const vector < string > & vec_columnnames)
+    PrintPair(std::ostream & os, const vector<string> & vec_columnnames)
         : myos(os), primary_delim(","), secondary_delim( " | "), is_vector(true) {
 
         vector<string>::const_iterator p = vec_columnnames.begin();
@@ -140,7 +140,7 @@ class cBlocking {
 //    friend class cCluster_Info;
 
 private:
-    cBlocking ( const cBlocking &);
+    cBlocking (const cBlocking &);
 
 protected:
 
@@ -163,9 +163,9 @@ protected:
 
     Blocks blocking_data;
 
-    map < const Record *, const string *> record2blockingstring;
+    map<const Record *, const string *> record2blockingstring;
 
-    const vector <string> blocking_column_names;
+    const vector<string> blocking_column_names;
 
     const vector<const StringManipulator*> string_manipulator_pointers;
 
@@ -263,13 +263,13 @@ private:
 
   cBlocking_For_Training::pFunc func;
 
-  const vector < string > & m_equal_indice_names;
+  const vector<string> & m_equal_indice_names;
 
-  const vector < const StringManipulator * > & m_pstringcontrol_equal;
+  const vector<const StringManipulator *> & m_pstringcontrol_equal;
 
-  const vector < string > & m_non_equal_indice_names;
+  const vector<string> & m_non_equal_indice_names;
 
-  const vector < const StringManipulator * > & m_pstringcontrol_nonequal;
+  const vector<const StringManipulator *> & m_pstringcontrol_nonequal;
 
   static pthread_mutex_t iter_mutex;
 
@@ -277,10 +277,10 @@ private:
 
   explicit cWorker_For_Training(map < string, RecordPList>::iterator *inputiter,
       const cBlocking_For_Training::pFunc inputfun,
-      const vector < string > & equal_indice_names,
-      const vector < const StringManipulator * > & pmanipulators_equal,
-      const vector < string > & nonequal_indice_names,
-      const vector < const StringManipulator * > & pmanipulators_nonequal)
+      const vector<string> & equal_indice_names,
+      const vector<const StringManipulator *> & pmanipulators_equal,
+      const vector<string> & nonequal_indice_names,
+      const vector<const StringManipulator *> & pmanipulators_nonequal)
     : piter(inputiter), func(inputfun), m_equal_indice_names(equal_indice_names),
     m_pstringcontrol_equal(pmanipulators_equal),
     m_non_equal_indice_names(nonequal_indice_names),
@@ -303,8 +303,8 @@ void         find_rare_names_v2 (const vector < RecordPList * > &vec_pdest,
 
 uint32_t     create_tset02      (list <RecordPair> &results,
                                  const RecordPList & reclist,
-                                 const vector <string> & column_names,
-                                 const vector < const RecordPList * > & vec_prare_names,
+                                 const vector<string> & column_names,
+                                 const vector< const RecordPList *> & vec_prare_names,
                                  const uint32_t limit );
 
 /**
@@ -312,7 +312,7 @@ uint32_t     create_tset02      (list <RecordPair> &results,
  */
 uint32_t     create_xset03      (list <RecordPair> &results,
                                  //const list <const Record*> & reclist,
-                                 const vector < const RecordPList * > & vec_prare_names,
+                                 const vector <const RecordPList *> & vec_prare_names,
                                  const uint32_t limit );
 
 

@@ -676,6 +676,7 @@ write_rare_words(const cBlocking & fullname,
 
         set<string>::const_iterator pm = in_phrase_wordset.begin();
         for (; pm != in_phrase_wordset.end(); ++pm) {
+
             if ( chosen_words.find(*pm) != chosen_words.end() ) {
                 vec_pdest[kkk]->push_back(*block->second.begin());
                 os << * (*block->second.begin())->get_data_by_index(cindex).at(0) << " , ";
