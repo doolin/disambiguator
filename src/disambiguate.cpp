@@ -552,9 +552,9 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
     match.set_thresholds(threshold_vec);
 
     char xset01[buff_size], tset05[buff_size], ratiofile[buff_size],
-	 matchfile[buff_size], stat_patent[buff_size], stat_personal[buff_size];
+    matchfile[buff_size], stat_patent[buff_size], stat_personal[buff_size];
     char oldmatchfile[buff_size], debug_block_file[buff_size], network_file[buff_size],
-	 postprocesslog[buff_size], prior_save_file[buff_size];
+    postprocesslog[buff_size], prior_save_file[buff_size];
     char roundstr[buff_size];
     sprintf(oldmatchfile,"%s", EngineConfiguration::previous_disambiguation_result.c_str() );
 
@@ -574,23 +574,22 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
     // that clusters will instantiate. Bogus.
     cBlocking_Operation_By_Coauthors blocker_coauthor(all_rec_pointers, num_coauthors_to_group);
 
-    //Reconfigure
     std::cout << "Reconfiguring ..." << std::endl;
     const Reconfigurator_AsianNames corrector_asiannames;
-    std::for_each(all_rec_pointers.begin(), all_rec_pointers.end(), corrector_asiannames);
-    Reconfigurator_Coauthor corrector_coauthor ( blocker_coauthor.get_patent_tree());
-    std::for_each(all_rec_pointers.begin(), all_rec_pointers.end(), corrector_coauthor);
-
+    std::for_each (all_rec_pointers.begin(), all_rec_pointers.end(), corrector_asiannames);
+    Reconfigurator_Coauthor corrector_coauthor (blocker_coauthor.get_patent_tree());
+    std::for_each (all_rec_pointers.begin(), all_rec_pointers.end(), corrector_coauthor);
     std::cout << "Reconfiguration done." << std::endl;
 
     Cluster::set_reference_patent_tree_pointer( blocker_coauthor.get_patent_tree());
 
 
-    vector < string > prev_train_vec;
+    vector<string> prev_train_vec;
     unsigned int firstname_prev_truncation = BlockingConfiguration::firstname_cur_truncation;
     const string module_prefix = "Round ";
 
     string module_name ;
+    // `is_blockingconfig_success` needs to be a boolean
     int is_blockingconfig_success;
 
     while ( true ) {
