@@ -403,6 +403,8 @@ EngineConfiguration::config_engine(const char * filename, std::ostream & os) {
 int
 disambiguate_main(std::string & engineconf, std::string & blockingconf) {
 
+// This is the initial code for running the disambiguations, leave it
+// in until it can be totally factored out.
 /*
     std::cout << std::endl;
     std::cout << "====================== STARTING DISAMBIGUATION ===========================" << std::endl;
@@ -413,11 +415,11 @@ disambiguate_main(std::string & engineconf, std::string & blockingconf) {
     std::cout << "Choose one option: 1. Disambiguation. 2. Calculate Out-Of-Cluster Density. Choice = ";
     std::cin >> choice;
 */
-        int choice = 1;
+    int choice = 1;
 
     string enginefile ;
     string blockingfile ;
-    switch ( choice ) {
+    switch (choice) {
 
     case 1:
         //enginefile = check_file_existence("Disambiguation Engine Configuration.");
@@ -488,7 +490,7 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
     const bool train_stable               = EngineConfiguration::generate_stable_training_sets;
     const bool use_available_ratios       = EngineConfiguration::use_available_ratios_database;
     const string working_dir              = EngineConfiguration::working_dir;
-    const vector < double > threshold_vec = EngineConfiguration::thresholds ;
+    const vector <double> threshold_vec   = EngineConfiguration::thresholds ;
     const unsigned int num_threads        = EngineConfiguration::number_of_threads;
     const vector <string> column_vec      = EngineConfiguration::involved_columns;
     const unsigned int limit              = EngineConfiguration::number_of_training_pairs;
@@ -510,9 +512,8 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
     bool is_success = fetch_records_from_txt(all_records, filename2, column_vec);
     if (not is_success) return 1;
 
-    //std::cout << "Passed reading in csv data..." << std::endl;
 
-    list < const Record *> all_rec_pointers;
+    list<const Record *> all_rec_pointers;
     for (list<Record>::const_iterator p = all_records.begin(); p != all_records.end(); ++p ) {
         all_rec_pointers.push_back(&(*p));
     }

@@ -2,6 +2,8 @@
 #include <string>
 #include <stdlib.h>
 
+#include <getopt.h>
+
 int disambiguate_main(std::string & engineconf, std::string & blockconf);
 
 int
