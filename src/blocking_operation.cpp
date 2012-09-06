@@ -12,15 +12,15 @@
  * class. Look at the header file for more information.
  */
 cBlocking_Operation_Multiple_Column_Manipulate::cBlocking_Operation_Multiple_Column_Manipulate (
-    const vector < const StringManipulator * > & inputvsm, 
-    const vector<string> & columnnames, 
-    const vector < uint32_t > & di ) : vsm(inputvsm), attributes_names(columnnames) {
+    const vector<const StringManipulator *> & inputvsm,
+    const vector<string> & columnnames,
+    const vector < uint32_t > & di) : vsm(inputvsm), attributes_names(columnnames) {
 
-    if ( inputvsm.size() != columnnames.size() )
+    if (inputvsm.size() != columnnames.size())
         throw cException_Other("Critical Error in cBlocking_Operation_Multiple_Column_Manipulate: size of string manipulaters is different from size of columns");
 
-    for ( uint32_t i = 0; i < columnnames.size(); ++i ) {
-        indice.push_back(Record::get_index_by_name( columnnames.at(i)));
+    for (uint32_t i = 0; i < columnnames.size(); ++i) {
+        indice.push_back(Record::get_index_by_name(columnnames.at(i)));
         infoless += delim;
         pdata_indice.push_back( di.at(i));
     }
@@ -62,9 +62,9 @@ cBlocking_Operation_Multiple_Column_Manipulate::extract_blocking_info(const Reco
 
 
 void
-cBlocking_Operation_Multiple_Column_Manipulate::reset_data_indice (const vector < uint32_t > & indice ) {
+cBlocking_Operation_Multiple_Column_Manipulate::reset_data_indice (const vector<uint32_t> & indice) {
 
-    if ( indice.size() != this->pdata_indice.size() )
+    if (indice.size() != this->pdata_indice.size())
         throw cException_Other("Indice size mismatch. cannot reset.");
     else
         this->pdata_indice = indice;
@@ -75,9 +75,11 @@ cBlocking_Operation_Multiple_Column_Manipulate::reset_data_indice (const vector 
  * Aim: to extract a specific blocking string. look at the header file for mor details.
  */
 string cBlocking_Operation_Multiple_Column_Manipulate::extract_column_info (const Record * p, uint32_t flag) const {
-    if ( flag >= indice.size() )
+
+    if (flag >= indice.size())
         throw cException_Other("Flag index error.");
-    return vsm[flag]->manipulate( * p->get_data_by_index(indice[flag]).at( pdata_indice.at(flag)));
+
+    return vsm[flag]->manipulate(*p->get_data_by_index(indice[flag]).at( pdata_indice.at(flag)));
 }
 
 
@@ -94,7 +96,7 @@ cBlocking_Operation_By_Coauthors::cBlocking_Operation_By_Coauthors(
     const ClusterInfo & cluster, const uint32_t coauthors)
     : patent_tree(cSort_by_attrib(cPatent::static_get_class_name())), num_coauthors(coauthors) {
 
-    if ( num_coauthors > 4 ) {
+    if (num_coauthors > 4) {
         std::cout << "================ WARNING =====================" << std::endl;
         std::cout << "Number of coauthors in which cBlocking_Operation_By_Coauthors uses is probably too large. Number of coauthors = " << num_coauthors << std::endl;
         std::cout << "==================END OF WARNING ================" << std::endl;
@@ -103,7 +105,7 @@ cBlocking_Operation_By_Coauthors::cBlocking_Operation_By_Coauthors(
     build_patent_tree(all_rec_pointers);
     build_uid2uinv_tree(cluster);
 
-    for ( uint32_t i = 0; i < num_coauthors; ++i ) {
+    for (uint32_t i = 0; i < num_coauthors; ++i) {
         infoless += cBlocking_Operation::delim;
         infoless += cBlocking_Operation::delim;
     }
@@ -115,7 +117,7 @@ cBlocking_Operation_By_Coauthors::cBlocking_Operation_By_Coauthors(
     const RecordPList & all_rec_pointers, const uint32_t coauthors)
     : patent_tree(cSort_by_attrib(cPatent::static_get_class_name())), num_coauthors(coauthors) {
 
-    if ( num_coauthors > 4 ) {
+    if (num_coauthors > 4) {
         std::cout << "================ WARNING =====================" << std::endl;
         std::cout << "Number of coauthors in which cBlocking_Operation_By_Coauthors uses is probably too large. Number of coauthors = " << num_coauthors << std::endl;
         std::cout << "==================END OF WARNING ================" << std::endl;
@@ -123,7 +125,7 @@ cBlocking_Operation_By_Coauthors::cBlocking_Operation_By_Coauthors(
 
     build_patent_tree(all_rec_pointers);
 
-    for ( uint32_t i = 0; i < num_coauthors; ++i ) {
+    for (uint32_t i = 0; i < num_coauthors; ++i) {
         infoless += cBlocking_Operation::delim + cBlocking_Operation::delim;
         infoless += cBlocking_Operation::delim + cBlocking_Operation::delim;
     }
@@ -149,15 +151,17 @@ cBlocking_Operation_By_Coauthors::build_patent_tree(
     map < const Record *, RecordPList, cSort_by_attrib >::iterator ppatentmap;
 
     RecordPList::const_iterator p = all_rec_pointers.begin();
-    for (; p != all_rec_pointers.end(); ++p ) {
+    for (; p != all_rec_pointers.end(); ++p) {
         ppatentmap = patent_tree.find(*p);
-        if ( ppatentmap == patent_tree.end() ) {
+
+        if (ppatentmap == patent_tree.end()) {
             RecordPList temp ( 1, *p);
-            patent_tree.insert( std::pair < const Record *, RecordPList > (*p, temp) );
+            patent_tree.insert(std::pair<const Record *, RecordPList> (*p, temp));
         }
         else {
             ppatentmap->second.push_back(*p);
         }
+
     }
 }
 
@@ -188,7 +192,7 @@ cBlocking_Operation_By_Coauthors::build_uid2uinv_tree(const ClusterInfo & cluste
 
     std::cout << "Building trees: 1. Unique Record ID to Unique Inventer ID. 2 Unique Inventer ID to Number of holding patents ........" << std::endl;
 
-    map < string, cRecGroup >::const_iterator p = cluster.get_cluster_map().begin();
+    map<string, cRecGroup>::const_iterator p = cluster.get_cluster_map().begin();
     for (; p != cluster.get_cluster_map().end(); ++p) {
 
         cRecGroup::const_iterator q = p->second.begin();
@@ -196,13 +200,13 @@ cBlocking_Operation_By_Coauthors::build_uid2uinv_tree(const ClusterInfo & cluste
 
             const Record * value = q->get_cluster_head().m_delegate;
             map < const Record *, uint32_t >::iterator pcount = uinv2count_tree.find(value);
-            if ( pcount == uinv2count_tree.end() )
+            if (pcount == uinv2count_tree.end())
                 pcount = uinv2count_tree.insert(std::pair<const Record *, uint32_t>(value, 0)).first;
 
-            for ( RecordPList::const_iterator r = q->get_fellows().begin(); r != q->get_fellows().end(); ++r ) {
+            for (RecordPList::const_iterator r = q->get_fellows().begin(); r != q->get_fellows().end(); ++r) {
                 const Record * key = *r;
-                uid2uinv_tree.insert(std::pair< const Record * , const Record *> (key, value ));
-                ++ ( pcount->second);
+                uid2uinv_tree.insert(std::pair<const Record * , const Record *>(key, value ));
+                ++(pcount->second);
                 ++count;
             }
         }
@@ -236,28 +240,28 @@ RecordPList cBlocking_Operation_By_Coauthors::get_topN_coauthors(
     const Record * prec, const uint32_t topN ) const {
 
     const RecordPList & list_alias = patent_tree.find(prec)->second;
-    map < uint32_t, RecordPList > occurrence_map;
+    map<uint32_t, RecordPList> occurrence_map;
     uint32_t cnt = 0;
 
     RecordPList::const_iterator p = list_alias.begin();
     for (; p != list_alias.end(); ++p) {
 
-        if ( *p == prec ) continue;
+        if (*p == prec) continue;
 
-        map < const Record *, const Record * >::const_iterator puid2uiv = uid2uinv_tree.find(*p);
-        if ( puid2uiv == uid2uinv_tree.end() )
+        map<const Record *, const Record *>::const_iterator puid2uiv = uid2uinv_tree.find(*p);
+        if (puid2uiv == uid2uinv_tree.end())
             throw cException_Other("Critical Error: unique record id to unique inventer id tree is incomplete!!");
 
         const Record * coauthor_pointer = puid2uiv->second;
 
-        map < const Record *, uint32_t >::const_iterator puinv2count = uinv2count_tree.find(coauthor_pointer);
+        map<const Record *, uint32_t>::const_iterator puinv2count = uinv2count_tree.find(coauthor_pointer);
 
         if ( puinv2count == uinv2count_tree.end())
             throw cException_Other("Critical Error: unique inventer id to number of holding patents tree is incomplete!!");
 
         const uint32_t coauthor_count = puinv2count->second;
 
-        if (cnt <= topN || coauthor_count > occurrence_map.begin() ->first) {
+        if (cnt <= topN || coauthor_count > occurrence_map.begin()->first) {
 
             map < uint32_t, RecordPList >::iterator poccur = occurrence_map.find (coauthor_count);
             if (poccur == occurrence_map.end()) {
@@ -268,23 +272,24 @@ RecordPList cBlocking_Operation_By_Coauthors::get_topN_coauthors(
                 poccur->second.push_back(coauthor_pointer);
             }
 
-            if ( cnt < topN )
+            if (cnt < topN) {
                 ++cnt;
-            else {
+            } else {
                 map < uint32_t, RecordPList >::iterator pbegin = occurrence_map.begin();
                 pbegin->second.pop_back();
                 if (pbegin->second.empty()) {
                     occurrence_map.erase(pbegin);
                 }
             }
+
         }
     }
 
     //output
     RecordPList ans;
 
-    map < uint32_t, RecordPList>::const_reverse_iterator rp = occurrence_map.rbegin();
-    for (; rp != occurrence_map.rend(); ++rp ) {
+    map<uint32_t, RecordPList>::const_reverse_iterator rp = occurrence_map.rbegin();
+    for (; rp != occurrence_map.rend(); ++rp) {
         ans.insert(ans.end(), rp->second.begin(), rp->second.end());
     }
 
