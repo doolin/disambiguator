@@ -537,13 +537,20 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
 
     //std::cout << "Stable training sets made..." << std::endl;
 
+    // This is a blocking typedef, RecordIndex, ratios.h:21
     map<string, const Record *> uid_dict;
     const string uid_identifier = cUnique_Record_ID::static_get_class_name();
     create_btree_uid2record_pointer(uid_dict, all_records, uid_identifier);
 
     //train patent info
+    // TODO: check to see whether uid_dict is modified.
+    // It looks like uid_dict comes in as const, which means
+    // the patentinfo initialization can be moved to where
+    // it's being used. This will help refactoring.
     cRatioComponent patentinfo(uid_dict, string("Patent") );
 
+    // `record_pointers` are not being used.
+    // TODO: Get rid of this declaration.
     RecordPList record_pointers;
 
     bool matching_mode = true;
@@ -557,12 +564,17 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
     // to where it's being used. This will allow future refactoring.
     char stat_patent[buff_size];
     char stat_personal[buff_size];
-    char oldmatchfile[buff_size], debug_block_file[buff_size], network_file[buff_size],
+    char oldmatchfile[buff_size];
+    char debug_block_file[buff_size];
+    char network_file[buff_size],
     postprocesslog[buff_size], prior_save_file[buff_size];
     char roundstr[buff_size];
     sprintf(oldmatchfile,"%s", EngineConfiguration::previous_disambiguation_result.c_str() );
 
 
+    // TODO: tying a general operation in configuration file to a specific
+    // operation in the implementation is a wrong abstraction. Post-processing
+    // is general, but network_clustering is very specific.
     bool network_clustering = EngineConfiguration::postprocess_after_each_round;
 
     if (debug_mode) network_clustering = false;
@@ -570,6 +582,8 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
     unsigned int round = starting_round;
 
 
+    // TODO: move this declaration to where it's being used, such that it
+    // can be refactored out soon.
     cRatioComponent personalinfo(uid_dict, string("Personal") );
 
     const unsigned int num_coauthors_to_group = 2;
@@ -585,7 +599,7 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
     std::for_each (all_rec_pointers.begin(), all_rec_pointers.end(), corrector_coauthor);
     std::cout << "Reconfiguration done." << std::endl;
 
-    Cluster::set_reference_patent_tree_pointer( blocker_coauthor.get_patent_tree());
+    Cluster::set_reference_patent_tree_pointer(blocker_coauthor.get_patent_tree());
 
     vector<string> prev_train_vec;
     unsigned int firstname_prev_truncation = BlockingConfiguration::firstname_cur_truncation;
@@ -603,6 +617,7 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
         is_blockingconfig_success = BlockingConfiguration::config_blocking(BlockingConfigFile, module_name);
         if (is_blockingconfig_success != 0) break;
 
+        // TODO: Refactor all these into a utility class.
         sprintf(xset01, "%s/xset01_%d.txt", working_dir.c_str(), round);
         sprintf(tset05, "%s/tset05_%d.txt", working_dir.c_str(), round);
         sprintf(ratiofile, "%s/ratio_%d.txt", working_dir.c_str(), round);
@@ -651,7 +666,7 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
                 ;
         }
 
-        cFirstname::set_truncation( firstname_prev_truncation,
+        cFirstname::set_truncation(firstname_prev_truncation,
             BlockingConfiguration::firstname_cur_truncation);
         firstname_prev_truncation = BlockingConfiguration::firstname_cur_truncation;
         match.reset_blocking(*BlockingConfiguration::active_blocker_pointer, oldmatchfile);
