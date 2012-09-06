@@ -593,11 +593,12 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
     int is_blockingconfig_success;
 
     while ( true ) {
+
         sprintf(roundstr, "%d", round);
         module_name = module_prefix + roundstr;
+
         is_blockingconfig_success = BlockingConfiguration::config_blocking(BlockingConfigFile, module_name);
-        if ( is_blockingconfig_success != 0 )
-            break;
+        if (is_blockingconfig_success != 0) break;
 
         sprintf(xset01, "%s/xset01_%d.txt", working_dir.c_str(), round);
         sprintf(tset05, "%s/tset05_%d.txt", working_dir.c_str(), round);
@@ -611,20 +612,19 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
         sprintf(prior_save_file, "%s/prior_saved_%d.txt", working_dir.c_str(), round);
 
 
-        //if ( ! BlockingConfiguration::config_blocking(BlockingConfigFile, module_name) )
-        //    throw cException_Other("Blocking Configuration is not complete!");
-
         Record::activate_comparators_by_name(BlockingConfiguration::active_similarity_attributes);
         //now training
         //match.output_list(record_pointers);
 
         const string training_changable [] = { xset01, tset05 };
-        const vector<string> training_changable_vec (training_changable, training_changable + sizeof(training_changable)/sizeof(string));
+        const vector<string> training_changable_vec (training_changable,
+            training_changable + sizeof(training_changable)/sizeof(string));
 
+        // TODO: Change the switch to an if conditional if (1 == round) {...}
         switch (round) {
             case 1:
             {
-                vector <string> presort_columns;
+                vector<string> presort_columns;
                 StringRemainSame operator_no_change;
                 presort_columns.push_back(cFirstname::static_get_class_name());
                 presort_columns.push_back(cLastname::static_get_class_name());
@@ -632,24 +632,27 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
                 presort_columns.push_back(cStreet::static_get_class_name());
                 presort_columns.push_back(cCity::static_get_class_name());
                 presort_columns.push_back(cCountry::static_get_class_name());
-
                 //presort_columns.push_back(cClass::static_get_class_name());
 
-                const vector < const StringManipulator *> presort_strman( presort_columns.size(), &operator_no_change);
-                const vector < unsigned int > presort_data_indice( presort_columns.size(), 0);
+                const vector<const StringManipulator *> presort_strman(presort_columns.size(),
+                    &operator_no_change);
+                const vector<unsigned int> presort_data_indice(presort_columns.size(), 0);
 
-                const cBlocking_Operation_Multiple_Column_Manipulate presort_blocker(presort_strman, presort_columns, presort_data_indice);
+                const cBlocking_Operation_Multiple_Column_Manipulate presort_blocker(
+                    presort_strman, presort_columns, presort_data_indice);
+
                 match.preliminary_consolidation(presort_blocker, all_rec_pointers);
                 match.output_current_comparision_info(oldmatchfile);
-            }
-            default:
+
+            } default:
                 ;
         }
 
-        cFirstname::set_truncation( firstname_prev_truncation, BlockingConfiguration::firstname_cur_truncation);
+        cFirstname::set_truncation( firstname_prev_truncation,
+            BlockingConfiguration::firstname_cur_truncation);
         firstname_prev_truncation = BlockingConfiguration::firstname_cur_truncation;
+        match.reset_blocking(*BlockingConfiguration::active_blocker_pointer, oldmatchfile);
 
-        match.reset_blocking( * BlockingConfiguration::active_blocker_pointer, oldmatchfile);
         if ( network_clustering ) {
             blocker_coauthor.build_uid2uinv_tree(match);
             ClusterSet cs;
@@ -662,10 +665,10 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
         }
 
 
-        if ( ! use_available_ratios ) {
+        if (!use_available_ratios) {
             const cBlocking_Operation_Multiple_Column_Manipulate & blocker_ref =
-                    dynamic_cast < cBlocking_Operation_Multiple_Column_Manipulate &> (*BlockingConfiguration::active_blocker_pointer);
-            make_changable_training_sets_by_patent( all_rec_pointers, blocker_ref.get_blocking_attribute_names(),
+                    dynamic_cast<cBlocking_Operation_Multiple_Column_Manipulate &> (*BlockingConfiguration::active_blocker_pointer);
+            make_changable_training_sets_by_patent(all_rec_pointers, blocker_ref.get_blocking_attribute_names(),
                     blocker_ref.get_blocking_string_manipulators(), limit,  training_changable_vec);
         }
 
@@ -677,20 +680,20 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
             personalinfo.stats_output(stat_personal);
             patentinfo.stats_output(stat_patent);
 
-            vector < const cRatioComponent *> component_vector;
+            vector <const cRatioComponent *> component_vector;
             component_vector.push_back(&patentinfo);
             component_vector.push_back(&personalinfo);
 
             ratio_pointer = new cRatios (component_vector, ratiofile, all_records.front());
-        }
-        else {
+        } else {
             ratio_pointer = new cRatios (ratiofile);
         }
+
         Cluster::set_ratiomap_pointer(*ratio_pointer);
 
         // now disambiguate
         Record::clean_member_attrib_pool();
-	// ClusterInfo.disambiguate
+        // ClusterInfo.disambiguate
         match.disambiguate(*ratio_pointer, num_threads, debug_block_file, prior_save_file);
         delete ratio_pointer;
         match.output_current_comparision_info(matchfile);
@@ -701,11 +704,12 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
 
 
     // post-processing now
-    if ( is_blockingconfig_success == 2 ) {
+    // `is_blockingconfig_success` should be a boolean
+    // TODO: Find a maintainable way to handle this
+    if (is_blockingconfig_success == 2) {
         std::cout << "Final post processing ... ..." << std::endl;
         one_step_postprocess( all_records, oldmatchfile, ( string(working_dir) + "/final.txt").c_str() );
     }
 
     return 0;
 }
-
