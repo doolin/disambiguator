@@ -490,13 +490,14 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
     const bool train_stable               = EngineConfiguration::generate_stable_training_sets;
     const bool use_available_ratios       = EngineConfiguration::use_available_ratios_database;
     const string working_dir              = EngineConfiguration::working_dir;
-    const vector <double> threshold_vec   = EngineConfiguration::thresholds ;
+    const vector<double> threshold_vec    = EngineConfiguration::thresholds ;
     const unsigned int num_threads        = EngineConfiguration::number_of_threads;
-    const vector <string> column_vec      = EngineConfiguration::involved_columns;
+    const vector<string> column_vec       = EngineConfiguration::involved_columns;
     const unsigned int limit              = EngineConfiguration::number_of_training_pairs;
     bool frequency_adjust_mode            = EngineConfiguration::frequency_adjustment_mode;
     bool debug_mode                       = EngineConfiguration::debug_mode;
     const unsigned int starting_round     = EngineConfiguration::starting_round;
+    const unsigned int buff_size = 512;
 
    /**
     * Read in the CSV file containing consolidated inventor-patent instances.
@@ -505,11 +506,10 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
     * 1. Header row of csv-parseable strings as column labels.
     * 2. Valid comma-separated fields in each row.
     */
-    const unsigned int buff_size = 512;
-    list <Record> all_records;
-    char filename2[buff_size];
-    sprintf(filename2, "%s", EngineConfiguration::source_csv_file.c_str());
-    bool is_success = fetch_records_from_txt(all_records, filename2, column_vec);
+    list<Record> all_records;
+    char recordsfile[buff_size];
+    sprintf(recordsfile, "%s", EngineConfiguration::source_csv_file.c_str());
+    bool is_success = fetch_records_from_txt(all_records, recordsfile, column_vec);
     if (not is_success) return 1;
 
 
@@ -551,8 +551,12 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
     ClusterInfo match (uid_dict, matching_mode, frequency_adjust_mode, debug_mode);
     match.set_thresholds(threshold_vec);
 
-    char xset01[buff_size], tset05[buff_size], ratiofile[buff_size],
-    matchfile[buff_size], stat_patent[buff_size], stat_personal[buff_size];
+    char xset01[buff_size], tset05[buff_size], ratiofile[buff_size];
+    char matchfile[buff_size];
+    // TODO: Move stat_patent declaration further down in the file, closer
+    // to where it's being used. This will allow future refactoring.
+    char stat_patent[buff_size];
+    char stat_personal[buff_size];
     char oldmatchfile[buff_size], debug_block_file[buff_size], network_file[buff_size],
     postprocesslog[buff_size], prior_save_file[buff_size];
     char roundstr[buff_size];
@@ -583,16 +587,15 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
 
     Cluster::set_reference_patent_tree_pointer( blocker_coauthor.get_patent_tree());
 
-
     vector<string> prev_train_vec;
     unsigned int firstname_prev_truncation = BlockingConfiguration::firstname_cur_truncation;
-    const string module_prefix = "Round ";
 
+    const string module_prefix = "Round ";
     string module_name ;
     // `is_blockingconfig_success` needs to be a boolean
     int is_blockingconfig_success;
 
-    while ( true ) {
+    while (true) {
 
         sprintf(roundstr, "%d", round);
         module_name = module_prefix + roundstr;
@@ -653,7 +656,7 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
         firstname_prev_truncation = BlockingConfiguration::firstname_cur_truncation;
         match.reset_blocking(*BlockingConfiguration::active_blocker_pointer, oldmatchfile);
 
-        if ( network_clustering ) {
+        if (network_clustering) {
             blocker_coauthor.build_uid2uinv_tree(match);
             ClusterSet cs;
             //cs.convert_from_ClusterInfo(&match);
