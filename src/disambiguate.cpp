@@ -522,8 +522,9 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
     for (list<Record>::const_iterator p = all_records.begin(); p != all_records.end(); ++p ) {
         all_rec_pointers.push_back(&(*p));
     }
-    cAssignee::configure_assignee(all_rec_pointers);
 
+
+    cAssignee::configure_assignee(all_rec_pointers);
     //std::cout << "Passed configuring assignees..." << std::endl;
 
     //patent stable
@@ -536,14 +537,14 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
 
     //std::cout << "Stable training sets made..." << std::endl;
 
-    map <string, const Record *> uid_dict;
+    map<string, const Record *> uid_dict;
     const string uid_identifier = cUnique_Record_ID::static_get_class_name();
     create_btree_uid2record_pointer(uid_dict, all_records, uid_identifier);
 
     //train patent info
     cRatioComponent patentinfo(uid_dict, string("Patent") );
 
-    list < const Record * > record_pointers;
+    RecordPList record_pointers;
 
     bool matching_mode = true;
 
