@@ -513,7 +513,12 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
     if (not is_success) return 1;
 
 
-    list<const Record *> all_rec_pointers;
+    // There is a function for this elsewhere, and it should be used instead of
+    // the following code. Also, if possible, all the initialization code like
+    // the following should go into an initialization function.
+    // TODO: Refactor
+    // TODO: Find a way to unit test this.
+    RecordPList all_rec_pointers;
     for (list<Record>::const_iterator p = all_records.begin(); p != all_records.end(); ++p ) {
         all_rec_pointers.push_back(&(*p));
     }
