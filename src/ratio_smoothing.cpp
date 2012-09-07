@@ -24,6 +24,7 @@
 
 static const bool should_do_name_range_check = true;
 
+#if 0
 void
 smoothing_inter_extrapolation_cplex(map<SimilarityProfile, double,  SimilarityCompare> & ratio_map,
     const SimilarityProfile & min_sp,
@@ -33,15 +34,18 @@ smoothing_inter_extrapolation_cplex(map<SimilarityProfile, double,  SimilarityCo
     const vector < string > & attribute_names,
     const bool name_range_check,
     const bool backup_quadprog);
+#endif
 
 
 uint32_t
 sp2index ( const SimilarityProfile & sp, const SimilarityProfile & min_sp, const SimilarityProfile & max_sp ) {
 
-    if ( sp.size() != min_sp.size() )
+    if (sp.size() != min_sp.size()) {
         throw cException_Other("Convertion error in smoothing.");
+    }
+
     uint32_t index = 0;
-    for ( uint32_t i = 0; i < sp.size(); ++i ) {
+    for (uint32_t i = 0; i < sp.size(); ++i) {
         if ( sp.at(i) > max_sp.at(i) )
             throw cException_Other("Index range error. > max.");
         if ( sp.at(i) < min_sp.at(i) )
@@ -77,32 +81,6 @@ index2sp (uint32_t index, const SimilarityProfile & min_sp,
     return sp;
 }
 
-
-// This is probably dead code, but it's being called from something which
-// is being linked, so we have to keep it in for now.
-#if 1
-void
-cRatioComponent::smooth() {
-
-    std::cout << "Starting data smoothing..." << std::endl;
-    std::cout << "This step is skipped for cRatioComponent objects." << std::endl;
-    return;
-
-    map<SimilarityProfile, double, SimilarityCompare> temp_map = ratio_map;
-
-    //smoothing( ratio_map, similarity_map, x_counts, m_counts, this->get_attrib_names(), should_do_name_range_check );
-    const SimilarityProfile max = get_max_similarity (this->attrib_names);
-    const SimilarityProfile min ( max.size(), 0);
-    smoothing_inter_extrapolation_cplex(temp_map, min, max, x_counts, m_counts,
-            this->get_attrib_names(), should_do_name_range_check, true);
-
-    map<SimilarityProfile, double, SimilarityCompare>:: iterator p = ratio_map.begin();
-    for (; p != ratio_map.end(); ++p) {
-        p->second = temp_map.find(p->first)->second;
-    }
-    std::cout << "Smoothing done." << std::endl;
-}
-#endif
 
 
 
@@ -400,13 +378,41 @@ smoothing_inter_extrapolation_cplex(
 
 void
 cRatios::smooth() {
+
     std::cout << "Starting ratios smoothing..." << std::endl;
     const SimilarityProfile max = get_max_similarity (this->attrib_names);
-    const SimilarityProfile min ( max.size(), 0 );
+    const SimilarityProfile min (max.size(), 0);
     smoothing_inter_extrapolation_cplex(this->final_ratios, min, max, x_counts, m_counts,
             this->get_attrib_names(), should_do_name_range_check, false);
 
     std::cout << "Ratios smoothing done. " << std::endl;
 }
+
+
+// This is probably dead code, but it's being called from something which
+// is being linked, so we have to keep it in for now.
+#if 1
+void
+cRatioComponent::smooth() {
+
+    std::cout << "Starting data smoothing..." << std::endl;
+    std::cout << "This step is skipped for cRatioComponent objects." << std::endl;
+    return;
+
+    map<SimilarityProfile, double, SimilarityCompare> temp_map = ratio_map;
+
+    //smoothing( ratio_map, similarity_map, x_counts, m_counts, this->get_attrib_names(), should_do_name_range_check );
+    const SimilarityProfile max = get_max_similarity (this->attrib_names);
+    const SimilarityProfile min ( max.size(), 0);
+    smoothing_inter_extrapolation_cplex(temp_map, min, max, x_counts, m_counts,
+            this->get_attrib_names(), should_do_name_range_check, true);
+
+    map<SimilarityProfile, double, SimilarityCompare>:: iterator p = ratio_map.begin();
+    for (; p != ratio_map.end(); ++p) {
+        p->second = temp_map.find(p->first)->second;
+    }
+    std::cout << "Smoothing done." << std::endl;
+}
+#endif
 
 
