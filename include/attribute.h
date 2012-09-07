@@ -1787,12 +1787,14 @@ public:
 
 
 class cUnique_Record_ID : public Attribute_Single_Mode <cUnique_Record_ID> {
+
 public:
-    cUnique_Record_ID(const char * UP(source) = NULL ){}
+    cUnique_Record_ID(const char * UP(source) = NULL) {}
 };
 
 
 class cApplyYear: public Attribute_Single_Mode<cApplyYear> {
+
 public:
     cApplyYear(const char * UP(source) = NULL ){}
     //SHOULD NOT OVERRIDE THE COMPARISON FUNCTION SINCE LONGITUDE
@@ -1817,6 +1819,7 @@ public:
 
 
 class cCity: public Attribute_Single_Mode <cCity> {
+
 public:
     cCity(const char * UP(source) = NULL ) {}
     //SHOULD NOT OVERRIDE THE COMPARISON FUNCTION SINCE LONGITUDE
@@ -1828,7 +1831,7 @@ public:
 
 class cPatent: public Attribute_Single_Mode <cPatent> {
 public:
-    cPatent( const char * UP(source) = NULL){};
+    cPatent( const char * UP(source) = NULL) {};
 };
 
 
@@ -1845,8 +1848,11 @@ template <typename Derived> bool Attribute_Basic<Derived>::bool_comparator_activ
 template <typename Derived> set < string > Attribute_Intermediary<Derived>:: data_pool;
 template <typename Derived> map < Derived, int > Attribute_Intermediary<Derived>:: attrib_pool;
 
-template <typename Derived> pthread_rwlock_t Attribute_Intermediary<Derived>:: attrib_pool_structure_lock = PTHREAD_RWLOCK_INITIALIZER;
-template <typename Derived> pthread_mutex_t Attribute_Intermediary<Derived>:: attrib_pool_count_lock = PTHREAD_MUTEX_INITIALIZER;
+template <typename Derived> pthread_rwlock_t
+Attribute_Intermediary<Derived>::attrib_pool_structure_lock = PTHREAD_RWLOCK_INITIALIZER;
+
+template <typename Derived> pthread_mutex_t
+Attribute_Intermediary<Derived>:: attrib_pool_count_lock = PTHREAD_MUTEX_INITIALIZER;
 
 //declaration ( not definition ) of specialized template
 
