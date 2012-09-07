@@ -224,35 +224,7 @@ public:
  *        Attribute::data. i.e., interactive data, or set_mode.
  */
 
-/**
- *        19. virtual bool is_informative() const:
- *        to check if the attribute data vector is empty, or the string
- *        pointer in the vector points to an empty string. Override if necessary.
- */
 
-/**
- *        20. virtual int clean_attrib_pool() const: to clean the attribute
- *        pool in the template child class. Must be overridden in child classes.
- */
-
-
-/*
- *        21. virtual const Attribute * reduce_attrib(unsigned int n) const:
- *        deduct the counting reference of "this" attribute by n, and return
- *        the pointer to the attribute. Pooling is in the subclass. So has to be overridden.
- */
-
-/**
- *        22. virtual const Attribute * add_attrib( unsigned int n ) const:
- *        add the counting reference of "this" attribute by n, and return
- *        the pointer to the attribute. Pooling is in the subclass. So has to be overridden.
- */
-
-/**
- *        23. virtual const set < const string *> * get_attrib_set_pointer () const:
- *        to get the Set_Mode data, instead of the default vector mode data. An
- *        interface for Set_Mode classes.
- */
 
 /**
  *  ATTENTION:
@@ -260,28 +232,39 @@ public:
  *      USED BY DIFFERENT RECORDS! ONLY ADD NEW OBJECTS AND CHANGE THE
  *      POINTER THROUGH EXISTING INTERFACE, SINCE REFERENCE-COUNTING IS IMPLEMENTED.
  */
-
-
 class Attribute {
 
 private:
+
     friend class Record;
-    friend void attrib_merge ( list < const Attribute **> & l1, list < const Attribute **> & l2 );
-    static vector <string> Derived_Class_Name_Registry;
+
+    friend void attrib_merge (list<const Attribute **> & l1, list<const Attribute **> & l2 );
+
+    static vector<string> Derived_Class_Name_Registry;
+
     virtual void reconfigure_for_interactives( const Record * UP(pRec)) const {};
 
 protected:
 
-    // get the data. should only be used within derived classes. Implemented in child classes.
-    virtual vector < const string * > & get_data_modifiable() = 0;
+    // get the data. should only be used within derived classes.
+    // Implemented in child classes.
+    virtual vector<const string *> & get_data_modifiable() = 0;
 
-    virtual const Attribute * attrib_merge ( const Attribute & UP(rhs)) const { return NULL;};
+    virtual const Attribute * attrib_merge ( const Attribute & UP(rhs)) const {
+      return NULL;
+    };
 
 public:
+
     virtual unsigned int compare(const Attribute & rhs) const = 0 ;
+
     virtual bool split_string(const char* );    //can be overridden if necessary.
+
     Attribute (const char * UP(inputstring)) {}
-    virtual bool operator == ( const Attribute & rhs) const { return this == &rhs ;}
+
+    virtual bool operator == ( const Attribute & rhs) const {
+      return this == &rhs;
+    }
 
     void reset_data(const char * inputstring) {
         get_data_modifiable().clear(); /*data_count.clear(); */
@@ -304,6 +287,7 @@ public:
     };
 
     virtual const string & get_class_name() const = 0;
+
     virtual bool is_comparator_activated() const = 0;
     // critical for using base pointers to create and copy derived class
 
@@ -313,43 +297,91 @@ public:
     }
 
     virtual const Attribute* clone() const = 0; // Polymorphic copy constructor
+
     virtual bool has_checked_interactive_consistency() const = 0;
+
     virtual void print( std::ostream & ) const = 0;
-    void print() const { this->print(std::cout); }
+
+    void print() const {
+      this->print(std::cout);
+    }
+
     virtual const string & get_attrib_group() const = 0;
+
     virtual void check_interactive_consistency(const vector <string> & query_columns) = 0;
+
     virtual unsigned int get_attrib_max_value() const {
       throw cException_Invalid_Function(get_class_name().c_str());
     };
 
 
    /**
-    *        16. virtual int exact_compare( const Attribute & rhs ):
-    *        To check if this attribute is exactly the same as rhs.
-    *        -1 means disabled. 0 = not exact match. 1 = exact match.
+    * 16. virtual int exact_compare( const Attribute & rhs ):
+    * To check if this attribute is exactly the same as rhs.
+    * -1 means disabled. 0 = not exact match. 1 = exact match.
     */
     // -1 means no exact_compare. 0 = not the same 1= exact same
     virtual int exact_compare( const Attribute & UP(rhs)) const {
       return -1;
     }
 
+
     virtual const string * add_string( const string & str ) const = 0;
+
 
     virtual bool operator < ( const Attribute & rhs ) const = 0;
 
+
+   /**
+    * 19. virtual bool is_informative() const:
+    * to check if the attribute data vector is empty, or the string
+    * pointer in the vector points to an empty string. Override
+    * if necessary.
+    */
     virtual bool is_informative() const {
 
         if (get_data().empty() || get_data().at(0)->empty()) return false;
         return true;
     }
 
-    virtual int clean_attrib_pool() const = 0;
-    virtual const Attribute * reduce_attrib(unsigned int n) const = 0;
-    virtual const Attribute * add_attrib( unsigned int n ) const = 0  ;
-    virtual const set < const string *> * get_attrib_set_pointer () const { return NULL; }
-    static void register_class_names( const vector < string > &);
 
-    static int position_in_registry( const string & );
+   /**
+    *        20. virtual int clean_attrib_pool() const: to clean the attribute
+    *        pool in the template child class. Must be overridden in child classes.
+    */
+    virtual int clean_attrib_pool() const = 0;
+
+
+   /**
+    * 21. virtual const Attribute * reduce_attrib(unsigned int n) const:
+    * deduct the counting reference of "this" attribute by n, and return
+    * the pointer to the attribute. Pooling is in the subclass.
+    * So has to be overridden.
+    */
+    virtual const Attribute * reduce_attrib(unsigned int n) const = 0;
+
+
+   /**
+    * 22. virtual const Attribute * add_attrib( unsigned int n ) const:
+    * add the counting reference of "this" attribute by n, and return
+    * the pointer to the attribute. Pooling is in the subclass. So has to be overridden.
+    */
+    // Maybe polysemy, what this should be named is increment_reference_count();
+    virtual const Attribute * add_attrib(unsigned int n) const = 0  ;
+
+
+   /**
+    * 23. virtual const set < const string *> * get_attrib_set_pointer () const:
+    * to get the Set_Mode data, instead of the default vector mode data. An
+    * interface for Set_Mode classes.
+    */
+    virtual const set <const string *> * get_attrib_set_pointer () const {
+      return NULL;
+    }
+
+    static void register_class_names(const vector < string > &);
+
+    static int position_in_registry(const string &);
 
     virtual vector < string > get_interactive_class_names() const = 0;
     virtual void activate_comparator() const = 0;
@@ -360,7 +392,7 @@ public:
 
 
 /*
- * template <Concreate Class Name> Attribute_Intermediary and Attribute_Basic.
+ * template <Concrete Class Name> Attribute_Intermediary and Attribute_Basic.
  * This is the first/second layer child class of Attribute, implementing data pooling
  * and other fundamental concrete class specific methods.
  * Data pooling is implemented using binary trees in STL, i.e.,
@@ -1736,8 +1768,9 @@ public:
     static void configure_assignee( const list <const Record *> & );
 
     unsigned int get_attrib_max_value() const {
-        if ( ! is_comparator_activated() )
+        if (!is_comparator_activated()) {
             Attribute::get_attrib_max_value();
+        }
         return max_value;
     }
 
