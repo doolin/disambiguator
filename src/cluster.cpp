@@ -24,12 +24,12 @@ pthread_mutex_t Worker::iter_lock = PTHREAD_MUTEX_INITIALIZER;
  * Aim: constructor of ClusterInfo objects
  */
 ClusterInfo::ClusterInfo(const map <string, const Record*> & input_uid2record,
-                             const bool input_is_matching,
-                             const bool aum, //frequency adjustment
-                             const bool debug)
-                           : uid2record_pointer(&input_uid2record),
-                             is_matching(input_is_matching),
-                             frequency_adjust_mode(aum), debug_mode(debug) {
+                         const bool input_is_matching,
+                         const bool aum, //frequency adjustment
+                         const bool debug)
+                         : uid2record_pointer(&input_uid2record),
+                           is_matching(input_is_matching),
+                           frequency_adjust_mode(aum), debug_mode(debug) {
 
     std::cout << "A cluster information class is set up." << std::endl;
     std::cout << "FREQUENCY_ADJUST_PRIOR_MODE: " << (frequency_adjust_mode ? "ON" : "OFF")
@@ -40,12 +40,14 @@ ClusterInfo::ClusterInfo(const map <string, const Record*> & input_uid2record,
 /**
  * @return the list of clusters by the pointer of blocking id string.
  */
+// cRecGroup is a list<Cluster>
 const ClusterInfo::cRecGroup &
 ClusterInfo::get_comparision_map(const string * bid) const {
 
-    map < string, cRecGroup >::const_iterator q = cluster_by_block.find(*bid);
-    if ( q == cluster_by_block.end())
+    map<string, cRecGroup>::const_iterator q = cluster_by_block.find(*bid);
+    if (q == cluster_by_block.end()) {
         throw cException_Attribute_Not_In_Tree(bid->c_str());
+    }
     return q->second;
 }
 
@@ -56,9 +58,10 @@ ClusterInfo::get_comparision_map(const string * bid) const {
 ClusterInfo::cRecGroup &
 ClusterInfo::get_comparision_map(const string * bid) {
 
-    map < string, cRecGroup >::iterator q = cluster_by_block.find(*bid);
-    if ( q == cluster_by_block.end())
+    map<string, cRecGroup>::iterator q = cluster_by_block.find(*bid);
+    if (q == cluster_by_block.end()) {
         throw cException_Attribute_Not_In_Tree(bid->c_str());
+    }
     return q->second;
 }
 
@@ -86,23 +89,27 @@ ClusterInfo::is_consistent() const {
 
 
 /**
- * Aim: read the previous disambiguation results into the ClusterInfo object, and block them by "blocker"
+ * Aim: read the previous disambiguation results into
+ * the ClusterInfo object, and block them by "blocker"
+ *
  * Algorithm:
- *         The records saved in the file are in the form of:
- *         Delegate Unique record ID###cohesion_of_the_cluster###member1,member2,member3,...
- *         where ### is the primary delimiter and , is the secondary delimiter. (One can change them if necessary).
+ * The records saved in the file are in the form of:
+ * Delegate Unique record ID###cohesion_of_the_cluster###member1,member2,member3,...
+ * where ### is the primary delimiter and , is the secondary
+ * delimiter. (One can change them if necessary).
  *
- *         So this function clears all the variables in the object first. And then,
- *         For each line in the file:
- *             Read the delegate string, and find its Record pointer.
- *             Use the pointer and the "blocker" to create a blocking string id, b_id.
- *                 For each part of b_id, record its occurrence in the variable "column_stat".
- *             Look up the map "cluster_by_block" for b_id and get the cluster list. If b_id does not exist,
- *             create insert (b_id, an empty cluster list) into cluster_by_block.
- *             Read the rest of the whole line, and create a Cluster object.
- *             Append the Cluster object into the end of the list of clusters.
+ * So this function clears all the variables in the object first. And then,
  *
- *         Finally, use the variable "column_stat" to reset "min_occurrence" and "max_occurence".
+ *  For each line in the file:
+ *      Read the delegate string, and find its Record pointer.
+ *      Use the pointer and the "blocker" to create a blocking string id, b_id.
+ *          For each part of b_id, record its occurrence in the variable "column_stat".
+ *      Look up the map "cluster_by_block" for b_id and get the cluster list. If b_id does not exist,
+ *      create insert (b_id, an empty cluster list) into cluster_by_block.
+ *      Read the rest of the whole line, and create a Cluster object.
+ *      Append the Cluster object into the end of the list of clusters.
+ *
+ *  Finally, use the variable "column_stat" to reset "min_occurrence" and "max_occurence".
  */
 void
 ClusterInfo::retrieve_last_comparision_info ( const cBlocking_Operation & blocker, const char * const past_comparision_file) {
@@ -193,6 +200,7 @@ ClusterInfo::retrieve_last_comparision_info ( const cBlocking_Operation & blocke
 
             unsigned int stat_cnt = 0;
             unsigned int min_stat_cnt = 0;
+
             for ( unsigned int i = 0; i < num_columns; ++i ) {
                 stat_cnt = 0;
                 for ( map<string, unsigned int >::const_iterator p = column_stat.at(i).begin(); p != column_stat.at(i).end(); ++p )
@@ -212,20 +220,33 @@ ClusterInfo::retrieve_last_comparision_info ( const cBlocking_Operation & blocke
                         min_stat_cnt = p->second;
                 min_occurrence.at(i) = min_stat_cnt;
             }
+
             std::cout << past_comparision_file << " has been read into memory as "
-                        <<  ( is_matching ? "MATCHING" : "NON-MATCHING" ) << " reference." << std::endl;
-        }
-        else {
+                      <<  ( is_matching ? "MATCHING" : "NON-MATCHING" )
+                      << " reference." << std::endl;
+        } else {
+
             throw cException_File_Not_Found(past_comparision_file);
         }
-    }
 
-    catch ( const cException_Attribute_Not_In_Tree & except) {
-        std::cout << " Current Unique-identifier Binary Tree, having "<< uid2record_pointer->size()
-        << " elements, is not complete! " << std::endl;
-        std::cout << past_comparision_file << " has unique identifiers that do not show in the current binary tree. " << std::endl;
-        std::cout << except.what() <<  " is missing. ( More unique identifiers are believed to be missing ) ." << std::endl;
-        std::cout << "Also need to check whether each row is in the format of <key, primary_delimiter, cohesion_value, primary delimiter, <<value, secondary_delimiter,>>*n >" << std::endl;
+    } catch (const cException_Attribute_Not_In_Tree & except) {
+
+        std::cout << " Current Unique-identifier Binary Tree, having "
+                  << uid2record_pointer->size()
+                  << " elements, is not complete! " << std::endl;
+
+        std::cout << past_comparision_file
+                  << " has unique identifiers that do not show in the current binary tree."
+                  << std::endl;
+
+        std::cout << except.what()
+                  <<  " is missing. ( More unique identifiers are believed to be missing ) ."
+                  << std::endl;
+
+        std::cout << "Also need to check whether each row is in the format of "
+                  << "<key, primary_delimiter, cohesion_value, primary delimiter, "
+                  << "<<value, secondary_delimiter,>>*n >"
+                  << std::endl;
         throw;
     }
 }
