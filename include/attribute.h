@@ -793,7 +793,7 @@ public:
     static const Derived * static_add_attrib(const Derived & d , const unsigned int n) {
 
         pthread_rwlock_rdlock(& attrib_pool_structure_lock);
-        typename map < Derived, int >::iterator p = attrib_pool.find( d );
+        typename map < Derived, int >::iterator p = attrib_pool.find(d);
         const bool is_end = ( p == attrib_pool.end() );
         pthread_rwlock_unlock(& attrib_pool_structure_lock);
 
@@ -812,7 +812,7 @@ public:
     static const Derived * static_find_attrib (const Derived & d) {
 
         pthread_rwlock_rdlock(& attrib_pool_structure_lock);
-        register typename map < Derived, int >::iterator p = attrib_pool.find( d );
+        register typename map < Derived, int >::iterator p = attrib_pool.find(d);
         if ( p == attrib_pool.end() ) {
             pthread_rwlock_unlock ( & attrib_pool_structure_lock);
             return NULL;
@@ -826,11 +826,11 @@ public:
         pthread_rwlock_rdlock ( & attrib_pool_structure_lock);
         // cppcheck complains about declaring register.
         //register typename map < Derived, int >::iterator p = attrib_pool.find( d );
-        typename map < Derived, int >::iterator p = attrib_pool.find( d );
+        typename map < Derived, int >::iterator p = attrib_pool.find(d);
         const bool is_end = ( p == attrib_pool.end() );
         pthread_rwlock_unlock (& attrib_pool_structure_lock);
 
-        if ( is_end ) {
+        if (is_end) {
           d.print(std::cout);
           throw cException_Other("Error: attrib not exist!");
         }
@@ -851,16 +851,16 @@ public:
         return &(p->first);
     }
 
-    const Attribute* clone() const {
+    const Attribute * clone() const {
         const Derived & alias = dynamic_cast< const Derived & > (*this);
         return static_add_attrib(alias, 1);
     }
 
-    static const string * static_add_string ( const string & str ) {
+    static const string * static_add_string (const string & str) {
 
         //register set< string >::iterator p = data_pool.find(str);
         set< string >::iterator p = data_pool.find(str);
-        if ( p == data_pool.end() ) {
+        if (p == data_pool.end()) {
             p = data_pool.insert(str).first;
         }
         return &(*p);
@@ -870,9 +870,9 @@ public:
 
         // -Wextra complains about register declaration
         //register set< string >::iterator p = data_pool.find(str);
-        set< string >::iterator p = data_pool.find(str);
+        set<string>::iterator p = data_pool.find(str);
 
-        if ( p == data_pool.end() ) {
+        if (p == data_pool.end()) {
             return NULL;
         } else {
             return &(*p);
@@ -982,7 +982,7 @@ public:
  * bool operator < ( const Attribute & rhs ) const:
  * sorting function used in map/set only. should not call explicitly.
  */
-template < typename AttribType >
+template <typename AttribType>
 class Attribute_Vector_Intermediary: public Attribute_Intermediary<AttribType> {
 
     friend class Attribute;
@@ -1054,7 +1054,10 @@ public:
  * or std::cout if outputting to the screen.
  */
 
-template < typename AttribType >
+// Polysemy: In this instance, Set reads like a verb, but is really a noun
+// The confusion here is that in blocking parts of the code, classes are
+// "verbed" in this same way.
+template <typename AttribType>
 class Attribute_Set_Mode : public Attribute_Set_Intermediary < AttribType > {
 
 protected:
