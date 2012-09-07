@@ -15,8 +15,8 @@ INCLUDES = -I/usr/local/include -I$(CPLEXINCLUDE) -I$(CONCERTINCLUDE) -I../inclu
 
 
 
-#CXXFLAGS = -Wall -Wextra -ansi -Wignored-qualifiers # -pedantic # -Wno-unused-parameter  -Wno-uninitialized # -Wno-ignored-qualifiers
-AM_CXXFLAGS = -O0 -g -Wall -Wextra -ansi  -Wformat-zero-length # -pedantic
+#CXXFLAGS =  -Wall -Wextra -ansi -Wignored-qualifiers # -pedantic # -Wno-unused-parameter  -Wno-uninitialized # -Wno-ignored-qualifiers
+AM_CXXFLAGS = -std=c++11 -O0 -g -Wall -Wextra -ansi  -Wformat-zero-length # -pedantic
 #CXXFLAGS = $(AM_CXXFLAGS)
 
 LDADD = ../src/libdisambiguation.a 
@@ -26,7 +26,7 @@ AM_LDFLAGS = $(shell cppunit-config --libs) -L$(CPLEXLIB) -lilocplex -lcplex -L$
 TESTS = distest idtest typedefs record blocking attribute stringmanipulator \
 	comparators comparesimilarities strcmp95 rarenames engineconfig           \
 	abbreviation misspell namecompare jwcmp similarity clusterhead cluster engine \
-	training
+	training ratios
 
 bin_PROGRAMS = $(TESTS)
 
@@ -47,6 +47,7 @@ attribute_SOURCES = test_attribute.cpp
 comparators_SOURCES = test_comparators.cpp
 rarenames_SOURCES = test_rarenames.cpp
 jwcmp_SOURCES = test_jwcmp.cpp
+ratios_SOURCES = test_ratios.cpp
 similarity_SOURCES = test_similarity.cpp
 abbreviation_SOURCES = test_abbreviation.cpp
 misspell_SOURCES = test_misspell.cpp

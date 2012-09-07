@@ -51,6 +51,9 @@ echo "jwcmp test"
 echo "engine test"
 ./engine
 
+echo "ratios test"
+./ratios
+
 echo "integration test"
 source ./integration.sh
 
