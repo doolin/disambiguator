@@ -25,23 +25,23 @@
 static const bool should_do_name_range_check = true;
 
 void
-smoothing_inter_extrapolation_cplex(map < SimilarityProfile, double,  SimilarityCompare  > & ratio_map,
+smoothing_inter_extrapolation_cplex(map<SimilarityProfile, double,  SimilarityCompare> & ratio_map,
     const SimilarityProfile & min_sp,
     const SimilarityProfile & max_sp,
-    const map < SimilarityProfile, unsigned int, SimilarityCompare  > & x_counts,
-    const map < SimilarityProfile, unsigned int, SimilarityCompare  > & m_counts,
+    const map<SimilarityProfile, uint32_t, SimilarityCompare> & x_counts,
+    const map<SimilarityProfile, uint32_t, SimilarityCompare> & m_counts,
     const vector < string > & attribute_names,
     const bool name_range_check,
     const bool backup_quadprog);
 
 
-unsigned int
+uint32_t
 sp2index ( const SimilarityProfile & sp, const SimilarityProfile & min_sp, const SimilarityProfile & max_sp ) {
 
     if ( sp.size() != min_sp.size() )
         throw cException_Other("Convertion error in smoothing.");
-    unsigned int index = 0;
-    for ( unsigned int i = 0; i < sp.size(); ++i ) {
+    uint32_t index = 0;
+    for ( uint32_t i = 0; i < sp.size(); ++i ) {
         if ( sp.at(i) > max_sp.at(i) )
             throw cException_Other("Index range error. > max.");
         if ( sp.at(i) < min_sp.at(i) )
@@ -55,23 +55,32 @@ sp2index ( const SimilarityProfile & sp, const SimilarityProfile & min_sp, const
 
 
 SimilarityProfile
-index2sp ( unsigned int index, const SimilarityProfile & min_sp, const SimilarityProfile & max_sp ) {
+index2sp (uint32_t index, const SimilarityProfile & min_sp,
+    const SimilarityProfile & max_sp) {
 
-    static const unsigned int ulimit = 0 - 1;
-    SimilarityProfile sp ( min_sp );
-    for ( unsigned int i = min_sp.size() - 1 ; i  != ulimit ; --i ) {
-        if ( max_sp.at(i) < min_sp.at(i))
+    static const uint32_t ulimit = 0 - 1;
+    SimilarityProfile sp (min_sp);
+
+    for (uint32_t i = min_sp.size() - 1 ; i  != ulimit ; --i) {
+
+        if (max_sp.at(i) < min_sp.at(i))
             throw cException_Other("Index range error.  max < min.");
-        unsigned int t = max_sp.at(i) - min_sp.at(i) + 1 ;
+
+        uint32_t t = max_sp.at(i) - min_sp.at(i) + 1 ;
         sp.at(i) += index % t;
         index /= t;
     }
-    if ( index >=1 )
+
+    if (index >=1)
         throw cException_Other("Index range error.");
+
     return sp;
 }
 
 
+// This is probably dead code, but it's being called from something which
+// is being linked, so we have to keep it in for now.
+#if 1
 void
 cRatioComponent::smooth() {
 
@@ -79,18 +88,21 @@ cRatioComponent::smooth() {
     std::cout << "This step is skipped for cRatioComponent objects." << std::endl;
     return;
 
-    map < SimilarityProfile, double,  SimilarityCompare  > temp_map = ratio_map;
+    map<SimilarityProfile, double, SimilarityCompare> temp_map = ratio_map;
+
     //smoothing( ratio_map, similarity_map, x_counts, m_counts, this->get_attrib_names(), should_do_name_range_check );
     const SimilarityProfile max = get_max_similarity (this->attrib_names);
-    const SimilarityProfile min ( max.size(), 0 );
+    const SimilarityProfile min ( max.size(), 0);
     smoothing_inter_extrapolation_cplex(temp_map, min, max, x_counts, m_counts,
             this->get_attrib_names(), should_do_name_range_check, true);
-    for ( map < SimilarityProfile, double,  SimilarityCompare  >:: iterator p = ratio_map.begin();
-            p != ratio_map.end(); ++p ) {
+
+    map<SimilarityProfile, double, SimilarityCompare>:: iterator p = ratio_map.begin();
+    for (; p != ratio_map.end(); ++p) {
         p->second = temp_map.find(p->first)->second;
     }
     std::cout << "Smoothing done." << std::endl;
 }
+#endif
 
 
 void
@@ -105,11 +117,13 @@ cRatios::smooth() {
 }
 
 
-vector < SimilarityProfile >
+vector<SimilarityProfile>
 find_lesser_neighbour(const SimilarityProfile & sp, const SimilarityProfile & min_sp) {
 
-    vector < SimilarityProfile > vs;
-    for ( unsigned int i = 0; i < sp.size(); ++i ) {
+    vector<SimilarityProfile> vs;
+
+    for (uint32_t i = 0; i < sp.size(); ++i) {
+
         if ( min_sp.at(i) > sp.at(i) )
             throw cException_Other("Similarity input error: sp < min.");
         else if ( min_sp.at(i) == sp.at(i))
@@ -124,11 +138,13 @@ find_lesser_neighbour(const SimilarityProfile & sp, const SimilarityProfile & mi
 }
 
 
-vector < SimilarityProfile >
-find_greater_neighbour( const SimilarityProfile & sp, const SimilarityProfile & max_sp) {
+vector<SimilarityProfile>
+find_greater_neighbour(const SimilarityProfile & sp, const SimilarityProfile & max_sp) {
 
-    vector < SimilarityProfile > vs;
-    for ( unsigned int i = 0; i < sp.size(); ++i ) {
+    vector<SimilarityProfile> vs;
+
+    for (uint32_t i = 0; i < sp.size(); ++i) {
+
         if ( max_sp.at(i) < sp.at(i) )
             throw cException_Other("Similarity input error: sp > max.");
         else if ( max_sp.at(i) == sp.at(i))
@@ -143,18 +159,20 @@ find_greater_neighbour( const SimilarityProfile & sp, const SimilarityProfile & 
 }
 
 
-vector < std::pair < SimilarityProfile, SimilarityProfile> >
+vector<std::pair<SimilarityProfile, SimilarityProfile> >
 find_neighbours(const SimilarityProfile & sp,
                 const SimilarityProfile & min_sp,
                 const SimilarityProfile & max_sp) {
 
-    vector < std::pair < SimilarityProfile, SimilarityProfile> > vs;
-    for ( unsigned int i = 0; i < sp.size(); ++i ) {
-        if ( min_sp.at(i) > sp.at(i) )
+    vector<std::pair<SimilarityProfile, SimilarityProfile> > vs;
+
+    for (uint32_t i = 0; i < sp.size(); ++i) {
+
+        if (min_sp.at(i) > sp.at(i))
             throw cException_Other("Similarity input error: sp < min.");
-        else if ( max_sp.at(i) < sp.at(i) )
+        else if (max_sp.at(i) < sp.at(i))
             throw cException_Other("Similarity input error: sp > max.");
-        else if ( min_sp.at(i) == sp.at(i) || max_sp.at(i) == sp.at(i) )
+        else if (min_sp.at(i) == sp.at(i) || max_sp.at(i) == sp.at(i))
             continue;
         else {
             SimilarityProfile templess (sp), tempgreat(sp);
@@ -168,19 +186,19 @@ find_neighbours(const SimilarityProfile & sp,
 
 
 double
-get_weight (const unsigned int x_count, const unsigned int m_count) {
+get_weight (const uint32_t x_count, const uint32_t m_count) {
 
     return 1.0 * x_count + 1.0 * m_count;
 }
 
 
 void
-smoothing_inter_extrapolation_cplex(map < SimilarityProfile, double, SimilarityCompare > & ratio_map,
+smoothing_inter_extrapolation_cplex(map<SimilarityProfile, double, SimilarityCompare> & ratio_map,
     const SimilarityProfile & min_sp,
     const SimilarityProfile & max_sp,
-    const map < SimilarityProfile, unsigned int, SimilarityCompare  > & x_counts,
-    const map < SimilarityProfile, unsigned int, SimilarityCompare  > & m_counts,
-    const vector < string > & attribute_names,
+    const map<SimilarityProfile, uint32_t, SimilarityCompare> & x_counts,
+    const map<SimilarityProfile, uint32_t, SimilarityCompare> & m_counts,
+    const vector<string> & attribute_names,
     const bool name_range_check,
     const bool backup_quadprog ) {
 
@@ -194,32 +212,32 @@ smoothing_inter_extrapolation_cplex(map < SimilarityProfile, double, SimilarityC
     if ( min_sp.size() != max_sp.size() )
         throw cException_Other("Minimum similarity profile and Maximum similarity profile are not consistent.");
 
-    unsigned int total_nodes = 1;
-    const unsigned int overflow_check = 0 - 1;
+    uint32_t total_nodes = 1;
+    const uint32_t overflow_check = 0 - 1;
 
-    for ( unsigned int i = 0; i < min_sp.size(); ++i ) {
+    for ( uint32_t i = 0; i < min_sp.size(); ++i ) {
         if ( max_sp.at(i) < min_sp.at(i) )
             throw cException_Other("Entry error: max < min.");
-        unsigned int t = max_sp.at(i) - min_sp.at(i) + 1;
+        uint32_t t = max_sp.at(i) - min_sp.at(i) + 1;
         if ( total_nodes >= overflow_check / t )
-            throw cException_Other ("Size of all the similarity profiles exceeds the allowed limit ( unsigned int ).");
+            throw cException_Other ("Size of all the similarity profiles exceeds the allowed limit ( uint32_t ).");
         else {
             total_nodes *= t;
         }
     }
 
-    unsigned int total_possible_inequality = 0;
-    unsigned int total_equality = 0;
-    for ( unsigned int i = 0; i < min_sp.size(); ++i ) {
-        unsigned int t = max_sp.at(i) - min_sp.at(i) + 1;
-        unsigned int temp = total_nodes - total_nodes/t;
+    uint32_t total_possible_inequality = 0;
+    uint32_t total_equality = 0;
+    for ( uint32_t i = 0; i < min_sp.size(); ++i ) {
+        uint32_t t = max_sp.at(i) - min_sp.at(i) + 1;
+        uint32_t temp = total_nodes - total_nodes/t;
 
         if ( total_possible_inequality > overflow_check - temp )
-            throw cException_Other ("Size of all inequality exceeds the allowed limit ( unsigned int ).");
+            throw cException_Other ("Size of all inequality exceeds the allowed limit ( uint32_t ).");
         else {
             total_possible_inequality += temp;
             if ( temp ) {
-                unsigned int temp2 = temp - total_nodes/t;
+                uint32_t temp2 = temp - total_nodes/t;
                 total_equality += temp2;
             }
         }
@@ -246,7 +264,7 @@ smoothing_inter_extrapolation_cplex(map < SimilarityProfile, double, SimilarityC
         IloRangeArray con(env);
 
         //configuring variables
-        for ( unsigned int j = 0 ; j < total_nodes; ++j )
+        for ( uint32_t j = 0 ; j < total_nodes; ++j )
             var.add ( IloNumVar(env, xmin, xmax, ILOFLOAT));
 
         //configuring the object
@@ -256,7 +274,7 @@ smoothing_inter_extrapolation_cplex(map < SimilarityProfile, double, SimilarityC
 
             const double log_val = log ( cpm->second);
             const double wt =  get_weight( x_counts.find (cpm->first)->second , m_counts.find (cpm->first)->second ) ;
-            const unsigned int k = sp2index( cpm->first, min_sp, max_sp);
+            const uint32_t k = sp2index( cpm->first, min_sp, max_sp);
             const double quad_coef = wt;
             target += quad_coef * var[k] * var[k];
             const double line_coef = ( - 2.0 ) * log_val * wt;
@@ -267,33 +285,37 @@ smoothing_inter_extrapolation_cplex(map < SimilarityProfile, double, SimilarityC
         model.add(obj);
 
         //configuring constraints
-        for ( unsigned int i = 0 ; i < total_nodes; ++i ) {
+        for ( uint32_t i = 0 ; i < total_nodes; ++i ) {
             const SimilarityProfile the_sp = index2sp(i, min_sp, max_sp );
 
             //equality constraints
-            vector < std::pair < SimilarityProfile, SimilarityProfile> > neighbours
-                = find_neighbours( the_sp, min_sp, max_sp );
-            for ( vector < std::pair < SimilarityProfile, SimilarityProfile> >::const_iterator ci = neighbours.begin();
-                    ci != neighbours.end(); ++ci ) {
+            vector<std::pair<SimilarityProfile, SimilarityProfile> > neighbours
+                = find_neighbours(the_sp, min_sp, max_sp);
 
-                const unsigned int lesser = sp2index( ci->first, min_sp, max_sp );
-                const unsigned int greater = sp2index ( ci->second, min_sp, max_sp);
-                if ( lesser >= i )
+            vector<std::pair<SimilarityProfile, SimilarityProfile> >::const_iterator ci = neighbours.begin();
+            for (; ci != neighbours.end(); ++ci) {
+
+                const uint32_t lesser = sp2index(ci->first, min_sp, max_sp);
+                const uint32_t greater = sp2index (ci->second, min_sp, max_sp);
+
+                if (lesser >= i)
                     throw cException_Other("Index sequence error. less > this.");
-                if ( greater <= i )
+
+                if (greater <= i)
                     throw cException_Other("Index sequence error. greater < this.");
 
-                IloRange rg ( env, - equ_delta, 2.0 * var[i] - var[lesser] - var[greater] , equ_delta );
-                con.add (  rg );
+                IloRange rg (env, - equ_delta, 2.0 * var[i] - var[lesser] - var[greater] , equ_delta);
+                con.add (rg);
 
             }
 
             //inequality constraints
-            vector <SimilarityProfile> greater_neighbours ( find_greater_neighbour ( the_sp, max_sp));
-            for ( vector < SimilarityProfile >::const_iterator cc = greater_neighbours.begin();
-                    cc != greater_neighbours.end(); ++cc ) {
-                const unsigned int gg = sp2index ( *cc, min_sp, max_sp );
-                if ( gg <= i )
+            vector<SimilarityProfile> greater_neighbours (find_greater_neighbour (the_sp, max_sp));
+
+            vector<SimilarityProfile>::const_iterator cc = greater_neighbours.begin();
+            for (; cc != greater_neighbours.end(); ++cc) {
+                const uint32_t gg = sp2index ( *cc, min_sp, max_sp );
+                if (gg <= i)
                     throw cException_Other("Index sequence error. greater < this.");
 
                 con.add ( var[gg] - var[i] >= 0);
@@ -318,7 +340,7 @@ smoothing_inter_extrapolation_cplex(map < SimilarityProfile, double, SimilarityC
 
         //save the results
 
-        for ( unsigned int i = 0; i < total_nodes; ++i ) {
+        for (uint32_t i = 0; i < total_nodes; ++i) {
             SimilarityProfile sp = index2sp(i, min_sp, max_sp);
             const double log_r = result[i];
             ratio_map[sp] = exp(log_r);
