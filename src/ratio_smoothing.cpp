@@ -24,7 +24,7 @@
 
 static const bool should_do_name_range_check = true;
 
-
+// TODO: unit test
 uint32_t
 sp2index (const SimilarityProfile & sp, const SimilarityProfile & min_sp,
     const SimilarityProfile & max_sp) {
@@ -47,6 +47,7 @@ sp2index (const SimilarityProfile & sp, const SimilarityProfile & min_sp,
 }
 
 
+// TODO: unit test
 SimilarityProfile
 index2sp (uint32_t index, const SimilarityProfile & min_sp,
     const SimilarityProfile & max_sp) {
@@ -351,24 +352,28 @@ smoothing_inter_extrapolation_cplex(
         //configuring the object
         IloExpr target(env);
 
-        //map<SimilarityProfile, double,  SimilarityCompare>::const_iterator cpm = ratio_map.begin();
         SPRatiosIndex::const_iterator cpm = ratio_map.begin();
-        for (; cpm != ratio_map.end(); ++cpm ) {
+        for (; cpm != ratio_map.end(); ++cpm) {
 
-            const double log_val = log ( cpm->second);
-            const double wt =  get_weight( x_counts.find (cpm->first)->second , m_counts.find (cpm->first)->second ) ;
-            const uint32_t k = sp2index( cpm->first, min_sp, max_sp);
+            const double log_val = log (cpm->second);
+            // Refactor the following arguments into variables which are
+            // 1. explanatory, and 2. can be checked, and 3. makes the
+            // line length shorter.
+            const double wt =  get_weight(x_counts.find (cpm->first)->second , m_counts.find (cpm->first)->second);
+            const uint32_t k = sp2index(cpm->first, min_sp, max_sp);
+            // TODO: The following ought to be refactored into a function.
             const double quad_coef = wt;
             target += quad_coef * var[k] * var[k];
-            const double line_coef = ( - 2.0 ) * log_val * wt;
+            const double line_coef = (-2.0) * log_val * wt;
             target += line_coef * var[k];
         }
 
-        IloObjective obj ( env, target, IloObjective::Minimize);
+        IloObjective obj (env, target, IloObjective::Minimize);
         model.add(obj);
 
         //configuring constraints
-        for ( uint32_t i = 0 ; i < total_nodes; ++i ) {
+        for (uint32_t i = 0 ; i < total_nodes; ++i) {
+
             const SimilarityProfile the_sp = index2sp(i, min_sp, max_sp);
 
             //equality constraints
@@ -398,11 +403,14 @@ smoothing_inter_extrapolation_cplex(
 
             vector<SimilarityProfile>::const_iterator cc = greater_neighbours.begin();
             for (; cc != greater_neighbours.end(); ++cc) {
-                const uint32_t gg = sp2index ( *cc, min_sp, max_sp );
-                if (gg <= i)
-                    throw cException_Other("Index sequence error. greater < this.");
 
-                con.add ( var[gg] - var[i] >= 0);
+                const uint32_t gg = sp2index ( *cc, min_sp, max_sp );
+
+                if (gg <= i) {
+                    throw cException_Other("Index sequence error. greater < this.");
+                }
+
+                con.add (var[gg] - var[i] >= 0);
             }
         }
         model.add(con);
