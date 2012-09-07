@@ -227,11 +227,14 @@ compute_total_nodes(const SimilarityProfile & min_sp,
 
 void
 smoothing_inter_extrapolation_cplex(
-    map<SimilarityProfile, double, SimilarityCompare> & ratio_map,
+    //map<SimilarityProfile, double, SimilarityCompare> & ratio_map,
+    SPRatiosIndex & ratio_map,
     const SimilarityProfile & min_sp,
     const SimilarityProfile & max_sp,
-    const map<SimilarityProfile, uint32_t, SimilarityCompare> & x_counts,
-    const map<SimilarityProfile, uint32_t, SimilarityCompare> & m_counts,
+    //const map<SimilarityProfile, uint32_t, SimilarityCompare> & x_counts,
+    //const map<SimilarityProfile, uint32_t, SimilarityCompare> & m_counts,
+    const SPCountsIndex & x_counts,
+    const SPCountsIndex & m_counts,
     const vector<string> & attribute_names,
     const bool name_range_check,
     const bool backup_quadprog ) {
