@@ -183,7 +183,7 @@ compute_total_nodes(const SimilarityProfile & min_sp,
 
 // TODO: Figure out how to overflow this thing for a unit test.
 uint32_t
-check_equality_size(const SimilarityProfile & min_sp,
+check_overflow(const SimilarityProfile & min_sp,
                     const SimilarityProfile & max_sp,
                     uint32_t total_nodes) {
 
@@ -231,6 +231,18 @@ check_counts_consistency(const SPCountsIndex & x_counts,
 }
 
 
+void
+check_size_consistency(const SimilarityProfile & min_sp,
+                       const SimilarityProfile & max_sp) {
+
+    // TODO: Refactor min and max sp size checks into the
+    // compute_total_nodes function, then catch dissimilar
+    // sizes in the unit testing.
+    if (min_sp.size() != max_sp.size()) {
+        throw cException_Other("Minimum & maximum similarity profile size difference.");
+    }
+}
+
 
 void
 smoothing_inter_extrapolation_cplex(
@@ -243,7 +255,7 @@ smoothing_inter_extrapolation_cplex(
     const bool name_range_check,
     const bool backup_quadprog ) {
 
-#if 1
+#if 0
   check_counts_consistency(x_counts, m_counts, ratio_map);
 #else
     // TODO: Refactor x & m count checks
@@ -256,12 +268,16 @@ smoothing_inter_extrapolation_cplex(
     }
 #endif
 
+#if 0
+    check_size_consistency(min_sp, max_sp);
+#else
     // TODO: Refactor min and max sp size checks into the
     // compute_total_nodes function, then catch dissimilar
     // sizes in the unit testing.
     if (min_sp.size() != max_sp.size()) {
         throw cException_Other("Minimum & maximum similarity profile size difference.");
     }
+#endif
 
     //first, build all the possible similarity profiles.
     // TODO: Refactor this into `compute_total_nodes`
@@ -285,7 +301,7 @@ smoothing_inter_extrapolation_cplex(
 
 
 #if 0
-    check_equality_size(min_sp, max_sp, total_nodes);
+    check_overflow(min_sp, max_sp, total_nodes);
 #else
     // TODO: Should be able to refactor this out.
     uint32_t total_possible_inequality = 0;
