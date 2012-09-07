@@ -24,9 +24,7 @@ public:
   * weight.
   */
   void test_rarename() {
-
     //find_rare_names_v2(vec_pdest, source);
-    CPPUNIT_ASSERT(1 == 1);
   }
 
   void test_choose_rare_words() {
