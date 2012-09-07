@@ -399,7 +399,7 @@ public:
 };
 
 
-vector<uint32_t> get_max_similarity                   (const vector < string > & attrib_names) ;
+vector<uint32_t> get_max_similarity                   (const vector < string > & attrib_names);
 
 const Record *   retrieve_record_pointer_by_unique_id (const string & uid,
                                                        const RecordIndex & uid_tree);
