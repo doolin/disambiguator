@@ -147,6 +147,8 @@ get_weight (const uint32_t x_count, const uint32_t m_count) {
 }
 
 
+// TODO: Refactor common code from compute_total_nodes
+// and check_equality_size.
 uint32_t
 compute_total_nodes(const SimilarityProfile & min_sp,
                     const SimilarityProfile & max_sp) {
@@ -179,8 +181,9 @@ compute_total_nodes(const SimilarityProfile & min_sp,
 }
 
 
+// TODO: Figure out how to overflow this thing for a unit test.
 uint32_t
-compute_total_nodes(const SimilarityProfile & min_sp,
+check_equality_size(const SimilarityProfile & min_sp,
                     const SimilarityProfile & max_sp,
                     uint32_t total_nodes) {
 
@@ -194,7 +197,7 @@ compute_total_nodes(const SimilarityProfile & min_sp,
         uint32_t temp = total_nodes - total_nodes/t;
 
         if (total_possible_inequality > overflow_check - temp) {
-            throw cException_Other ("Size of all inequality exceeds the allowed limit ( uint32_t ).");
+            throw cException_Other ("Inequality count exceeds limit for uint32_t.");
         } else {
 
             total_possible_inequality += temp;
@@ -212,6 +215,22 @@ compute_total_nodes(const SimilarityProfile & min_sp,
 }
 
 
+void
+check_counts_consistency(const SPCountsIndex & x_counts,
+                         const SPCountsIndex & m_counts,
+                         const SPRatiosIndex & ratio_map) {
+
+    // TODO: Refactor x & m count checks
+    if (x_counts.size() != m_counts.size()) {
+        throw cException_Other("x_counts and m_counts are not of the same size");
+    }
+
+    if (x_counts.size() != ratio_map.size()) {
+        throw cException_Other("x_counts and ratio_map are not of the same size");
+    }
+}
+
+
 
 void
 smoothing_inter_extrapolation_cplex(
@@ -224,6 +243,9 @@ smoothing_inter_extrapolation_cplex(
     const bool name_range_check,
     const bool backup_quadprog ) {
 
+#if 1
+  check_counts_consistency(x_counts, m_counts, ratio_map);
+#else
     // TODO: Refactor x & m count checks
     if (x_counts.size() != m_counts.size()) {
         throw cException_Other("x_counts and m_counts are not of the same size");
@@ -232,6 +254,7 @@ smoothing_inter_extrapolation_cplex(
     if (x_counts.size() != ratio_map.size()) {
         throw cException_Other("x_counts and ratio_map are not of the same size");
     }
+#endif
 
     // TODO: Refactor min and max sp size checks into the
     // compute_total_nodes function, then catch dissimilar
@@ -262,7 +285,7 @@ smoothing_inter_extrapolation_cplex(
 
 
 #if 0
-    check_inequality_size(min_sp, max_sp, total_nodes);
+    check_equality_size(min_sp, max_sp, total_nodes);
 #else
     // TODO: Should be able to refactor this out.
     uint32_t total_possible_inequality = 0;
