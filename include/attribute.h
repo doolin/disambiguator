@@ -1539,21 +1539,29 @@ public:
 
 
 class cMiddlename : public Attribute_Single_Mode <cMiddlename> {
+
 public:
     static const unsigned int max_value = 3;
 
     cMiddlename(const char * UP(source) = NULL ) {}
 
-    //override to allow customization.
     unsigned int compare(const Attribute & rhs) const;
+
     bool split_string(const char*);
+
     unsigned int get_attrib_max_value() const {
-        if ( ! is_comparator_activated() )
+
+        if (!is_comparator_activated()) {
             Attribute::get_attrib_max_value();
+        }
         return max_value;
     }
-    int exact_compare( const Attribute & rhs ) const { return this == & rhs; }
+
+    int exact_compare(const Attribute & rhs) const {
+      return this == & rhs;
+    }
 };
+
 
 class cLatitude_Data : public Attribute_Single_Mode<cLatitude_Data> {};
 
@@ -1649,12 +1657,14 @@ public:
     cCountry(const char * UP(source) = NULL ) {}
 
     unsigned int get_attrib_max_value() const {
-        if ( ! is_comparator_activated() )
+
+        if (!is_comparator_activated()) {
             Attribute::get_attrib_max_value();
+        }
         return max_value;
     }
 
-    int exact_compare( const Attribute & rhs ) const {
+    int exact_compare(const Attribute & rhs) const {
       return this == & rhs;
     }
 
