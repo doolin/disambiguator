@@ -24,18 +24,6 @@
 
 static const bool should_do_name_range_check = true;
 
-#if 0
-void
-smoothing_inter_extrapolation_cplex(map<SimilarityProfile, double,  SimilarityCompare> & ratio_map,
-    const SimilarityProfile & min_sp,
-    const SimilarityProfile & max_sp,
-    const map<SimilarityProfile, uint32_t, SimilarityCompare> & x_counts,
-    const map<SimilarityProfile, uint32_t, SimilarityCompare> & m_counts,
-    const vector < string > & attribute_names,
-    const bool name_range_check,
-    const bool backup_quadprog);
-#endif
-
 
 uint32_t
 sp2index ( const SimilarityProfile & sp, const SimilarityProfile & min_sp, const SimilarityProfile & max_sp ) {
