@@ -202,16 +202,19 @@ smoothing_inter_extrapolation_cplex(map<SimilarityProfile, double, SimilarityCom
     const bool name_range_check,
     const bool backup_quadprog ) {
 
+    // TODO: Refactor x & m count checks
     if ( x_counts.size() != m_counts.size() )
         throw cException_Other("x_counts and m_counts are not of the same size");
 
     if ( x_counts.size() != ratio_map.size() )
         throw cException_Other("x_counts and ratio_map are not of the same size");
 
-    //first, build all the possible similarity profiles.
+    // TODO: Refactor min and max sp size checks
     if ( min_sp.size() != max_sp.size() )
         throw cException_Other("Minimum similarity profile and Maximum similarity profile are not consistent.");
 
+    //first, build all the possible similarity profiles.
+    // TODO: Refactor this into `compute_total_nodes`
     uint32_t total_nodes = 1;
     const uint32_t overflow_check = 0 - 1;
 
@@ -226,9 +229,11 @@ smoothing_inter_extrapolation_cplex(map<SimilarityProfile, double, SimilarityCom
         }
     }
 
+    // TODO: Should be able to refactor this out.
     uint32_t total_possible_inequality = 0;
     uint32_t total_equality = 0;
-    for ( uint32_t i = 0; i < min_sp.size(); ++i ) {
+
+    for (uint32_t i = 0; i < min_sp.size(); ++i) {
         uint32_t t = max_sp.at(i) - min_sp.at(i) + 1;
         uint32_t temp = total_nodes - total_nodes/t;
 
@@ -247,10 +252,9 @@ smoothing_inter_extrapolation_cplex(map<SimilarityProfile, double, SimilarityCom
               << total_nodes << " similarity profiles, "
               << total_equality << " equalities and "
               << total_possible_inequality << " inequalities in all." << std::endl;
+///// Refactor above^^^^^^
 
     std::cout << "Starting Quadratic Programming. ( Take the logarithm ) ..." << std::endl;
-
-    //exit(0);
 
 #if HAVE_CPLEX
     IloEnv env;
@@ -264,8 +268,9 @@ smoothing_inter_extrapolation_cplex(map<SimilarityProfile, double, SimilarityCom
         IloRangeArray con(env);
 
         //configuring variables
-        for ( uint32_t j = 0 ; j < total_nodes; ++j )
-            var.add ( IloNumVar(env, xmin, xmax, ILOFLOAT));
+        for (uint32_t j = 0 ; j < total_nodes; ++j) {
+            var.add (IloNumVar(env, xmin, xmax, ILOFLOAT));
+        }
 
         //configuring the object
         IloExpr target(env);
