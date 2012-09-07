@@ -16,7 +16,7 @@ extern "C" {
 const char * const ClusterInfo::primary_delim = "###";
 const char * const ClusterInfo::secondary_delim = ",";
 
-unsigned int Worker::count = 0;
+uint32_t Worker::count = 0;
 pthread_mutex_t Worker::iter_lock = PTHREAD_MUTEX_INITIALIZER;
 
 
@@ -76,7 +76,7 @@ ClusterInfo::get_comparision_map(const string * bid) {
 bool
 ClusterInfo::is_consistent() const {
 
-    unsigned int temp_total = 0;
+    uint32_t temp_total = 0;
     for ( map < string, cRecGroup >::const_iterator cp = cluster_by_block.begin(); cp != cluster_by_block.end(); ++cp ) {
         for ( cRecGroup::const_iterator cq = cp->second.begin(); cq != cp ->second.end(); ++ cq ) {
             temp_total += cq->get_fellows().size();
@@ -115,17 +115,17 @@ void
 ClusterInfo::retrieve_last_comparision_info ( const cBlocking_Operation & blocker, const char * const past_comparision_file) {
 
     try {
-        const unsigned int num_columns = blocker.num_involved_columns();
+        const uint32_t num_columns = blocker.num_involved_columns();
 
         std::ifstream::sync_with_stdio(false);
         std::ifstream infile(past_comparision_file);
-        const unsigned int primary_delim_size = strlen(primary_delim);
-        const unsigned int secondary_delim_size = strlen(secondary_delim);
+        const uint32_t primary_delim_size = strlen(primary_delim);
+        const uint32_t secondary_delim_size = strlen(secondary_delim);
         RecordPList empty_set;
         map < string , cRecGroup >::iterator prim_iter;
         map < const string*, map < const Record *, double> >::iterator prim_co_iter;
-        unsigned int count = 0;
-        const unsigned int base = 100000;
+        uint32_t count = 0;
+        const uint32_t base = 100000;
 
         cluster_by_block.clear();
         this->column_stat.clear();
@@ -147,7 +147,7 @@ ClusterInfo::retrieve_last_comparision_info ( const cBlocking_Operation & blocke
                 const string b_id = blocker.extract_blocking_info(key);
                 vector < string > column_part (num_columns) ;
 
-                for ( unsigned int i = 0; i < num_columns; ++i ) {
+                for ( uint32_t i = 0; i < num_columns; ++i ) {
                     const string temp = blocker.extract_column_info ( key, i );
                     column_part.at(i) = temp;
                 }
@@ -183,7 +183,7 @@ ClusterInfo::retrieve_last_comparision_info ( const cBlocking_Operation & blocke
                 else {
                     cRecGroup one_elem(1, tempc);
                     prim_iter = cluster_by_block.insert(std::pair<string, cRecGroup>(b_id, one_elem)).first;
-                    for ( unsigned int i = 0; i < num_columns; ++i ) {
+                    for ( uint32_t i = 0; i < num_columns; ++i ) {
                         this->column_stat.at(i)[column_part.at(i)] += 1;
                     }
                 }
@@ -194,19 +194,19 @@ ClusterInfo::retrieve_last_comparision_info ( const cBlocking_Operation & blocke
             }
 
             std::cout << "Obtained ";
-            for ( unsigned int i = 0; i < num_columns; ++i )
+            for ( uint32_t i = 0; i < num_columns; ++i )
                 std::cout << column_stat.at(i).size() << " / ";
             std::cout << " unique column data." << std::endl;
 
-            unsigned int stat_cnt = 0;
-            unsigned int min_stat_cnt = 0;
+            uint32_t stat_cnt = 0;
+            uint32_t min_stat_cnt = 0;
 
-            for ( unsigned int i = 0; i < num_columns; ++i ) {
+            for ( uint32_t i = 0; i < num_columns; ++i ) {
                 stat_cnt = 0;
-                for ( map<string, unsigned int >::const_iterator p = column_stat.at(i).begin(); p != column_stat.at(i).end(); ++p )
+                for ( map<string, uint32_t >::const_iterator p = column_stat.at(i).begin(); p != column_stat.at(i).end(); ++p )
                     if ( p->second > stat_cnt && ! p->first.empty() )
                         stat_cnt = p->second;
-                for ( map < string, unsigned int > ::iterator p = column_stat.at(i).begin(); p != column_stat.at(i).end(); ++p ) {
+                for ( map < string, uint32_t > ::iterator p = column_stat.at(i).begin(); p != column_stat.at(i).end(); ++p ) {
                     if ( p->second == stat_cnt )
                         std::cout << "Most common " << i << "th column part = " << p->first << " Occurrence = " << stat_cnt << std::endl;
                     if ( p->second > stat_cnt )
@@ -215,7 +215,7 @@ ClusterInfo::retrieve_last_comparision_info ( const cBlocking_Operation & blocke
                 max_occurrence.at(i) = stat_cnt;
 
                 min_stat_cnt = stat_cnt ;
-                for ( map<string, unsigned int >::const_iterator p = column_stat.at(i).begin(); p != column_stat.at(i).end(); ++p )
+                for ( map<string, uint32_t >::const_iterator p = column_stat.at(i).begin(); p != column_stat.at(i).end(); ++p )
                     if ( p->second < min_stat_cnt && ! p->first.empty() )
                         min_stat_cnt = p->second;
                 min_occurrence.at(i) = min_stat_cnt;
@@ -352,7 +352,7 @@ ClusterInfo::print(std::ostream & os) const {
 
     std::ostream::sync_with_stdio(false);
     const string & uid_name = cUnique_Record_ID::static_get_class_name();
-    const unsigned int uid_index = Record::get_index_by_name(uid_name);
+    const uint32_t uid_index = Record::get_index_by_name(uid_name);
     static const cException_Vector_Data except(uid_name.c_str());
 
     for ( map <string, cRecGroup >::const_iterator q = cluster_by_block.begin(); q != cluster_by_block.end(); ++q ) {
@@ -386,11 +386,11 @@ ClusterInfo::print(std::ostream & os) const {
  * to be active. Others remain inactive. If the input file
  * is invalid or empty, all the blocks will be set active.
  */
-unsigned int
+uint32_t
 ClusterInfo::reset_block_activity( const char * const filename ) {
 
     const char * const delim = ClusterInfo::secondary_delim;
-    unsigned int cnt = 0;
+    uint32_t cnt = 0;
     std::cout << "Resetting block activity for debug purpose in accordance with file " << filename << " ...  " << std::endl;
     this->block_activity.clear();
     map < string , cRecGroup >::const_iterator cpm;
@@ -522,17 +522,17 @@ ClusterInfo::get_prior_value( const string & block_identifier, const list <Clust
 
     //index for middlename, which is not involved in
     //the adjustment. change to other trash value if disabled.
-    const unsigned int uninvolved_index = 1; 
+    const uint32_t uninvolved_index = 1; 
     std::ofstream * pfs = NULL;
     if ( debug_mode ) {
         pfs = new std::ofstream ("prior_debug.txt");
         (*pfs) << "Content size: " << '\n';
     }
     double numerator = 0;
-    unsigned int tt = 0;
+    uint32_t tt = 0;
 
     for ( list<Cluster>::const_iterator q = rg.begin(); q != rg.end(); ++q ) {
-        const unsigned int c = q->get_fellows().size();
+        const uint32_t c = q->get_fellows().size();
         numerator += 1.0 * c * ( c - 1 );
         tt += c;
 
@@ -553,7 +553,7 @@ ClusterInfo::get_prior_value( const string & block_identifier, const list <Clust
     //adding frequency factor.
     //decompose the block_identifier string so as to get the frequency of each piece
     size_t pos = 0, prev_pos = 0;
-    unsigned int seq = 0;
+    uint32_t seq = 0;
     double final_factor = 0.0;
     vector <double> factor_history;
 
@@ -628,7 +628,7 @@ ClusterInfo::get_prior_value( const string & block_identifier, const list <Clust
  */
 void
 ClusterInfo::disambiguate(const cRatios & ratio,
-		                        const unsigned int num_threads,
+		                        const uint32_t num_threads,
                             const char * const debug_block_file,
                             const char * const prior_to_save) {
 
@@ -638,7 +638,7 @@ ClusterInfo::disambiguate(const cRatios & ratio,
     if ( this->thresholds.empty() )
         throw cException_Cluster_Error("Thresholds have not been set up yet.");
 
-    unsigned int size_to_disambig = this->reset_block_activity(debug_block_file);
+    uint32_t size_to_disambig = this->reset_block_activity(debug_block_file);
 
     config_prior();
 
@@ -656,9 +656,9 @@ ClusterInfo::disambiguate(const cRatios & ratio,
 
     vector < Worker > worker_vector( num_threads, sample);
 
-    for ( unsigned int i = 0; i < num_threads; ++i )
+    for ( uint32_t i = 0; i < num_threads; ++i )
         worker_vector.at(i).start();
-    for ( unsigned int i = 0; i < num_threads; ++i )
+    for ( uint32_t i = 0; i < num_threads; ++i )
         worker_vector.at(i).join();
 
     std::cout << "Disambiguation done! " ;
@@ -668,13 +668,13 @@ ClusterInfo::disambiguate(const cRatios & ratio,
     output_prior_value(prior_to_save);
 
 
-    unsigned int max_inventor = 0;
+    uint32_t max_inventor = 0;
     const Cluster * pmax = NULL;
 
     for ( map < string, cRecGroup >::const_iterator p = cluster_by_block.begin(); p != cluster_by_block.end(); ++p ) {
         const cRecGroup & galias = p->second;
         for ( cRecGroup::const_iterator q = galias.begin(); q != galias.end(); ++q ) {
-            const unsigned int t = q->get_fellows().size();
+            const uint32_t t = q->get_fellows().size();
             if ( t > max_inventor ) {
                 max_inventor = t;
                 pmax = &(*q);
@@ -682,9 +682,9 @@ ClusterInfo::disambiguate(const cRatios & ratio,
         }
     }
 
-    const unsigned int fi = Record::get_index_by_name(cFirstname::static_get_class_name());
-    const unsigned int li = Record::get_index_by_name(cLastname::static_get_class_name());
-    const unsigned int ui = Record::get_index_by_name(cUnique_Record_ID::static_get_class_name());
+    const uint32_t fi = Record::get_index_by_name(cFirstname::static_get_class_name());
+    const uint32_t li = Record::get_index_by_name(cLastname::static_get_class_name());
+    const uint32_t ui = Record::get_index_by_name(cUnique_Record_ID::static_get_class_name());
     std::cout << std::endl;
     std::cout << "Most consolidated cluster: " << * pmax->get_cluster_head().m_delegate->get_data_by_index(fi).at(0)
               << "." << * pmax->get_cluster_head().m_delegate->get_data_by_index(li).at(0)
@@ -703,7 +703,7 @@ ClusterInfo::disambiguate(const cRatios & ratio,
  */
 void
 Worker::run() {
-    const unsigned int base = 10000;
+    const uint32_t base = 10000;
     map < string, ClusterInfo::cRecGroup >::iterator pthis;
     while ( true) {
         pthread_mutex_lock(&iter_lock);
@@ -803,14 +803,14 @@ disambiguate_wrapper(const map<string, ClusterInfo::cRecGroup>::iterator & p,
 
     // TODO: Rescope these variables appropriately.
     // current_size can almost surely be moved into the loop.
-    unsigned int current_size = 0, new_size = 0;
-    const unsigned int max_round = MAX_ROUNDS;
+    uint32_t current_size = 0, new_size = 0;
+    const uint32_t max_round = MAX_ROUNDS;
     // TODO: consider typedef'ing a threshold iterator:
     // typedef vector<double>::const_iterator threshit_t
     vector < double >::const_iterator c = cluster.thresholds.begin();
     for (; c != cluster.thresholds.end(); ++c) {
 
-        unsigned int i = 0;
+        uint32_t i = 0;
         for (i = 0; i < max_round; ++i) {
             // TODO: Document the logic associated with current_size and new_size
             current_size = new_size;
@@ -837,6 +837,7 @@ disambiguate_wrapper(const map<string, ClusterInfo::cRecGroup>::iterator & p,
 /**
  * Aim: set the thresholds for overall disambiguation.
  */
+// TODO: Fix this.
 const vector < double > &
 ClusterInfo::set_thresholds ( const vector < double > & input ) {
 
@@ -870,7 +871,7 @@ ClusterInfo::debug_disambiguation_loop(cRecGroup::iterator  first_iter,
 // NOTE: clusterinfo.h:257:    typedef list < Cluster > cRecGroup;
 //       Expect the location of the typedef to change and the name
 //       will probably also change to something like ClusterList
-unsigned int
+uint32_t
 ClusterInfo::disambiguate_by_block(cRecGroup & to_be_disambiged_group,
                                    list <double> & prior_list,
                                    const cRatios & ratio,
