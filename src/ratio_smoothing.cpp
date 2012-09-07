@@ -26,7 +26,8 @@ static const bool should_do_name_range_check = true;
 
 
 uint32_t
-sp2index ( const SimilarityProfile & sp, const SimilarityProfile & min_sp, const SimilarityProfile & max_sp ) {
+sp2index (const SimilarityProfile & sp, const SimilarityProfile & min_sp,
+    const SimilarityProfile & max_sp) {
 
     if (sp.size() != min_sp.size()) {
         throw cException_Other("Convertion error in smoothing.");
@@ -329,9 +330,9 @@ smoothing_inter_extrapolation_cplex(
     ///// Refactor above^^^^^^
 #endif
 
+#if HAVE_CPLEX
     std::cout << "Starting Quadratic Programming. ( Take the logarithm ) ..." << std::endl;
 
-#if HAVE_CPLEX
     IloEnv env;
     const double xmin = log(1e-6);
     const double xmax = log(1e6);
@@ -349,8 +350,10 @@ smoothing_inter_extrapolation_cplex(
 
         //configuring the object
         IloExpr target(env);
-        for ( map < SimilarityProfile, double,  SimilarityCompare  >::const_iterator cpm = ratio_map.begin();
-                cpm != ratio_map.end(); ++cpm ) {
+
+        //map<SimilarityProfile, double,  SimilarityCompare>::const_iterator cpm = ratio_map.begin();
+        SPRatiosIndex::const_iterator cpm = ratio_map.begin();
+        for (; cpm != ratio_map.end(); ++cpm ) {
 
             const double log_val = log ( cpm->second);
             const double wt =  get_weight( x_counts.find (cpm->first)->second , m_counts.find (cpm->first)->second ) ;
@@ -366,7 +369,7 @@ smoothing_inter_extrapolation_cplex(
 
         //configuring constraints
         for ( uint32_t i = 0 ; i < total_nodes; ++i ) {
-            const SimilarityProfile the_sp = index2sp(i, min_sp, max_sp );
+            const SimilarityProfile the_sp = index2sp(i, min_sp, max_sp);
 
             //equality constraints
             vector<std::pair<SimilarityProfile, SimilarityProfile> > neighbours
@@ -384,6 +387,7 @@ smoothing_inter_extrapolation_cplex(
                 if (greater <= i)
                     throw cException_Other("Index sequence error. greater < this.");
 
+                // This is an inappropriate construction for the arguments.
                 IloRange rg (env, - equ_delta, 2.0 * var[i] - var[lesser] - var[greater] , equ_delta);
                 con.add (rg);
 
@@ -445,8 +449,10 @@ void
 cRatios::smooth() {
 
     std::cout << "Starting ratios smoothing..." << std::endl;
+
     const SimilarityProfile max = get_max_similarity (this->attrib_names);
     const SimilarityProfile min (max.size(), 0);
+
     smoothing_inter_extrapolation_cplex(this->final_ratios, min, max, x_counts, m_counts,
             this->get_attrib_names(), should_do_name_range_check, false);
 
