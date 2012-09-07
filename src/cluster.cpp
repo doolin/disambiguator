@@ -612,11 +612,9 @@ ClusterInfo::get_prior_value( const string & block_identifier, const list <Clust
 
     //prior *= first_factor * last_factor;
 
-    if ( prior > prior_max )
-        prior = prior_max;
+    if (prior > prior_max) prior = prior_max;
 
-    if ( debug_mode )
-        delete pfs;
+    if (debug_mode) delete pfs;
 
     return prior;
 }
@@ -628,9 +626,9 @@ ClusterInfo::get_prior_value( const string & block_identifier, const list <Clust
  */
 void
 ClusterInfo::disambiguate(const cRatios & ratio,
-		                        const uint32_t num_threads,
-                            const char * const debug_block_file,
-                            const char * const prior_to_save) {
+		                      const uint32_t num_threads,
+                          const char * const debug_block_file,
+                          const char * const prior_to_save) {
 
     if ( is_matching_cluster() != true )
         throw cException_Cluster_Error("Wrong type of clusters for disambiguation.");
@@ -645,7 +643,7 @@ ClusterInfo::disambiguate(const cRatios & ratio,
     std::cout << "Starting disambiguation ... ..." << std::endl;
     cRecGroup emptyone;
     const RecordPList emptyset;
-    map < string , cRecGroup >::iterator pdisambiged;
+    map<string, cRecGroup>::iterator pdisambiged;
 
     // now starting disambiguation.
     // here can be multithreaded.
@@ -654,12 +652,15 @@ ClusterInfo::disambiguate(const cRatios & ratio,
     pdisambiged = cluster_by_block.begin();
     Worker sample(pdisambiged, ratio, *this);
 
-    vector < Worker > worker_vector( num_threads, sample);
+    vector<Worker> worker_vector(num_threads, sample);
 
-    for ( uint32_t i = 0; i < num_threads; ++i )
+    for (uint32_t i = 0; i < num_threads; ++i) {
         worker_vector.at(i).start();
-    for ( uint32_t i = 0; i < num_threads; ++i )
+    }
+
+    for (uint32_t i = 0; i < num_threads; ++i) {
         worker_vector.at(i).join();
+    }
 
     std::cout << "Disambiguation done! " ;
     std::cout << Worker::get_count() << " blocks were eventually disambiguated." << std::endl;
@@ -671,11 +672,14 @@ ClusterInfo::disambiguate(const cRatios & ratio,
     uint32_t max_inventor = 0;
     const Cluster * pmax = NULL;
 
-    for ( map < string, cRecGroup >::const_iterator p = cluster_by_block.begin(); p != cluster_by_block.end(); ++p ) {
+    map<string, cRecGroup >::const_iterator p = cluster_by_block.begin();
+    for (; p != cluster_by_block.end(); ++p) {
         const cRecGroup & galias = p->second;
+
         for ( cRecGroup::const_iterator q = galias.begin(); q != galias.end(); ++q ) {
             const uint32_t t = q->get_fellows().size();
-            if ( t > max_inventor ) {
+
+            if (t > max_inventor) {
                 max_inventor = t;
                 pmax = &(*q);
             }
@@ -695,31 +699,38 @@ ClusterInfo::disambiguate(const cRatios & ratio,
 
 /**
  * Aim: thread worker of disambiguation.
- * Algorithm:
- * Given the address of the cursor ( iterator ) of the disambiguation progress, save the cursor locally and
- * more the cursor forward. Then run the disambiguation for the block to which the cursor points. Finally, update
- * the disambiguated record number.
+ * Given the address of the cursor (iterator) of the disambiguation
+ * progress, save the cursor locally and more the cursor forward.
+ * Then run the disambiguation for the block to which the cursor points.
+ * Finally, update the disambiguated record number.
  * PAY ATTENTION TO THE SYNCRONIZATION!
  */
 void
 Worker::run() {
+
     const uint32_t base = 10000;
-    map < string, ClusterInfo::cRecGroup >::iterator pthis;
-    while ( true) {
+    map<string, ClusterInfo::cRecGroup>::iterator pthis;
+
+    while (true) {
+
         pthread_mutex_lock(&iter_lock);
-        if ( *ppdisambiged == cluster_ref.get_cluster_map().end() ) {
+
+        if (*ppdisambiged == cluster_ref.get_cluster_map().end() ) {
             pthread_mutex_unlock(&iter_lock);
             break;
         }
+
         pthis = *ppdisambiged;
         ++(*ppdisambiged);
         pthread_mutex_unlock(&iter_lock);
 
         bool is_success = disambiguate_wrapper(pthis, cluster_ref, *pratios);
+
         pthread_mutex_lock(&iter_lock);
-        if ( is_success )
-            ++count;
-        if ( count % base == 0 && count != 0 ) {
+
+        if (is_success) ++count;
+
+        if (count % base == 0 && count != 0) {
             std::cout << count << " blocks have been disambiguated." << std::endl;
         }
         pthread_mutex_unlock(&iter_lock);
@@ -739,7 +750,7 @@ warn_block_failure(const map<string, ClusterInfo::cRecGroup>::iterator & p) {
 void
 warn_very_big_blocks(const map<string, ClusterInfo::cRecGroup>::iterator & p) {
 
-   std::cout << "Block Very Big: " << p->first 
+   std::cout << "Block Very Big: " << p->first
              << " Size = " << p->second.size() << std::endl;
 }
 
@@ -871,7 +882,7 @@ ClusterInfo::debug_disambiguation_loop(cRecGroup::iterator  first_iter,
 // NOTE: clusterinfo.h:257:    typedef list < Cluster > cRecGroup;
 //       Expect the location of the typedef to change and the name
 //       will probably also change to something like ClusterList
-uint32_t
+uint32_t /* block size, most likely */
 ClusterInfo::disambiguate_by_block(cRecGroup & to_be_disambiged_group,
                                    list <double> & prior_list,
                                    const cRatios & ratio,
@@ -906,10 +917,11 @@ ClusterInfo::disambiguate_by_block(cRecGroup & to_be_disambiged_group,
         }
     }
 
-    if ( should_update_prior ) {
+    if (should_update_prior) {
         const double new_prior_value = this->get_prior_value(*bid, to_be_disambiged_group );
-        if ( new_prior_value != prior_value )
+        if (new_prior_value != prior_value) {
             prior_list.push_back(new_prior_value);
+        }
     }
 
     return to_be_disambiged_group.size();
