@@ -192,6 +192,33 @@ get_weight (const uint32_t x_count, const uint32_t m_count) {
 }
 
 
+uint32_t
+compute_total_modes(const SimilarityProfile & min_sp,
+                    const SimilarityProfile & max_sp) {
+
+    uint32_t total_nodes = 1;
+    const uint32_t overflow_check = 0 - 1;
+
+    for ( uint32_t i = 0; i < min_sp.size(); ++i ) {
+
+        if ( max_sp.at(i) < min_sp.at(i) ) {
+            throw cException_Other("Entry error: max < min.");
+        }
+
+        uint32_t t = max_sp.at(i) - min_sp.at(i) + 1;
+
+        if ( total_nodes >= overflow_check / t ) {
+            throw cException_Other ("Size of all the similarity profiles exceeds the allowed limit ( uint32_t ).");
+        } else {
+            total_nodes *= t;
+        }
+    }
+
+  return total_nodes;
+}
+
+
+
 void
 smoothing_inter_extrapolation_cplex(map<SimilarityProfile, double, SimilarityCompare> & ratio_map,
     const SimilarityProfile & min_sp,
