@@ -197,6 +197,12 @@ compute_total_modes(const SimilarityProfile & min_sp,
                     const SimilarityProfile & max_sp) {
 
     uint32_t total_nodes = 1;
+    // This is too clever and bad practice. STL provides
+    // a maximum uint32, and that should be used in this
+    // case. And yes, I know that the STL uses -1 to
+    // signify maximum unsigned values, but we're not
+    // writing STL code now, are we? That's right, we're
+    // not.
     const uint32_t overflow_check = 0 - 1;
 
     for ( uint32_t i = 0; i < min_sp.size(); ++i ) {
@@ -208,7 +214,7 @@ compute_total_modes(const SimilarityProfile & min_sp,
         uint32_t t = max_sp.at(i) - min_sp.at(i) + 1;
 
         if ( total_nodes >= overflow_check / t ) {
-            throw cException_Other ("Size of all the similarity profiles exceeds the allowed limit ( uint32_t ).");
+            throw cException_Other ("Similarity profile count overflow).");
         } else {
             total_nodes *= t;
         }
@@ -242,6 +248,9 @@ smoothing_inter_extrapolation_cplex(map<SimilarityProfile, double, SimilarityCom
 
     //first, build all the possible similarity profiles.
     // TODO: Refactor this into `compute_total_nodes`
+#if 0
+    uint32_t total_nodes = compute_total_nodes(min_sp, max_sp);
+#else
     uint32_t total_nodes = 1;
     const uint32_t overflow_check = 0 - 1;
 
@@ -255,6 +264,7 @@ smoothing_inter_extrapolation_cplex(map<SimilarityProfile, double, SimilarityCom
             total_nodes *= t;
         }
     }
+#endif
 
     // TODO: Should be able to refactor this out.
     uint32_t total_possible_inequality = 0;
@@ -279,7 +289,7 @@ smoothing_inter_extrapolation_cplex(map<SimilarityProfile, double, SimilarityCom
               << total_nodes << " similarity profiles, "
               << total_equality << " equalities and "
               << total_possible_inequality << " inequalities in all." << std::endl;
-///// Refactor above^^^^^^
+    ///// Refactor above^^^^^^
 
     std::cout << "Starting Quadratic Programming. ( Take the logarithm ) ..." << std::endl;
 
