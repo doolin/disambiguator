@@ -205,15 +205,15 @@ compute_total_nodes(const SimilarityProfile & min_sp,
     // not.
     const uint32_t overflow_check = 0 - 1;
 
-    for ( uint32_t i = 0; i < min_sp.size(); ++i ) {
+    for (uint32_t i = 0; i < min_sp.size(); ++i) {
 
-        if ( max_sp.at(i) < min_sp.at(i) ) {
+        if (max_sp.at(i) < min_sp.at(i)) {
             throw cException_Other("Entry error: max < min.");
         }
 
         uint32_t t = max_sp.at(i) - min_sp.at(i) + 1;
 
-        if ( total_nodes >= overflow_check / t ) {
+        if (total_nodes >= overflow_check / t) {
             throw cException_Other ("Similarity profile count overflow).");
         } else {
             total_nodes *= t;
@@ -226,7 +226,8 @@ compute_total_nodes(const SimilarityProfile & min_sp,
 
 
 void
-smoothing_inter_extrapolation_cplex(map<SimilarityProfile, double, SimilarityCompare> & ratio_map,
+smoothing_inter_extrapolation_cplex(
+    map<SimilarityProfile, double, SimilarityCompare> & ratio_map,
     const SimilarityProfile & min_sp,
     const SimilarityProfile & max_sp,
     const map<SimilarityProfile, uint32_t, SimilarityCompare> & x_counts,
@@ -242,9 +243,12 @@ smoothing_inter_extrapolation_cplex(map<SimilarityProfile, double, SimilarityCom
     if ( x_counts.size() != ratio_map.size() )
         throw cException_Other("x_counts and ratio_map are not of the same size");
 
-    // TODO: Refactor min and max sp size checks
-    if ( min_sp.size() != max_sp.size() )
-        throw cException_Other("Minimum similarity profile and Maximum similarity profile are not consistent.");
+    // TODO: Refactor min and max sp size checks into the
+    // compute_total_nodes function, then catch dissimilar
+    // sizes in the unit testing.
+    if (min_sp.size() != max_sp.size()) {
+        throw cException_Other("Minimum & maximum similarity profile size difference.");
+    }
 
     //first, build all the possible similarity profiles.
     // TODO: Refactor this into `compute_total_nodes`
