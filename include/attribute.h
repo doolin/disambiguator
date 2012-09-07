@@ -14,6 +14,8 @@
 #include <typeinfo>
 #include <memory>
 
+#include <stdint.h>
+
 #include "macros.h"
 
 // the attribute group specifier that is not the component of similarity profiles
@@ -31,8 +33,10 @@ class Record_Reconfigurator;
 class Attribute;
 
 void Record_update_active_similarity_names();
-const Record_Reconfigurator * generate_interactive_reconfigurator( const Attribute * pAttrib);
-void reconfigure_interactives ( const Record_Reconfigurator * pc, const Record * pRec);
+
+const Record_Reconfigurator * generate_interactive_reconfigurator(const Attribute * pAttrib);
+
+void reconfigure_interactives (const Record_Reconfigurator * pc, const Record * pRec);
 
 
 #include "exceptions.h"
@@ -58,8 +62,8 @@ private:
 
 public:
 
-    bool operator() (const vector < unsigned int > & s1,
-                     const vector < unsigned int > & s2) const {
+    bool operator() (const vector < uint32_t > & s1,
+                     const vector < uint32_t > & s2) const {
 
         if ( s1.size() != s2.size() ) {
             throw SimilarityCompare::default_sp_exception;
@@ -68,8 +72,8 @@ public:
         return lexicographical_compare(s1.begin(), s1.end(), s2.begin(), s2.end());
     };
 
-    bool operator() (const vector < unsigned int > *ps1,
-                     const vector < unsigned int > *ps2) const {
+    bool operator() (const vector < uint32_t > *ps1,
+                     const vector < uint32_t > *ps2) const {
       return SimilarityCompare()(*ps1, *ps2);
     }
 };
@@ -138,7 +142,7 @@ public:
 /**
  *    Public:
  *
- *        3. virtual unsigned int compare(const Attribute & rhs) const = 0 ;
+ *        3. virtual uint32_t compare(const Attribute & rhs) const = 0 ;
  *        Comparison function between two attributes to get a similarity score.
  *        Should be inplemented by child classes.
  */
@@ -202,7 +206,7 @@ public:
  */
 
 /**
- *        15. virtual unsigned int get_attrib_max_value() const:
+ *        15. virtual uint32_t get_attrib_max_value() const:
  *        To get the maximum attribute score. The scores are determined
  *        in child classes, so this function has to be overridden in child class.
  */
@@ -256,7 +260,7 @@ protected:
 
 public:
 
-    virtual unsigned int compare(const Attribute & rhs) const = 0 ;
+    virtual uint32_t compare(const Attribute & rhs) const = 0 ;
 
     virtual bool split_string(const char* );    //can be overridden if necessary.
 
@@ -310,7 +314,7 @@ public:
 
     virtual void check_interactive_consistency(const vector <string> & query_columns) = 0;
 
-    virtual unsigned int get_attrib_max_value() const {
+    virtual uint32_t get_attrib_max_value() const {
       throw cException_Invalid_Function(get_class_name().c_str());
     };
 
@@ -353,21 +357,21 @@ public:
 
 
    /**
-    * 21. virtual const Attribute * reduce_attrib(unsigned int n) const:
+    * 21. virtual const Attribute * reduce_attrib(uint32_t n) const:
     * deduct the counting reference of "this" attribute by n, and return
     * the pointer to the attribute. Pooling is in the subclass.
     * So has to be overridden.
     */
-    virtual const Attribute * reduce_attrib(unsigned int n) const = 0;
+    virtual const Attribute * reduce_attrib(uint32_t n) const = 0;
 
 
    /**
-    * 22. virtual const Attribute * add_attrib( unsigned int n ) const:
+    * 22. virtual const Attribute * add_attrib( uint32_t n ) const:
     * add the counting reference of "this" attribute by n, and return
     * the pointer to the attribute. Pooling is in the subclass. So has to be overridden.
     */
     // Maybe polysemy, what this should be named is increment_reference_count();
-    virtual const Attribute * add_attrib(unsigned int n) const = 0  ;
+    virtual const Attribute * add_attrib(uint32_t n) const = 0  ;
 
 
    /**
@@ -408,7 +412,7 @@ public:
  */
 
 /**
- * static unsigned int column_index_in_query:s
+ * static uint32_t column_index_in_query:s
  * the location of each attribute in accordance with the reading sequence.
  */
 
@@ -419,12 +423,12 @@ public:
  */
 
 /**
- * static const unsigned int num_of_interactive_columns;
+ * static const uint32_t num_of_interactive_columns;
  * number of columns that have interaction with the current attribute type.
  */
 
 /**
- * static vector <unsigned int> interactive_column_indice_in_query:
+ * static vector <uint32_t> interactive_column_indice_in_query:
  * indice of the attributes that have interaction with the
  * current attributes, as displayed while being read.
  */
@@ -495,7 +499,7 @@ public:
 
 /**
  * static const Derived * static_add_attrib(const Derived & d,
- * const unsigned int n ): add the reference counter of the d
+ * const uint32_t n ): add the reference counter of the d
  * attribute object by n. If d does not exists, add d to the pool.
  * Returns the pointer to the newly added object.
  */
@@ -508,7 +512,7 @@ public:
 
 /**
  * static const Derived * static_reduce_attrib(const Derived & d,
- * const unsigned int n): deduct the reference counter of the d
+ * const uint32_t n): deduct the reference counter of the d
  * attribute object by n. If the counter = 0, delete d from the
  * pool and returns NULL, else returns the pointer to d.
  */
@@ -529,18 +533,18 @@ public:
  */
 
 /**
- * static void set_column_index_in_query(const unsigned int i):
+ * static void set_column_index_in_query(const uint32_t i):
  * to set the sequence of the concrete class to i, as appearing in the class list.
  */
 
 /**
- * unsigned int compare(const Attribute & rhs) const: the default
+ * uint32_t compare(const Attribute & rhs) const: the default
  * comparison function between two concrete class objects.
  * Override if necessary.
  */
 
 /**
- * static const unsigned int get_interactive_column_number():
+ * static const uint32_t get_interactive_column_number():
  * get the number of interactive columns with the current class.
  */
 
@@ -641,13 +645,13 @@ public:
  */
 
 /**
- * const Attribute * reduce_attrib(unsigned int n) const:
+ * const Attribute * reduce_attrib(uint32_t n) const:
  * deduct the reference counter of this object by n,
  * and returns the pointer to this object. Null if removed.
  */
 
 /**
- * const Attribute * add_attrib(unsigned int n) const:
+ * const Attribute * add_attrib(uint32_t n) const:
  * add the reference counter of this object by n, and
  * returns the pointer to this object.
  */
@@ -661,13 +665,13 @@ private:
     // an implementation is required for each class in the cpp file.
     static const string class_name;
 
-    //static unsigned int column_index_in_query;
+    //static uint32_t column_index_in_query;
 
     static const string interactive_column_names[];
 
-    static const unsigned int num_of_interactive_columns;
+    static const uint32_t num_of_interactive_columns;
 
-    static vector <unsigned int> interactive_column_indice_in_query;
+    static vector <uint32_t> interactive_column_indice_in_query;
 
     static bool bool_interactive_consistency_checked;
 
@@ -686,15 +690,15 @@ public:
 
     static const string & static_get_class_name() {return class_name;}
 
-    //static void set_column_index_in_query(const unsigned int i ) {column_index_in_query = i;}
+    //static void set_column_index_in_query(const uint32_t i ) {column_index_in_query = i;}
     //THIS IS THE DEFAULT COMPARISON FUNCTION. ANY ATTRIBUTE THAT
     //HAS REAL COMPARISION FUNCTIONS SHOULD OVERRIDE IT.
     //ANY ATTRIBUTE THAT HAS NO REAL COMPARISION FUNCTIONS SHOULD JUST LEAVE IT.
-    unsigned int compare(const Attribute & UP(rhs)) const {
+    uint32_t compare(const Attribute & UP(rhs)) const {
         throw cException_No_Comparision_Function(class_name.c_str());
     };
 
-    static unsigned int get_interactive_column_number() {
+    static uint32_t get_interactive_column_number() {
       return num_of_interactive_columns;
     };
 
@@ -822,7 +826,7 @@ public:
     Attribute_Intermediary(const char * source = NULL )
         :    Attribute_Basic<Derived> (source){}
 
-    static const Derived * static_add_attrib(const Derived & d , const unsigned int n) {
+    static const Derived * static_add_attrib(const Derived & d , const uint32_t n) {
 
         pthread_rwlock_rdlock(& attrib_pool_structure_lock);
         typename map < Derived, int >::iterator p = attrib_pool.find(d);
@@ -853,7 +857,7 @@ public:
         return &(p->first);
     }
 
-    static const Derived * static_reduce_attrib(const Derived & d , const unsigned int n) {
+    static const Derived * static_reduce_attrib(const Derived & d , const uint32_t n) {
 
         pthread_rwlock_rdlock ( & attrib_pool_structure_lock);
         // cppcheck complains about declaring register.
@@ -948,11 +952,11 @@ public:
       return static_clean_attrib_pool();
     }
 
-    const Attribute * reduce_attrib(unsigned int n) const {
+    const Attribute * reduce_attrib(uint32_t n) const {
         return static_reduce_attrib( dynamic_cast< const Derived &> (*this), n);
     }
 
-    const Attribute * add_attrib( unsigned int n ) const {
+    const Attribute * add_attrib( uint32_t n ) const {
         return static_add_attrib( dynamic_cast< const Derived &> (*this), n);
     }
 
@@ -1113,12 +1117,12 @@ public:
 
 
    /**
-    * unsigned int compare(const Attribute & right_hand_side) const:
+    * uint32_t compare(const Attribute & right_hand_side) const:
     * The default comparison function of the set mode, which returns
     * the number of common elements between two classes.
     * Override it in the child class if other scoring method is used.
     */
-    unsigned int compare(const Attribute & right_hand_side) const {
+    uint32_t compare(const Attribute & right_hand_side) const {
 
         if (!this->is_comparator_activated()) {
             throw cException_No_Comparision_Function(this->static_get_class_name().c_str());
@@ -1126,10 +1130,10 @@ public:
 
         try {
 
-            unsigned int res = 0;
+            uint32_t res = 0;
             const AttribType & rhs = dynamic_cast< const AttribType & > (right_hand_side);
 
-            const unsigned int mv = this->get_attrib_max_value();
+            const uint32_t mv = this->get_attrib_max_value();
             res = num_common_elements (this->attrib_set.begin(), this->attrib_set.end(),
                                          rhs.attrib_set.begin(), rhs.attrib_set.end(),
                                          mv);
@@ -1240,21 +1244,21 @@ class Attribute_Single_Mode : public Attribute_Vector_Intermediary<AttribType> {
 
 /**
  * Public:
- *    unsigned int compare(const Attribute & right_hand_side) const:
+ *    uint32_t compare(const Attribute & right_hand_side) const:
  *      Default Jaro-Winkler comparison between the strings. Scoring is user-defined, so feel free to override.
  *    bool split_string(const char* inputdata):
  *      read input string, do some preparations (edition and pooling) and save in the object.
  */
 public:
 
-    unsigned int compare(const Attribute & right_hand_side) const {
+    uint32_t compare(const Attribute & right_hand_side) const {
         // ALWAYS CHECK THE ACTIVITY OF COMPARISON FUNCTION !!
         if ( ! this->is_comparator_activated () )
             throw cException_No_Comparision_Function(this->static_get_class_name().c_str());
         if ( this == & right_hand_side )
             return this->get_attrib_max_value();
 
-        unsigned int res = 0;
+        uint32_t res = 0;
         const AttribType & rhs = dynamic_cast< const AttribType & > (right_hand_side);
         res = jwcmp(* this->get_data().at(1), * rhs.get_data().at(1));
         if ( res > this->get_attrib_max_value() )
@@ -1289,17 +1293,17 @@ class Attribute_Vector_Mode : public Attribute_Vector_Intermediary<AttribType> {
 public:
 
    /**
-    * unsigned int compare(const Attribute & right_hand_side) const:
+    * uint32_t compare(const Attribute & right_hand_side) const:
     * calculating the aggregate score of common elements. Override if necessary.
     */
-    unsigned int compare(const Attribute & right_hand_side) const {
+    uint32_t compare(const Attribute & right_hand_side) const {
         //ALWAYS CHECK THE COMPARATOR!
         if ( ! this->is_comparator_activated () )
             throw cException_No_Comparision_Function(this->static_get_class_name().c_str());
         if ( this == & right_hand_side )
             return this->get_attrib_max_value();
 
-        unsigned int res = 0;
+        uint32_t res = 0;
         const AttribType & rhs = dynamic_cast< const AttribType & > (right_hand_side);
 
         vector < const string *>::const_iterator p = this->get_data().begin();
@@ -1373,11 +1377,11 @@ public:
         return Attribute_Intermediary<ConcreteType>::static_add_string ( str );
     }
 
-    const Attribute* reduce_attrib(unsigned int n ) const {
+    const Attribute* reduce_attrib(uint32_t n ) const {
         return pAttrib->template reduce_attrib(n);
     }
 
-    const Attribute* add_attrib(unsigned int n ) const {
+    const Attribute* add_attrib(uint32_t n ) const {
         return pAttrib->template add_attrib(n);
     }
 
@@ -1451,11 +1455,11 @@ public:
         if ( this->get_effective_pointer() != rhs.get_effective_pointer() )
             return 0;
 
-        const unsigned int n = this->get_interactive_vector().size();
+        const uint32_t n = this->get_interactive_vector().size();
         if ( n != rhs.get_interactive_vector().size() )
             throw cException_Other("Different data dimensions.");
 
-        for ( unsigned int i = 0; i < n; ++i ) {
+        for ( uint32_t i = 0; i < n; ++i ) {
             if ( this->get_interactive_vector().at(i)->get_effective_pointer()
                     != rhs.get_interactive_vector().at(i)->get_effective_pointer() )
             return 0;
@@ -1479,7 +1483,7 @@ template <typename ConcreteType, typename PooledDataType> std::auto_ptr < Pooled
 /**
  * For each concrete class, if it can be one of the components in the
  * similarity profile, whether its comparator is activated or not,
- * a "STATIC CONST UNSIGNED INT" member, namely max_value, should be
+ * a "STATIC CONST uint32_t" member, namely max_value, should be
  * declared and defined in the concrete class. At the same time,
  * the virtual function get_attrib_max_value() const has to be
  * overridden, with comparator activity check inside.
@@ -1512,25 +1516,25 @@ template <typename ConcreteType, typename PooledDataType> std::auto_ptr < Pooled
 class cFirstname : public Attribute_Single_Mode <cFirstname> {
 
   private:
-  static unsigned int previous_truncation;
-  static unsigned int current_truncation;
+  static uint32_t previous_truncation;
+  static uint32_t current_truncation;
 
   public:
 
-    static void set_truncation(const unsigned int prev, const unsigned int cur) {
+    static void set_truncation(const uint32_t prev, const uint32_t cur) {
         previous_truncation = prev;
         current_truncation = cur;
     }
 
-    //static const unsigned int max_value = Jaro_Wrinkler_Max;
-    static const unsigned int max_value = 4;
+    //static const uint32_t max_value = Jaro_Wrinkler_Max;
+    static const uint32_t max_value = 4;
 
     cFirstname(const char * UP(source) = NULL) {}
 
     //override because some class-specific splitting is involved.
     bool split_string(const char*);
 
-    unsigned int get_attrib_max_value() const {
+    uint32_t get_attrib_max_value() const {
         if ( ! is_comparator_activated() )
             Attribute::get_attrib_max_value();
         return max_value;
@@ -1538,18 +1542,18 @@ class cFirstname : public Attribute_Single_Mode <cFirstname> {
 
     //override the base class to enable the functionality of the function.
     int exact_compare( const Attribute & rhs ) const { return this == & rhs; }
-    unsigned int compare(const Attribute & right_hand_side) const ;
+    uint32_t compare(const Attribute & right_hand_side) const ;
 };
 
 
 class cLastname : public Attribute_Single_Mode <cLastname> {
 
 public:
-    static const unsigned int max_value = Jaro_Wrinkler_Max;
+    static const uint32_t max_value = Jaro_Wrinkler_Max;
 
     cLastname(const char * UP(source) = NULL ) {}
 
-    unsigned int get_attrib_max_value() const {
+    uint32_t get_attrib_max_value() const {
 
         if (!is_comparator_activated()) {
             Attribute::get_attrib_max_value();
@@ -1566,15 +1570,15 @@ public:
 class cMiddlename : public Attribute_Single_Mode <cMiddlename> {
 
 public:
-    static const unsigned int max_value = 3;
+    static const uint32_t max_value = 3;
 
     cMiddlename(const char * UP(source) = NULL ) {}
 
-    unsigned int compare(const Attribute & rhs) const;
+    uint32_t compare(const Attribute & rhs) const;
 
     bool split_string(const char*);
 
-    unsigned int get_attrib_max_value() const {
+    uint32_t get_attrib_max_value() const {
 
         if (!is_comparator_activated()) {
             Attribute::get_attrib_max_value();
@@ -1592,11 +1596,11 @@ class cLatitude_Data : public Attribute_Single_Mode<cLatitude_Data> {};
 
 class cLatitude : public Attribute_Interactive_Mode <cLatitude, cLatitude_Data> {
 private:
-    static const unsigned int max_value = 5;
+    static const uint32_t max_value = 5;
 public:
     cLatitude(const char * UP(source) = NULL ) {}
-    unsigned int compare(const Attribute & rhs) const;    //override to customize
-    unsigned int get_attrib_max_value() const {
+    uint32_t compare(const Attribute & rhs) const;    //override to customize
+    uint32_t get_attrib_max_value() const {
         if ( ! is_comparator_activated() )
             Attribute::get_attrib_max_value();
         return max_value;
@@ -1607,11 +1611,11 @@ class cLongitude_Data : public Attribute_Single_Mode<cLongitude_Data> {};
 
 class cLongitude: public Attribute_Interactive_Mode <cLongitude, cLongitude_Data > {
 private:
-    static const unsigned int max_value = 1;
+    static const uint32_t max_value = 1;
 public:
     cLongitude(const char * UP(source) = NULL ) {}
-    unsigned int compare(const Attribute & rhs) const;    //override to customize
-    unsigned int get_attrib_max_value() const {
+    uint32_t compare(const Attribute & rhs) const;    //override to customize
+    uint32_t get_attrib_max_value() const {
         if ( ! is_comparator_activated() )
             Attribute::get_attrib_max_value();
         return max_value;
@@ -1678,10 +1682,10 @@ public:
 
 class cCountry: public Attribute_Single_Mode <cCountry> {
 public:
-    static unsigned int const max_value = 2;
+    static uint32_t const max_value = 2;
     cCountry(const char * UP(source) = NULL ) {}
 
-    unsigned int get_attrib_max_value() const {
+    uint32_t get_attrib_max_value() const {
 
         if (!is_comparator_activated()) {
             Attribute::get_attrib_max_value();
@@ -1693,21 +1697,21 @@ public:
       return this == & rhs;
     }
 
-    unsigned int compare(const Attribute & right_hand_side) const;
+    uint32_t compare(const Attribute & right_hand_side) const;
 };
 
 
 // cClass and cCoauthor are in set_mode, not single_mode
 class cClass: public Attribute_Set_Mode < cClass > {
 public:
-    static unsigned int const max_value = 4;
+    static uint32_t const max_value = 4;
 
-    unsigned int get_attrib_max_value() const {
+    uint32_t get_attrib_max_value() const {
         if ( ! is_comparator_activated() )
             Attribute::get_attrib_max_value();
         return max_value;
     }
-    //unsigned int compare(const Attribute & rhs) const;
+    //uint32_t compare(const Attribute & rhs) const;
 };
 
 
@@ -1715,23 +1719,23 @@ public:
 //as cClass except for the comparison function.
 class cClass_M2 : public Attribute_Set_Mode < cClass_M2 > {
 public:
-    static const unsigned int max_value = 4;
+    static const uint32_t max_value = 4;
 
-    unsigned int get_attrib_max_value() const {
+    uint32_t get_attrib_max_value() const {
         if ( ! is_comparator_activated() )
             Attribute::get_attrib_max_value();
         return max_value;
     }
-    unsigned int compare(const Attribute & right_hand_side) const;
+    uint32_t compare(const Attribute & right_hand_side) const;
 };
 
 
 class cCoauthor : public Attribute_Set_Mode < cCoauthor >  {
     friend class Reconfigurator_Coauthor;
 public:
-    static unsigned int const max_value = 6;
+    static uint32_t const max_value = 6;
 
-    unsigned int get_attrib_max_value() const {
+    uint32_t get_attrib_max_value() const {
         if ( ! is_comparator_activated() )
             Attribute::get_attrib_max_value();
         return max_value;
@@ -1745,13 +1749,13 @@ class cAssignee_Data : public Attribute_Single_Mode < cAssignee_Data > {};
 
 class cAssignee : public Attribute_Interactive_Mode <cAssignee, cAssignee_Data> {
 public:
-    static const unsigned int max_value = 6;
+    static const uint32_t max_value = 6;
 private:
 
     // this is a static membmer used in the comparison function.
-    //static const map<string, std::pair<string, unsigned int>  > * assignee_tree_pointer;
+    //static const map<string, std::pair<string, uint32_t>  > * assignee_tree_pointer;
 
-    static map < const cAsgNum*, unsigned int > asgnum2count_tree;
+    static map < const cAsgNum*, uint32_t > asgnum2count_tree;
 
     static bool is_ready;
 
@@ -1759,15 +1763,15 @@ public:
 
     cAssignee(const char * UP(source) = NULL ) {}
 
-    unsigned int compare(const Attribute & rhs) const;
+    uint32_t compare(const Attribute & rhs) const;
 
-    //static void set_assignee_tree_pointer(const map<string, std::pair<string, unsigned int>  >& asgtree) {
+    //static void set_assignee_tree_pointer(const map<string, std::pair<string, uint32_t>  >& asgtree) {
     //  assignee_tree_pointer = & asgtree;
     //}
 
     static void configure_assignee( const list <const Record *> & );
 
-    unsigned int get_attrib_max_value() const {
+    uint32_t get_attrib_max_value() const {
         if (!is_comparator_activated()) {
             Attribute::get_attrib_max_value();
         }
@@ -1839,9 +1843,9 @@ public:
 // ALL THE FOLLOWING TEMPLATE MEMBER ARE DEFAULT VALUES.
 // Declaration and default definition.
 // Specialization should be implemented in the cpp file.
-//template <typename Derived> unsigned int Attribute_Intermediary<Derived>::column_index_in_query;
+//template <typename Derived> uint32_t Attribute_Intermediary<Derived>::column_index_in_query;
 //template <typename Derived> string Attribute_Intermediary<Derived>::column_name_in_query;
-template <typename Derived> vector <unsigned int> Attribute_Basic<Derived>::interactive_column_indice_in_query;
+template <typename Derived> vector <uint32_t> Attribute_Basic<Derived>::interactive_column_indice_in_query;
 template <typename Derived> bool Attribute_Basic<Derived>::bool_interactive_consistency_checked = false;
 template <typename Derived> bool Attribute_Basic<Derived>::bool_is_enabled = false;
 template <typename Derived> bool Attribute_Basic<Derived>::bool_comparator_activated = false;
@@ -1875,10 +1879,10 @@ template <> const string Attribute_Basic<cLongitude >::interactive_column_names[
 template <typename Derived> const string Attribute_Basic<Derived>::interactive_column_names[] = {};
 
 
-//template <> const unsigned int Attribute_Intermediary<cLatitude>::num_of_interactive_columns;
-template <> const unsigned int Attribute_Basic<cAssignee>::num_of_interactive_columns;
-template <> const unsigned int Attribute_Basic<cLatitude >::num_of_interactive_columns;
-template <> const unsigned int Attribute_Basic<cLongitude >::num_of_interactive_columns;
-template <typename Derived> const unsigned int Attribute_Basic<Derived>::num_of_interactive_columns = 0;
+//template <> const uint32_t Attribute_Intermediary<cLatitude>::num_of_interactive_columns;
+template <> const uint32_t Attribute_Basic<cAssignee>::num_of_interactive_columns;
+template <> const uint32_t Attribute_Basic<cLatitude >::num_of_interactive_columns;
+template <> const uint32_t Attribute_Basic<cLongitude >::num_of_interactive_columns;
+template <typename Derived> const uint32_t Attribute_Basic<Derived>::num_of_interactive_columns = 0;
 
 #endif /* PATENT_ATTRIBUTE_H */
