@@ -105,17 +105,6 @@ cRatioComponent::smooth() {
 #endif
 
 
-void
-cRatios::smooth() {
-    std::cout << "Starting ratios smoothing..." << std::endl;
-    const SimilarityProfile max = get_max_similarity (this->attrib_names);
-    const SimilarityProfile min ( max.size(), 0 );
-    smoothing_inter_extrapolation_cplex(this->final_ratios, min, max, x_counts, m_counts,
-            this->get_attrib_names(), should_do_name_range_check, false);
-
-    std::cout << "Ratios smoothing done. " << std::endl;
-}
-
 
 vector<SimilarityProfile>
 find_lesser_neighbour(const SimilarityProfile & sp, const SimilarityProfile & min_sp) {
@@ -227,12 +216,9 @@ compute_total_nodes(const SimilarityProfile & min_sp,
 
 void
 smoothing_inter_extrapolation_cplex(
-    //map<SimilarityProfile, double, SimilarityCompare> & ratio_map,
     SPRatiosIndex & ratio_map,
     const SimilarityProfile & min_sp,
     const SimilarityProfile & max_sp,
-    //const map<SimilarityProfile, uint32_t, SimilarityCompare> & x_counts,
-    //const map<SimilarityProfile, uint32_t, SimilarityCompare> & m_counts,
     const SPCountsIndex & x_counts,
     const SPCountsIndex & m_counts,
     const vector<string> & attribute_names,
@@ -240,11 +226,13 @@ smoothing_inter_extrapolation_cplex(
     const bool backup_quadprog ) {
 
     // TODO: Refactor x & m count checks
-    if ( x_counts.size() != m_counts.size() )
+    if (x_counts.size() != m_counts.size()) {
         throw cException_Other("x_counts and m_counts are not of the same size");
+    }
 
-    if ( x_counts.size() != ratio_map.size() )
+    if (x_counts.size() != ratio_map.size()) {
         throw cException_Other("x_counts and ratio_map are not of the same size");
+    }
 
     // TODO: Refactor min and max sp size checks into the
     // compute_total_nodes function, then catch dissimilar
@@ -408,3 +396,17 @@ smoothing_inter_extrapolation_cplex(
     env.end();
 #endif
 }
+
+
+void
+cRatios::smooth() {
+    std::cout << "Starting ratios smoothing..." << std::endl;
+    const SimilarityProfile max = get_max_similarity (this->attrib_names);
+    const SimilarityProfile min ( max.size(), 0 );
+    smoothing_inter_extrapolation_cplex(this->final_ratios, min, max, x_counts, m_counts,
+            this->get_attrib_names(), should_do_name_range_check, false);
+
+    std::cout << "Ratios smoothing done. " << std::endl;
+}
+
+
