@@ -121,7 +121,8 @@ public:
 
     bool operator < (const cSimilarity_With_Monotonicity_Dimension & rhs) const;
 
-    const uint32_t get_monotonic_dimension() const {
+    //const uint32_t get_monotonic_dimension() const {
+    uint32_t get_monotonic_dimension() const {
       return monotonic_dimension;
     }
 
