@@ -973,15 +973,6 @@ public:
  * Third layer of the attribute hierarchy to handle the data storage, too.
  * Private:
  */
-
-
-/**
- * Public:
- * const vector < const string * > & get_data() const: for external call.
- *
- * bool operator < ( const Attribute & rhs ) const:
- * sorting function used in map/set only. should not call explicitly.
- */
 template <typename AttribType>
 class Attribute_Vector_Intermediary: public Attribute_Intermediary<AttribType> {
 
@@ -1006,6 +997,13 @@ protected:
       return vector_string_pointers;
     }
 
+/**
+ * Public:
+ * const vector < const string * > & get_data() const: for external call.
+ *
+ * bool operator < ( const Attribute & rhs ) const:
+ * sorting function used in map/set only. should not call explicitly.
+ */
 public:
 
     const vector < const string * > & get_data() const {
@@ -1019,10 +1017,6 @@ public:
 
 
 
-/*
- * template < Concreate Class Name > Attribute_Set_Mode
- */
-
 /**
  * This is the second layer of abstract class, implementing
  * more detailed certain class behaviors.
@@ -1033,46 +1027,29 @@ public:
  * and whose merging behavior is grouping all distinct values together
  * for each cluster ( or disambiguated and grouped records ).
  */
-
-
-/**
- *  const Attribute * attrib_merge ( const Attribute & right_hand_side) const:
- *  the polymorphic attribute merge function customized for set mode. Override in the child class if necessary.
- */
-
-
-
-/**
- * bool operator < ( const Attribute & rhs ) const:
- * overloading operator which overrides the base class one.
- * Used only in internal binary tree sort. Do not call explicitly.
- */
-
-/**
- * void print( std::ostream & os ) const:
- * polymorphic print function. os can be a file stream,
- * or std::cout if outputting to the screen.
- */
-
 // Polysemy: In this instance, Set reads like a verb, but is really a noun
 // The confusion here is that in blocking parts of the code, classes are
 // "verbed" in this same way.
 template <typename AttribType>
-class Attribute_Set_Mode : public Attribute_Set_Intermediary < AttribType > {
+class Attribute_Set_Mode : public Attribute_Set_Intermediary <AttribType> {
 
 protected:
 
    /**
-    * set < const string * > attrib_set:
-    * this is the actual data member that will be used in the storage
+    * attrib_set is the actual data member that will be used in the storage
     * and comparison of its concrete subclasses. Instead, the data
     * member in the base Attribute class, "data", should not be used unless necessary.
     */
     set <const string *> attrib_set;
 
-    const Attribute * attrib_merge ( const Attribute & right_hand_side) const {
-        const AttribType & rhs = dynamic_cast< const AttribType & > (right_hand_side);
-        set < const string * > temp (this->attrib_set);
+   /**
+    *  attrib_merge is a the polymorphic attribute merge function
+    *  customized for set mode. Override in the child class if necessary.
+    */
+    const Attribute * attrib_merge (const Attribute & right_hand_side) const {
+
+        const AttribType & rhs = dynamic_cast<const AttribType &> (right_hand_side);
+        set <const string *> temp (this->attrib_set);
         temp.insert(rhs.attrib_set.begin(), rhs.attrib_set.end());
         AttribType tempclass;
         tempclass.attrib_set = temp;
@@ -1110,8 +1087,11 @@ public:
     * Override it in the child class if other scoring method is used.
     */
     unsigned int compare(const Attribute & right_hand_side) const {
-        if ( ! this->is_comparator_activated () )
+
+        if (!this->is_comparator_activated()) {
             throw cException_No_Comparision_Function(this->static_get_class_name().c_str());
+        }
+
         try {
 
             unsigned int res = 0;
@@ -1122,14 +1102,14 @@ public:
                                          rhs.attrib_set.begin(), rhs.attrib_set.end(),
                                          mv);
 
-            if ( res > mv )
-                res = mv;
+            if (res > mv) res = mv;
+
             return res;
-        }
-        catch ( const std::bad_cast & except ) {
+        } catch ( const std::bad_cast & except ) {
+
             std::cerr << except.what() << std::endl;
             std::cerr << "Error: " << this->get_class_name() << " is compared to " 
-		      << right_hand_side.get_class_name() << std::endl;
+		                  << right_hand_side.get_class_name() << std::endl;
             throw;
         }
     }
@@ -1163,11 +1143,21 @@ public:
     }
 
 
+   /**
+    * bool operator < ( const Attribute & rhs ) const:
+    * overloading operator which overrides the base class one.
+    * Used only in internal binary tree sort. Do not call explicitly.
+    */
     bool operator < ( const Attribute & rhs ) const {
       return this->attrib_set < dynamic_cast< const AttribType & >(rhs).attrib_set;
     }
 
 
+   /**
+    * void print( std::ostream & os ) const:
+    * polymorphic print function. os can be a file stream,
+    * or std::cout if outputting to the screen.
+    */
     void print( std::ostream & os ) const {
 
         set < const string * >::const_iterator p = attrib_set.begin();
