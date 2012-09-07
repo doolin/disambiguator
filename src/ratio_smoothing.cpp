@@ -193,7 +193,7 @@ get_weight (const uint32_t x_count, const uint32_t m_count) {
 
 
 uint32_t
-compute_total_modes(const SimilarityProfile & min_sp,
+compute_total_nodes(const SimilarityProfile & min_sp,
                     const SimilarityProfile & max_sp) {
 
     uint32_t total_nodes = 1;

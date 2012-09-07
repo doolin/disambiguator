@@ -414,4 +414,7 @@ bool             dump_match                           (const char * sqlite3_targ
                                                        const string & unique_record_name,
                                                        const string & unique_inventor_name);
 
+uint32_t         compute_total_nodes                  (const SimilarityProfile & min_sp,
+                                                       const SimilarityProfile & max_sp);
+
 #endif /* PATENT_RATIOS_H */
