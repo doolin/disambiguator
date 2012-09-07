@@ -179,6 +179,39 @@ compute_total_nodes(const SimilarityProfile & min_sp,
 }
 
 
+uint32_t
+compute_total_nodes(const SimilarityProfile & min_sp,
+                    const SimilarityProfile & max_sp,
+                    uint32_t total_nodes) {
+
+    uint32_t total_possible_inequality = 0;
+    uint32_t total_equality = 0;
+    const uint32_t overflow_check = 0 - 1;
+
+    for (uint32_t i = 0; i < min_sp.size(); ++i) {
+
+        uint32_t t = max_sp.at(i) - min_sp.at(i) + 1;
+        uint32_t temp = total_nodes - total_nodes/t;
+
+        if (total_possible_inequality > overflow_check - temp) {
+            throw cException_Other ("Size of all inequality exceeds the allowed limit ( uint32_t ).");
+        } else {
+
+            total_possible_inequality += temp;
+            if (temp) {
+                uint32_t temp2 = temp - total_nodes/t;
+                total_equality += temp2;
+            }
+        }
+    }
+
+    std::cout << "There are " 
+              << total_nodes << " similarity profiles, "
+              << total_equality << " equalities and "
+              << total_possible_inequality << " inequalities in all." << std::endl;
+}
+
+
 
 void
 smoothing_inter_extrapolation_cplex(
@@ -227,6 +260,10 @@ smoothing_inter_extrapolation_cplex(
     }
 #endif
 
+
+#if 0
+    check_inequality_size(min_sp, max_sp, total_nodes);
+#else
     // TODO: Should be able to refactor this out.
     uint32_t total_possible_inequality = 0;
     uint32_t total_equality = 0;
@@ -251,6 +288,7 @@ smoothing_inter_extrapolation_cplex(
               << total_equality << " equalities and "
               << total_possible_inequality << " inequalities in all." << std::endl;
     ///// Refactor above^^^^^^
+#endif
 
     std::cout << "Starting Quadratic Programming. ( Take the logarithm ) ..." << std::endl;
 
