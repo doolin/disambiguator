@@ -1518,17 +1518,25 @@ class cFirstname : public Attribute_Single_Mode <cFirstname> {
 
 
 class cLastname : public Attribute_Single_Mode <cLastname> {
+
 public:
     static const unsigned int max_value = Jaro_Wrinkler_Max;
 
     cLastname(const char * UP(source) = NULL ) {}
+
     unsigned int get_attrib_max_value() const {
-        if ( ! is_comparator_activated() )
+
+        if (!is_comparator_activated()) {
             Attribute::get_attrib_max_value();
+        }
         return max_value;
     }
-    int exact_compare( const Attribute & rhs ) const { return this == & rhs; }
+
+    int exact_compare(const Attribute & rhs) const {
+      return this == & rhs;
+    }
 };
+
 
 class cMiddlename : public Attribute_Single_Mode <cMiddlename> {
 public:
