@@ -177,10 +177,10 @@ ClusterInfo::retrieve_last_comparision_info ( const cBlocking_Operation & blocke
                 Cluster tempc(th, tempv);
                 tempc.self_repair();
 
-                if ( prim_iter != cluster_by_block.end()) {
+                if (prim_iter != cluster_by_block.end()) {
                     prim_iter->second.push_back(tempc);
-                }
-                else {
+                } else {
+
                     cRecGroup one_elem(1, tempc);
                     prim_iter = cluster_by_block.insert(std::pair<string, cRecGroup>(b_id, one_elem)).first;
                     for ( uint32_t i = 0; i < num_columns; ++i ) {
@@ -189,23 +189,28 @@ ClusterInfo::retrieve_last_comparision_info ( const cBlocking_Operation & blocke
                 }
 
                 ++count;
-                if ( count % base == 0 )
+                if (count % base == 0) {
                     std::cout << count << " records have been loaded from the cluster file. " << std::endl;
+                }
             }
 
             std::cout << "Obtained ";
-            for ( uint32_t i = 0; i < num_columns; ++i )
+            for (uint32_t i = 0; i < num_columns; ++i) {
                 std::cout << column_stat.at(i).size() << " / ";
+            }
             std::cout << " unique column data." << std::endl;
 
             uint32_t stat_cnt = 0;
             uint32_t min_stat_cnt = 0;
 
-            for ( uint32_t i = 0; i < num_columns; ++i ) {
+            for (uint32_t i = 0; i < num_columns; ++i) {
+
                 stat_cnt = 0;
+
                 for ( map<string, uint32_t >::const_iterator p = column_stat.at(i).begin(); p != column_stat.at(i).end(); ++p )
                     if ( p->second > stat_cnt && ! p->first.empty() )
                         stat_cnt = p->second;
+
                 for ( map < string, uint32_t > ::iterator p = column_stat.at(i).begin(); p != column_stat.at(i).end(); ++p ) {
                     if ( p->second == stat_cnt )
                         std::cout << "Most common " << i << "th column part = " << p->first << " Occurrence = " << stat_cnt << std::endl;
@@ -233,7 +238,8 @@ ClusterInfo::retrieve_last_comparision_info ( const cBlocking_Operation & blocke
 
         std::cout << " Current Unique-identifier Binary Tree, having "
                   << uid2record_pointer->size()
-                  << " elements, is not complete! " << std::endl;
+                  << " elements, is not complete! "
+                  << std::endl;
 
         std::cout << past_comparision_file
                   << " has unique identifiers that do not show in the current binary tree."
@@ -260,22 +266,30 @@ ClusterInfo::retrieve_last_comparision_info ( const cBlocking_Operation & blocke
  * the total number of records and save it.
  */
 void
-ClusterInfo::reset_blocking(const cBlocking_Operation & blocker, const char * const past_comparision_file) {
+ClusterInfo::reset_blocking(const cBlocking_Operation & blocker,
+    const char * const past_comparision_file) {
 
     total_num = 0;
     useless = blocker.get_useless_string();
     retrieve_last_comparision_info(blocker, past_comparision_file);
 
-    for ( map <string, cRecGroup>::iterator p  = cluster_by_block.begin(); p != cluster_by_block.end(); ++p ) {
-        for ( cRecGroup::iterator cp = p->second.begin(); cp != p->second.end(); ++cp ) {
-            if ( cMiddlename::is_enabled() )
+    for (map<string, cRecGroup>::iterator p = cluster_by_block.begin();
+        p != cluster_by_block.end(); ++p) {
+
+        cRecGroup::iterator cp = p->second.begin();
+        for (; cp != p->second.end(); ++cp) {
+            if (cMiddlename::is_enabled()) {
                 cp->change_mid_name();
+            }
         }
     }
 
-    for ( map <string, cRecGroup>::const_iterator p  = cluster_by_block.begin(); p != cluster_by_block.end(); ++p ) {
-        for ( cRecGroup::const_iterator cp = p->second.begin(); cp != p->second.end(); ++cp )
+    for (map<string, cRecGroup>::const_iterator p = cluster_by_block.begin();
+         p != cluster_by_block.end(); ++p) {
+
+        for (cRecGroup::const_iterator cp = p->second.begin(); cp != p->second.end(); ++cp) {
             total_num += cp->get_fellows().size();
+        }
     }
 }
 
@@ -287,7 +301,7 @@ ClusterInfo::reset_blocking(const cBlocking_Operation & blocker, const char * co
  */
 void
 ClusterInfo::preliminary_consolidation(const cBlocking_Operation & blocker,
-                                         const list < const Record *> & all_rec_list) {
+                                       const list<const Record *> & all_rec_list) {
 
     std::cout << "Preliminary consolidation ... ..." << std::endl;
     total_num = 0;
@@ -295,7 +309,10 @@ ClusterInfo::preliminary_consolidation(const cBlocking_Operation & blocker,
     useless = blocker.get_useless_string();
     map < string, cRecGroup >::iterator mi;
     const RecordPList empty_fellows;
-    for ( list < const Record * > ::const_iterator p = all_rec_list.begin(); p != all_rec_list.end(); ++p ) {
+
+    for (list<const Record *>::const_iterator p = all_rec_list.begin();
+         p != all_rec_list.end(); ++p) {
+
         string temp ( blocker.extract_blocking_info(*p));
         mi = cluster_by_block.find(temp);
         if ( mi == cluster_by_block.end() ) {
@@ -316,8 +333,10 @@ ClusterInfo::preliminary_consolidation(const cBlocking_Operation & blocker,
 
     std::cout << "Preliminary consolidation done." << std::endl;
 
-    for ( map <string, cRecGroup>::const_iterator p  = cluster_by_block.begin(); p != cluster_by_block.end(); ++p ) {
-        for ( cRecGroup::const_iterator cp = p->second.begin(); cp != p->second.end(); ++cp )
+    for (map <string, cRecGroup>::const_iterator p  = cluster_by_block.begin();
+         p != cluster_by_block.end(); ++p) {
+
+        for (cRecGroup::const_iterator cp = p->second.begin(); cp != p->second.end(); ++cp)
             total_num += cp->get_fellows().size();
     }
 }

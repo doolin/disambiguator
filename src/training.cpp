@@ -295,6 +295,7 @@ cBlocking_For_Training::create_xset01_on_block(const string & block_id,
         //set < string > outer_coauthors( (*outercursor)->get_data_by_index(coauthors_index).begin(), (*outercursor)->get_data_by_index(coauthors_index).end());
 
         /*debug only
+        // TODO: Move this to a function.
         for ( set<string>::const_iterator p = outer_coauthors.begin(); p!= outer_coauthors.end(); ++p)
             std::cout << *p << " | ";
         std::cout << "----------------<- outer"<<std::endl;

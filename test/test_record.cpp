@@ -10,7 +10,7 @@
 
 #include <record_private.h>
 
-class RecordTest : public CppUnit::TestCase { 
+class RecordTest : public CppUnit::TestCase {
 
 public:
   RecordTest(std::string name) : CppUnit::TestCase(name) {}
