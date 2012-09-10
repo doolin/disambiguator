@@ -60,7 +60,7 @@ const std::string EngineTest::LINE  = "Firstname,Middlename,Lastname,Latitude,As
 void
 test_engine() {
 
-  EngineTest * et = new EngineTest(std::string(COLOR216"Engine unit test"COLOR_RESET));
+  EngineTest * et = new EngineTest(std::string(COLOR216"Engine unit test" COLOR_RESET));
   et->runTest();
   delete et;
 }
