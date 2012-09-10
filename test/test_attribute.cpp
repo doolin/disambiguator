@@ -145,18 +145,42 @@ public:
     foobar->set_sample_record(foobar);
     uint32_t similarity;
 
-    cLastname d1("Williams");
-    d1.split_string("Williams");
-    cLastname d2("Wilson");
-    d2.split_string("Wilson");
+    cAssignee d1("IBM");
+    d1.split_string("IBM");
+    cAssignee d2("IBM");
+    d2.split_string("IBM");
 
     d1.activate_comparator();
 
     similarity = d1.compare(d2);
-    std::cout << "Lastname similarity d1, d2: " << similarity << std::endl;
+    std::cout << "Assignee similarity d1, d2: " << similarity << std::endl;
     //CPPUNIT_ASSERT(4 == similarity);
 
     delete foobar;
+  }
+
+
+  void compare_coauthor() {
+
+
+#if 0
+    Record * foobar = make_foobar_record();
+    foobar->set_sample_record(foobar);
+    uint32_t similarity;
+    cCoauthor d1("IBM");
+    d1.split_string("IBM");
+    cCoauthor d2("IBM");
+    d2.split_string("IBM");
+
+    d1.activate_comparator();
+
+    similarity = d1.compare(d2);
+    std::cout << "Coauthor similarity d1, d2: " << similarity << std::endl;
+    //CPPUNIT_ASSERT(4 == similarity);
+
+    delete foobar;
+#endif
+
   }
 
 
@@ -171,6 +195,7 @@ public:
     compare_firstname();
     compare_middlename();
     compare_lastname();
+    //compare_assignee();
     delete_attribute();
   }
 };
