@@ -357,16 +357,19 @@ cMiddlename::split_string(const char *inputdata) {
 unsigned int
 cMiddlename::compare(const Attribute & right_hand_side) const {
 
-    if ( ! is_comparator_activated () )
+    if (!is_comparator_activated()) {
         throw cException_No_Comparision_Function(static_get_class_name().c_str());
+    }
 
     try {
-        const cMiddlename & rhs = dynamic_cast< const cMiddlename & > (right_hand_side);
-        unsigned int res = midnamecmp(* this->get_data().at(0), * rhs.get_data().at(0));
-        if ( res > max_value )
-            res = max_value;
+
+        const cMiddlename & rhs = dynamic_cast<const cMiddlename &> (right_hand_side);
+        unsigned int res = midnamecmp(* this->get_data().at(0), *rhs.get_data().at(0));
+        if (res > max_value) res = max_value;
         return res;
+
     } catch ( const std::bad_cast & except ) {
+
         std::cerr << except.what() << std::endl;
         std::cerr << "Error: " << this->get_class_name() << " is compared to "
                   << right_hand_side.get_class_name() << std::endl;
