@@ -78,8 +78,14 @@ Attribute::split_string(const char* recdata) {
     // each attribute. Effective STL by Scott Meyers, Item 17
     vector< const string* > (data).swap(data);
 
-    if ( data.size() > 1 )
+    // Oh ugly, ugly code... this is not the place to
+    // enforce a length constraint. And besides, why
+    // is this "data" being held in a vector<string>
+    // when the size is only 1? Makes no sense.
+    // TODO: Get rid of this vector junk for firstnames.
+    if (data.size() > 1) {
         throw cException_Vector_Data(recdata);
+    }
 
     return true;
 }
