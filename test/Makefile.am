@@ -16,7 +16,7 @@ INCLUDES = -I/usr/local/include -I$(CPLEXINCLUDE) -I$(CONCERTINCLUDE) -I../inclu
 
 
 #CXXFLAGS =  -Wall -Wextra -ansi -Wignored-qualifiers # -pedantic # -Wno-unused-parameter  -Wno-uninitialized # -Wno-ignored-qualifiers
-AM_CXXFLAGS = -std=c++11 -O0 -g -Wall -Wextra -ansi  -Wformat-zero-length # -pedantic
+AM_CXXFLAGS = -O0 -g -Wall -Wextra -Wformat-zero-length # -pedantic -ansi
 #CXXFLAGS = $(AM_CXXFLAGS)
 
 LDADD = ../src/libdisambiguation.a 
@@ -31,7 +31,7 @@ TESTS = distest idtest typedefs record blocking attribute stringmanipulator \
 bin_PROGRAMS = $(TESTS)
 
 %.o: %.cpp
-	g++ $(INCLUDES) $(AM_CXXFLAGS) -D$*_STANDALONE -c $<
+	g++ $(AM_CXXFLAGS) $(INCLUDES) -D$*_STANDALONE -c $<
 
 COMMON = testdata.cpp
 
