@@ -8,11 +8,18 @@
 
 #include "colortest.h"
 
-class TrainingTest : public CppUnit::TestCase { 
+class TrainingTest : public CppUnit::TestCase {
 
-public: 
+public:
   TrainingTest(std::string name) : CppUnit::TestCase(name) {
     fprintf(stdout, "%s\n", name.c_str());
+  }
+
+  void test_get_blocking_indice() {
+    vector<string> labels = { "foo", "bar", "baz" };
+    vector<uint32_t> ci = get_blocking_indices(labels);
+    vector<string> initial = { "bar", "baz", "foo" };
+    CPPUNIT_ASSERT(labels == initial);
   }
 
   void delete_blocking() {
@@ -29,7 +36,7 @@ public:
 void
 test_training() {
 
-  TrainingTest * tt = new TrainingTest(std::string(COLOR124"Training initial test"COLOR_RESET));
+  TrainingTest * tt = new TrainingTest(std::string(COLOR124"Training initial test" COLOR_RESET));
   tt->runTest();
   delete tt;
 }
