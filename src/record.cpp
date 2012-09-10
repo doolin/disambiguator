@@ -35,17 +35,17 @@ const Record * Record::sample_record_pointer = NULL;
  * Algorithm: use " is_informative() " function to check each specified attribute, and return the sum.
  */
 
-unsigned int
+uint32_t
 Record::informative_attributes() const {
 
-    static const unsigned int firstname_index = Record::get_index_by_name(cFirstname::static_get_class_name());
-    static const unsigned int middlename_index = Record::get_index_by_name(cMiddlename::static_get_class_name());
-    static const unsigned int lastname_index = Record::get_index_by_name(cLastname::static_get_class_name());
-    static const unsigned int assignee_index = Record::get_index_by_name(cAssignee::static_get_class_name());
-    static const unsigned int lat_index = Record::get_index_by_name(cLatitude::static_get_class_name());
-    static const unsigned int ctry_index = Record::get_index_by_name(cCountry::static_get_class_name());
+    static const uint32_t firstname_index = Record::get_index_by_name(cFirstname::static_get_class_name());
+    static const uint32_t middlename_index = Record::get_index_by_name(cMiddlename::static_get_class_name());
+    static const uint32_t lastname_index = Record::get_index_by_name(cLastname::static_get_class_name());
+    static const uint32_t assignee_index = Record::get_index_by_name(cAssignee::static_get_class_name());
+    static const uint32_t lat_index = Record::get_index_by_name(cLatitude::static_get_class_name());
+    static const uint32_t ctry_index = Record::get_index_by_name(cCountry::static_get_class_name());
 
-    unsigned int cnt = 0;
+    uint32_t cnt = 0;
 
     this->vector_pdata.at(firstname_index)->is_informative() && (++cnt);
     this->vector_pdata.at(middlename_index)->is_informative() && (++cnt);
@@ -122,20 +122,20 @@ Record::print() const {
 
 /*
  * Aim: compare (*this) record object with rhs record object, and 
- * return a similarity profile ( which is vector < unsigned int > ) 
+ * return a similarity profile ( which is vector < uint32_t > ) 
  * for all activated columns.
  * Algorithm: call each attribute pointer's "compare" method.
  */
 
-vector <unsigned int>
+vector <uint32_t>
 Record::record_compare(const Record & rhs) const {
 
     static const bool detail_debug = false;
-    vector <unsigned int > rec_comp_result;
+    vector <uint32_t > rec_comp_result;
 
     if ( detail_debug ) {
 
-        static const unsigned int uid_index = Record::get_index_by_name(cUnique_Record_ID::static_get_class_name());
+        static const uint32_t uid_index = Record::get_index_by_name(cUnique_Record_ID::static_get_class_name());
         const string debug_string = "06476708-1";
         const string * ps = this->get_attrib_pointer_by_index(uid_index)->get_data().at(0);
         const string * qs = rhs.get_attrib_pointer_by_index(uid_index)->get_data().at(0);
@@ -152,9 +152,9 @@ Record::record_compare(const Record & rhs) const {
 
     try {
 
-        for ( unsigned int i = 0; i < this->vector_pdata.size(); ++i ) {
+        for ( uint32_t i = 0; i < this->vector_pdata.size(); ++i ) {
             try {
-                unsigned int stage_result = this->vector_pdata[i]->compare(*(rhs.vector_pdata[i]));
+                uint32_t stage_result = this->vector_pdata[i]->compare(*(rhs.vector_pdata[i]));
                 rec_comp_result.push_back( stage_result );
             }
             catch (const cException_No_Comparision_Function & err) {
@@ -169,7 +169,7 @@ Record::record_compare(const Record & rhs) const {
 
     //for debug only.
     if ( detail_debug ) {
-        static const unsigned int uid_index = Record::get_index_by_name(cUnique_Record_ID::static_get_class_name());
+        static const uint32_t uid_index = Record::get_index_by_name(cUnique_Record_ID::static_get_class_name());
         const string debug_string = "06476708-1";
         const string * ps = this->get_attrib_pointer_by_index(uid_index)->get_data().at(0);
         const string * qs = rhs.get_attrib_pointer_by_index(uid_index)->get_data().at(0);
@@ -183,7 +183,7 @@ Record::record_compare(const Record & rhs) const {
             std::cout << "..........." << std::endl;
             std::cout << "Similarity Profile =";
 
-            for ( vector < unsigned int >::const_iterator t = rec_comp_result.begin(); t != rec_comp_result.end(); ++t )
+            for ( vector < uint32_t >::const_iterator t = rec_comp_result.begin(); t != rec_comp_result.end(); ++t )
                 std::cout << *t << ",";
             std::cout << std::endl << std::endl;
         }
@@ -200,19 +200,19 @@ Record::record_compare(const Record & rhs) const {
  * Algorithm: call each attribute pointer's "compare" method.
  *
  */
-vector <unsigned int>
+vector <uint32_t>
 Record::record_compare_by_attrib_indice (const Record &rhs, 
-                                          const vector < unsigned int > & attrib_indice_to_compare) const {
+                                          const vector < uint32_t > & attrib_indice_to_compare) const {
 
-    vector <unsigned int > rec_comp_result;
+    vector <uint32_t > rec_comp_result;
 
     try {
 
-        for ( unsigned int j = 0; j < attrib_indice_to_compare.size(); ++j ) {
+        for ( uint32_t j = 0; j < attrib_indice_to_compare.size(); ++j ) {
 
             try {
-                unsigned int i = attrib_indice_to_compare.at(j);
-                unsigned int stage_result = this->vector_pdata[i]->compare(*(rhs.vector_pdata[i]));
+                uint32_t i = attrib_indice_to_compare.at(j);
+                uint32_t stage_result = this->vector_pdata[i]->compare(*(rhs.vector_pdata[i]));
                 rec_comp_result.push_back( stage_result );
             }
             catch (const cException_No_Comparision_Function & err) {
@@ -234,12 +234,12 @@ Record::record_compare_by_attrib_indice (const Record &rhs,
  * (*this) and rhs record objects. Algorithm: call each
  * attribute pointer's "exact_compare" method.
  */
-unsigned int
+uint32_t
 Record::record_exact_compare(const Record & rhs ) const {
 
-    unsigned int result = 0;
+    uint32_t result = 0;
 
-    for ( unsigned int i = 0; i < this->vector_pdata.size(); ++i ) {
+    for ( uint32_t i = 0; i < this->vector_pdata.size(); ++i ) {
         int ans = this->vector_pdata.at(i)->exact_compare( * rhs.vector_pdata.at(i));
 
         if ( 1 == ans ) ++result;
@@ -269,11 +269,11 @@ Record::clean_member_attrib_pool() {
  * Get the index of the desired column name in the columns read from text file.
  * Algorithm: exhaustive comparison. Time complexity = O(n); if no matching is found, a exception will be thrown.
  */
-unsigned int
+uint32_t
 Record::get_index_by_name(const string & inputstr) {
 
-    for ( unsigned int i = 0 ; i < column_names.size(); ++i ) {
-        if ( column_names.at(i) == inputstr ) {
+    for (uint32_t i = 0 ; i < column_names.size(); ++i) {
+        if (column_names.at(i) == inputstr) {
             return i;
         }
     }
@@ -294,10 +294,10 @@ Record::get_index_by_name(const string & inputstr) {
  * Algorithm: exhaustive comparison. Time complexity = O(n); 
  * if no matching is found, a exception will be thrown.
  */
-unsigned int
+uint32_t
 Record::get_similarity_index_by_name(const string & inputstr) {
 
-    for (unsigned int i = 0 ; i < active_similarity_names.size(); ++i)
+    for (uint32_t i = 0 ; i < active_similarity_names.size(); ++i)
         if ( active_similarity_names.at(i) == inputstr ) return i;
 
     throw cException_ColumnName_Not_Found(inputstr.c_str());
