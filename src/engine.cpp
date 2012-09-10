@@ -524,6 +524,8 @@ fetch_records_from_txt(list <Record> & source,
     // TODO: This thing evidently is some sort of "insta-record" for
     // handiness elsewhere in the code.
     // TODO: Get rid of this thing.
+    // TODO: It's used to "activate comparators" allowing attributes to
+    // to be compared. It's crazy.
     Record::sample_record_pointer = & source.front();
 
     // TODO: Create a little function for this which can be unit tested

@@ -57,6 +57,13 @@ Record::informative_attributes() const {
     return cnt;
 }
 
+
+void
+Record::print_sample_record() {
+  const Record * pr = Record::sample_record_pointer;
+  pr->print();
+}
+
 /*
  * Aim: to keep updated the names of current similarity profile columns.
  * Algorithm: use a static sample Record pointer to check the comparator status of each attribute.
@@ -68,10 +75,13 @@ Record::update_active_similarity_names() {
     Record::active_similarity_names.clear();
     const Record * pr = Record::sample_record_pointer;
 
-    for ( vector < const Attribute *>::const_iterator p = pr->vector_pdata.begin(); p != pr->vector_pdata.end(); ++p ) {
-        //std::cout << (*p)->get_class_name() << " , ";        //for debug purpose
-        if ( (*p)->is_comparator_activated() )
+    vector<const Attribute *>::const_iterator p = pr->vector_pdata.begin();
+    for (; p != pr->vector_pdata.end(); ++p) {
+        //std::cout << (*p)->get_class_name() << " , "; //for debug purpose
+
+        if ((*p)->is_comparator_activated()) {
             Record::active_similarity_names.push_back((*p)->get_class_name());
+        }
     }
 }
 
@@ -80,6 +90,9 @@ Record::update_active_similarity_names() {
  * as the above one. However, this function is declared and callable in
  * the template implementations in "DisambigDefs.h", where Record has 
  * not be declared yet.
+ *
+ * This is a really bad idea, and just the action of having to expose
+ * a class method to global access exposes a fundamentally flawed design.
  */
 void
 Record_update_active_similarity_names() {
