@@ -328,5 +328,6 @@ uint32_t     create_xset03      (list <RecordPair> &results,
 void         choose_rare_words  (const WordCounter word_map,
                                  set<string> & chosen_words);
 
+vector<uint32_t> get_blocking_indices(const vector<string> & column_names);
 
 #endif /* PATENT_TRAINING_H */
