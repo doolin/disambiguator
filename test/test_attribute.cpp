@@ -24,30 +24,86 @@ public:
   AttributeTest(std::string name) : CppUnit::TestCase(name) {}
 
 
-  void compare_exact() {
+  void compare_firstname() {
 
     Record * foobar = make_foobar_record();
     foobar->set_sample_record(foobar);
 
     cFirstname d1("Dave");
-    cout << "1" << endl;
     d1.split_string("Dave");
-    cout << "2" << endl;
-    d1.activate_comparator();
-    cout << "3" << endl;
     cFirstname d2("Dave");
-    cout << "4" << endl;
     d2.split_string("Dave");
-    cout << "5" << endl;
-    d2.activate_comparator();
-    cout << "6" << endl;
+    d1.activate_comparator();
+    //d2.activate_comparator();
     uint32_t similarity = d1.compare(d2);
-    cout << "7" << endl;
-    std::cout << "Similarity: " << similarity << std::endl;
-    cout << "8" << endl;
+    //std::cout << "Similarity: " << similarity << std::endl;
+    CPPUNIT_ASSERT(4 == similarity);
     similarity = d1.exact_compare(d1);
-    cout << "9" << endl;
-    std::cout << "Similarity: " << similarity << std::endl;
+    //std::cout << "Similarity: " << similarity << std::endl;
+  }
+
+
+  void compare_middlename() {
+
+    Record * foobar = make_foobar_record();
+    foobar->set_sample_record(foobar);
+    uint32_t similarity;
+
+    cMiddlename d1("David");
+    d1.split_string("David");
+    cMiddlename d2("David");
+    d2.split_string("David");
+    cMiddlename d3("David Michael");
+    d3.split_string("David Michael");
+    cMiddlename d4("David Michael");
+    d4.split_string("David Michael");
+    cMiddlename d5("Anna Yvette");
+    d5.split_string("Anna Yvette");
+    cMiddlename d6("AnnaYvette");
+    d6.split_string("AnnaYvette");
+    cMiddlename d7("Anna");
+    d7.split_string("Anna");
+    cMiddlename d8("Yvette");
+    d8.split_string("Yvette");
+    cMiddlename d9("");
+    d9.split_string("");
+    cMiddlename d10("David Kenneth");
+    d10.split_string("David Kenneth");
+
+    d1.activate_comparator();
+
+    similarity = d1.compare(d2);
+    std::cout << "Middlename similarity d1, d2: " << similarity << std::endl;
+    //CPPUNIT_ASSERT(4 == similarity);
+
+    similarity = d1.compare(d3);
+    std::cout << "Middlename similarity d1, d3: " << similarity << std::endl;
+    //CPPUNIT_ASSERT(4 == similarity);
+
+    similarity = d1.compare(d4);
+    std::cout << "Middlename similarity d1, d4: " << similarity << std::endl;
+    //CPPUNIT_ASSERT(4 == similarity);
+
+    similarity = d1.compare(d5);
+    std::cout << "Middlename similarity d1, d5: " << similarity << std::endl;
+    //CPPUNIT_ASSERT(4 == similarity);
+
+    similarity = d1.compare(d6);
+    std::cout << "Middlename similarity d1, d6: " << similarity << std::endl;
+    //CPPUNIT_ASSERT(4 == similarity);
+
+    similarity = d3.compare(d4);
+    std::cout << "Middlename similarity d3, d4: " << similarity << std::endl;
+    //CPPUNIT_ASSERT(4 == similarity);
+
+    similarity = d8.compare(d9);
+    std::cout << "Middlename similarity d8, d9: " << similarity << std::endl;
+    //CPPUNIT_ASSERT(4 == similarity);
+
+    similarity = d4.compare(d10);
+    std::cout << "Middlename similarity d4, d10: " << similarity << std::endl;
+    //CPPUNIT_ASSERT(4 == similarity);
+
   }
 
 
@@ -58,7 +114,8 @@ public:
   }
 
   void runTest() {
-    compare_exact();
+    compare_firstname();
+    compare_middlename();
     delete_attribute();
   }
 };
