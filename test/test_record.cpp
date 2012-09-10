@@ -12,6 +12,7 @@
 
 class RecordTest : public CppUnit::TestCase {
 
+
 public:
   RecordTest(std::string name) : CppUnit::TestCase(name) {}
 
@@ -140,6 +141,18 @@ public:
 
   }
 
+
+  void test_sample_record_pointer() {
+
+    Record foobar = make_foobar_record();
+    foobar.set_sample_record(&foobar);
+    const Record & sample(Record::get_sample_record());
+    //Record sample = Record::get_sample_record();
+    std::cout << "&foobar: " << &foobar << ", &sample: " << &sample << std::endl;
+    CPPUNIT_ASSERT(&foobar == &sample);
+  }
+
+
   void runTest() {
     // Just o get startes...
     CPPUNIT_ASSERT( 1  == 1 );
@@ -151,6 +164,7 @@ public:
     test_get_data_by_index();
     test_create_column_indices();
     test_parse_column_names();
+    test_sample_record_pointer();
   }
 };
 
