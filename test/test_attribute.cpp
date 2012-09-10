@@ -115,6 +115,48 @@ public:
     std::cout << "Middlename similarity d4, d10: " << similarity << std::endl;
     //CPPUNIT_ASSERT(4 == similarity);
 
+    delete foobar;
+  }
+
+  void compare_lastname() {
+
+    Record * foobar = make_foobar_record();
+    foobar->set_sample_record(foobar);
+    uint32_t similarity;
+
+    cLastname d1("Williams");
+    d1.split_string("Williams");
+    cLastname d2("Wilson");
+    d2.split_string("Wilson");
+
+    d1.activate_comparator();
+
+    similarity = d1.compare(d2);
+    std::cout << "Lastname similarity d1, d2: " << similarity << std::endl;
+    //CPPUNIT_ASSERT(4 == similarity);
+
+    delete foobar;
+  }
+
+
+  void compare_assignee() {
+
+    Record * foobar = make_foobar_record();
+    foobar->set_sample_record(foobar);
+    uint32_t similarity;
+
+    cLastname d1("Williams");
+    d1.split_string("Williams");
+    cLastname d2("Wilson");
+    d2.split_string("Wilson");
+
+    d1.activate_comparator();
+
+    similarity = d1.compare(d2);
+    std::cout << "Lastname similarity d1, d2: " << similarity << std::endl;
+    //CPPUNIT_ASSERT(4 == similarity);
+
+    delete foobar;
   }
 
 
@@ -128,6 +170,7 @@ public:
   void runTest() {
     compare_firstname();
     compare_middlename();
+    compare_lastname();
     delete_attribute();
   }
 };
