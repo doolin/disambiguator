@@ -45,6 +45,17 @@ public:
 
   void compare_middlename() {
 
+#if 0
+    // This is from the previous documentation, in which
+    // middlenames run from 0..4. Now, Middlename compares
+    // run from 0..3
+    THOMAS ERIC/JOHN THOMAS
+    JOHN ERIC/JOHN (MISSING)
+    THOMAS ERIC ALEX/JACK ERIC RONALD
+    THOMAS ERIC RON ALEX EDWARD/JACK ERIC RON ALEX LEE
+    THOMAS ERIC/THOMAS ERIC LEE
+#endif
+
     Record * foobar = make_foobar_record();
     foobar->set_sample_record(foobar);
     uint32_t similarity;
@@ -113,6 +124,7 @@ public:
     delete a;
   }
 
+
   void runTest() {
     compare_firstname();
     compare_middlename();
@@ -120,7 +132,7 @@ public:
   }
 };
 
-
+#ifdef test_attribute_STANDALONE
 int
 main(int UP(argc), char ** UP(argv)) {
 
@@ -129,3 +141,4 @@ main(int UP(argc), char ** UP(argv)) {
   delete at;
   return 0;
 }
+#endif
