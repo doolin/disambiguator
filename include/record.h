@@ -156,10 +156,11 @@ public:
     }
 
 
-    void print( std::ostream & os ) const;
+    void print(std::ostream & os) const;
 
     void print() const;
 
+    void print_sample_record();
 
     static const vector<string> & get_column_names() {
       return column_names;
@@ -232,6 +233,10 @@ public:
     */
     static const Record & get_sample_record() {
       return *sample_record_pointer;
+    }
+
+    static void set_sample_record(Record * r) {
+      sample_record_pointer = r;
     }
 
     void reconfigure_record_for_interactives() const;
