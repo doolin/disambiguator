@@ -162,7 +162,6 @@ public:
 
   void compare_coauthor() {
 
-
 #if 0
     Record * foobar = make_foobar_record();
     foobar->set_sample_record(foobar);
@@ -183,6 +182,28 @@ public:
 
   }
 
+  void compare_class() {
+
+#if 0
+    Record * foobar = make_foobar_record();
+    foobar->set_sample_record(foobar);
+    uint32_t similarity;
+    cClass d1("IBM");
+    d1.split_string("IBM");
+    cClass d2("IBM");
+    d2.split_string("IBM");
+
+    d1.activate_comparator();
+
+    similarity = d1.compare(d2);
+    std::cout << "Class similarity d1, d2: " << similarity << std::endl;
+    //CPPUNIT_ASSERT(4 == similarity);
+
+    delete foobar;
+#endif
+
+  }
+
 
   // Test for memory leakage using valgrind
   void delete_attribute() {
@@ -196,6 +217,8 @@ public:
     compare_middlename();
     compare_lastname();
     //compare_assignee();
+    //compare_class();
+    //compare_distance();
     delete_attribute();
   }
 };
