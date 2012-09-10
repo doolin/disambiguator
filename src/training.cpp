@@ -10,6 +10,21 @@ extern "C" {
 }
 
 
+// TODO: Unit test
+// Almost positive this function has been defined somewhere else, and tested.
+vector<uint32_t>
+get_blocking_indices(const vector<string> & column_names) {
+
+    const size_t num_columns = column_names.size();
+    vector<uint32_t> blocking_indice;
+    for (size_t i = 0; i < num_columns; ++i) {
+        blocking_indice.push_back(Record::get_index_by_name(column_names.at(i)));
+    }
+
+    return blocking_indice;
+}
+
+
 void
 cBlocking::group_records(const RecordPList & records,
                          uint32_t num_block_columns,
@@ -77,10 +92,15 @@ cBlocking::cBlocking (const RecordPList & records,
 
     cSort_by_attrib unique_comparator(unique_identifier);
 
-    vector < uint32_t > blocking_indice;
+#if 0
+    // TODO: hook this up to unit test
+    vector<uint32_t> blocking_indice = get_blocking_indices(blocking_column_names);
+#else
+    vector<uint32_t> blocking_indice;
     for (uint32_t i = 0; i < num_block_columns; ++i) {
         blocking_indice.push_back(Record::get_index_by_name(blocking_column_names.at(i)));
     }
+#endif
 
     // typedef map<string, RecordPList> Blocks;
     map<string, RecordPList >::iterator b_iter;
