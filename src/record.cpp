@@ -292,12 +292,12 @@ Record::get_similarity_index_by_name(const string & inputstr) {
 
 
 void
-Record::activate_comparators_by_name (const vector < string > & inputvec) {
+Record::activate_comparators_by_name (const vector<string> & inputvec) {
 
     Record::active_similarity_names = inputvec;
 
-    for ( vector < const Attribute *>::const_iterator p = Record::sample_record_pointer->get_attrib_vector().begin();
-            p != Record::sample_record_pointer->get_attrib_vector().end(); ++p ) {
+    vector<const Attribute *>::const_iterator p = Record::sample_record_pointer->get_attrib_vector().begin();
+    for (; p != Record::sample_record_pointer->get_attrib_vector().end(); ++p) {
 
         const string & classlabel = (*p)->get_class_name();
 

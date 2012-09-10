@@ -5,7 +5,6 @@
 #include <cppunit/TestCase.h>
 #include <string>
 
-
 // Really good web pages:
 // http://stackoverflow.com/questions/318064/how-do-you-declare-an-interface-in-c
 // http://stackoverflow.com/questions/7182359/template-instantiation-details-of-gcc-and-ms-compilers

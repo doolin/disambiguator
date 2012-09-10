@@ -287,16 +287,22 @@ unsigned int
 cFirstname::compare(const Attribute & right_hand_side) const {
 
     // ALWAYS CHECK THE ACTIVITY OF COMPARISON FUNCTION !!
-    if ( ! this->is_comparator_activated () )
+    if (!this->is_comparator_activated ()) {
         throw cException_No_Comparision_Function(this->static_get_class_name().c_str());
+    }
 
-    if ( this == & right_hand_side )
+    if (this == &right_hand_side) {
         return this->get_attrib_max_value();
+    }
 
     unsigned int res = 0;
-    res = name_compare(* this->get_data().at(1), * right_hand_side.get_data().at(1), previous_truncation, current_truncation);
-    if ( res > this->get_attrib_max_value() )
+    res = name_compare(* this->get_data().at(1), *right_hand_side.get_data().at(1),
+        previous_truncation, current_truncation);
+
+    if (res > this->get_attrib_max_value()) {
         res = this->get_attrib_max_value();
+    }
+
     return res;
 }
 
