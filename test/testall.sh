@@ -6,7 +6,7 @@ initializeANSI
 
 
 echo "Attribute test"
-`./attribute`
+./attribute
 
 echo "Record test"
 `./record`
