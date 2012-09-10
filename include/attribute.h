@@ -730,8 +730,16 @@ public:
         if ( attrib_group == INERT_ATTRIB_GROUP_IDENTIFIER ) return;
 
         bool_comparator_activated = true;
+
+#if 0
+        // This is *wildly* inappropriate, and not in a good way.
+        // This needs to be wrapped with a debug flag, and if that
+        // can't be cleanly done here in the header file (hint:
+        // if can be), then the implementation needs to move to
+        // the attribute.cpp source file.
         std::cout << static_get_class_name()
                   << " comparison is active now." << std::endl;
+#endif
         Record_update_active_similarity_names() ;
     }
 
