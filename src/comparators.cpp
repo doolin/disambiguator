@@ -166,10 +166,10 @@ jwcmp(const string & str1, const string& str2) {
 int
 midnamecmp (const string & s1, const string & s2) {
 
-    if ( s1.empty() && s2.empty() )
-        return 2;
+    if (s1.empty() && s2.empty())
+      return 2;
 
-    if ( s1.empty() || s2.empty() )
+    if (s1.empty() || s2.empty())
         return 1;
 
     const char * p1 = s1.c_str();
