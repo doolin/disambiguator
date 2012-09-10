@@ -266,7 +266,7 @@ public:
 
     Attribute (const char * UP(inputstring)) {}
 
-    virtual bool operator == ( const Attribute & rhs) const {
+    virtual bool operator == (const Attribute & rhs) const {
       return this == &rhs;
     }
 
@@ -1472,10 +1472,15 @@ public:
 
 
 //declaration of static member
-template < typename AttribType> vector < const string * > Attribute_Set_Intermediary<AttribType>::temporary_storage;
-template <typename ConcreteType, typename PooledDataType> std::auto_ptr < const Record_Reconfigurator > Attribute_Interactive_Mode<ConcreteType, PooledDataType>::preconfig;
+template <typename AttribType> vector<const string *> Attribute_Set_Intermediary<AttribType>::temporary_storage;
+
+template <typename ConcreteType, typename PooledDataType> std::auto_ptr<const Record_Reconfigurator>
+Attribute_Interactive_Mode<ConcreteType, PooledDataType>::preconfig;
+
 template <typename ConcreteType, typename PooledDataType> list < ConcreteType > Attribute_Interactive_Mode<ConcreteType, PooledDataType>::attrib_list;
+
 template <typename ConcreteType, typename PooledDataType> bool Attribute_Interactive_Mode<ConcreteType, PooledDataType>::has_reconfiged = false;
+
 template <typename ConcreteType, typename PooledDataType> std::auto_ptr < PooledDataType > Attribute_Interactive_Mode<ConcreteType, PooledDataType>::stat_pdata;
 
 
@@ -1529,19 +1534,24 @@ class cFirstname : public Attribute_Single_Mode <cFirstname> {
     //static const uint32_t max_value = Jaro_Wrinkler_Max;
     static const uint32_t max_value = 4;
 
-    cFirstname(const char * UP(source) = NULL) {}
+    cFirstname(const char * source = NULL) {}
 
     //override because some class-specific splitting is involved.
     bool split_string(const char*);
 
     uint32_t get_attrib_max_value() const {
-        if ( ! is_comparator_activated() )
+
+        if (!is_comparator_activated()) {
             Attribute::get_attrib_max_value();
+        }
         return max_value;
     }
 
     //override the base class to enable the functionality of the function.
-    int exact_compare( const Attribute & rhs ) const { return this == & rhs; }
+    int exact_compare( const Attribute & rhs ) const {
+      return this == & rhs;
+    }
+
     uint32_t compare(const Attribute & right_hand_side) const ;
 };
 
@@ -1600,9 +1610,12 @@ private:
 public:
     cLatitude(const char * UP(source) = NULL ) {}
     uint32_t compare(const Attribute & rhs) const;    //override to customize
+
     uint32_t get_attrib_max_value() const {
-        if ( ! is_comparator_activated() )
+
+        if (!is_comparator_activated()) {
             Attribute::get_attrib_max_value();
+        }
         return max_value;
     }
 };
