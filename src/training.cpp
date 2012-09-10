@@ -26,7 +26,7 @@ cBlocking::group_records(const RecordPList & records,
     const string label_delim = cBlocking_Operation::delim;
 
     RecordPList::const_iterator record = records.begin();
-    for (; record != records.end(); ++record ) {
+    for (; record != records.end(); ++record) {
         string label;
 
         for (uint32_t i = 0; i < num_block_columns; ++i) {
@@ -82,6 +82,7 @@ cBlocking::cBlocking (const RecordPList & records,
         blocking_indice.push_back(Record::get_index_by_name(blocking_column_names.at(i)));
     }
 
+    // typedef map<string, RecordPList> Blocks;
     map<string, RecordPList >::iterator b_iter;
     const map<string, RecordPList >::key_compare bmap_compare = blocking_data.key_comp();
     std::cout << "cBlocking::cBlocking ..." << std::endl;
@@ -89,11 +90,11 @@ cBlocking::cBlocking (const RecordPList & records,
     const uint32_t base = 100000;
 
     RecordPList::const_iterator record = records.begin();
-    for (; record != records.end(); ++record ) {
+    for (; record != records.end(); ++record) {
         string label;
 
         for (uint32_t i = 0; i < num_block_columns; ++i) {
-            const vector < const string * > & source_data = (*record)->get_data_by_index(blocking_indice.at(i));
+            const vector<const string *> & source_data = (*record)->get_data_by_index(blocking_indice.at(i));
 
             if (0 == source_data.size()) {
                 throw cException_Vector_Data( (*record)->get_column_names().at(blocking_indice.at(i)).c_str());
@@ -127,7 +128,7 @@ cBlocking_For_Training::cBlocking_For_Training(const list < const Record *> & so
                                                const vector<string> & blocking_column_names,
                                                const vector<const StringManipulator*>& pmanipulators,
                                                const string & unique_identifier, const uint32_t qt)
-                : cBlocking (source, blocking_column_names, pmanipulators, unique_identifier ), total_quota(qt) {
+                : cBlocking (source, blocking_column_names, pmanipulators, unique_identifier), total_quota(qt) {
 
     reset(blocking_column_names.size());
 }
@@ -147,16 +148,18 @@ cBlocking_For_Training::reset(const uint32_t num_cols) {
     unsigned long quota_distributor = 0;
     uint32_t temp_sum = 0;
 
-    for ( map<string, RecordPList >::const_iterator cpm = blocking_data.begin(); cpm != blocking_data.end(); ++ cpm) {
+    for (map<string, RecordPList >::const_iterator cpm = blocking_data.begin(); cpm != blocking_data.end(); ++ cpm) {
         if ( cpm->first != nullstring)
             quota_distributor +=  cpm->second.size() * ( cpm->second.size() - 1 );
     }
 
-    for ( map<string, RecordPList >::const_iterator cpm = blocking_data.begin(); cpm != blocking_data.end(); ++ cpm) {
+    // typedef map<string, RecordPList> Blocks;
+    map<string, RecordPList >::const_iterator cpm = blocking_data.begin();
+    for (; cpm != blocking_data.end(); ++cpm) {
 
         uint32_t quota_for_this = 0;
 
-        if ( cpm->first != nullstring ) {
+        if (cpm->first != nullstring) {
             quota_for_this = 1.0 * total_quota / quota_distributor * cpm->second.size() * ( cpm->second.size() -1 ) ;
             temp_sum += quota_for_this;
         } else {
@@ -167,8 +170,8 @@ cBlocking_For_Training::reset(const uint32_t num_cols) {
         quota_map.insert(std::pair<const string *, uint32_t>(pstr, quota_for_this) );
         used_quota_map.insert(std::pair<const string *, uint32_t>(pstr, 0 ) );
         RecordPList::const_iterator begin_cur = cpm->second.begin();
-        outer_cursor_map.insert(std::pair < const string *, RecordPList::const_iterator > (pstr, begin_cur ) );
-        inner_cursor_map.insert(std::pair < const string *, RecordPList::const_iterator > (pstr, ++begin_cur ) );
+        outer_cursor_map.insert(std::pair<const string *, RecordPList::const_iterator>(pstr, begin_cur));
+        inner_cursor_map.insert(std::pair<const string *, RecordPList::const_iterator>(pstr, ++begin_cur));
     }
 
     quota_left = total_quota - temp_sum;
@@ -182,18 +185,20 @@ cBlocking_For_Training::move_cursor(RecordPList:: const_iterator & outer,
                                     RecordPList:: const_iterator & inner,
                                     const RecordPList & datarange) {
 
-    while ( true ) {
-        if ( outer == datarange.end() )
-            return false;
-        if ( inner == datarange.end() ) {
+    while (true) {
+
+        if (outer == datarange.end()) return false;
+
+        if (inner == datarange.end()) {
             ++ outer;
-            if ( outer == datarange.end())
-                return false;
+
+            if (outer == datarange.end()) return false;
+
             inner = outer;
         }
         ++inner;
-        if ( inner != datarange.end() )
-            return true;
+
+        if (inner != datarange.end()) return true;
     }
 };
 
@@ -205,6 +210,7 @@ cBlocking_For_Training::print(std::ostream & os,
     if (was_used == false) {
         throw cException_Other("Training sets are not ready to be output yet.");
     }
+
     PrintPair do_print(os, unique_record_id_name);
     std::for_each(chosen_pairs.begin(), chosen_pairs.end(), do_print);
 }
@@ -219,8 +225,11 @@ cBlocking_For_Training::create_xset01_on_block(const string & block_id,
                                                const bool is_firstround) {
 
     map < string, RecordPList >::const_iterator pmap = blocking_data.find(block_id);
-    if ( pmap == blocking_data.end() )
+
+    if (pmap == blocking_data.end()) {
         throw cException_Attribute_Not_In_Tree(block_id.c_str());
+    }
+
     const RecordPList & dataset = pmap->second;
 
     RecordPList::const_iterator & outercursor = outer_cursor_map.find(& block_id)->second;
@@ -235,9 +244,9 @@ cBlocking_For_Training::create_xset01_on_block(const string & block_id,
 
     uint32_t count = 0;
 
-    while (  outercursor != dataset.end() ) {
+    while (outercursor != dataset.end()) {
 
-        if ( quota_used == quota_for_this ) {
+        if (quota_used == quota_for_this) {
             //std::cout << pmap->second.size() << std::endl;
             //std::cout << pmap->first << std::endl;
             return count;
@@ -246,29 +255,31 @@ cBlocking_For_Training::create_xset01_on_block(const string & block_id,
         bool should_continue = false;
 
 
-        if ( ( ! cursor_ok ( outercursor, innercursor, dataset) && ( ! move_cursor( outercursor, innercursor, dataset ))))
+        if ((!cursor_ok ( outercursor, innercursor, dataset) && ( ! move_cursor( outercursor, innercursor, dataset ))))
             break;
 
-        for ( uint32_t i = 0; i < equal_indice.size(); ++i) {
+        for (uint32_t i = 0; i < equal_indice.size(); ++i) {
+
             const string & outerstring = * (*outercursor)->get_data_by_index(equal_indice[i]).at(0);
             const string & innerstring = * (*innercursor)->get_data_by_index(equal_indice[i]).at(0);
-            if ( pmanipulators_equal[i]->manipulate( outerstring )
-                    != pmanipulators_equal[i]->manipulate ( innerstring ) ) {
+            if (pmanipulators_equal[i]->manipulate(outerstring)
+                    != pmanipulators_equal[i]->manipulate(innerstring)) {
                 should_continue = true;
                 break;
             }
         }
 
-        if ( should_continue ) {
-            move_cursor ( outercursor, innercursor, dataset );
+        if (should_continue) {
+            move_cursor (outercursor, innercursor, dataset);
             continue;
         }
 
-        for ( uint32_t i = 0; i < nonequal_indice.size(); ++i) {
+        for (uint32_t i = 0; i < nonequal_indice.size(); ++i) {
+
             const string & outerstring = * (*outercursor)->get_data_by_index(nonequal_indice[i]).at(0);
             const string & innerstring = * (*innercursor)->get_data_by_index(nonequal_indice[i]).at(0);
-            if ( pmanipulators_nonequal[i]->manipulate( outerstring )
-                    == pmanipulators_nonequal[i]->manipulate( innerstring) ) {
+            if (pmanipulators_nonequal[i]->manipulate(outerstring)
+                    == pmanipulators_nonequal[i]->manipulate(innerstring)) {
                 should_continue = true;
                 break;
             }
@@ -276,8 +287,8 @@ cBlocking_For_Training::create_xset01_on_block(const string & block_id,
 
 
 
-        if ( should_continue ) {
-            move_cursor ( outercursor, innercursor, dataset );
+        if (should_continue) {
+            move_cursor (outercursor, innercursor, dataset);
             continue;
         }
         //other criteria apply here.
@@ -306,6 +317,7 @@ cBlocking_For_Training::create_xset01_on_block(const string & block_id,
         */
 
         /*
+        // TODO: Move this to its own function
         for ( vector<string>::const_iterator pinner = (*innercursor)->get_data_by_index(coauthors_index).begin();
                 pinner != (*innercursor)->get_data_by_index(coauthors_index).end(); ++ pinner) {
             if ( outer_coauthors.find(*pinner) != outer_coauthors.end() ) {
@@ -324,6 +336,7 @@ cBlocking_For_Training::create_xset01_on_block(const string & block_id,
         }
 
         /*
+        // TODO: Move to its own function.
         set < const string * > outer_classes ( (*outercursor)->get_data_by_index(classes_index).begin(), (*outercursor)->get_data_by_index(classes_index).end());
         for ( vector< const string*>::const_iterator pinner = (*innercursor)->get_data_by_index(classes_index).begin();
                 pinner != (*innercursor)->get_data_by_index(classes_index).end(); ++ pinner) {
@@ -336,12 +349,13 @@ cBlocking_For_Training::create_xset01_on_block(const string & block_id,
 
         pcouter = ( (*outercursor)->get_attrib_pointer_by_index(classes_index));
         pcinner = ( (*innercursor)->get_attrib_pointer_by_index(classes_index));
-        uint32_t common_classes = pcouter->compare(*pcinner);
-        if ( common_classes > 0 )
-            should_continue = true;
 
-        if ( should_continue ) {
-            move_cursor ( outercursor, innercursor, dataset );
+        uint32_t common_classes = pcouter->compare(*pcinner);
+
+        if (common_classes > 0) should_continue = true;
+
+        if (should_continue) {
+            move_cursor (outercursor, innercursor, dataset);
             continue;
         }
 
@@ -349,7 +363,7 @@ cBlocking_For_Training::create_xset01_on_block(const string & block_id,
         ++quota_used;
         ++count;
 
-        move_cursor ( outercursor, innercursor, dataset );
+        move_cursor (outercursor, innercursor, dataset);
 
     }
 
@@ -367,7 +381,8 @@ cBlocking_For_Training::create_tset05_on_block(const string & block_id,
                                                const vector<const StringManipulator*>& pmanipulators_nonequal,
                                                const bool is_firstround) {
 
-    map < string, RecordPList>::const_iterator pmap = blocking_data.find(block_id);
+    // typedef map<string, RecordPList> Blocks;
+    map<string, RecordPList>::const_iterator pmap = blocking_data.find(block_id);
 
     if (pmap == blocking_data.end()) {
         throw cException_Attribute_Not_In_Tree(block_id.c_str());
@@ -752,9 +767,10 @@ find_rare_names_v2(const vector < RecordPList * > & vec_pdest,
 // TODO: Unit test this thing
 uint32_t
 create_tset02(list <RecordPair> & results,
-              const list <const Record*> & reclist,
-              const vector <string> & column_names,
-              const vector < const RecordPList * > & vec_prare_names,
+              // typedef list<const Record*> RecordPList;
+              const list<const Record*> & reclist,
+              const vector<string> & column_names,
+              const vector<const RecordPList * > & vec_prare_names,
               const uint32_t limit) {
 
     //equal_indice should be the indices of the names in this case.
@@ -784,13 +800,15 @@ create_tset02(list <RecordPair> & results,
 
         const uint32_t col_index = column_indice.at(i);
         // TODO: Change to Blocks data_map, then Blocks blocks;
-        map < string, RecordPList > data_map;
+        map<string, RecordPList> data_map;
 
+        // TODO: Refactor this, it's only going to be called column number times
         RecordPList::const_iterator p = vec_prare_names[i]->begin();
         for (; p != vec_prare_names[i]->end(); ++p ) {
             data_map.insert(std::pair<string, RecordPList >( * (*p)->get_data_by_index(col_index).at(0), emptyone));
         }
 
+        // TODO: Refactor this, it's only going to be called column number times
         RecordPList::const_iterator q = reclist.begin();
         for (; q != reclist.end(); ++q) {
             pm = data_map.find( * (*q)->get_data_by_index(col_index).at(0));
