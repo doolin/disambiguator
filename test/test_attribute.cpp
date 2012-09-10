@@ -185,14 +185,14 @@ public:
 
   void compare_class() {
 
-#if 0
     Record * foobar = make_foobar_record();
     foobar->set_sample_record(foobar);
     uint32_t similarity;
-    cClass d1("IBM");
-    d1.split_string("IBM");
-    cClass d2("IBM");
-    d2.split_string("IBM");
+
+    cClass d1;
+    d1.split_string("128/606/623");
+    cClass d2;
+    d2.split_string("128/606/624");
 
     d1.activate_comparator();
 
@@ -201,9 +201,9 @@ public:
     //CPPUNIT_ASSERT(4 == similarity);
 
     delete foobar;
-#endif
 
   }
+
 
   void compare_distance() {
 
@@ -241,7 +241,7 @@ public:
     compare_middlename();
     compare_lastname();
     //compare_assignee();
-    //compare_class();
+    compare_class();
     //compare_coauthors();
     //compare_distance();
     delete_attribute();

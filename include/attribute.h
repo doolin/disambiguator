@@ -1175,12 +1175,13 @@ public:
 
         //const string raw(inputdata);
         this->attrib_set.clear();
-        vector < const string *>::const_iterator p = this->get_data_modifiable().begin();
+
+        vector <const string *>::const_iterator p = this->get_data_modifiable().begin();
         for (; p != this->get_data_modifiable().end(); ++p) {
-            if ( (*p)->empty() )
-                continue;
+            if ((*p)->empty()) continue;
             this->attrib_set.insert(*p);
         }
+
         this->get_data_modifiable().clear();
         //this->get_data_modifiable().insert(this->get_data_modifiable().begin(), this->add_string(raw));
         return true;
@@ -1723,13 +1724,16 @@ public:
 
 
 // cClass and cCoauthor are in set_mode, not single_mode
-class cClass: public Attribute_Set_Mode < cClass > {
+class cClass: public Attribute_Set_Mode <cClass> {
+
 public:
     static uint32_t const max_value = 4;
 
     uint32_t get_attrib_max_value() const {
-        if ( ! is_comparator_activated() )
+
+        if (!is_comparator_activated()) {
             Attribute::get_attrib_max_value();
+        }
         return max_value;
     }
     //uint32_t compare(const Attribute & rhs) const;
@@ -1738,15 +1742,20 @@ public:
 
 //the second way to measure class. literally the same
 //as cClass except for the comparison function.
-class cClass_M2 : public Attribute_Set_Mode < cClass_M2 > {
+class cClass_M2 : public Attribute_Set_Mode <cClass_M2> {
+
 public:
+
     static const uint32_t max_value = 4;
 
     uint32_t get_attrib_max_value() const {
-        if ( ! is_comparator_activated() )
+
+        if (!is_comparator_activated()) {
             Attribute::get_attrib_max_value();
+        }
         return max_value;
     }
+
     uint32_t compare(const Attribute & right_hand_side) const;
 };
 
