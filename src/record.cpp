@@ -278,11 +278,9 @@ Record::get_index_by_name(const string & inputstr) {
         }
     }
 
-        string s = string("from ") + string(__FILE__) + string(":") 
-                 + string(STRINGIZE(__LINE__)) + string("column name: ");
-        s += inputstr;
-        //string s = inputstr + string("from "__FILE__":"__LINE__);
-    //throw cException_ColumnName_Not_Found(inputstr.c_str());
+    string s = string("from ") + string(__FILE__) + string(":")
+             + string(STRINGIZE(__LINE__)) + string("column name: ");
+    s += inputstr;
     throw cException_ColumnName_Not_Found(s.c_str());
 }
 
