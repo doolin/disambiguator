@@ -8,6 +8,20 @@
 
 #include "colortest.h"
 
+
+// TODO: Put this function in the testdata.cpp file.
+vector<string> make_labels () {
+
+  vector<string> labels;
+  labels.push_back("Firstname");
+  labels.push_back("Lastname");
+  labels.push_back("Class");
+
+  return labels;
+}
+
+
+
 class TrainingTest : public CppUnit::TestCase {
 
 public:
@@ -16,11 +30,11 @@ public:
   }
 
   void test_get_blocking_indice() {
-#if 0
-    vector<string> labels = { "foo", "bar", "baz" };
+#if 1
+    vector<string> labels = make_labels();
     vector<uint32_t> ci = get_blocking_indices(labels);
-    vector<string> initial = { "bar", "baz", "foo" };
-    CPPUNIT_ASSERT(labels == initial);
+    //vector<string> initial = { "bar", "baz", "foo" };
+    //CPPUNIT_ASSERT(labels == initial);
 #endif
   }
 

@@ -15,8 +15,8 @@ INCLUDES = -I/usr/local/include -I$(CPLEXINCLUDE) -I$(CONCERTINCLUDE) -I../inclu
 
 
 
-#CXXFLAGS =  -Wall -Wextra -ansi -Wignored-qualifiers # -pedantic # -Wno-unused-parameter  -Wno-uninitialized # -Wno-ignored-qualifiers
-AM_CXXFLAGS = -O0 -g -Wall -Wextra -Wformat-zero-length # -pedantic -ansi
+#CXXFLAGS =  -Wall -Wextra -ansi -Wignored-qualifiers # -pedantic -Wno-unused-parameter -Wno-uninitialized # -Wno-ignored-qualifiers
+AM_CXXFLAGS = -O0 -g -Wall -Wextra -Wformat-zero-length -Wno-unused-parameter -Wno-uninitialized # -pedantic -ansi
 #CXXFLAGS = $(AM_CXXFLAGS)
 
 LDADD = ../src/libdisambiguation.a 
