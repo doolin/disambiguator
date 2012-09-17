@@ -50,6 +50,8 @@ disambiguate_by_set (const Record * key1,
                      const cRatios & ratio,
                      const double mutual_threshold) {
 
+  // TODO: See if these declarations can be moved outside of this function and
+  // declared at the file level, which would promote a much nicer refactoring.
     static const uint32_t firstname_index = Record::get_similarity_index_by_name(cFirstname::static_get_class_name());
     static const uint32_t midname_index = Record::get_similarity_index_by_name(cMiddlename::static_get_class_name());
     static const uint32_t lastname_index = Record::get_similarity_index_by_name(cLastname::static_get_class_name());
@@ -60,8 +62,10 @@ disambiguate_by_set (const Record * key1,
     // TODO: Why is this not a configuration parameter?
     const bool prescreening = true;
 
+    // TODO: Refactor prescreening block
     if (prescreening) {
-        if ( country_check ) {
+      // TODO: Refactor this check
+        if (country_check) {
 
             const Attribute * p1 = key1->get_attrib_pointer_by_index(country_index);
             const Attribute * p2 = key2->get_attrib_pointer_by_index(country_index);
@@ -71,22 +75,31 @@ disambiguate_by_set (const Record * key1,
             }
         }
 
-
         // TODO: Unit test record compare
         vector<uint32_t> screen_sp = key1->record_compare(*key2);
 
+        // TODO: Unit test fetch_ratio()
         const double screen_r = fetch_ratio(screen_sp, ratio.get_ratios_map());
         const double screen_p = 1.0 / ( 1.0 + ( 1.0 - prior )/ prior / screen_r );
-        if ( screen_p < 0.3 || screen_sp.at(firstname_index) == 0 || screen_sp.at(midname_index) == 0 || screen_sp.at(lastname_index) == 0 )
+        // TODO: The 0.3 value should be a parameter, preferably by configuration.
+        // TODO: Consider refactoring the sp screening code, can be reused below.
+        if (screen_p                       < 0.3 ||
+            screen_sp.at(firstname_index) == 0   ||
+            screen_sp.at(midname_index)   == 0   ||
+            screen_sp.at(lastname_index)  == 0) {
+
             return std::pair<const Record *, double> (NULL, 0);
+        }
     }
 
     const bool partial_match_mode = true;
 
     // TODO: Why is this not a configuration parameter?
+    // Is the value 0.7 related to the value 0.3 above?
     const double minimum_threshold = 0.7;
 
-    const double threshold = max_val <double> (minimum_threshold, mutual_threshold * cohesion1 * cohesion2);
+    const double threshold = max_val<double>(minimum_threshold,
+        mutual_threshold * cohesion1 * cohesion2);
     //static const cException_Unknown_Similarity_Profile except(" Fatal Error in Disambig by set.");
 
     const uint32_t match1_size = match1.size();
@@ -102,45 +115,54 @@ disambiguate_by_set (const Record * key1,
     if ( candidates_for_averaging == 0 )
         throw cException_Other("Computation of size of averaged probability is incorrect.");
 
-    set < double > probs;
+    set<double> probs;
 
     double interactive = 0;
     double cumulative_interactive = 0;
     uint32_t qualified_count = 0;
     //double required_interactives = 0;
     //uint32_t required_cnt = 0;
-    for ( RecordPList::const_iterator p = match1.begin(); p != match1.end(); ++p ) {
-        for ( RecordPList::const_iterator q = match2.begin(); q != match2.end(); ++q ) {
+    for (RecordPList::const_iterator p = match1.begin(); p != match1.end(); ++p) {
+
+        for (RecordPList::const_iterator q = match2.begin(); q != match2.end(); ++q) {
 
             if ( country_check ) {
                 const Attribute * p1 = (*p)->get_attrib_pointer_by_index(country_index);
                 const Attribute * p2 = (*q)->get_attrib_pointer_by_index(country_index);
-                if ( p1 != p2 && p1->is_informative() && p2->is_informative() )
+
+                if ( p1 != p2 && p1->is_informative() && p2->is_informative() ) {
                     return std::pair<const Record *, double> (NULL, 0);
+                }
             }
 
 
 
             vector< uint32_t > tempsp = (*p)->record_compare(* *q);
-            if ( tempsp.at(firstname_index) == 0 || tempsp.at(midname_index) == 0 || tempsp.at(lastname_index) == 0 )
-                return std::pair<const Record *, double> (NULL, 0);
 
+            // TODO: Consider inlining a template function for this check.
+            if (tempsp.at(firstname_index) == 0 ||
+                tempsp.at(midname_index) == 0 ||
+                tempsp.at(lastname_index) == 0 ) {
+
+                return std::pair<const Record *, double> (NULL, 0);
+            }
 
             double r_value = fetch_ratio(tempsp, ratio.get_ratios_map());
 
-            if ( r_value == 0 ) {
+            if (r_value == 0) {
                 interactive += 0;
-            }
-            else {
+            } else {
+
                 const double temp_prob = 1.0 / ( 1.0 + ( 1.0 - prior )/prior / r_value );
-                interactive +=  temp_prob ;
-                if ( partial_match_mode && qualified_count < candidates_for_averaging ) {
-                    if (  probs.size() >= candidates_for_averaging ) {
-                        probs.erase(probs.begin());
+                interactive +=  temp_prob;
+                if (partial_match_mode && qualified_count < candidates_for_averaging) {
+                    if (probs.size() >= candidates_for_averaging) {
+                      probs.erase(probs.begin());
                     }
                     probs.insert(temp_prob);
                 }
-                if ( partial_match_mode && temp_prob >= threshold ) {
+
+                if (partial_match_mode && temp_prob >= threshold) {
                     cumulative_interactive += temp_prob;
                     ++qualified_count;
                 }
@@ -161,12 +183,13 @@ disambiguate_by_set (const Record * key1,
 
     if ( partial_match_mode && probs_average < threshold )
         return std::pair<const Record *, double> (NULL, probs_average);
+
     if ( ( ! partial_match_mode ) && interactive_average < threshold )
         return std::pair<const Record *, double> (NULL, interactive_average);
 
 
     double inter = 0;
-    if ( partial_match_mode )
+    if (partial_match_mode)
         inter = probs_average * match1_size * match2_size;
     else
         inter = interactive;
@@ -174,21 +197,21 @@ disambiguate_by_set (const Record * key1,
     const double probability = ( cohesion1 * match1_size * ( match1_size - 1 )
                                 + cohesion2 * match2_size * ( match2_size - 1 )
                                 + 2.0 * inter ) / ( match1_size + match2_size) / (match1_size + match2_size - 1 );
-    //ATTENSION: RETURN A NON-NULL POINTER TO TELL IT IS A MERGE. NEED TO FIND A REPRESENTATIVE IN THE MERGE PART.
-    return std::pair<const Record *, double>( key1, probability );
 
+    //ATTENSION: RETURN A NON-NULL POINTER TO TELL IT IS A MERGE. NEED TO FIND A REPRESENTATIVE IN THE MERGE PART.
+    return std::pair<const Record *, double>(key1, probability);
 }
 
 
+// TODO: This function is not called, get rid of it, or move it to utilities
+// or someplace.
 void
 copyfile(const char * target, const char * source) {
 
     std::cout << "Copying file " << source << " to " << target << std::endl;
-    std::ifstream   input( source,std::ios::binary);
-    std::ofstream   output( target,std::ios::binary);
-
-    output   <<   input.rdbuf();
-
+    std::ifstream input( source,std::ios::binary);
+    std::ofstream output( target,std::ios::binary);
+    output << input.rdbuf();
     std::cout << "File copy done." << std::endl;
 }
 
