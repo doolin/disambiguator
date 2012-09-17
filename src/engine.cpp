@@ -26,17 +26,19 @@ using std::set;
 double
 fetch_ratio(const vector < uint32_t > & ratio_to_lookup,
             const map <SimilarityProfile, double, SimilarityCompare > & ratiosmap ) {
-            //const map <vector <uint32_t>, double, SimilarityCompare > & ratiosmap ) {
 
-    //map < vector <uint32_t>, double, SimilarityCompare >::const_iterator p = ratiosmap.find( ratio_to_lookup);
     map <SimilarityProfile, double, SimilarityCompare >::const_iterator p = ratiosmap.find( ratio_to_lookup);
-    if ( p == ratiosmap.end())
+
+    if (p == ratiosmap.end()) {
         return 0;
-    else
+    } else {
         return p->second;
+    }
 }
 
 
+// TODO: See if this works:
+// typedef std::pair<const Record *, double> Representative;
 std::pair<const Record *, double>
 disambiguate_by_set (const Record * key1,
                      const RecordPList & match1,
@@ -45,7 +47,8 @@ disambiguate_by_set (const Record * key1,
                      const RecordPList & match2,
                      const double cohesion2,
                      const double prior,
-                     const cRatios & ratio,  const double mutual_threshold ) {
+                     const cRatios & ratio,
+                     const double mutual_threshold) {
 
     static const uint32_t firstname_index = Record::get_similarity_index_by_name(cFirstname::static_get_class_name());
     static const uint32_t midname_index = Record::get_similarity_index_by_name(cMiddlename::static_get_class_name());
@@ -54,26 +57,35 @@ disambiguate_by_set (const Record * key1,
     static const bool country_check = true;
 
 
-    //prescreening.
+    // TODO: Why is this not a configuration parameter?
     const bool prescreening = true;
-    if ( prescreening ) {
+
+    if (prescreening) {
         if ( country_check ) {
+
             const Attribute * p1 = key1->get_attrib_pointer_by_index(country_index);
             const Attribute * p2 = key2->get_attrib_pointer_by_index(country_index);
-            if ( p1 != p2 && p1->is_informative() && p2->is_informative() )
+
+            if (p1 != p2 && p1->is_informative() && p2->is_informative()) {
                 return std::pair<const Record *, double> (NULL, 0);
+            }
         }
 
 
-        vector < uint32_t > screen_sp = key1->record_compare(*key2);
+        // TODO: Unit test record compare
+        vector<uint32_t> screen_sp = key1->record_compare(*key2);
+
         const double screen_r = fetch_ratio(screen_sp, ratio.get_ratios_map());
         const double screen_p = 1.0 / ( 1.0 + ( 1.0 - prior )/ prior / screen_r );
         if ( screen_p < 0.3 || screen_sp.at(firstname_index) == 0 || screen_sp.at(midname_index) == 0 || screen_sp.at(lastname_index) == 0 )
             return std::pair<const Record *, double> (NULL, 0);
     }
+
     const bool partial_match_mode = true;
 
+    // TODO: Why is this not a configuration parameter?
     const double minimum_threshold = 0.7;
+
     const double threshold = max_val <double> (minimum_threshold, mutual_threshold * cohesion1 * cohesion2);
     static const cException_Unknown_Similarity_Profile except(" Fatal Error in Disambig by set.");
 
@@ -82,7 +94,9 @@ disambiguate_by_set (const Record * key1,
 
     //const uint32_t required_candidates = static_cast< uint32_t > ( 1.0 * sqrt(1.0 * match1_size * match2_size ));
     //const uint32_t candidates_for_averaging = 2 * required_candidates - 1 ;
+
     uint32_t candidates_for_averaging = match1_size * match2_size / 4 ;
+
     if ( candidates_for_averaging == 0 )
         candidates_for_averaging = 1;
     if ( candidates_for_averaging == 0 )
