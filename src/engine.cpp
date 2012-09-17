@@ -71,7 +71,9 @@ disambiguate_by_set (const Record * key1,
             const Attribute * p2 = key2->get_attrib_pointer_by_index(country_index);
 
             if (p1 != p2 && p1->is_informative() && p2->is_informative()) {
-                return std::pair<const Record *, double> (NULL, 0);
+              // TODO: consider making the following a macro to sweep it out
+              // of the way, i.e., return NULL_RECORD.
+              return std::pair<const Record *, double> (NULL, 0);
             }
         }
 
@@ -83,6 +85,10 @@ disambiguate_by_set (const Record * key1,
         const double screen_p = 1.0 / ( 1.0 + ( 1.0 - prior )/ prior / screen_r );
         // TODO: The 0.3 value should be a parameter, preferably by configuration.
         // TODO: Consider refactoring the sp screening code, can be reused below.
+        // The following enforces presence of some sort of match on all three
+        // names. Note: the middle name matching returns a 1 for the case when
+        // one of the records has a middle name but the other does not. See
+        // the midnamecmp function for details.
         if (screen_p                       < 0.3 ||
             screen_sp.at(firstname_index) == 0   ||
             screen_sp.at(midname_index)   == 0   ||
@@ -141,8 +147,8 @@ disambiguate_by_set (const Record * key1,
 
             // TODO: Consider inlining a template function for this check.
             if (tempsp.at(firstname_index) == 0 ||
-                tempsp.at(midname_index) == 0 ||
-                tempsp.at(lastname_index) == 0 ) {
+                tempsp.at(midname_index)   == 0 ||
+                tempsp.at(lastname_index)  == 0 ) {
 
                 return std::pair<const Record *, double> (NULL, 0);
             }
@@ -196,9 +202,12 @@ disambiguate_by_set (const Record * key1,
 
     const double probability = ( cohesion1 * match1_size * ( match1_size - 1 )
                                 + cohesion2 * match2_size * ( match2_size - 1 )
-                                + 2.0 * inter ) / ( match1_size + match2_size) / (match1_size + match2_size - 1 );
+                                + 2.0 * inter )
+                                / (match1_size + match2_size)
+                                / (match1_size + match2_size - 1);
 
-    //ATTENSION: RETURN A NON-NULL POINTER TO TELL IT IS A MERGE. NEED TO FIND A REPRESENTATIVE IN THE MERGE PART.
+    //ATTENSION: RETURN A NON-NULL POINTER TO TELL IT IS A
+    //MERGE. NEED TO FIND A REPRESENTATIVE IN THE MERGE PART.
     return std::pair<const Record *, double>(key1, probability);
 }
 
