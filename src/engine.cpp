@@ -427,17 +427,20 @@ check_interactive_consistency(Attribute ** pointer_array,
 
 
 /**
- * First of all, read the first line in the file. The first
+ * 1. First of all, read the first line in the file. The first
  * line should include all the information of each column. ie. They
  * are usually the * column names. The format of the first line is
- * "Column Name1,Column Name 2,Column Name3,...,Column Name Last".If the delimiter is not
- * comma, change the function variable "delim".
- * Second, check the argument "requested_columns" in all the columns,
+ * "Column Name1,Column Name 2,Column Name3,...,Column Name Last".
+ * If the delimiter is not * comma, change the function variable "delim".
+ *
+ * 2. Second, check the argument "requested_columns" in all the columns,
  * and record the indice of requested_columns
- * Third, starting from the second line to the end of the file,
+ *
+ * 3. Third, starting from the second line to the end of the file,
  * read relevant information with the help of delimiters and indice,
  * and save them in appropriate attributes.
- * Finally, do some concrete class related stuff, like setting
+ *
+ * 4. Finally, do some concrete class related stuff, like setting
  * static members and run reconfigurations.
  */
 bool
