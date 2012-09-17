@@ -50,9 +50,9 @@ Cluster::merge(Cluster & mergee, const ClusterHead & info) {
 		throw cException_Empty_Cluster("Merging error: mergEE is empty.");
   }
 
-	static const unsigned int rec_size = Record::record_size();
+	static const uint32_t rec_size = Record::record_size();
 
-	for (unsigned int i = 0 ; i < rec_size; ++i) {
+	for (uint32_t i = 0 ; i < rec_size; ++i) {
 
 		list < const Attribute ** > l1;
 		for (RecordPList::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p) {
@@ -98,8 +98,8 @@ Cluster::change_mid_name()  {
   // abbreviated middlename to a longer one if possible.
 	if (!cMiddlename::is_enabled()) return;
 
-	static const unsigned int midname_index = Record::get_index_by_name(cMiddlename::static_get_class_name());
-	static const unsigned int lastname_index = Record::get_index_by_name(cLastname::static_get_class_name());
+	static const uint32_t midname_index = Record::get_index_by_name(cMiddlename::static_get_class_name());
+	static const uint32_t lastname_index = Record::get_index_by_name(cLastname::static_get_class_name());
 	map < const Attribute *, const Attribute *> last2mid;
 	map < const Attribute *, const Attribute * >::iterator q;
 
@@ -113,8 +113,8 @@ Cluster::change_mid_name()  {
 			}
 
 		} else {
-			const unsigned int old_size = q->second->get_data().at(0)->size();
-			const unsigned int new_size = pm->get_data().at(0)->size();
+			const uint32_t old_size = q->second->get_data().at(0)->size();
+			const uint32_t new_size = pm->get_data().at(0)->size();
 			if ( new_size > old_size )
 				q->second = pm;
 		}
@@ -169,7 +169,7 @@ Cluster::disambiguate(const Cluster & rhs,
                       const double prior,
                       const double mutual_threshold) const {
 
-	static const unsigned int country_index = Record::get_index_by_name(cCountry::static_get_class_name());
+	static const uint32_t country_index = Record::get_index_by_name(cCountry::static_get_class_name());
 	static const string asian_countries[] = {"JP"};
 	static const double asian_threshold = 0.99;
 	static const double max_threshold = 0.999;
@@ -191,20 +191,20 @@ Cluster::disambiguate(const Cluster & rhs,
 	const Attribute * this_country = this->m_info.m_delegate->get_attrib_pointer_by_index(country_index);
 	const Attribute * rhs_country = rhs.m_info.m_delegate->get_attrib_pointer_by_index(country_index);
 
-	for (unsigned int i = 0; i < sizeof(asian_countries)/sizeof(string); ++i) {
+	for (uint32_t i = 0; i < sizeof(asian_countries)/sizeof(string); ++i) {
 		if (this_country == rhs_country && *this_country->get_data().at(0) == asian_countries[i]) {
 			threshold = asian_threshold > mutual_threshold ? asian_threshold : mutual_threshold;
 			break;
 		}
 	}
 
-	unsigned int gap = this->patents_gap(rhs);
+	uint32_t gap = this->patents_gap(rhs);
 	bool location_penalize = false;
-	const unsigned int common_locs = num_common_elements(this->locs.begin(), this->locs.end(), rhs.locs.begin(), rhs.locs.end(), 1 );
+	const uint32_t common_locs = num_common_elements(this->locs.begin(), this->locs.end(), rhs.locs.begin(), rhs.locs.end(), 1 );
 
 	if (gap == 0 && common_locs == 0) location_penalize = true;
 
-	static const unsigned int max_gap = 20;
+	static const uint32_t max_gap = 20;
 
 	if (gap > max_gap) gap = max_gap;
 
@@ -255,8 +255,8 @@ Cluster::insert_elem( const Record * more_elem) {
 void
 Cluster::self_repair() {
 
-	const unsigned int rec_size = Record::record_size();
-	for ( unsigned int i = 0 ; i < rec_size; ++i ) {
+	const uint32_t rec_size = Record::record_size();
+	for ( uint32_t i = 0 ; i < rec_size; ++i ) {
 
 		list < const Attribute ** > l1;
 		list < const Attribute ** > l2;
@@ -290,7 +290,7 @@ Cluster::self_repair() {
  * Aim: to find a representative/delegate for a cluster.
  *
  * Algorithm: for each specified column, build a binary map of
- * const Attribute pointer -> unsigned int ( as a counter).
+ * const Attribute pointer -> uint32_t ( as a counter).
  * Then traverse the whole cluster and fill in the counter.
  * Finally, get the most frequent.
  */
@@ -307,25 +307,25 @@ Cluster::find_representative()  {
     cCountry::static_get_class_name()
   };
 
-	static const unsigned int nc = sizeof(useful_columns)/sizeof(string);
-	vector < map < const Attribute *, unsigned int > > tracer( nc );
-	vector < unsigned int > indice;
+	static const uint32_t nc = sizeof(useful_columns)/sizeof(string);
+	vector < map < const Attribute *, uint32_t > > tracer( nc );
+	vector < uint32_t > indice;
 
-	for ( unsigned int i = 0; i < nc; ++i )
+	for ( uint32_t i = 0; i < nc; ++i )
 		indice.push_back ( Record::get_index_by_name( useful_columns[i]));
 
 	for ( RecordPList::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p ) {
-		for ( unsigned int i = 0 ; i < nc; ++i ) {
+		for ( uint32_t i = 0 ; i < nc; ++i ) {
 			const Attribute * pA = (*p)->get_attrib_pointer_by_index(indice.at(i));
 			++ tracer.at(i)[pA];
 		}
 	}
 
 	vector < const Attribute * > most;
-	for ( unsigned int i = 0; i < nc ; ++i ) {
+	for ( uint32_t i = 0; i < nc ; ++i ) {
 		const Attribute * most_pA = NULL;
-		unsigned int most_cnt = 0;
-		for ( map < const Attribute *, unsigned int >::const_iterator p = tracer.at(i).begin(); p != tracer.at(i).end(); ++p ) {
+		uint32_t most_cnt = 0;
+		for ( map < const Attribute *, uint32_t >::const_iterator p = tracer.at(i).begin(); p != tracer.at(i).end(); ++p ) {
 			if ( p->second > most_cnt ) {
 				most_cnt = p->second;
 				most_pA = p->first;
@@ -334,12 +334,12 @@ Cluster::find_representative()  {
 		most.push_back( most_pA );
 	}
 
-	unsigned int m_cnt = 0;
+	uint32_t m_cnt = 0;
 	const Record * mp = NULL;
 	for (RecordPList::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p) {
-		unsigned int c = 0;
+		uint32_t c = 0;
 
-		for (unsigned int i = 0 ; i < nc; ++i) {
+		for (uint32_t i = 0 ; i < nc; ++i) {
 			const Attribute * pA = (*p)->get_attrib_pointer_by_index(indice.at(i));
 			if (pA == most.at(i))
 				++c;
@@ -358,7 +358,7 @@ Cluster::find_representative()  {
 void
 Cluster::update_year_range() {
 
-	static const unsigned int appyearindex = Record::get_index_by_name(cApplyYear::static_get_class_name());
+	static const uint32_t appyearindex = Record::get_index_by_name(cApplyYear::static_get_class_name());
 
 	RecordPList::const_iterator rlit = this->m_fellows.begin();
 	for (; rlit != this->m_fellows.end(); ++rlit ) {
@@ -366,7 +366,7 @@ Cluster::update_year_range() {
 		const Attribute * pAttribYear = (*rlit)->get_attrib_pointer_by_index(appyearindex);
     // This is segfaulting on test data
 		const string * py = pAttribYear->get_data().at(0);
-		unsigned int year = atoi ( py->c_str());
+		uint32_t year = atoi ( py->c_str());
 		if ( year > 2100 || year < 1500 ) {
 			//(*p)->print();
 			//throw cException_Other("Application year error.");
@@ -398,12 +398,12 @@ Cluster::is_valid_year() const {
 }
 
 
-unsigned int
+uint32_t
 Cluster::patents_gap(const Cluster & rhs) const {
 
 	if (!this->is_valid_year() || !rhs.is_valid_year()) return 0;
 
-	unsigned int x = 0;
+	uint32_t x = 0;
 
   // ABS...? AYFKM...?
 	if (this->first_patent_year > rhs.last_patent_year)
@@ -423,7 +423,7 @@ void
 Cluster::update_locations() {
 
 	locs.clear();
-	static const unsigned int latindex = Record::get_index_by_name(cLatitude::static_get_class_name());
+	static const uint32_t latindex = Record::get_index_by_name(cLatitude::static_get_class_name());
 
   RecordPList::const_iterator p = this->m_fellows.begin();
 	for (; p != this->m_fellows.end(); ++p ) {
