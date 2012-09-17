@@ -87,7 +87,7 @@ disambiguate_by_set (const Record * key1,
     const double minimum_threshold = 0.7;
 
     const double threshold = max_val <double> (minimum_threshold, mutual_threshold * cohesion1 * cohesion2);
-    static const cException_Unknown_Similarity_Profile except(" Fatal Error in Disambig by set.");
+    //static const cException_Unknown_Similarity_Profile except(" Fatal Error in Disambig by set.");
 
     const uint32_t match1_size = match1.size();
     const uint32_t match2_size = match2.size();
