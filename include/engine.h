@@ -128,12 +128,13 @@ class cRatios; //forward declaration
  *
  * Return Value:
  *
- * std::pair < const Record *, double >: This is a pair value,
+ * std::pair<const Record *, double>: This is a pair value,
  * which consists of two parts.
  *
  * 1. const Record *: NULL if the two clusters are identified as of
  * different inventors, and key1 if they are of the same inventors.
  *
+ * TODO: Define "combination"
  * 2. double: the cohesion of the combination of the first and the
  * second cluster. This is only valid if the first returned pointer is not NULL.
  */
