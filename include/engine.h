@@ -97,6 +97,7 @@ class cRatios; //forward declaration
  *
  * Arguments:
  *
+ * TODO: This should be named "representative1" or "rep1".
  * key1: the pointer to the representative record of the first cluster
  *
  * match1: the list of the pointers that belongs to the first cluster,
@@ -106,6 +107,7 @@ class cRatios; //forward declaration
  * interpreted as the probability for all the members of the first
  * cluster to be of the same inventor.
  *
+ * TODO: This should be named "representative2" or "rep2".
  * key2: the pointer to the representative record of the second cluster
  *
  * match2: the list of the pointers that belongs to the second cluster,
@@ -135,6 +137,7 @@ class cRatios; //forward declaration
  * 2. double: the cohesion of the combination of the first and the
  * second cluster. This is only valid if the first returned pointer is not NULL.
  */
+// TODO: This should be named "representative1" or "rep1".
 std::pair<const Record *, double> disambiguate_by_set (const Record * key1,
                                                        const RecordPList & match1,
                                                        const double cohesion1,
