@@ -72,6 +72,8 @@ inline const Tp& min_val(const Tp& arg1, const Tp &arg2) {
 }
 
 
+// TODO: Unit test this template, it looks very fragile with the
+// dependence on sorted data for both arguments.
 template < typename Iter1, typename Iter2 >
 unsigned int
 num_common_elements(const Iter1 & p1begin,
@@ -103,21 +105,6 @@ num_common_elements(const Iter1 & p1begin,
     }
     return cnt;
 }
-
-
-#if 0
-template <typename Tp, typename Functor>
-vector <Tp> Longest_Common_Subsequence(const vector <Tp> & s1, const vector <Tp> &s2, const Functor & func);
-
-
-class cSentence_JWComparator {
-private:
-    const double threshold;
-public:
-    bool operator() (const string * s1, const string * s2) const;
-    explicit cSentence_JWComparator(const double inputthreshold): threshold(inputthreshold){};
-};
-#endif
 
 
 #endif /* PATENT_COMPARATORS_H */
