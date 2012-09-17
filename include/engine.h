@@ -91,24 +91,49 @@ class cRatios; //forward declaration
 
 /**
  * disambiguate_by_set:
- * This is a global function. It takes information from two clusters ( not cluster_info !!) and return whether the two are of the same inventor,
+ * This is a global function. It takes information from two clusters
+ * (not cluster_info!!) and return whether the two are of the same inventor,
  * and if yes, what the cohesion should be.
  *
  * Arguments:
- *         key1: the pointer to the representative record of the first cluster
- *         match1: the list of the pointers that belongs to the first cluster, including key1.
- *         cohesion1: the internal cohesive value of the first cluster, interpreted as the probability for all the members of the first cluster to be of the same inventor.
- *         key2: the pointer to the representative record of the second cluster
- *         match2: the list of the pointers that belongs to the second cluster, including key2.
- *         cohesion2: the internal cohesive value of the second cluster, interpreted as the probability for all the members of the second cluster to be of the same inventor.
- *         prior: the priori probability. Check for the math equation of the way to calculate the probability.
- *         ratio: the map (binary tree) that maps a similarity profile ( vector<unsigned int> ) to a positive real number (double).
- *         threshold: threshold of the probability that the two clusters should be the of the same inventor.
+ *
+ * key1: the pointer to the representative record of the first cluster
+ *
+ * match1: the list of the pointers that belongs to the first cluster,
+ * including key1.
+ *
+ * cohesion1: the internal cohesive value of the first cluster,
+ * interpreted as the probability for all the members of the first
+ * cluster to be of the same inventor.
+ *
+ * key2: the pointer to the representative record of the second cluster
+ *
+ * match2: the list of the pointers that belongs to the second cluster,
+ * including key2.
+ *
+ * cohesion2: the internal cohesive value of the second cluster,
+ * interpreted as the probability for all the members of the
+ * second cluster to be of the same inventor.
+ *
+ * prior: the priori probability. Check for the math equation of
+ * the way to calculate the probability.
+ *
+ * ratio: the map (binary tree) that maps a similarity profile
+ * (vector<unsigned int>) to a positive real number (double).
+ *
+ * threshold: threshold of the probability that the two clusters
+ * should be the of the same inventor.
  *
  * Return Value:
- *         std::pair < const Record *, double >: This is a pair value, which consists of two parts.
- *         1. const Record *: NULL if the two clusters are identified as of different inventors, and key1 if they are of the same inventors.
- *         2. double: the cohesion of the combination of the first and the second cluster. This is only valid if the first returned pointer is not NULL.
+ *
+ * std::pair < const Record *, double >: This is a pair value,
+ * which consists of two parts.
+ *
+ * 1. const Record *: NULL if the two clusters are identified as of
+ * different inventors, and key1 if they are of the same inventors.
+ *
+ * 2. double: the cohesion of the combination of the first and the
+ * second cluster. This is only valid if the first returned pointer is not NULL.
  */
 std::pair<const Record *, double> disambiguate_by_set (const Record * key1,
                                                        const RecordPList & match1,
@@ -116,9 +141,9 @@ std::pair<const Record *, double> disambiguate_by_set (const Record * key1,
                                                        const Record * key2,
                                                        const RecordPList & match2,
                                                        const double cohesion2,
-                                                       const double prior, 
+                                                       const double prior,
                                                        const cRatios & ratio,
-                                                       const double threshold ) ;
+                                                       const double threshold);
 
 /** @public
  * Copies a file, of course.
@@ -146,12 +171,12 @@ vector<unsigned int> create_column_indices(std::vector<std::string> requested_co
 
 Attribute ** instantiate_attributes(std::vector<std::string> column_names, int num_cols);
 
-vector <const Attribute *> parse_line(string line,
-           vector < unsigned int > requested_column_indice,
-           Attribute ** pointer_array,
-           unsigned int num_cols,
-           const char * delim,
-           vector<string> & string_cache);
+vector <const Attribute *> parse_line (string line,
+                                       vector < unsigned int > requested_column_indice,
+                                       Attribute ** pointer_array,
+                                       unsigned int num_cols,
+                                       const char * delim,
+                                       vector<string> & string_cache);
 
 
 #endif /* PATENT_ENGINE_H */
