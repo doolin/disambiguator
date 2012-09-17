@@ -116,10 +116,14 @@ disambiguate_by_set (const Record * key1,
 
     uint32_t candidates_for_averaging = match1_size * match2_size / 4 ;
 
-    if ( candidates_for_averaging == 0 )
+    if (candidates_for_averaging == 0) {
         candidates_for_averaging = 1;
-    if ( candidates_for_averaging == 0 )
+    }
+
+    // TODO: This really looks like dead code.
+    if (candidates_for_averaging == 0) {
         throw cException_Other("Computation of size of averaged probability is incorrect.");
+    }
 
     set<double> probs;
 
