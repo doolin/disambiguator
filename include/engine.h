@@ -61,7 +61,7 @@ typedef std::list<const Record * > RecordPList;
 class cSort_by_attrib {
 private:
   //attrib_index is the column index on which the Record's comparison depends.
-    const unsigned int attrib_index;
+    const uint32_t attrib_index;
 public:
     bool operator () (const Record * prec1, const Record *prec2 ) const {
         const Attribute * attr1 = prec1->vector_pdata.at(attrib_index);
@@ -69,7 +69,7 @@ public:
 
         return attr1->get_data().at(0) < attr2->get_data().at(0);
     };
-    cSort_by_attrib(const unsigned int i): attrib_index(i) {};
+    cSort_by_attrib(const uint32_t i): attrib_index(i) {};
     cSort_by_attrib(const string & attrib_name): attrib_index(Record::get_index_by_name(attrib_name) ) {};
 };
 
@@ -119,7 +119,7 @@ class cRatios; //forward declaration
  * the way to calculate the probability.
  *
  * ratio: the map (binary tree) that maps a similarity profile
- * (vector<unsigned int>) to a positive real number (double).
+ * (vector<uint32_t>) to a positive real number (double).
  *
  * threshold: threshold of the probability that the two clusters
  * should be the of the same inventor.
@@ -156,7 +156,7 @@ void        copyfile                  (const char * target,
 Attribute * create_attribute_instance (const string & id );
 
 void        build_patent_tree         (PatentTree & patent_tree,
-                                       const list < Record > & all_records);
+                                       const list<Record> & all_records);
 
 void        build_patent_tree         (PatentTree & patent_tree,
                                        const RecordPList & all_rec_pointers);
@@ -166,15 +166,15 @@ string      check_file_existence      (const string & description);
 
 std::vector<std::string> parse_column_names(std::string line);
 
-vector<unsigned int> create_column_indices(std::vector<std::string> requested_columns,
+vector<uint32_t> create_column_indices(std::vector<std::string> requested_columns,
     std::vector<std::string> total_col_names);
 
 Attribute ** instantiate_attributes(std::vector<std::string> column_names, int num_cols);
 
 vector <const Attribute *> parse_line (string line,
-                                       vector < unsigned int > requested_column_indice,
+                                       vector<uint32_t> requested_column_indice,
                                        Attribute ** pointer_array,
-                                       unsigned int num_cols,
+                                       uint32_t num_cols,
                                        const char * delim,
                                        vector<string> & string_cache);
 
