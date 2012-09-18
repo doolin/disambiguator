@@ -111,7 +111,7 @@ disambiguate_by_set (const Record * key1,
     const uint32_t match1_size = match1.size();
     const uint32_t match2_size = match2.size();
 
-    //const uint32_t required_candidates = static_cast< uint32_t > ( 1.0 * sqrt(1.0 * match1_size * match2_size ));
+    //const uint32_t required_candidates = static_cast< uint32_t>(1.0 * sqrt(1.0 * match1_size * match2_size));
     //const uint32_t candidates_for_averaging = 2 * required_candidates - 1 ;
 
     uint32_t candidates_for_averaging = match1_size * match2_size / 4 ;
@@ -126,33 +126,31 @@ disambiguate_by_set (const Record * key1,
     }
 
     set<double> probs;
-
     double interactive = 0;
     double cumulative_interactive = 0;
     uint32_t qualified_count = 0;
     //double required_interactives = 0;
     //uint32_t required_cnt = 0;
+    // TODO: Should be able to refactor this whole block
     for (RecordPList::const_iterator p = match1.begin(); p != match1.end(); ++p) {
 
         for (RecordPList::const_iterator q = match2.begin(); q != match2.end(); ++q) {
 
-            if ( country_check ) {
+            if (country_check) {
                 const Attribute * p1 = (*p)->get_attrib_pointer_by_index(country_index);
                 const Attribute * p2 = (*q)->get_attrib_pointer_by_index(country_index);
 
-                if ( p1 != p2 && p1->is_informative() && p2->is_informative() ) {
+                if (p1 != p2 && p1->is_informative() && p2->is_informative()) {
                     return std::pair<const Record *, double> (NULL, 0);
                 }
             }
-
-
 
             vector< uint32_t > tempsp = (*p)->record_compare(* *q);
 
             // TODO: Consider inlining a template function for this check.
             if (tempsp.at(firstname_index) == 0 ||
                 tempsp.at(midname_index)   == 0 ||
-                tempsp.at(lastname_index)  == 0 ) {
+                tempsp.at(lastname_index)  == 0) {
 
                 return std::pair<const Record *, double> (NULL, 0);
             }
@@ -163,7 +161,7 @@ disambiguate_by_set (const Record * key1,
                 interactive += 0;
             } else {
 
-                const double temp_prob = 1.0 / ( 1.0 + ( 1.0 - prior )/prior / r_value );
+                const double temp_prob = 1.0 / (1.0 + (1.0 - prior) / prior / r_value);
                 interactive +=  temp_prob;
                 if (partial_match_mode && qualified_count < candidates_for_averaging) {
                     if (probs.size() >= candidates_for_averaging) {
@@ -183,18 +181,18 @@ disambiguate_by_set (const Record * key1,
     const double interactive_average = interactive / match1_size / match2_size;
     double probs_average;
 
-    if ( qualified_count > probs.size() )
+    if (qualified_count > probs.size())
         probs_average = cumulative_interactive / qualified_count;
     else
-        probs_average = std::accumulate(probs.begin(), probs.end(), 0.0 ) / probs.size();
+        probs_average = std::accumulate(probs.begin(), probs.end(), 0.0) / probs.size();
 
-    if ( interactive_average > 1 )
+    if (interactive_average > 1)
         throw cException_Invalid_Probability("Cohesion value error.");
 
-    if ( partial_match_mode && probs_average < threshold )
+    if (partial_match_mode && probs_average < threshold)
         return std::pair<const Record *, double> (NULL, probs_average);
 
-    if ( ( ! partial_match_mode ) && interactive_average < threshold )
+    if ((!partial_match_mode) && interactive_average < threshold)
         return std::pair<const Record *, double> (NULL, interactive_average);
 
 
@@ -204,11 +202,11 @@ disambiguate_by_set (const Record * key1,
     else
         inter = interactive;
 
-    const double probability = ( cohesion1 * match1_size * ( match1_size - 1 )
-                                + cohesion2 * match2_size * ( match2_size - 1 )
-                                + 2.0 * inter )
-                                / (match1_size + match2_size)
-                                / (match1_size + match2_size - 1);
+    const double probability = (cohesion1 * match1_size * (match1_size - 1)
+                              + cohesion2 * match2_size * (match2_size - 1)
+                              + 2.0 * inter)
+                              / (match1_size + match2_size)
+                              / (match1_size + match2_size - 1);
 
     //ATTENSION: RETURN A NON-NULL POINTER TO TELL IT IS A
     //MERGE. NEED TO FIND A REPRESENTATIVE IN THE MERGE PART.
@@ -256,7 +254,7 @@ parse_column_names(std::string line) {
 }
 
 
-// Change the name to "index_columns"
+// Change the name to "index_column_names"
 vector<uint32_t>
 create_column_indices(std::vector<std::string> requested_columns,
     std::vector<std::string> total_col_names) {
@@ -481,7 +479,7 @@ fetch_records_from_txt(list <Record> & source,
     requested_column_indice = create_column_indices(requested_columns, total_col_names);
 
     Record::column_names = requested_columns;
-    Attribute ** pointer_array; 
+    Attribute ** pointer_array;
     pointer_array = instantiate_attributes(Record::column_names, num_cols);
 
     check_interactive_consistency(pointer_array, num_cols, Record::column_names);
