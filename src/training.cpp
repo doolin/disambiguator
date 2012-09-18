@@ -969,10 +969,14 @@ create_record_plist(const list<Record> & rl,  RecordPList & rpl) {
 }
 
 
+/**
+ * Verify that this is the top row of the training set table shown
+ * in the paper, the "condition on name to train patent."
+ */
 bool
 make_stable_training_sets_by_personal(const list <Record> & all_records,
                                       const uint32_t limit,
-                                      const vector <string> & training_filenames) {
+                                      const vector<string> & training_filenames) {
 
     RecordPList rare_firstname_set;
     RecordPList rare_lastname_set;
@@ -981,7 +985,7 @@ make_stable_training_sets_by_personal(const list <Record> & all_records,
     vector<RecordPList *> rare_pointer_vec;
     rare_pointer_vec.push_back(&rare_firstname_set);
     rare_pointer_vec.push_back(&rare_lastname_set);
-    const vector< const RecordPList * > const_rare_pointer_vec(rare_pointer_vec.begin(), rare_pointer_vec.end());
+    const vector<const RecordPList *> const_rare_pointer_vec(rare_pointer_vec.begin(), rare_pointer_vec.end());
 
     RecordPList record_pointers;
     create_record_plist(all_records, record_pointers);
