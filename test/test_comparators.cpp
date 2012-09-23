@@ -75,7 +75,7 @@ public:
   * weight.
   */
   void test_name_compare() {
-    
+
     string s1("foo");
     string s2("bar");
     string s3("baz");

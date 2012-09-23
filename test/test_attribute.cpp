@@ -4,6 +4,7 @@
 #include <cppunit/extensions/TestFactory.h>
 #include <cppunit/TestCase.h>
 #include <string>
+#include <string.h>
 
 // Really good web pages:
 // http://stackoverflow.com/questions/318064/how-do-you-declare-an-interface-in-c
@@ -13,18 +14,38 @@
 #include <attribute.h>
 
 #include "testdata.h"
+#include "colortest.h"
+
+#define TESTCOLOR COLOR181
+#define INDENT0 ""
+#define INDENT2 "  "
+#define INDENT4 "     "
 
 using std::string;
 using std::cout;
 using std::endl;
 
-class AttributeTest : public CppUnit::TestCase {
+void
+describe_test(const char * indent, const char * description) {
+
+    std::cout << indent << TESTCOLOR << description << COLOR_RESET
+              << std::endl;
+}
+
+class TestUtils {
+};
+
+class AttributeTest : public CppUnit::TestCase, TestUtils {
 
 public:
-  AttributeTest(std::string name) : CppUnit::TestCase(name) {}
+  AttributeTest(std::string name) : CppUnit::TestCase(name) {
+    describe_test(INDENT0, "Testing Attribute");
+  }
 
 
   void compare_firstname() {
+
+    describe_test(INDENT2, "Testing Firstname comparison");
 
     Record * foobar = make_foobar_record();
     foobar->set_sample_record(foobar);
@@ -45,6 +66,11 @@ public:
 
   void compare_middlename() {
 
+    describe_test(INDENT2, "Testing Middlename comparison");
+
+    char buffer[256];
+    char teststr[] = "Comparing %s with %s, similarity %d";
+
 #if 0
     // This is from the previous documentation, in which
     // middlenames run from 0..4. Now, Middlename compares
@@ -60,14 +86,45 @@ public:
     foobar->set_sample_record(foobar);
     uint32_t similarity;
 
-    cMiddlename d1("David");
-    d1.split_string("David");
-    cMiddlename d2("David");
-    d2.split_string("David");
-    cMiddlename d3("David Michael");
-    d3.split_string("David Michael");
-    cMiddlename d4("David Michael");
-    d4.split_string("David Michael");
+    string David("David");
+    cMiddlename d1(David.c_str());
+    d1.split_string(David.c_str());
+    string David2("David");
+    cMiddlename d2(David2.c_str());
+    d2.split_string(David2.c_str());
+    d1.activate_comparator();
+
+    similarity = d1.compare(d2);
+    sprintf(buffer, teststr, David.c_str(), David2.c_str(), similarity);
+    describe_test(INDENT4, buffer);
+    CPPUNIT_ASSERT(2 == similarity);
+
+
+    string dm1("David Michael");
+    string dm2("David Michael");
+    cMiddlename d3(dm1.c_str());
+    d3.split_string(dm1.c_str());
+    cMiddlename d4(dm2.c_str());
+    d4.split_string(dm2.c_str());
+
+    similarity = d3.compare(d4);
+    sprintf(buffer, teststr, dm1.c_str(), dm2.c_str(), similarity);
+    describe_test(INDENT4, buffer);
+    CPPUNIT_ASSERT(3 == similarity);
+
+    similarity = d1.compare(d3);
+    sprintf(buffer, teststr, David.c_str(), dm2.c_str(), similarity);
+    describe_test(INDENT4, buffer);
+    std::cout << "Middlename similarity d1, d3: " << similarity << std::endl;
+    CPPUNIT_ASSERT(1 == similarity);
+
+    similarity = d1.compare(d4);
+    std::cout << "Middlename similarity d1, d4: " << similarity << std::endl;
+    sprintf(buffer, teststr, dm1.c_str(), dm2.c_str(), similarity);
+    describe_test(INDENT4, buffer);
+    CPPUNIT_ASSERT(4 == similarity);
+
+
     cMiddlename d5("Anna Yvette");
     d5.split_string("Anna Yvette");
     cMiddlename d6("AnnaYvette");
@@ -81,30 +138,12 @@ public:
     cMiddlename d10("David Kenneth");
     d10.split_string("David Kenneth");
 
-    d1.activate_comparator();
-
-    similarity = d1.compare(d2);
-    std::cout << "Middlename similarity d1, d2: " << similarity << std::endl;
-    //CPPUNIT_ASSERT(4 == similarity);
-
-    similarity = d1.compare(d3);
-    std::cout << "Middlename similarity d1, d3: " << similarity << std::endl;
-    //CPPUNIT_ASSERT(4 == similarity);
-
-    similarity = d1.compare(d4);
-    std::cout << "Middlename similarity d1, d4: " << similarity << std::endl;
-    //CPPUNIT_ASSERT(4 == similarity);
-
     similarity = d1.compare(d5);
     std::cout << "Middlename similarity d1, d5: " << similarity << std::endl;
     //CPPUNIT_ASSERT(4 == similarity);
 
     similarity = d1.compare(d6);
     std::cout << "Middlename similarity d1, d6: " << similarity << std::endl;
-    //CPPUNIT_ASSERT(4 == similarity);
-
-    similarity = d3.compare(d4);
-    std::cout << "Middlename similarity d3, d4: " << similarity << std::endl;
     //CPPUNIT_ASSERT(4 == similarity);
 
     similarity = d8.compare(d9);
@@ -119,6 +158,8 @@ public:
   }
 
   void compare_lastname() {
+
+    describe_test(INDENT2, "Testing Lastname comparison");
 
     Record * foobar = make_foobar_record();
     foobar->set_sample_record(foobar);
@@ -141,6 +182,12 @@ public:
 
   void compare_assignee() {
 
+    describe_test(INDENT2, "Testing Assignee comparison");
+
+    RecordPList all_rec_pointers;
+
+    // This is necessary God object.
+    // TODO: Remind myself why this object needs creating
     Record * foobar = make_foobar_record();
     foobar->set_sample_record(foobar);
     uint32_t similarity;
@@ -151,6 +198,7 @@ public:
     d2.split_string("IBM");
 
     d1.activate_comparator();
+    d1.configure_assignee(all_rec_pointers);
 
     similarity = d1.compare(d2);
     std::cout << "Assignee similarity d1, d2: " << similarity << std::endl;
@@ -161,6 +209,8 @@ public:
 
 
   void compare_coauthor() {
+
+    describe_test(INDENT2, "Testing Coauthor comparison");
 
 #if 0
     Record * foobar = make_foobar_record();
@@ -185,6 +235,8 @@ public:
 
   void compare_class() {
 
+    describe_test(INDENT2, "Testing Class comparison");
+
     Record * foobar = make_foobar_record();
     foobar->set_sample_record(foobar);
     uint32_t similarity;
@@ -206,6 +258,8 @@ public:
 
 
   void compare_distance() {
+
+    describe_test(INDENT2, "Testing Distance comparison");
 
 #if 0
     Record * foobar = make_foobar_record();
@@ -242,8 +296,8 @@ public:
     compare_lastname();
     //compare_assignee();
     compare_class();
-    //compare_coauthors();
-    //compare_distance();
+    compare_coauthor();
+    compare_distance();
     delete_attribute();
   }
 };
