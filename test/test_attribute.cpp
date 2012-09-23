@@ -71,88 +71,152 @@ public:
     char buffer[256];
     char teststr[] = "Comparing %s with %s, similarity %d";
 
-#if 0
-    // This is from the previous documentation, in which
-    // middlenames run from 0..4. Now, Middlename compares
-    // run from 0..3
-    THOMAS ERIC/JOHN THOMAS
-    JOHN ERIC/JOHN (MISSING)
-    THOMAS ERIC ALEX/JACK ERIC RONALD
-    THOMAS ERIC RON ALEX EDWARD/JACK ERIC RON ALEX LEE
-    THOMAS ERIC/THOMAS ERIC LEE
-#endif
-
     Record * foobar = make_foobar_record();
     foobar->set_sample_record(foobar);
     uint32_t similarity;
 
-    string David("David");
-    cMiddlename d1(David.c_str());
-    d1.split_string(David.c_str());
-    string David2("David");
-    cMiddlename d2(David2.c_str());
-    d2.split_string(David2.c_str());
+    string d1s("David");
+    cMiddlename d1(d1s.c_str());
+    d1.split_string(d1s.c_str());
+    string d2s("David");
+    cMiddlename d2(d2s.c_str());
+    d2.split_string(d2s.c_str());
     d1.activate_comparator();
 
     similarity = d1.compare(d2);
-    sprintf(buffer, teststr, David.c_str(), David2.c_str(), similarity);
+    sprintf(buffer, teststr, d1s.c_str(), d2s.c_str(), similarity);
     describe_test(INDENT4, buffer);
     CPPUNIT_ASSERT(2 == similarity);
 
 
-    string dm1("David Michael");
-    string dm2("David Michael");
-    cMiddlename d3(dm1.c_str());
-    d3.split_string(dm1.c_str());
-    cMiddlename d4(dm2.c_str());
-    d4.split_string(dm2.c_str());
+    string d3s("David Michael");
+    string d4s("David Michael");
+    cMiddlename d3(d3s.c_str());
+    d3.split_string(d3s.c_str());
+    cMiddlename d4(d4s.c_str());
+    d4.split_string(d4s.c_str());
 
     similarity = d3.compare(d4);
-    sprintf(buffer, teststr, dm1.c_str(), dm2.c_str(), similarity);
+    sprintf(buffer, teststr, d3s.c_str(), d4s.c_str(), similarity);
     describe_test(INDENT4, buffer);
     CPPUNIT_ASSERT(3 == similarity);
 
     similarity = d1.compare(d3);
-    sprintf(buffer, teststr, David.c_str(), dm2.c_str(), similarity);
+    sprintf(buffer, teststr, d1s.c_str(), d3s.c_str(), similarity);
     describe_test(INDENT4, buffer);
-    std::cout << "Middlename similarity d1, d3: " << similarity << std::endl;
     CPPUNIT_ASSERT(1 == similarity);
 
     similarity = d1.compare(d4);
-    std::cout << "Middlename similarity d1, d4: " << similarity << std::endl;
-    sprintf(buffer, teststr, dm1.c_str(), dm2.c_str(), similarity);
+    d1.get_data();
+    sprintf(buffer, teststr, d1s.c_str(), d4s.c_str(), similarity);
     describe_test(INDENT4, buffer);
-    CPPUNIT_ASSERT(4 == similarity);
+    CPPUNIT_ASSERT(1 == similarity);
 
 
-    cMiddlename d5("Anna Yvette");
-    d5.split_string("Anna Yvette");
+    string d5s("Anna Yvette");
+    cMiddlename d5(d5s.c_str());
+    d5.split_string(d5s.c_str());
+    similarity = d1.compare(d5);
+    sprintf(buffer, teststr, d1s.c_str(), d5s.c_str(), similarity);
+    describe_test(INDENT4, buffer);
+    CPPUNIT_ASSERT(1 == similarity);
+
+    string d6s("AnnaYvette");
     cMiddlename d6("AnnaYvette");
     d6.split_string("AnnaYvette");
-    cMiddlename d7("Anna");
-    d7.split_string("Anna");
-    cMiddlename d8("Yvette");
-    d8.split_string("Yvette");
-    cMiddlename d9("");
-    d9.split_string("");
-    cMiddlename d10("David Kenneth");
-    d10.split_string("David Kenneth");
-
-    similarity = d1.compare(d5);
-    std::cout << "Middlename similarity d1, d5: " << similarity << std::endl;
-    //CPPUNIT_ASSERT(4 == similarity);
-
     similarity = d1.compare(d6);
-    std::cout << "Middlename similarity d1, d6: " << similarity << std::endl;
-    //CPPUNIT_ASSERT(4 == similarity);
+    sprintf(buffer, teststr, d1s.c_str(), d6s.c_str(), similarity);
+    describe_test(INDENT4, buffer);
+    CPPUNIT_ASSERT(2 == similarity);
 
+    string d7s("Anna");
+    cMiddlename d7(d7s.c_str());
+    d7.split_string(d7s.c_str());
+
+
+    string d8s("Yvette");
+    cMiddlename d8(d8s.c_str());
+    d8.split_string(d8s.c_str());
+    string d9s("");
+    cMiddlename d9(d9s.c_str());
+    d9.split_string(d9s.c_str());
     similarity = d8.compare(d9);
-    std::cout << "Middlename similarity d8, d9: " << similarity << std::endl;
-    //CPPUNIT_ASSERT(4 == similarity);
+    sprintf(buffer, teststr, d8s.c_str(), d9s.c_str(), similarity);
+    describe_test(INDENT4, buffer);
+    CPPUNIT_ASSERT(2 == similarity);
 
+
+    string d10s("David Kenneth");
+    cMiddlename d10(d10s.c_str());
+    d10.split_string(d10s.c_str());
     similarity = d4.compare(d10);
-    std::cout << "Middlename similarity d4, d10: " << similarity << std::endl;
-    //CPPUNIT_ASSERT(4 == similarity);
+    sprintf(buffer, teststr, d4s.c_str(), d10s.c_str(), similarity);
+    describe_test(INDENT4, buffer);
+    CPPUNIT_ASSERT(0 == similarity);
+
+    similarity = d5.compare(d9);
+    sprintf(buffer, teststr, d5s.c_str(), d9s.c_str(), similarity);
+    describe_test(INDENT4, buffer);
+    CPPUNIT_ASSERT(1 == similarity);
+
+#if 0
+   THOMAS ERIC/JOHN THOMAS
+   JOHN ERIC/JOHN (MISSING)
+   THOMAS ERIC ALEX/JACK ERIC RONALD
+   THOMAS ERIC RON ALEX EDWARD/JACK ERIC RON ALEX LEE
+   THOMAS ERIC/THOMAS ERIC LEE
+#endif
+
+    // This is from the previous documentation, in which
+    // middlenames run from 0..4. Now, Middlename compares
+    // run from 0..3
+
+    string e1s("THOMAS ERIC");
+    cMiddlename e1(e1s.c_str());
+    e1.split_string(e1s.c_str());
+
+    string e2s("JOHN THOMAS");
+    cMiddlename e2(e2s.c_str());
+    e2.split_string(e2s.c_str());
+
+    similarity = e1.compare(e2);
+    sprintf(buffer, teststr, e1s.c_str(), e2s.c_str(), similarity);
+    describe_test(INDENT4, buffer);
+    CPPUNIT_ASSERT(0 == similarity);
+
+    string e3s("JOHN ERIC");
+    cMiddlename e3(e3s.c_str());
+    e3.split_string(e3s.c_str());
+
+    string e4s("JOHN");
+    cMiddlename e4(e4s.c_str());
+    e4.split_string(e4s.c_str());
+
+    similarity = e3.compare(e4);
+    sprintf(buffer, teststr, e3s.c_str(), e4s.c_str(), similarity);
+    describe_test(INDENT4, buffer);
+    CPPUNIT_ASSERT(1 == similarity);
+
+    string e5s("THOMAS ERIC ALEX");
+    cMiddlename e5(e5s.c_str());
+    e5.split_string(e5s.c_str());
+
+    string e6s("JACK ERIC RONALD");
+    cMiddlename e6(e6s.c_str());
+    e6.split_string(e6s.c_str());
+
+    string e7s("THOMAS ERIC RON ALEX EDWARD");
+    cMiddlename e7(e7s.c_str());
+    e7.split_string(e7s.c_str());
+
+    string e8s("JACK ERIC RON ALEX LEE");
+    cMiddlename e8(e8s.c_str());
+    e8.split_string(e8s.c_str());
+
+    string e9s("THOMAS ERIC LEE");
+    cMiddlename e9(e9s.c_str());
+    e9.split_string(e9s.c_str());
+
 
     delete foobar;
   }
