@@ -396,6 +396,53 @@ Totally different names:
     describe_test(INDENT4, buffer);
     CPPUNIT_ASSERT(4 == similarity);
 
+    //DE AMOUR/DEAMOUR
+    string l8s("DE AMOUR");
+    cLastname l8(l8s.c_str());
+    l8.split_string(l8s.c_str());
+
+    string l9s("DEAMOUR");
+    cLastname l9(l9s.c_str());
+    l9.split_string(l9s.c_str());
+
+    similarity = l8.compare(l9);
+    sprintf(buffer, teststr, l8s.c_str(), l9s.c_str(), similarity);
+    describe_test(INDENT4, buffer);
+    CPPUNIT_ASSERT(4 == similarity);
+
+    //JOHNSTON/JOHNSON
+    string l10s("JOHNSTON");
+    cLastname l10(l10s.c_str());
+    l10.split_string(l10s.c_str());
+
+    string l11s("JOHNSON");
+    cLastname l11(l11s.c_str());
+    l11.split_string(l11s.c_str());
+
+    similarity = l10.compare(l11);
+    sprintf(buffer, teststr, l10s.c_str(), l11s.c_str(), similarity);
+    describe_test(INDENT4, buffer);
+    CPPUNIT_ASSERT(4 == similarity);
+
+    //DE AMOUR/DE AMOURS
+    string l12s("DE AMOUR");
+    cLastname l12(l12s.c_str());
+    l12.split_string(l12s.c_str());
+
+    string l13s("DE AMOURS");
+    cLastname l13(l13s.c_str());
+    l13.split_string(l13s.c_str());
+
+    similarity = l12.compare(l13);
+    sprintf(buffer, teststr, l12s.c_str(), l13s.c_str(), similarity);
+    describe_test(INDENT4, buffer);
+    CPPUNIT_ASSERT(4 == similarity);
+
+    similarity = l12.compare(l12);
+    sprintf(buffer, teststr, l12s.c_str(), l12s.c_str(), similarity);
+    describe_test(INDENT4, buffer);
+    CPPUNIT_ASSERT(5 == similarity);
+
 
     delete foobar;
   }
