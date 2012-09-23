@@ -205,6 +205,11 @@ public:
     cMiddlename e6(e6s.c_str());
     e6.split_string(e6s.c_str());
 
+    similarity = e5.compare(e6);
+    sprintf(buffer, teststr, e5s.c_str(), e6s.c_str(), similarity);
+    describe_test(INDENT4, buffer);
+    CPPUNIT_ASSERT(0 == similarity);
+
     string e7s("THOMAS ERIC RON ALEX EDWARD");
     cMiddlename e7(e7s.c_str());
     e7.split_string(e7s.c_str());
@@ -213,9 +218,19 @@ public:
     cMiddlename e8(e8s.c_str());
     e8.split_string(e8s.c_str());
 
+    similarity = e7.compare(e8);
+    sprintf(buffer, teststr, e7s.c_str(), e8s.c_str(), similarity);
+    describe_test(INDENT4, buffer);
+    CPPUNIT_ASSERT(0 == similarity);
+
     string e9s("THOMAS ERIC LEE");
     cMiddlename e9(e9s.c_str());
     e9.split_string(e9s.c_str());
+
+    similarity = e1.compare(e9);
+    sprintf(buffer, teststr, e1s.c_str(), e9s.c_str(), similarity);
+    describe_test(INDENT4, buffer);
+    CPPUNIT_ASSERT(3 == similarity);
 
 
     delete foobar;
