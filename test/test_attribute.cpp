@@ -332,17 +332,70 @@ public:
     Record * foobar = make_foobar_record();
     foobar->set_sample_record(foobar);
     uint32_t similarity;
+    char buffer[256];
+    char teststr[] = "Comparing %s with %s, similarity %d";
 
-    cLastname d1("Williams");
-    d1.split_string("Williams");
-    cLastname d2("Wilson");
-    d2.split_string("Wilson");
+#if 0
+Totally different names:
+  ANDERSON/DAVIDSON
+  One name missing: ANDERSON/(NONE)
+  First part of name doesn’t match: DE AMOUR/DA AMOUR
+  VAN DE WAALS/VAN DES WAALS
+  DE AMOUR/DEAMOUR
+  JOHNSTON/JOHNSON
+  DE AMOUR/DE AMOURS
+#endif
 
-    d1.activate_comparator();
+    string l1s("ANDERSON");
+    cLastname l1(l1s.c_str());
+    l1.split_string(l1s.c_str());
+    l1.activate_comparator();
 
-    similarity = d1.compare(d2);
-    std::cout << "Lastname similarity d1, d2: " << similarity << std::endl;
-    //CPPUNIT_ASSERT(4 == similarity);
+    string l2s("DAVIDSON");
+    cLastname l2(l2s.c_str());
+    l2.split_string(l2s.c_str());
+
+    similarity = l1.compare(l2);
+    sprintf(buffer, teststr, l1s.c_str(), l2s.c_str(), similarity);
+    describe_test(INDENT4, buffer);
+    CPPUNIT_ASSERT(1 == similarity);
+
+    string l3s("");
+    cLastname l3(l3s.c_str());
+    l3.split_string(l3s.c_str());
+
+    similarity = l1.compare(l3);
+    sprintf(buffer, teststr, l1s.c_str(), l3s.c_str(), similarity);
+    describe_test(INDENT4, buffer);
+    CPPUNIT_ASSERT(0 == similarity);
+
+    string l4s("DE AMOUR");
+    cLastname l4(l4s.c_str());
+    l4.split_string(l4s.c_str());
+
+    string l5s("DA AMOUR");
+    cLastname l5(l5s.c_str());
+    l5.split_string(l5s.c_str());
+
+    similarity = l4.compare(l5);
+    sprintf(buffer, teststr, l4s.c_str(), l5s.c_str(), similarity);
+    describe_test(INDENT4, buffer);
+    CPPUNIT_ASSERT(3 == similarity);
+
+    //VAN DE WAALS/VAN DES WAALS
+    string l6s("VAN DE WAALS");
+    cLastname l6(l6s.c_str());
+    l6.split_string(l6s.c_str());
+
+    string l7s("VAN DES WAALS");
+    cLastname l7(l7s.c_str());
+    l7.split_string(l7s.c_str());
+
+    similarity = l6.compare(l7);
+    sprintf(buffer, teststr, l6s.c_str(), l7s.c_str(), similarity);
+    describe_test(INDENT4, buffer);
+    CPPUNIT_ASSERT(4 == similarity);
+
 
     delete foobar;
   }
