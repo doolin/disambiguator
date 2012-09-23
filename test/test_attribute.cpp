@@ -58,7 +58,8 @@ public:
   ONE NAME MISSING: THOMAS ERIC/(NONE)
   THOMAS ERIC/ THOMAS JOHN ALEX
   LEE RON ERIC/LEE ALEX ERIC
-  No space match but raw names do not: JOHNERIC/JOHN ERIC. Short name vs long name: ERIC/ERIC THOMAS
+  No space match but raw names do not: JOHNERIC/JOHN ERIC.
+  Short name vs long name: ERIC/ERIC THOMAS
   ALEX NICHOLAS/ALEX NICHOLAS TAKASHI
   ALEX NICHOLAS/ALEX NICHOLA (Might be not exactly the same but identified the same by jaro-wrinkler)
 #endif
@@ -94,6 +95,24 @@ public:
     string n5s("LEE ALEX ERIC");
     cFirstname n5(n5s.c_str());
     n5.split_string(n5s.c_str());
+
+    similarity = n4.compare(n5);
+    sprintf(buffer, teststr, n4s.c_str(), n5s.c_str(), similarity);
+    describe_test(INDENT4, buffer);
+    CPPUNIT_ASSERT(4 == similarity);
+
+    string n6s("JOHNERIC");
+    cFirstname n6(n6s.c_str());
+    n6.split_string(n6s.c_str());
+
+    string n7s("JOHN ERIC");
+    cFirstname n7(n7s.c_str());
+    n7.split_string(n7s.c_str());
+
+    similarity = n6.compare(n7);
+    sprintf(buffer, teststr, n6s.c_str(), n7s.c_str(), similarity);
+    describe_test(INDENT4, buffer);
+    CPPUNIT_ASSERT(2 == similarity);
 
   }
 
