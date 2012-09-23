@@ -16,7 +16,7 @@
 #include "testdata.h"
 #include "colortest.h"
 
-#define TESTCOLOR COLOR181
+#define TESTCOLOR COLOR119
 #define INDENT0 ""
 #define INDENT2 "  "
 #define INDENT4 "     "
@@ -113,6 +113,41 @@ public:
     sprintf(buffer, teststr, n6s.c_str(), n7s.c_str(), similarity);
     describe_test(INDENT4, buffer);
     CPPUNIT_ASSERT(2 == similarity);
+
+    string n8s("ERIC");
+    cFirstname n8(n8s.c_str());
+    n8.split_string(n8s.c_str());
+
+    string n9s("ERIC THOMAS");
+    cFirstname n9(n9s.c_str());
+    n9.split_string(n9s.c_str());
+
+    similarity = n8.compare(n9);
+    sprintf(buffer, teststr, n8s.c_str(), n9s.c_str(), similarity);
+    describe_test(INDENT4, buffer);
+    CPPUNIT_ASSERT(4 == similarity);
+
+    string n10s("ALEX NICHOLAS");
+    cFirstname n10(n10s.c_str());
+    n10.split_string(n10s.c_str());
+
+    string n11s("ALEX NICHOLAS TAKASHI");
+    cFirstname n11(n11s.c_str());
+    n11.split_string(n11s.c_str());
+
+    similarity = n10.compare(n11);
+    sprintf(buffer, teststr, n10s.c_str(), n11s.c_str(), similarity);
+    describe_test(INDENT4, buffer);
+    CPPUNIT_ASSERT(4 == similarity);
+
+    string n12s("ALEX NICHOLA");
+    cFirstname n12(n12s.c_str());
+    n12.split_string(n12s.c_str());
+
+    similarity = n10.compare(n12);
+    sprintf(buffer, teststr, n10s.c_str(), n12s.c_str(), similarity);
+    describe_test(INDENT4, buffer);
+    CPPUNIT_ASSERT(4 == similarity);
 
   }
 
