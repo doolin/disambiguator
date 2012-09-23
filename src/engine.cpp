@@ -702,13 +702,16 @@ reconfigure_interactives (const Record_Reconfigurator * pc,
 
 
 void
-cAssignee::configure_assignee( const list < const Record *> & recs) {
+cAssignee::configure_assignee(const list<const Record *> & recs) {
 
     static const uint32_t asgnumidx = Record::get_index_by_name(cAsgNum::static_get_class_name());
 
-    for ( list< const Record *>::const_iterator p = recs.begin(); p != recs.end(); ++p ) {
-        const cAsgNum * pasgnum = dynamic_cast < const cAsgNum *> ( (*p)->get_attrib_pointer_by_index(asgnumidx) );
-        if ( ! pasgnum ) {
+    list< const Record *>::const_iterator p = recs.begin();
+    for (; p != recs.end(); ++p) {
+
+        const cAsgNum * pasgnum = dynamic_cast<const cAsgNum *>((*p)->get_attrib_pointer_by_index(asgnumidx));
+
+        if (!pasgnum) {
             throw cException_Other("Cannot perform dynamic cast to cAsgNum.");
         }
         ++cAssignee::asgnum2count_tree[pasgnum];
