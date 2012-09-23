@@ -49,21 +49,56 @@ public:
 
     Record * foobar = make_foobar_record();
     foobar->set_sample_record(foobar);
+    char buffer[256];
+    char teststr[] = "Comparing %s with %s, similarity %d";
+    uint32_t similarity;
 
-    cFirstname d1("Dave");
-    d1.split_string("Dave");
-    cFirstname d2("Dave");
-    d2.split_string("Dave");
-    d1.activate_comparator();
-    //d2.activate_comparator();
-    uint32_t similarity = d1.compare(d2);
-    //std::cout << "Similarity: " << similarity << std::endl;
-    CPPUNIT_ASSERT(4 == similarity);
-    similarity = d1.exact_compare(d1);
-    //std::cout << "Similarity: " << similarity << std::endl;
+#if 0
+  Totally different: THOMAS ERIC/RICHARD JACK EVAN
+  ONE NAME MISSING: THOMAS ERIC/(NONE)
+  THOMAS ERIC/ THOMAS JOHN ALEX
+  LEE RON ERIC/LEE ALEX ERIC
+  No space match but raw names do not: JOHNERIC/JOHN ERIC. Short name vs long name: ERIC/ERIC THOMAS
+  ALEX NICHOLAS/ALEX NICHOLAS TAKASHI
+  ALEX NICHOLAS/ALEX NICHOLA (Might be not exactly the same but identified the same by jaro-wrinkler)
+#endif
+
+    string n1s("THOMAS ERIC");
+    cFirstname n1(n1s.c_str());
+    n1.split_string(n1s.c_str());
+
+    string n2s("RICHARD JACK EVAN");
+    cFirstname n2(n2s.c_str());
+    n2.split_string(n2s.c_str());
+
+    n1.activate_comparator();
+
+    similarity = n1.compare(n2);
+    sprintf(buffer, teststr, n1s.c_str(), n2s.c_str(), similarity);
+    describe_test(INDENT4, buffer);
+    CPPUNIT_ASSERT(0 == similarity);
+
+    string n3s("");
+    cFirstname n3(n3s.c_str());
+    n3.split_string(n3s.c_str());
+
+    similarity = n1.compare(n3);
+    sprintf(buffer, teststr, n1s.c_str(), n3s.c_str(), similarity);
+    describe_test(INDENT4, buffer);
+    CPPUNIT_ASSERT(1 == similarity);
+
+    string n4s("LEE RON ERIC");
+    cFirstname n4(n4s.c_str());
+    n4.split_string(n4s.c_str());
+
+    string n5s("LEE ALEX ERIC");
+    cFirstname n5(n5s.c_str());
+    n5.split_string(n5s.c_str());
+
   }
 
 
+  // TODO: Maybe consider moving this to it's own file.
   void compare_middlename() {
 
     describe_test(INDENT2, "Testing Middlename comparison");
