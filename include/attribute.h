@@ -493,163 +493,6 @@ public:
  * Only use it when a whole class will be rebuilt.
  */
 
-/**
- * Attribute_Intermediary(const char * source = NULL ): default constructor.
- */
-
-/**
- * static const Derived * static_add_attrib(const Derived & d,
- * const uint32_t n ): add the reference counter of the d
- * attribute object by n. If d does not exists, add d to the pool.
- * Returns the pointer to the newly added object.
- */
-
-/**
- * static const Derived * static_find_attrib ( const Derived & d):
- * find the d object in the attribute pool. Returns 0 if failure,
- * or the pointer to the object if success.
- */
-
-/**
- * static const Derived * static_reduce_attrib(const Derived & d,
- * const uint32_t n): deduct the reference counter of the d
- * attribute object by n. If the counter = 0, delete d from the
- * pool and returns NULL, else returns the pointer to d.
- */
-
-/**
- * const Attribute* clone() const: Polymorphic constructor of
- * the concrete class. Should only be called when reading data
- * from source files.
- */
-
-/**
- * const string & get_class_name() const: to get the concrete class specifier.
- */
-
-/**
- * static const string & static_get_class_name():
- * static function, to get the concrete class specifier.
- */
-
-/**
- * static void set_column_index_in_query(const uint32_t i):
- * to set the sequence of the concrete class to i, as appearing in the class list.
- */
-
-/**
- * uint32_t compare(const Attribute & rhs) const: the default
- * comparison function between two concrete class objects.
- * Override if necessary.
- */
-
-/**
- * static const uint32_t get_interactive_column_number():
- * get the number of interactive columns with the current class.
- */
-
-/**
- * static void static_check_interactive_consistency(
- * const vector <string> & query_columns): check and
- * set the static member interactive_column_indice_in_query;
- */
-
-/**
- * void check_interactive_consistency(const vector <string> & query_columns):
- * polymorphic version of the above function.
- */
-
-
-/*
- * bool has_checked_interactive_consistency():
- * check if the class interactive consistency is checked.
- */
-
-/**
- * static bool is_enabled():
- * check if the class is enabled for use.
- */
-
-/**
- * static void enable(): enable the class.
- */
-
-/**
- * static bool static_is_comparator_activated():
- * check if the comparison function for the class is activated.
- */
-
-/**
- * bool is_comparator_activated():
- * polymorphic version of the above function.
- */
-
-/**
- * static void activate_comparator():
- * activate the comparison function for the class.
- */
-
-/**
- * static void deactivate_comparator():
- * de-activate the comparison function for the class.
- */
-
-/**
- * void print( std::ostream & os ) const:
- * print the current object to output stream os, usually std::cout.
- */
-
-/**
- * static const string & static_get_attrib_group():
- * get the specifier of the attribute group of the class.
- */
-
-
-/*
- * const string & get_attrib_group() const:
- * polymorphic version of the above function.
- */
-
-/**
- * static const string * static_add_string ( const string & str ):
- * copy the string "str" to the data pool, and returns the
- * pointer to the newly added string.
- */
-
-/**
- * static const string * static_find_string( const string & str):
- * find the string "str" in the data pool, and returns the
- * pointer to it if success or NULL if failure.
- */
-
-/**
- * const string * add_string ( const string & str ):
- * polymorphic version of the above static version.
- */
-
-/**
- * static const Attribute * static_clone_by_data( const vector < string > & str ):
- * add or create an attribute object by the str data, returns
- * the pointer to the object.
- */
-
-/**
- * static int static_clean_attrib_pool():
- * remove the objects whose reference counter = 0,
- * returns the number of removed objects.
- */
-
-/**
- * int clean_attrib_pool() const:
- * polymorphic version of the above function
- */
-
-/**
- * const Attribute * reduce_attrib(uint32_t n) const:
- * deduct the reference counter of this object by n,
- * and returns the pointer to this object. Null if removed.
- */
-
 
 
 template <typename Derived>
@@ -824,6 +667,163 @@ public:
     static void clear_attrib_pool() {
       attrib_pool.clear();
     }
+
+/**
+ * Attribute_Intermediary(const char * source = NULL ): default constructor.
+ */
+
+/**
+ * static const Derived * static_add_attrib(const Derived & d,
+ * const uint32_t n ): add the reference counter of the d
+ * attribute object by n. If d does not exists, add d to the pool.
+ * Returns the pointer to the newly added object.
+ */
+
+/**
+ * static const Derived * static_find_attrib ( const Derived & d):
+ * find the d object in the attribute pool. Returns 0 if failure,
+ * or the pointer to the object if success.
+ */
+
+/**
+ * static const Derived * static_reduce_attrib(const Derived & d,
+ * const uint32_t n): deduct the reference counter of the d
+ * attribute object by n. If the counter = 0, delete d from the
+ * pool and returns NULL, else returns the pointer to d.
+ */
+
+/**
+ * const Attribute* clone() const: Polymorphic constructor of
+ * the concrete class. Should only be called when reading data
+ * from source files.
+ */
+
+/**
+ * const string & get_class_name() const: to get the concrete class specifier.
+ */
+
+/**
+ * static const string & static_get_class_name():
+ * static function, to get the concrete class specifier.
+ */
+
+/**
+ * static void set_column_index_in_query(const uint32_t i):
+ * to set the sequence of the concrete class to i, as appearing in the class list.
+ */
+
+/**
+ * uint32_t compare(const Attribute & rhs) const: the default
+ * comparison function between two concrete class objects.
+ * Override if necessary.
+ */
+
+/**
+ * static const uint32_t get_interactive_column_number():
+ * get the number of interactive columns with the current class.
+ */
+
+/**
+ * static void static_check_interactive_consistency(
+ * const vector <string> & query_columns): check and
+ * set the static member interactive_column_indice_in_query;
+ */
+
+/**
+ * void check_interactive_consistency(const vector <string> & query_columns):
+ * polymorphic version of the above function.
+ */
+
+
+/*
+ * bool has_checked_interactive_consistency():
+ * check if the class interactive consistency is checked.
+ */
+
+/**
+ * static bool is_enabled():
+ * check if the class is enabled for use.
+ */
+
+/**
+ * static void enable(): enable the class.
+ */
+
+/**
+ * static bool static_is_comparator_activated():
+ * check if the comparison function for the class is activated.
+ */
+
+/**
+ * bool is_comparator_activated():
+ * polymorphic version of the above function.
+ */
+
+/**
+ * static void activate_comparator():
+ * activate the comparison function for the class.
+ */
+
+/**
+ * static void deactivate_comparator():
+ * de-activate the comparison function for the class.
+ */
+
+/**
+ * void print( std::ostream & os ) const:
+ * print the current object to output stream os, usually std::cout.
+ */
+
+/**
+ * static const string & static_get_attrib_group():
+ * get the specifier of the attribute group of the class.
+ */
+
+
+/*
+ * const string & get_attrib_group() const:
+ * polymorphic version of the above function.
+ */
+
+/**
+ * static const string * static_add_string ( const string & str ):
+ * copy the string "str" to the data pool, and returns the
+ * pointer to the newly added string.
+ */
+
+/**
+ * static const string * static_find_string( const string & str):
+ * find the string "str" in the data pool, and returns the
+ * pointer to it if success or NULL if failure.
+ */
+
+/**
+ * const string * add_string ( const string & str ):
+ * polymorphic version of the above static version.
+ */
+
+/**
+ * static const Attribute * static_clone_by_data( const vector < string > & str ):
+ * add or create an attribute object by the str data, returns
+ * the pointer to the object.
+ */
+
+/**
+ * static int static_clean_attrib_pool():
+ * remove the objects whose reference counter = 0,
+ * returns the number of removed objects.
+ */
+
+/**
+ * int clean_attrib_pool() const:
+ * polymorphic version of the above function
+ */
+
+/**
+ * const Attribute * reduce_attrib(uint32_t n) const:
+ * deduct the reference counter of this object by n,
+ * and returns the pointer to this object. Null if removed.
+ */
 
 
     Attribute_Intermediary(const char * source = NULL )
