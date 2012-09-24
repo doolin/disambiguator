@@ -267,7 +267,8 @@ Record::clean_member_attrib_pool() {
 
 /**
  * Get the index of the desired column name in the columns read from text file.
- * Algorithm: exhaustive comparison. Time complexity = O(n); if no matching is found, a exception will be thrown.
+ * Algorithm: exhaustive comparison. Time complexity = O(n);
+ * if no matching is found, a exception will be thrown.
  */
 uint32_t
 Record::get_index_by_name(const string & inputstr) {
@@ -296,7 +297,8 @@ uint32_t
 Record::get_similarity_index_by_name(const string & inputstr) {
 
     for (uint32_t i = 0 ; i < active_similarity_names.size(); ++i)
-        if ( active_similarity_names.at(i) == inputstr ) return i;
+        if (active_similarity_names.at(i) == inputstr)
+            return i;
 
     throw cException_ColumnName_Not_Found(inputstr.c_str());
 }
@@ -312,7 +314,7 @@ Record::activate_comparators_by_name (const vector<string> & inputvec) {
 
         const string & classlabel = (*p)->get_class_name();
 
-        if (std::find( inputvec.begin(), inputvec.end(), classlabel) == inputvec.end()) {
+        if (std::find(inputvec.begin(), inputvec.end(), classlabel) == inputvec.end()) {
             (*p)->deactivate_comparator();
         }
         else {
