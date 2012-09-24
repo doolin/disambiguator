@@ -127,17 +127,6 @@ public:
  *
  */
 
-/**
- *    Member Functions:
- *    Protected:
- *
- *        1. virtual vector < const string * > & get_data_modifiable() = 0:
- *        get the data. should only be used within derived classes. Implemented in child classes.
- *
- *        2. virtual const Attribute * attrib_merge ( const Attribute & rhs) const:
- *        get the attribute pointer into which the two attributes are supposed to merge
- */
-
 
 /**
  *    Public:
@@ -248,12 +237,22 @@ private:
 
     virtual void reconfigure_for_interactives( const Record * UP(pRec)) const {};
 
+
+
 protected:
 
-    // get the data. should only be used within derived classes.
-    // Implemented in child classes.
+   /**
+    * 1. virtual vector < const string * > & get_data_modifiable() = 0:
+    * get the data. should only be used within derived classes.
+    * Implemented in child classes.
+    */
     virtual vector<const string *> & get_data_modifiable() = 0;
 
+
+   /**
+    * 2. virtual const Attribute * attrib_merge ( const Attribute & rhs) const:
+    * get the attribute pointer into which the two attributes are supposed to merge
+    */
     virtual const Attribute * attrib_merge ( const Attribute & UP(rhs)) const {
       return NULL;
     };
@@ -683,12 +682,6 @@ public:
  * or the pointer to the object if success.
  */
 
-/**
- * static const Derived * static_reduce_attrib(const Derived & d,
- * const uint32_t n): deduct the reference counter of the d
- * attribute object by n. If the counter = 0, delete d from the
- * pool and returns NULL, else returns the pointer to d.
- */
 
 /**
  * const Attribute* clone() const: Polymorphic constructor of
@@ -856,6 +849,13 @@ public:
         return &(p->first);
     }
 
+
+   /**
+    * static const Derived * static_reduce_attrib(const Derived & d,
+    * const uint32_t n): deduct the reference counter of the d
+    * attribute object by n. If the counter = 0, delete d from the
+    * pool and returns NULL, else returns the pointer to d.
+    */
     static const Derived * static_reduce_attrib(const Derived & d , const uint32_t n) {
 
         pthread_rwlock_rdlock ( & attrib_pool_structure_lock);
