@@ -1,0 +1,2 @@
+Firstname,Middlename,Lastname,Street,City,State,Country,Zipcode,Latitude,Longitude,Patent,ApplyYear,Assignee,AsgNum,Class,Coauthor,Unique_Record_ID
+PHILIP E,PHILIP E,DURAND,,HUDSON,MA,US,1749,42.388756,-71.557437,03858241,1974,UNITED STATES OF AMERICA ARMY,H000000000072,2,L.NORRIS-0,03858241-1

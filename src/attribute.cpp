@@ -561,10 +561,13 @@ cCountry::compare(const Attribute & right_hand_side) const {
 unsigned int
 cAssignee::compare(const Attribute & right_hand_side) const {
 
-    if ( ! is_comparator_activated () )
+    if (!is_comparator_activated())
         throw cException_No_Comparision_Function(static_get_class_name().c_str());
-    if ( ! cAssignee::is_ready )
+
+    // TODO: figure out where configure_assignee is invoked
+    if (!cAssignee::is_ready)
         throw cException_Other("Trees for assignee comparison are not set up yet. Run cAssignee::configure_assignee first.");
+
     try {
 
         const cAssignee & rhs = dynamic_cast< const cAssignee & > (right_hand_side);
@@ -572,30 +575,34 @@ cAssignee::compare(const Attribute & right_hand_side) const {
         //unsigned int res = asgcmp ( * this->get_data().at(0), * rhs.get_data().at(0), assignee_tree_pointer);
         unsigned int res = 0;
         const cAsgNum * p = dynamic_cast < const cAsgNum *> (this->get_interactive_vector().at(0));
-        if ( ! p )
+
+        if (!p)
             throw cException_Other("Cannot dynamic cast to cAsgNum *.");
 
         const cAsgNum * q = dynamic_cast < const cAsgNum *> (rhs.get_interactive_vector().at(0));
-        if ( ! q )
+        if (!q)
             throw cException_Other("Cannot dynamic cast rhs to cAsgNum *.");
 
-        if ( ! this->is_informative() || ! rhs.is_informative() ) {
+        if (!this->is_informative() || !rhs.is_informative()) {
             res = 1;
         }
-        else if ( p != q ) {
+        else if (p != q) {
             res = asgcmp(* this->get_data().at(0), * rhs.get_data().at(0));
         } else {
 
             res = 5;
-            map < const cAsgNum *, unsigned int>::const_iterator t = cAssignee::asgnum2count_tree.find(p);
-            if ( t == cAssignee::asgnum2count_tree.end() )
+            map<const cAsgNum *, unsigned int>::const_iterator t = cAssignee::asgnum2count_tree.find(p);
+
+            if (t == cAssignee::asgnum2count_tree.end())
                 throw cException_Other("AsgNum pointer is not in tree.");
-            if ( t->second < 100 )
+
+            if (t->second < 100)
                 ++res;
         }
 
-        if ( res > max_value )
+        if (res > max_value)
             res = max_value;
+
         return res;
     }
     catch ( const std::bad_cast & except ) {
