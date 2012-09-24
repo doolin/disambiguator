@@ -571,10 +571,12 @@ cAssignee::compare(const Attribute & right_hand_side) const {
     try {
 
         const cAssignee & rhs = dynamic_cast< const cAssignee & > (right_hand_side);
+
         //uint32_t res = asgcmp(this->get_data(), rhs.get_data(), assignee_tree_pointer);
         //uint32_t res = asgcmp ( * this->get_data().at(0), * rhs.get_data().at(0), assignee_tree_pointer);
+
         uint32_t res = 0;
-        const cAsgNum * p = dynamic_cast < const cAsgNum *> (this->get_interactive_vector().at(0));
+        const cAsgNum * p = dynamic_cast<const cAsgNum *>(this->get_interactive_vector().at(0));
 
         if (!p)
             throw cException_Other("Cannot dynamic cast to cAsgNum *.");
