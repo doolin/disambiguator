@@ -452,7 +452,7 @@ Totally different names:
 
     describe_test(INDENT2, "Testing Assignee comparison");
 
-    RecordPList all_rec_pointers;
+    RecordPList all_rec_pointers = get_record_list();
 
     // This is necessary God object.
     // TODO: Remind myself why this object needs creating
@@ -462,8 +462,19 @@ Totally different names:
 
     cAssignee d1("IBM");
     d1.split_string("IBM");
+    cAsgNum asg1("H0008");
+    asg1.split_string("H0008");
+    vector<const Attribute *> atpv1;
+    atpv1.push_back(&asg1);
+    d1.config_interactive(atpv1);
+
     cAssignee d2("IBM");
     d2.split_string("IBM");
+    cAsgNum asg2("H0008");
+    asg2.split_string("H0008");
+    vector<Attribute *> atpv2;
+    atpv2.push_back(&asg2);
+
 
     d1.activate_comparator();
     d1.configure_assignee(all_rec_pointers);
@@ -559,10 +570,10 @@ Totally different names:
 
 
   void runTest() {
-    compare_firstname();
-    compare_middlename();
-    compare_lastname();
-    //compare_assignee();
+    //compare_firstname();
+    //compare_middlename();
+    //compare_lastname();
+    compare_assignee();
     compare_class();
     compare_coauthor();
     compare_distance();
