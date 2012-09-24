@@ -472,7 +472,7 @@ Totally different names:
     d2.split_string("IBM");
     cAsgNum asg2("H0008");
     asg2.split_string("H0008");
-    vector<Attribute *> atpv2;
+    vector<const Attribute *> atpv2;
     atpv2.push_back(&asg2);
     d2.config_interactive(atpv2);
 
