@@ -476,21 +476,7 @@ public:
  * that synchronize modification of reference-counting.
  */
 
-/*
- *    Protected:
- *
- *    Public:
- *
- * static void clear_data_pool():
- * clear the data pool. Only use it when
- * a whole class will be rebuilt.
- */
 
-/**
- * static void clear_attrib_pool():
- * clear the attribute object pool.
- * Only use it when a whole class will be rebuilt.
- */
 
 
 
@@ -659,10 +645,22 @@ public:
       return this;
     };
 
+
+   /**
+    * static void clear_data_pool():
+    * clear the data pool. Only use it when
+    * a whole class will be rebuilt.
+    */
     static void clear_data_pool() {
       data_pool.clear();
     }
 
+
+   /**
+    * static void clear_attrib_pool():
+    * clear the attribute object pool.
+    * Only use it when a whole class will be rebuilt.
+    */
     static void clear_attrib_pool() {
       attrib_pool.clear();
     }
