@@ -474,6 +474,7 @@ Totally different names:
     asg2.split_string("H0008");
     vector<Attribute *> atpv2;
     atpv2.push_back(&asg2);
+    d2.config_interactive(atpv2);
 
 
     d1.activate_comparator();
