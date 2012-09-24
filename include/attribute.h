@@ -817,11 +817,6 @@ public:
  * polymorphic version of the above function
  */
 
-/**
- * const Attribute * reduce_attrib(uint32_t n) const:
- * deduct the reference counter of this object by n,
- * and returns the pointer to this object. Null if removed.
- */
 
 
    /**
@@ -1388,17 +1383,23 @@ public:
         return Attribute_Intermediary<ConcreteType>::static_add_string ( str );
     }
 
-    const Attribute* reduce_attrib(uint32_t n ) const {
+
+   /**
+    * const Attribute * reduce_attrib(uint32_t n) const:
+    * deduct the reference counter of this object by n,
+    * and returns the pointer to this object. Null if removed.
+    */
+    const Attribute* reduce_attrib(uint32_t n) const {
         return pAttrib->template reduce_attrib(n);
     }
 
-    const Attribute* add_attrib(uint32_t n ) const {
+    const Attribute* add_attrib(uint32_t n) const {
         return pAttrib->template add_attrib(n);
     }
 
     int clean_attrib_pool() const { return 0; }
 
-    Attribute_Interactive_Mode ( const char * UP(data) = NULL ): pAttrib (NULL) {}
+    Attribute_Interactive_Mode (const char * UP(data) = NULL ): pAttrib (NULL) {}
 
     bool split_string(const char* recdata) {
         if ( stat_pdata.get() == NULL )
