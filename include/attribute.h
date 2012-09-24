@@ -668,16 +668,14 @@ public:
       attrib_pool.clear();
     }
 
-/**
- * Attribute_Intermediary(const char * source = NULL ): default constructor.
- */
 
-/**
- * static const Derived * static_add_attrib(const Derived & d,
- * const uint32_t n ): add the reference counter of the d
- * attribute object by n. If d does not exists, add d to the pool.
- * Returns the pointer to the newly added object.
- */
+   /**
+    * Attribute_Intermediary(const char * source = NULL ): default constructor.
+    */
+    Attribute_Intermediary(const char * source = NULL )
+        :    Attribute_Basic<Derived> (source){}
+
+
 
 /**
  * static const Derived * static_find_attrib ( const Derived & d):
@@ -826,14 +824,11 @@ public:
  */
 
 
-    Attribute_Intermediary(const char * source = NULL )
-        :    Attribute_Basic<Derived> (source){}
-
-
    /**
-    * const Attribute * add_attrib(uint32_t n) const:
-    * add the reference counter of this object by n, and
-    * returns the pointer to this object.
+    * static const Derived * static_add_attrib(const Derived & d,
+    * const uint32_t n ): add the reference counter of the d
+    * attribute object by n. If d does not exists, add d to the pool.
+    * Returns the pointer to the newly added object.
     */
     static const Derived * static_add_attrib(const Derived & d , const uint32_t n) {
 
@@ -965,6 +960,12 @@ public:
         return static_reduce_attrib( dynamic_cast< const Derived &> (*this), n);
     }
 
+
+   /**
+    * const Attribute * add_attrib(uint32_t n) const:
+    * add the reference counter of this object by n, and
+    * returns the pointer to this object.
+    */
     const Attribute * add_attrib( uint32_t n ) const {
         return static_add_attrib( dynamic_cast< const Derived &> (*this), n);
     }
