@@ -394,26 +394,8 @@ public:
 
 
 
-/*
- * template <Concrete Class Name> Attribute_Intermediary and Attribute_Basic.
- * This is the first/second layer child class of Attribute, implementing data pooling
- * and other fundamental concrete class specific methods.
- * Data pooling is implemented using binary trees in STL, i.e.,
- * std::set and std::map, in order for fast search, insertion and deletion.
- * If any other second layer abstract or concrete attribute class is added in
- * the future, it is supposed to inherit from this Attribute_Intermediary class.
- * See examples below.
- *
- *
- * Private:
- * static const string class_name:
- * the name specifier of each concrete attribute class.
- */
 
-/**
- * static uint32_t column_index_in_query:s
- * the location of each attribute in accordance with the reading sequence.
- */
+
 
 /**
  * static const string interactive_column_names[]:
@@ -459,35 +441,36 @@ public:
  * certain entire concrete attribute CLASS ONLY.
  */
 
-/**
- * static map < Derived, int > attrib_pool:
- * pooling system for the attribute objects that are used in the
- * entire attribute class only, with reference-counting.
- */
+
+
+
 
 /**
- * static pthread_rwlock_t attrib_pool_structure_lock:
- * read-write lock of the attrib_pool that synchronize
- * deletion and insertion of new attribute objects.
+ * template <Concrete Class Name> Attribute_Intermediary and Attribute_Basic.
+ * This is the first/second layer child class of Attribute, implementing data pooling
+ * and other fundamental concrete class specific methods.
+ * Data pooling is implemented using binary trees in STL, i.e.,
+ * std::set and std::map, in order for fast search, insertion and deletion.
+ * If any other second layer abstract or concrete attribute class is added in
+ * the future, it is supposed to inherit from this Attribute_Intermediary class.
+ * See examples below.
  */
-
-/**
- * static pthread_mutex_t attrib_pool_count_lock: mutex of attrib_pool
- * that synchronize modification of reference-counting.
- */
-
-
-
-
-
 template <typename Derived>
 class Attribute_Basic: public Attribute {
 
 private:
 
-    // an implementation is required for each class in the cpp file.
+   /**
+    * Private:
+    * static const string class_name:
+    * the name specifier of each concrete attribute class.
+    */
     static const string class_name;
 
+   /**
+    * static uint32_t column_index_in_query:
+    * the location of each attribute in accordance with the reading sequence.
+    */
     //static uint32_t column_index_in_query;
 
     static const string interactive_column_names[];
@@ -631,10 +614,26 @@ class Attribute_Intermediary : public Attribute_Basic < Derived > {
 private:
     static set < string > data_pool;
 
+   /**
+    * static map < Derived, int > attrib_pool:
+    * pooling system for the attribute objects that are used in the
+    * entire attribute class only, with reference-counting.
+    */
     static map < Derived, int > attrib_pool;
 
+
+   /**
+    * static pthread_rwlock_t attrib_pool_structure_lock:
+    * read-write lock of the attrib_pool that synchronize
+    * deletion and insertion of new attribute objects.
+    */
     static pthread_rwlock_t attrib_pool_structure_lock;
 
+
+   /**
+    * static pthread_mutex_t attrib_pool_count_lock: mutex of attrib_pool
+    * that synchronize modification of reference-counting.
+    */
     static pthread_mutex_t attrib_pool_count_lock;
 
 protected:
