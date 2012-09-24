@@ -16,6 +16,7 @@ get_column_names() {
   cn.push_back("Country");
   cn.push_back("Patent");
   cn.push_back("ApplyYear");
+  cn.push_back("Asgnum");
   return cn;
 }
 
@@ -31,6 +32,7 @@ Record * make_foobar_record() {
   cCountry    * country     = new cCountry("US");
   cPatent     * patent      = new cPatent("07100123");
   cApplyYear  * applyyear   = new cApplyYear("2008");
+  cAsgNum     * asgnum      = new cAsgNum("H000000064389");
 
   vector <const Attribute *> temp_vec_attrib;
 
@@ -43,6 +45,7 @@ Record * make_foobar_record() {
   temp_vec_attrib.push_back(country);
   temp_vec_attrib.push_back(patent);
   temp_vec_attrib.push_back(applyyear);
+  temp_vec_attrib.push_back(asgnum);
 
   Record * r = new Record(temp_vec_attrib);
   r->set_column_names(get_column_names());
@@ -61,6 +64,7 @@ Record * make_quuxalot_record() {
   cCountry    * country     = new cCountry("US");
   cPatent     * patent      = new cPatent("07100124");
   cApplyYear  * applyyear   = new cApplyYear("2008");
+  cAsgNum     * asgnum      = new cAsgNum("H000000064389");
 
   vector <const Attribute *> temp_vec_attrib;
 
@@ -73,6 +77,7 @@ Record * make_quuxalot_record() {
   temp_vec_attrib.push_back(country);
   temp_vec_attrib.push_back(patent);
   temp_vec_attrib.push_back(applyyear);
+  temp_vec_attrib.push_back(asgnum);
 
   Record * r = new Record(temp_vec_attrib);
   r->set_column_names(get_column_names());
