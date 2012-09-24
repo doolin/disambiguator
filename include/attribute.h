@@ -1433,18 +1433,18 @@ public:
     }
 
     static bool check_if_reconfigured() {
-        if ( ! has_reconfiged )
+        if (!has_reconfiged)
             throw cException_Other("Interactive class has not been reconfigured yet.");
         return has_reconfiged;
     }
 
     void reconfigure_for_interactives( const Record * pRec) const {
-        if ( preconfig.get() == NULL )
+        if (preconfig.get() == NULL)
             obtain_interactive_reconfigurator();
         reconfigure_interactives ( preconfig.get(), pRec);
     }
 
-    const Attribute* config_interactive (const vector <const Attribute *> &inputvec ) const {
+    const Attribute* config_interactive(const vector<const Attribute *> & inputvec) const {
         inter_vecs = inputvec;
         has_reconfiged = true;
         return this;
@@ -1454,7 +1454,9 @@ public:
         os << Attribute_Basic<ConcreteType>::static_get_class_name() << " -- ";
         pAttrib->print(os);
         os << "Interactive attributes are: ";
-        for ( vector<const Attribute *>::const_iterator p = inter_vecs.begin(); p != inter_vecs.end(); ++p )
+
+        vector<const Attribute *>::const_iterator p = inter_vecs.begin();
+        for (; p != inter_vecs.end(); ++p)
             os << (*p)->get_class_name() << ", ";
         os << std::endl;
     }
