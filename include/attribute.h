@@ -650,11 +650,6 @@ public:
  * and returns the pointer to this object. Null if removed.
  */
 
-/**
- * const Attribute * add_attrib(uint32_t n) const:
- * add the reference counter of this object by n, and
- * returns the pointer to this object.
- */
 
 
 template <typename Derived>
@@ -818,7 +813,7 @@ protected:
 
 public:
 
-    const Attribute *  get_effective_pointer() const {
+    const Attribute * get_effective_pointer() const {
       return this;
     };
 
@@ -834,6 +829,12 @@ public:
     Attribute_Intermediary(const char * source = NULL )
         :    Attribute_Basic<Derived> (source){}
 
+
+   /**
+    * const Attribute * add_attrib(uint32_t n) const:
+    * add the reference counter of this object by n, and
+    * returns the pointer to this object.
+    */
     static const Derived * static_add_attrib(const Derived & d , const uint32_t n) {
 
         pthread_rwlock_rdlock(& attrib_pool_structure_lock);
