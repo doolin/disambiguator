@@ -469,39 +469,95 @@ public:
       return class_name;
     }
 
+   /**
+    * static const string & static_get_class_name():
+    * static function, to get the concrete class specifier.
+    */
     static const string & static_get_class_name() {return class_name;}
 
+
+   /**
+    * static void set_column_index_in_query(const uint32_t i):
+    * to set the sequence of the concrete class to i, as appearing in the class list.
+    */
     //static void set_column_index_in_query(const uint32_t i ) {column_index_in_query = i;}
+
+
     //THIS IS THE DEFAULT COMPARISON FUNCTION. ANY ATTRIBUTE THAT
     //HAS REAL COMPARISION FUNCTIONS SHOULD OVERRIDE IT.
     //ANY ATTRIBUTE THAT HAS NO REAL COMPARISION FUNCTIONS SHOULD JUST LEAVE IT.
+   /**
+    * uint32_t compare(const Attribute & rhs) const: the default
+    * comparison function between two concrete class objects.
+    * Override if necessary.
+    */
     uint32_t compare(const Attribute & UP(rhs)) const {
         throw cException_No_Comparision_Function(class_name.c_str());
     };
 
+
+   /**
+    * static const uint32_t get_interactive_column_number():
+    * get the number of interactive columns with the current class.
+    */
     static uint32_t get_interactive_column_number() {
       return num_of_interactive_columns;
     };
 
+
+   /**
+    * static void static_check_interactive_consistency (
+    * const vector <string> & query_columns): check and
+    * set the static member interactive_column_indice_in_query;
+    */
     static void static_check_interactive_consistency(const vector<string> & UP(query_columns)) {
       bool_interactive_consistency_checked = true;
     }
 
+
+   /**
+    * void check_interactive_consistency(const vector <string> & query_columns):
+    * polymorphic version of the above function.
+    */
     void check_interactive_consistency(const vector <string> & query_columns) {
       static_check_interactive_consistency(query_columns);
     }
 
+
+   /**
+    * bool has_checked_interactive_consistency():
+    * check if the class interactive consistency is checked.
+    */
     bool has_checked_interactive_consistency() const {
       return bool_interactive_consistency_checked;
     }
 
+
+   /**
+    * static bool is_enabled():
+    * check if the class is enabled for use.
+    */
     static bool is_enabled() { return bool_is_enabled; }
 
+
+   /**
+    * static void enable(): enable the class.
+    */
     //static void enable() { bool_is_enabled = true;}
+
+   /**
+    * static bool static_is_comparator_activated():
+    * check if the comparison function for the class is activated.
+    */
     static bool static_is_comparator_activated() {
       return bool_comparator_activated;
     }
 
+
+   /**
+    * bool is_comparator_activated():
+    * polymorphic version of the above function.
+    */
     bool is_comparator_activated() const {
       return bool_comparator_activated;
     }
@@ -662,68 +718,8 @@ public:
    /**
     * Attribute_Intermediary(const char * source = NULL ): default constructor.
     */
-    Attribute_Intermediary(const char * source = NULL )
-        :    Attribute_Basic<Derived> (source){}
-
-
-/**
- * static const string & static_get_class_name():
- * static function, to get the concrete class specifier.
- */
-
-/**
- * static void set_column_index_in_query(const uint32_t i):
- * to set the sequence of the concrete class to i, as appearing in the class list.
- */
-
-/**
- * uint32_t compare(const Attribute & rhs) const: the default
- * comparison function between two concrete class objects.
- * Override if necessary.
- */
-
-/**
- * static const uint32_t get_interactive_column_number():
- * get the number of interactive columns with the current class.
- */
-
-/**
- * static void static_check_interactive_consistency(
- * const vector <string> & query_columns): check and
- * set the static member interactive_column_indice_in_query;
- */
-
-/**
- * void check_interactive_consistency(const vector <string> & query_columns):
- * polymorphic version of the above function.
- */
-
-
-/*
- * bool has_checked_interactive_consistency():
- * check if the class interactive consistency is checked.
- */
-
-/**
- * static bool is_enabled():
- * check if the class is enabled for use.
- */
-
-/**
- * static void enable(): enable the class.
- */
-
-/**
- * static bool static_is_comparator_activated():
- * check if the comparison function for the class is activated.
- */
-
-/**
- * bool is_comparator_activated():
- * polymorphic version of the above function.
- */
-
-
+    Attribute_Intermediary(const char * source = NULL)
+        : Attribute_Basic<Derived> (source){}
 
 
    /**
