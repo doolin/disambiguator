@@ -79,9 +79,7 @@ public:
 };
 
 
-
-
-/*
+/**
  * 0 .Attribute
  *     1. template <> Attribute_Basic
  *         2. template <> Attribute_Intermediary
@@ -110,9 +108,7 @@ public:
  *            3. cLatitude
  *            3. cLongitude
  *            3. cAssignee
- */
-
-/**
+ *
  * This is the base abstract class of all concrete attributes.
  * Interfaces are designed, but the implementations are generally left for child classes.
  * Usually the pointer of Attribute class is used, in order to achieve
@@ -121,109 +117,14 @@ public:
  * concrete class should choose one mode to inherit.
  * Most concrete attributes fall into the template classes, so it
  * is convenient to simply choose one of the mode and inherit it when a
- * concrete class is introduced.
- * All the concrete classes are declared in the file "DisambigCustomizedDefs.h"
- * and implemented in "DisambigCustomizedDefs.cpp".
+ * concrete class is introduced. All the concrete classes are declared
+ * in the file "DisambigCustomizedDefs.h" and implemented in
+ * "DisambigCustomizedDefs.cpp".
  *
- */
-
-
-/**
- *    Public:
- *
- *        3. virtual uint32_t compare(const Attribute & rhs) const = 0 ;
- *        Comparison function between two attributes to get a similarity score.
- *        Should be inplemented by child classes.
- */
-
-
-/**
- * virtual bool split_string(const char* );
- * This function reads external data and stores into the "data".
- * Each template has a default implementation, but should be
- * overidden if necessary.
- */
-
-/**
- *        5. virtual bool operator == ( const Attribute & rhs) const:
- *        exact comparison between two attributes. Has a default implementation but overidable.
- */
-
-/**
- *        6. void reset_data(const char * inputstring):
- *        reset the attribute based on the inputstring. calls the polymorphic "split_string" function.
- */
-
-/**
- *        7. virtual void config_interactive (const vector <const Attribute *> &inputvec ):
- *        handles the attribute with other linked ones. Returns the pointer of a
- *        configured attribute. Default implementation is throwing an error. Overide if necessary.
- */
-
-
-/**
- *        9. virtual const vector <const Attribute *> & get_interactive_vector():
- *        expected to be implemented in the child class to accommodate access to
- *        data that has interactions with the attribute.
- */
-
-/**
- *        10. virtual const string & get_class_name() const :
- *        To get the identifier of the class. must be implemented by template child class.
- */
-
-/**
- *        11. virtual bool is_comparator_activated():
- *        To check if the comparison of the attribute is enabled.
- *        also must be implemented by template child class.
- */
-
-/**
- *        12. virtual ~Attribute(): polymophic destructor. no need to change.
- */
-
-/**
- *        13. virtual const Attribute* clone() const:
- *        polymorphic copy constructor. This should be the
- *        way to create a copy of the attribute.
- */
-
-/**
- *        14. virtual bool has_checked_interactive_consistency() const:
- *        To check if the pointers of interactive attributes are stored
- *        correctly. Must be called when loading a source data file.
- */
-
-/**
- *        15. virtual uint32_t get_attrib_max_value() const:
- *        To get the maximum attribute score. The scores are determined
- *        in child classes, so this function has to be overridden in child class.
- */
-
-
-
-/*
- *        17. virtual const string * add_string( const string & str ) const:
- *        To add the string data into the internal static string data pooling
- *        system, and return the pointer to the pooled string. Extremely important.
- */
-
-/**
- *        18. virtual bool operator < ( const Attribute & rhs ) const:
- *        defined the less operator for the class. Used in the internal
- *        attribute pooling system. Not expected for user use.
- *        HOWEVER, IT IS EXTREMLY IMPORTANT TO OVERRIDE THE LESS THAN
- *        OPERATOR IF DIFFERENT OBJECTS ARE COMPARED NOT ONLY BY
- *        Attribute::data. i.e., interactive data, or set_mode.
- */
-
-
-
-/**
- *  ATTENTION:
- *      NEVER EDIT AN EXISTING ATTRIBUTE OBJECT, BECAUSING IT MAY BE
- *      USED BY DIFFERENT RECORDS! ONLY ADD NEW OBJECTS AND CHANGE THE
- *      POINTER THROUGH EXISTING INTERFACE, SINCE REFERENCE-COUNTING IS IMPLEMENTED.
+ * ATTENTION:
+ *  NEVER EDIT AN EXISTING ATTRIBUTE OBJECT, BECAUSING IT MAY BE
+ *  USED BY DIFFERENT RECORDS! ONLY ADD NEW OBJECTS AND CHANGE THE
+ *  POINTER THROUGH EXISTING INTERFACE, SINCE REFERENCE-COUNTING IS IMPLEMENTED.
  */
 class Attribute {
 
@@ -236,8 +137,6 @@ private:
     static vector<string> Derived_Class_Name_Registry;
 
     virtual void reconfigure_for_interactives( const Record * UP(pRec)) const {};
-
-
 
 protected:
 
@@ -259,24 +158,54 @@ protected:
 
 public:
 
+
+   /**
+    * 3. virtual uint32_t compare(const Attribute & rhs) const = 0 ;
+    * Comparison function between two attributes to get a similarity score.
+    * Should be inplemented by child classes.
+    */
     virtual uint32_t compare(const Attribute & rhs) const = 0 ;
 
+
+   /**
+    * virtual bool split_string(const char* );
+    * This function reads external data and stores into the "data".
+    * Each template has a default implementation, but should be
+    * overidden if necessary.
+    */
     virtual bool split_string(const char* );    //can be overridden if necessary.
 
     Attribute (const char * UP(inputstring)) {}
 
+   /**
+    * 5. virtual bool operator == ( const Attribute & rhs) const:
+    * exact comparison between two attributes. Has a default implementation but overidable.
+    */
     virtual bool operator == (const Attribute & rhs) const {
       return this == &rhs;
     }
 
+
+   /**
+    * 6. void reset_data(const char * inputstring):
+    * reset the attribute based on the inputstring.
+    * calls the polymorphic "split_string" function.
+    */
     void reset_data(const char * inputstring) {
         get_data_modifiable().clear(); /*data_count.clear(); */
         split_string(inputstring);
     }
 
+
+   /**
+    * 7. virtual void config_interactive (const vector <const Attribute *> &inputvec ):
+    * handles the attribute with other linked ones. Returns the pointer of a
+    * configured attribute. Default implementation is throwing an error. Overide if necessary.
+    */
     virtual const Attribute*  config_interactive (const vector <const Attribute *> & UP(inputvec)) const {
       throw cException_No_Interactives(get_class_name().c_str()); return NULL;
     };
+
 
    /**
     * virtual const vector <const string*> & get_data() const = 0:
@@ -285,22 +214,55 @@ public:
     */
     virtual const vector <const string*> & get_data() const = 0;
 
+
+   /**
+    * 9. virtual const vector <const Attribute *> & get_interactive_vector():
+    * expected to be implemented in the child class to accommodate access to
+    * data that has interactions with the attribute.
+    */
     virtual const vector <const Attribute *> & get_interactive_vector() const {
       throw cException_No_Interactives(get_class_name().c_str());
     };
 
+
+   /**
+    * 10. virtual const string & get_class_name() const :
+    * To get the identifier of the class. must be implemented by template child class.
+    */
     virtual const string & get_class_name() const = 0;
 
+
+   /**
+    * 11. virtual bool is_comparator_activated():
+    * To check if the comparison of the attribute is enabled.
+    * also must be implemented by template child class.
+    */
     virtual bool is_comparator_activated() const = 0;
     // critical for using base pointers to create and copy derived class
 
+
     // Polymorphic destructor to allow deletion via Attribute*
+   /**
+    * 12. virtual ~Attribute(): polymophic destructor. no need to change.
+    */
     virtual ~Attribute() {
       //std::cout << "attribute destructor" << std::endl;
     }
 
+
+   /**
+    * 13. virtual const Attribute* clone() const:
+    * polymorphic copy constructor. This should be the
+    * way to create a copy of the attribute.
+    */
     virtual const Attribute* clone() const = 0; // Polymorphic copy constructor
 
+
+   /**
+    * 14. virtual bool has_checked_interactive_consistency() const:
+    * To check if the pointers of interactive attributes are stored
+    * correctly. Must be called when loading a source data file.
+    */
     virtual bool has_checked_interactive_consistency() const = 0;
 
     virtual void print( std::ostream & ) const = 0;
@@ -318,6 +280,12 @@ public:
 
     virtual void check_interactive_consistency(const vector <string> & query_columns) = 0;
 
+
+   /**
+    * 15. virtual uint32_t get_attrib_max_value() const:
+    * To get the maximum attribute score. The scores are determined
+    * in child classes, so this function has to be overridden in child class.
+    */
     virtual uint32_t get_attrib_max_value() const {
       throw cException_Invalid_Function(get_class_name().c_str());
     };
@@ -334,9 +302,22 @@ public:
     }
 
 
+   /**
+    * 17. virtual const string * add_string( const string & str ) const:
+    * To add the string data into the internal static string data pooling
+    * system, and return the pointer to the pooled string. Extremely important.
+    */
     virtual const string * add_string( const string & str ) const = 0;
 
 
+   /**
+    * 18. virtual bool operator < ( const Attribute & rhs ) const:
+    * defined the less operator for the class. Used in the internal
+    * attribute pooling system. Not expected for user use.
+    * HOWEVER, IT IS EXTREMLY IMPORTANT TO OVERRIDE THE LESS THAN
+    * OPERATOR IF DIFFERENT OBJECTS ARE COMPARED NOT ONLY BY
+    * Attribute::data. i.e., interactive data, or set_mode.
+    */
     virtual bool operator < ( const Attribute & rhs ) const = 0;
 
 
@@ -354,8 +335,8 @@ public:
 
 
    /**
-    *        20. virtual int clean_attrib_pool() const: to clean the attribute
-    *        pool in the template child class. Must be overridden in child classes.
+    * 20. virtual int clean_attrib_pool() const: to clean the attribute
+    * pool in the template child class. Must be overridden in child classes.
     */
     virtual int clean_attrib_pool() const = 0;
 
@@ -399,52 +380,6 @@ public:
 
 
 
-
-
-
-/**
- * static const string interactive_column_names[]:
- * column names that have interaction with the current attribute type.
- * Pay attention to the sequence!!!!
- */
-
-/**
- * static const uint32_t num_of_interactive_columns;
- * number of columns that have interaction with the current attribute type.
- */
-
-/**
- * static vector <uint32_t> interactive_column_indice_in_query:
- * indice of the attributes that have interaction with the
- * current attributes, as displayed while being read.
- */
-
-/**
- * static bool bool_interactive_consistency_checked:
- * whether the interactive attributes are read the same sequence
- * as assigned in the interactive_column_names variable.
- */
-
-/**
- * static bool bool_is_enabled:
- * whether the attribute is enabled for reading. Maybe not useful now.
- */
-
-/**
- * static bool bool_comparator_activated:
- * whether the attribute type will be compared.
- */
-
-/**
- * static const string attrib_group:
- * the attribute group of the concrete attribute class.
- */
-
-
-
-
-
-
 /**
  * template <Concrete Class Name> Attribute_Intermediary and Attribute_Basic.
  * This is the first/second layer child class of Attribute, implementing data pooling
@@ -473,26 +408,66 @@ private:
     */
     //static uint32_t column_index_in_query;
 
+   /**
+    * static const string interactive_column_names[]:
+    * column names that have interaction with the current attribute type.
+    * Pay attention to the sequence!!!!
+    */
     static const string interactive_column_names[];
 
+   /**
+    * static const uint32_t num_of_interactive_columns;
+    * number of columns that have interaction with the current attribute type.
+    */
     static const uint32_t num_of_interactive_columns;
 
+   /**
+    * static vector <uint32_t> interactive_column_indice_in_query:
+    * indice of the attributes that have interaction with the
+    * current attributes, as displayed while being read.
+    */
     static vector <uint32_t> interactive_column_indice_in_query;
 
+   /**
+    * static bool bool_interactive_consistency_checked:
+    * whether the interactive attributes are read the same sequence
+    * as assigned in the interactive_column_names variable.
+    */
     static bool bool_interactive_consistency_checked;
 
+
+   /**
+    * static bool bool_is_enabled:
+    * whether the attribute is enabled for reading. Maybe not useful now.
+    */
     static bool bool_is_enabled;
 
+
+   /**
+    * static bool bool_comparator_activated:
+    * whether the attribute type will be compared.
+    */
     static bool bool_comparator_activated;
 
+
     //attribute group used for ratios purpose;
+   /**
+    * static const string attrib_group:
+    * the attribute group of the concrete attribute class.
+    */
     static const string attrib_group;
 
 public:
 
     Attribute_Basic (const char * source = NULL ): Attribute(source) {}
 
-    const string & get_class_name() const { return class_name;}
+
+   /**
+    * const string & get_class_name() const: to get the concrete class specifier.
+    */
+    const string & get_class_name() const {
+      return class_name;
+    }
 
     static const string & static_get_class_name() {return class_name;}
 
@@ -559,10 +534,19 @@ public:
         Record_update_active_similarity_names() ;
     }
 
+
+   /**
+    * static void activate_comparator():
+    * activate the comparison function for the class.
+    */
     void activate_comparator() const {
       this->static_activate_comparator();
     }
 
+   /**
+    * static void deactivate_comparator():
+    * de-activate the comparison function for the class.
+    */
     void deactivate_comparator() const {
       this->static_deactivate_comparator();
     }
@@ -584,6 +568,10 @@ public:
         os << std::endl;
     }
 
+   /**
+    * static const string & static_get_attrib_group():
+    * get the specifier of the attribute group of the class.
+    */
     static const string & static_get_attrib_group() {
       return attrib_group;
     };
@@ -678,24 +666,6 @@ public:
         :    Attribute_Basic<Derived> (source){}
 
 
-
-/**
- * static const Derived * static_find_attrib ( const Derived & d):
- * find the d object in the attribute pool. Returns 0 if failure,
- * or the pointer to the object if success.
- */
-
-
-/**
- * const Attribute* clone() const: Polymorphic constructor of
- * the concrete class. Should only be called when reading data
- * from source files.
- */
-
-/**
- * const string & get_class_name() const: to get the concrete class specifier.
- */
-
 /**
  * static const string & static_get_class_name():
  * static function, to get the concrete class specifier.
@@ -753,27 +723,6 @@ public:
  * polymorphic version of the above function.
  */
 
-/**
- * static void activate_comparator():
- * activate the comparison function for the class.
- */
-
-/**
- * static void deactivate_comparator():
- * de-activate the comparison function for the class.
- */
-
-/**
- * void print( std::ostream & os ) const:
- * print the current object to output stream os, usually std::cout.
- */
-
-/**
- * static const string & static_get_attrib_group():
- * get the specifier of the attribute group of the class.
- */
-
-
 
 
 
@@ -802,6 +751,12 @@ public:
         return &(p->first);
     }
 
+
+   /**
+    * static const Derived * static_find_attrib ( const Derived & d):
+    * find the d object in the attribute pool. Returns 0 if failure,
+    * or the pointer to the object if success.
+    */
     static const Derived * static_find_attrib (const Derived & d) {
 
         pthread_rwlock_rdlock(& attrib_pool_structure_lock);
@@ -851,6 +806,12 @@ public:
         return &(p->first);
     }
 
+
+   /**
+    * const Attribute* clone() const: Polymorphic constructor of
+    * the concrete class. Should only be called when reading data
+    * from source files.
+    */
     const Attribute * clone() const {
         const Derived & alias = dynamic_cast<const Derived &> (*this);
         return static_add_attrib(alias, 1);
@@ -1467,6 +1428,10 @@ public:
         return this;
     }
 
+   /**
+    * void print( std::ostream & os ) const:
+    * print the current object to output stream os, usually std::cout.
+    */
     void print(std::ostream & os) const {
         os << Attribute_Basic<ConcreteType>::static_get_class_name() << " -- ";
         pAttrib->print(os);
@@ -1530,7 +1495,8 @@ template <typename ConcreteType, typename PooledDataType> std::auto_ptr < Pooled
  * IMPORTANT:
  * FOR EACH CONCRETE CLASS, IF ITS STATIC MEMBER IS DIFFERENT FROM DEFAULT,
  * A TEMPLATE SPECIALIZATION MUST BE DECLARED BEFORE THE DEFAULT IS
- * DECLARED AND DEFINED. AFTER THAT, THE SPECIALIZED DEFINITION SHOULD APPEAR IN THE CPP FILE.
+ * DECLARED AND DEFINED. AFTER THAT, THE SPECIALIZED DEFINITION SHOULD
+ * APPEAR IN THE CPP FILE.
  *
  * For example, the attrib group of cFirstname is "Personal" instead
  * of the default "NONE". In this case, the specialized declaration must be made
