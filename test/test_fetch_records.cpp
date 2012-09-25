@@ -22,7 +22,10 @@ using std::endl;
 class FetchRecordTest : public CppUnit::TestCase {
 
 public:
-  FetchRecordTest(std::string name) : CppUnit::TestCase(name) {}
+
+  FetchRecordTest(std::string name) : CppUnit::TestCase(name) {
+    describe_test(INDENT0, name.c_str());
+  }
 
 };
 

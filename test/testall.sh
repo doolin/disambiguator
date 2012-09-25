@@ -4,6 +4,8 @@
 source ./bashcolors.sh
 initializeANSI
 
+echo "Fetch records test"
+./fetchrecords
 
 echo "Attribute test"
 ./attribute
