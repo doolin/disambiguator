@@ -29,11 +29,19 @@ public:
 
   void test_get_records() {
 
+    describe_test(INDENT2, "Testing fetch_records_from_txt...");
+
     list<Record> source;
+    // filename is 20 bytes, check how it leaks.
     const char * filename = "testdata/invpat2.txt";
     vector<string> requested_columns;
     requested_columns.push_back(string("Firstname"));
-    bool is_success = fetch_records_from_txt(source, filename, requested_columns);
+    requested_columns.push_back(string("Lastname"));
+    requested_columns.push_back(string("Middlename"));
+    bool successful = fetch_records_from_txt(source, filename, requested_columns);
+
+    if (not successful)
+      exit(-1);
   }
 
 };
@@ -45,8 +53,8 @@ test_fetch_records() {
   FetchRecordTest * frt = new FetchRecordTest("Testing fetch_records");
   frt->test_get_records();
   delete frt;
-
 }
+
 
 #ifdef test_fetch_records_STANDALONE
 int
