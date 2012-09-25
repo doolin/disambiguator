@@ -44,6 +44,11 @@ public:
       exit(-1);
   }
 
+  /**
+   * Now, with a load of records, I should be able to test specific
+   * records for attributes and values.
+   */
+
 };
 
 
