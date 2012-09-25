@@ -1,7 +1,7 @@
 
-#include <cppunit/Portability.h>
-#include <cppunit/portability/CppUnitSet.h>
-#include <cppunit/extensions/TestFactory.h>
+//#include <cppunit/Portability.h>
+//#include <cppunit/portability/CppUnitSet.h>
+//#include <cppunit/extensions/TestFactory.h>
 #include <cppunit/TestCase.h>
 #include <string>
 #include <string.h>
@@ -15,25 +15,13 @@
 
 #include "testdata.h"
 #include "colortest.h"
+#include "testutils.h"
 
-#define TESTCOLOR COLOR119
-#define INDENT0 ""
-#define INDENT2 "  "
-#define INDENT4 "     "
 
 using std::string;
 using std::cout;
 using std::endl;
 
-void
-describe_test(const char * indent, const char * description) {
-
-    std::cout << indent << TESTCOLOR << description << COLOR_RESET
-              << std::endl;
-}
-
-class TestUtils {
-};
 
 class AttributeTest : public CppUnit::TestCase, TestUtils {
 

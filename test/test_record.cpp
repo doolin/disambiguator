@@ -12,7 +12,6 @@
 
 class RecordTest : public CppUnit::TestCase {
 
-
 public:
   RecordTest(std::string name) : CppUnit::TestCase(name) {}
 
