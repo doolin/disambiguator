@@ -309,6 +309,11 @@ public:
       this->print(std::cout);
     }
 
+
+   /**
+    * const string & get_attrib_group() const:
+    * polymorphic version of the above function.
+    */
     virtual const string & get_attrib_group() const = 0;
 
     virtual void check_interactive_consistency(const vector <string> & query_columns) = 0;
@@ -435,11 +440,6 @@ public:
  * the attribute group of the concrete attribute class.
  */
 
-/*
- * static set < string > data_pool:
- * pooling system for the data that are used in THIS
- * certain entire concrete attribute CLASS ONLY.
- */
 
 
 
@@ -612,6 +612,12 @@ class Attribute_Intermediary : public Attribute_Basic < Derived > {
         const char * txt_file, const vector<string> &requested_columns);
 
 private:
+
+   /**
+    * static set < string > data_pool:
+    * pooling system for the data that are used in THIS
+    * certain entire concrete attribute CLASS ONLY.
+    */
     static set < string > data_pool;
 
    /**
@@ -768,44 +774,6 @@ public:
  */
 
 
-/*
- * const string & get_attrib_group() const:
- * polymorphic version of the above function.
- */
-
-/**
- * static const string * static_add_string ( const string & str ):
- * copy the string "str" to the data pool, and returns the
- * pointer to the newly added string.
- */
-
-/**
- * static const string * static_find_string( const string & str):
- * find the string "str" in the data pool, and returns the
- * pointer to it if success or NULL if failure.
- */
-
-/**
- * const string * add_string ( const string & str ):
- * polymorphic version of the above static version.
- */
-
-/**
- * static const Attribute * static_clone_by_data( const vector < string > & str ):
- * add or create an attribute object by the str data, returns
- * the pointer to the object.
- */
-
-/**
- * static int static_clean_attrib_pool():
- * remove the objects whose reference counter = 0,
- * returns the number of removed objects.
- */
-
-/**
- * int clean_attrib_pool() const:
- * polymorphic version of the above function
- */
 
 
 
@@ -884,10 +852,16 @@ public:
     }
 
     const Attribute * clone() const {
-        const Derived & alias = dynamic_cast< const Derived & > (*this);
+        const Derived & alias = dynamic_cast<const Derived &> (*this);
         return static_add_attrib(alias, 1);
     }
 
+
+   /**
+    * static const string * static_add_string ( const string & str ):
+    * copy the string "str" to the data pool, and returns the
+    * pointer to the newly added string.
+    */
     static const string * static_add_string (const string & str) {
 
         //register set< string >::iterator p = data_pool.find(str);
@@ -898,6 +872,12 @@ public:
         return &(*p);
     }
 
+
+   /**
+    * static const string * static_find_string( const string & str):
+    * find the string "str" in the data pool, and returns the
+    * pointer to it if success or NULL if failure.
+    */
     static const string * static_find_string ( const string & str ) {
 
         // -Wextra complains about register declaration
@@ -911,10 +891,21 @@ public:
         }
     }
 
-    const string * add_string ( const string & str ) const  {
-        return static_add_string ( str );
+
+   /**
+    * const string * add_string ( const string & str ):
+    * polymorphic version of the above static version.
+    */
+    const string * add_string (const string & str) const  {
+        return static_add_string (str);
     }
 
+
+   /**
+    * static const Attribute * static_clone_by_data( const vector < string > & str ):
+    * add or create an attribute object by the str data, returns
+    * the pointer to the object.
+    */
     static const Attribute * static_clone_by_data( const vector < string > & str ) {
         Derived d;
         vector < const string *> & alias = d.get_data_modifiable();
@@ -926,15 +917,23 @@ public:
         return static_add_attrib(d, 1);
     }
 
+
+   /**
+    * static int static_clean_attrib_pool():
+    * remove the objects whose reference counter = 0,
+    * returns the number of removed objects.
+    */
     static int static_clean_attrib_pool() {
+
         int cnt = 0;
-        typename map < Derived, int> :: iterator p = attrib_pool.begin();
+        typename map<Derived, int>::iterator p = attrib_pool.begin();
+
         for (; p != attrib_pool.end();) {
             if (p-> second == 0) {
                 attrib_pool.erase(p++);
                 ++cnt;
             }
-            else if ( p->second < 0) {
+            else if (p->second < 0) {
                 throw cException_Other("Error in cleaning attrib pool.");
             }
             else {
@@ -944,6 +943,11 @@ public:
         return cnt;
     }
 
+
+   /**
+    * int clean_attrib_pool() const:
+    * polymorphic version of the above function
+    */
     int clean_attrib_pool() const {
       return static_clean_attrib_pool();
     }
@@ -1245,30 +1249,39 @@ public:
 template < typename AttribType >
 class Attribute_Single_Mode : public Attribute_Vector_Intermediary<AttribType> {
 
-/**
- * Public:
- *    uint32_t compare(const Attribute & right_hand_side) const:
- *      Default Jaro-Winkler comparison between the strings. Scoring is user-defined, so feel free to override.
- *    bool split_string(const char* inputdata):
- *      read input string, do some preparations (edition and pooling) and save in the object.
- */
+
 public:
 
+   /**
+    * uint32_t compare(const Attribute & right_hand_side) const:
+    * Default Jaro-Winkler comparison between the strings.
+    * Scoring is user-defined, so feel free to override.
+    */
     uint32_t compare(const Attribute & right_hand_side) const {
+
         // ALWAYS CHECK THE ACTIVITY OF COMPARISON FUNCTION !!
         if ( ! this->is_comparator_activated () )
             throw cException_No_Comparision_Function(this->static_get_class_name().c_str());
+
         if ( this == & right_hand_side )
             return this->get_attrib_max_value();
 
         uint32_t res = 0;
         const AttribType & rhs = dynamic_cast< const AttribType & > (right_hand_side);
         res = jwcmp(* this->get_data().at(1), * rhs.get_data().at(1));
+
         if ( res > this->get_attrib_max_value() )
             res = this->get_attrib_max_value();
+
         return res;
     }
 
+
+   /**
+    * bool split_string(const char* inputdata):
+    * read input string, do some preparations
+    * (edition and pooling) and save in the object.
+    */
     bool split_string(const char* inputdata){
         this->get_data_modifiable().clear();
         string temp(inputdata);
@@ -1398,9 +1411,13 @@ public:
 
     Attribute_Interactive_Mode (const char * UP(data) = NULL ): pAttrib (NULL) {}
 
+
     bool split_string(const char* recdata) {
-        if ( stat_pdata.get() == NULL )
-            stat_pdata = std::auto_ptr < PooledDataType > ( new PooledDataType );
+
+        if (stat_pdata.get() == NULL) {
+            stat_pdata = std::auto_ptr<PooledDataType>(new PooledDataType);
+        }
+
         stat_pdata->split_string(recdata);
         pAttrib = stat_pdata.get();
         return true;
@@ -1450,7 +1467,7 @@ public:
         return this;
     }
 
-    void print( std::ostream & os ) const {
+    void print(std::ostream & os) const {
         os << Attribute_Basic<ConcreteType>::static_get_class_name() << " -- ";
         pAttrib->print(os);
         os << "Interactive attributes are: ";
@@ -1780,18 +1797,19 @@ class cAssignee_Data : public Attribute_Single_Mode < cAssignee_Data > {};
 
 
 class cAssignee : public Attribute_Interactive_Mode <cAssignee, cAssignee_Data> {
-public:
-    static const uint32_t max_value = 6;
+
 private:
 
     // this is a static membmer used in the comparison function.
     //static const map<string, std::pair<string, uint32_t>  > * assignee_tree_pointer;
 
-    static map < const cAsgNum*, uint32_t > asgnum2count_tree;
+    static map<const cAsgNum*, uint32_t> asgnum2count_tree;
 
     static bool is_ready;
 
 public:
+
+    static const uint32_t max_value = 6;
 
     cAssignee(const char * UP(source) = NULL ) {}
 
@@ -1801,7 +1819,7 @@ public:
     //  assignee_tree_pointer = & asgtree;
     //}
 
-    static void configure_assignee( const list <const Record *> & );
+    static void configure_assignee(const list <const Record *> &);
 
     uint32_t get_attrib_max_value() const {
         if (!is_comparator_activated()) {
