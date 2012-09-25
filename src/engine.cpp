@@ -27,6 +27,7 @@ double
 fetch_ratio(const vector < uint32_t > & ratio_to_lookup,
             const map <SimilarityProfile, double, SimilarityCompare > & ratiosmap ) {
 
+  //SPRatiosIndex::const_iterator...
     map <SimilarityProfile, double, SimilarityCompare >::const_iterator p = ratiosmap.find( ratio_to_lookup);
 
     if (p == ratiosmap.end()) {
@@ -596,11 +597,6 @@ fetch_records_from_txt(list <Record> & source,
 }
 
 
-/**
- * This is wrong design. At this level, there is no code which
- * should ever look like the following. If this is the only
- * way to implement the design, then the design is broken.
- */
 Attribute *
 create_attribute_instance ( const string & id ) {
 
@@ -743,6 +739,9 @@ void
 build_patent_tree(PatentTree & patent_tree,
                   const list<Record> & all_records) {
 
+  // There is a function call for building RecordPList,
+  // should use that instead. Check training.cpp for
+  // the create_record_plist function.
     RecordPList all_pointers;
     list<Record>::const_iterator p = all_records.begin();
     for (; p != all_records.end(); ++p) {

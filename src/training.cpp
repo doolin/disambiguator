@@ -987,7 +987,9 @@ write_tset02(const char * current_file, list<RecordPair> pair_list) {
 // Is this is the first and/or only place a RecordPList is
 // created? If not, we're almost surely leaking memory...
 // RecordList should be its own class, which can be queried
-// for a list of pointers to records.
+// for a list of pointers to records. This operation is performed
+// in build_patent_tree as well.
+// TODO: Figure out why there needs to be two of these.
 void
 create_record_plist(const list<Record> & rl,  RecordPList & rpl) {
 

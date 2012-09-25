@@ -62,10 +62,13 @@ Reconfigurator_AsianNames::reconfigure( const Record * p ) const {
 }
 
 
-Reconfigurator_Interactives::Reconfigurator_Interactives( const string & my_name,
-        const vector < string > & relevant_attribs ) {
+Reconfigurator_Interactives::Reconfigurator_Interactives(const string & my_name,
+        const vector<string > & relevant_attribs) {
+
     my_index = Record::get_index_by_name(my_name);
-    for ( vector<string>::const_iterator p = relevant_attribs.begin(); p != relevant_attribs.end(); ++p ) {
+
+    vector<string>::const_iterator p = relevant_attribs.begin();
+    for (;  p != relevant_attribs.end(); ++p) {
         unsigned int idx = Record::get_index_by_name(*p);
         relevant_indice.push_back(idx);
     }

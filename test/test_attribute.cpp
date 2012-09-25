@@ -477,8 +477,8 @@ Totally different names:
     d2.config_interactive(atpv2);
 
 
-    d1.activate_comparator();
-    d1.configure_assignee(all_rec_pointers);
+    //d1.activate_comparator();
+    cAssignee::configure_assignee(all_rec_pointers);
 
     similarity = d1.compare(d2);
     std::cout << "Assignee similarity d1, d2: " << similarity << std::endl;
