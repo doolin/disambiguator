@@ -518,6 +518,8 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
     // the following should go into an initialization function.
     // TODO: Refactor
     // TODO: Find a way to unit test this.
+    // There is another version of this in training.cpp and in the build_patent_tree
+    // function.
     RecordPList all_rec_pointers;
     for (list<Record>::const_iterator p = all_records.begin(); p != all_records.end(); ++p ) {
         all_rec_pointers.push_back(&(*p));
