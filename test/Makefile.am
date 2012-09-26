@@ -26,7 +26,7 @@ AM_LDFLAGS = $(shell cppunit-config --libs) -L$(CPLEXLIB) -lilocplex -lcplex -L$
 TESTS = distest idtest typedefs record blocking attribute stringmanipulator \
 	comparators comparesimilarities strcmp95 rarenames engineconfig           \
 	abbreviation misspell namecompare jwcmp similarity clusterhead cluster engine \
-	training ratios fetchrecords
+	training ratios fetchrecords assigneecomparison
 
 bin_PROGRAMS = $(TESTS)
 
@@ -45,6 +45,7 @@ training_SOURCES = test_training.cpp $(COMMON)
 clusterhead_SOURCES = test_clusterhead.cpp $(COMMON)
 attribute_SOURCES = test_attribute.cpp $(COMMON)
 fetchrecords_SOURCES = test_fetch_records.cpp $(COMMON)
+assigneecomparison_SOURCES = test_assignee_comparison.cpp $(COMMON)
 comparators_SOURCES = test_comparators.cpp
 rarenames_SOURCES = test_rarenames.cpp
 jwcmp_SOURCES = test_jwcmp.cpp
