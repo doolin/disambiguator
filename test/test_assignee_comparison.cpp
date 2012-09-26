@@ -42,6 +42,16 @@ public:
     requested_columns.push_back(string("AsgNum"));
     bool successful = fetch_records_from_txt(source, filename, requested_columns);
 
+    vector<const Record *> records;
+    list<Record>::const_iterator r = source.begin();
+    for (; r != source.end(); ++r) {
+      records.push_back(&(*r));
+    }
+
+    const Record * r1 = records[3];
+    r1->print();
+    //const Record * r2 = records[4];
+
     if (not successful)
       exit(-1);
   }
