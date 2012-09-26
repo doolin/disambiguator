@@ -38,6 +38,8 @@ public:
     requested_columns.push_back(string("Firstname"));
     requested_columns.push_back(string("Lastname"));
     requested_columns.push_back(string("Middlename"));
+    requested_columns.push_back(string("Assignee"));
+    requested_columns.push_back(string("AsgNum"));
     bool successful = fetch_records_from_txt(source, filename, requested_columns);
 
     if (not successful)
