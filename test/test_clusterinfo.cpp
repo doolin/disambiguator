@@ -22,11 +22,11 @@ public:
   void create_cluster() {
     Attribute::register_class_names(get_column_names());
     Record * r = make_quuxalot_record();
-    //ClusterInfoHead ch(r, 0.9953);
+    ClusterHead ch(r, 0.9953);
     RecordPList rl = get_record_list();
     cBlocking_Operation_By_Coauthors  blocker_coauthor = get_blocker_coathor();
-    //ClusterInfo::set_reference_patent_tree_pointer( blocker_coauthor.get_patent_tree());
-    //ClusterInfo * c = new ClusterInfo(ch, rl);
+    Cluster::set_reference_patent_tree_pointer( blocker_coauthor.get_patent_tree());
+    //Cluster * c = new Cluster(ch, rl);
     //delete c;
   }
 
@@ -40,9 +40,9 @@ public:
 void
 test_clusters() {
 
-  ClusterInfoTest * rt = new ClusterInfoTest(std::string("initial test"));
-  rt->runTest();
-  delete rt;
+  ClusterInfoTest * cit = new ClusterInfoTest(std::string("initial test"));
+  cit->runTest();
+  delete cit;
 }
 
 
