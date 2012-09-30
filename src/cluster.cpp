@@ -476,9 +476,9 @@ void ClusterInfo::config_prior()  {
 
     std::cout << "Creating prior values ..." << std::endl;
 
-    map < const string *, bool >::const_iterator pmdebug;
+    map<const string *, bool>::const_iterator pmdebug;
     list <double> empty_list;
-    map < const string *, list<double> >::iterator pp;
+    map<const string *, list<double> >::iterator pp;
 
     map<string, cRecGroup >::const_iterator cpm = cluster_by_block.begin();
     for (; cpm != cluster_by_block.end(); ++ cpm) {
@@ -569,6 +569,7 @@ ClusterInfo::get_prior_value(const string & block_identifier,
 
     // ///////////////////////////////////////////////////////
     // TODO: Refactor into prior_initial_value or something.
+#if 1
     double numerator = 0;
     uint32_t tt = 0;
 
@@ -591,7 +592,12 @@ ClusterInfo::get_prior_value(const string & block_identifier,
 
     if (prior == 0)
         prior = prior_default;
+
+    //return prior; // for refactored block
     //////   End refactor block //////////////////////////////
+#else
+    double prior = get_initial_prior(rg);
+#endif
 
     ////////////////////////////////////////////////////////
     // TODO: Refactor this block
