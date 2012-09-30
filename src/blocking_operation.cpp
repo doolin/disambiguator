@@ -174,13 +174,15 @@ cBlocking_Operation_By_Coauthors::build_patent_tree(
  * const Record pointer that represents them.
  *
  * Algorithm: clean the uinv2count and uid2uinv tree first.
- *                 For any cluster in the cCluser_Info object:
- *                     For any const Record pointer p in the cluster member list:
- *                         create a std::pair of ( p, d ), where d is the delegate ( or representative ) of the cluster
- *                         insert the pair into uid2uinv map.
- *                     End for
- *                 End for
- *            uinv2count is updated in the same way.
+ *   For any cluster in the cCluser_Info object:
+ *     For any const Record pointer p in the cluster member list:
+ *       create a std::pair of (p, d), where d is the delegate
+ *         (or representative) of the cluster
+ *       insert the pair into uid2uinv map.
+ *     End for
+ *   End for
+ *
+ *   uinv2count is updated in the same way.
  */
 void
 cBlocking_Operation_By_Coauthors::build_uid2uinv_tree(const ClusterInfo & cluster) {
@@ -188,14 +190,16 @@ cBlocking_Operation_By_Coauthors::build_uid2uinv_tree(const ClusterInfo & cluste
     uinv2count_tree.clear();
     uid2uinv_tree.clear();
     uint32_t count = 0;
-    typedef list<Cluster> cRecGroup;
+    //typedef list<Cluster> cRecGroup;
+    // Maybe should be RecordGroup
+    typedef list<Cluster> ClusterList;
 
     std::cout << "Building trees: 1. Unique Record ID to Unique Inventer ID. 2 Unique Inventer ID to Number of holding patents ........" << std::endl;
 
-    map<string, cRecGroup>::const_iterator p = cluster.get_cluster_map().begin();
+    map<string, ClusterList>::const_iterator p = cluster.get_cluster_map().begin();
     for (; p != cluster.get_cluster_map().end(); ++p) {
 
-        cRecGroup::const_iterator q = p->second.begin();
+        ClusterList::const_iterator q = p->second.begin();
         for (;  q != p->second.end(); ++q) {
 
             const Record * value = q->get_cluster_head().m_delegate;
