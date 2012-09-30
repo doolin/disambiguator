@@ -268,8 +268,11 @@ private:
 
     void config_prior();
 
-    unsigned int disambiguate_by_block ( cRecGroup & to_be_disambiged_group,  list <double> & prior_value,
-                                            const cRatios & ratiosmap, const string * const bid, const double threshold ) ;
+    unsigned int disambiguate_by_block (cRecGroup & to_be_disambiged_group,
+                                        list <double> & prior_value,
+                                        const cRatios & ratiosmap,
+                                        const string * const bid,
+                                        const double threshold) ;
 
     void retrieve_last_comparision_info ( const cBlocking_Operation & blocker, const char * const past_comparision_file);
 
@@ -314,25 +317,13 @@ public:
                 const bool aum ,
                 const bool debug);
 
-    void disambiguate(const cRatios & ratiosmap, const unsigned int num_threads, const char * const debug_block_file, const char * const prior_to_save);
-
-
-
-/**
- * const map < string, cRecGroup> & get_cluster_map () const:
- *     return the variable cluster_by_block.
- */
-
-
-/**
- * const vector < double > & set_thresholds ( const vector < double > & input ):
- *     set the threshold stages for the disambiguation.
- *     Since the disambiguation is a progressive process,
- *     the input vector is supposed to be monotonically descending.
- *     For example: 0.99, 0.98, 0.95, 0.90.
- */
+    void disambiguate(const cRatios & ratiosmap,
+                      const unsigned int num_threads,
+                      const char * const debug_block_file,
+                      const char * const prior_to_save);
 
     /**
+     * const map < string, cRecGroup> & get_cluster_map () const:
      * @return the variable cluster_by_block.
      */
     const map<string, cRecGroup> & get_cluster_map () const {
