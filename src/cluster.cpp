@@ -480,24 +480,25 @@ void ClusterInfo::config_prior()  {
     list <double> empty_list;
     map < const string *, list<double> >::iterator pp;
 
-    for ( map<string, cRecGroup >::const_iterator cpm = cluster_by_block.begin(); cpm != cluster_by_block.end(); ++ cpm) {
+    map<string, cRecGroup >::const_iterator cpm = cluster_by_block.begin();
+    for (; cpm != cluster_by_block.end(); ++ cpm) {
 
-        if ( block_activity.empty())
+        if (block_activity.empty())
             break;
 
         const string * pstr = & cpm->first ;
         pmdebug = this->block_activity.find( pstr );
 
-        if ( pmdebug == this->block_activity.end() ) {
+        if (pmdebug == this->block_activity.end()) {
             continue;
         } else {
-            if ( debug_mode && pmdebug->second == false )
+            if (debug_mode && pmdebug->second == false)
                 continue;
         }
 
         double prior = get_prior_value(cpm->first, cpm->second);
 
-        pp = prior_data.insert(std::pair<const string*, list<double> > (& (cpm->first), empty_list)).first;
+        pp = prior_data.insert(std::pair<const string*, list<double> >(&(cpm->first), empty_list)).first;
         pp->second.push_back(prior);
     }
 
@@ -506,7 +507,8 @@ void ClusterInfo::config_prior()  {
 
 
 /**
- * Aim: to output the prior values of each block to an external file. This is perfect for both analysis and debugging.
+ * Aim: to output the prior values of each block to an
+ * external file. This is perfect for both analysis and debugging.
  */
 void
 ClusterInfo::output_prior_value( const char * const outputfile ) const {
@@ -516,7 +518,8 @@ ClusterInfo::output_prior_value( const char * const outputfile ) const {
     map<const string *, list<double> >::const_iterator p = prior_data.begin();
     for (; p != prior_data.end(); ++p ) {
         of << *(p->first) << " : ";
-        for (list<double>::const_iterator q = p->second.begin(); q != p->second.end(); ++q)
+        list<double>::const_iterator q = p->second.begin();
+        for (; q != p->second.end(); ++q)
             of << *q << ", ";
         of << '\n';
     }
@@ -549,78 +552,82 @@ ClusterInfo::output_prior_value( const char * const outputfile ) const {
  * notes are legacy codes of adjustment, for reference purpose only.
  */
 double
-ClusterInfo::get_prior_value( const string & block_identifier, const list <Cluster> & rg ) {
+ClusterInfo::get_prior_value(const string & block_identifier,
+                             const list <Cluster> & rg) {
 
+    // TODO: Move these to headerfile as #define,
+    // then as class variables which can be initialized
+    // as a result of configuration.
     static const double prior_max = 0.95;
     static const double prior_default = 1e-6;
+
     //attention. the uninvolved index is subject
     //to the blocking configuration. so even if
     //mid name is not a blocking part, it should
     //be in the configuration file.
-
     //index for middlename, which is not involved in
     //the adjustment. change to other trash value if disabled.
+    // TODO: This is too fragile, get rid of it some how.
     const uint32_t uninvolved_index = 1; 
+
     std::ofstream * pfs = NULL;
-    if ( debug_mode ) {
+    if (debug_mode) {
         pfs = new std::ofstream ("prior_debug.txt");
         (*pfs) << "Content size: " << '\n';
     }
+
     double numerator = 0;
     uint32_t tt = 0;
 
-    for ( list<Cluster>::const_iterator q = rg.begin(); q != rg.end(); ++q ) {
+    // TODO: Refactor this block.
+    list<Cluster>::const_iterator q = rg.begin();
+    for (; q != rg.end(); ++q) {
         const uint32_t c = q->get_fellows().size();
         numerator += 1.0 * c * ( c - 1 );
         tt += c;
 
-        if ( debug_mode )
+        if (debug_mode)
             (*pfs) << c << " , ";
     }
 
     double denominator = 1.0 * tt * ( tt - 1 );
 
-    if ( denominator == 0 )
+    if (denominator == 0)
         denominator = 1e10;
 
-    double prior = numerator / denominator ;
+    double prior = numerator/denominator;
 
-    if ( prior == 0 )
+    if (prior == 0)
         prior = prior_default;
 
-    //adding frequency factor.
-    //decompose the block_identifier string so as to get the frequency of each piece
+    // TODO: Refactor this block
+    //decompose the block_identifier string so as to
+    //get the frequency of each piece
     size_t pos = 0, prev_pos = 0;
     uint32_t seq = 0;
     double final_factor = 0.0;
     vector <double> factor_history;
 
-    while ( true ) {
+    while (true) {
         pos = block_identifier.find(cBlocking_Operation::delim, prev_pos );
-        if ( pos == string::npos )
+        if (pos == string::npos)
             break;
 
         string piece = block_identifier.substr( prev_pos, pos - prev_pos );
         prev_pos = pos + cBlocking_Operation::delim.size();
 
-        if ( seq == uninvolved_index ) {
+        // TODO: uninvolved_index is a hardwired parameter
+        if (seq == uninvolved_index) {
             ++seq;
             continue;
         }
-        double factor = 1.0;
-        if ( frequency_adjust_mode && max_occurrence.at(seq) != 0 ) {
-          //const double temp = 2.0 * log ( sqrt( 1.0 * max_occurrence.at(seq) * min_occurrence.at(seq) ) / this->column_stat.at(seq)[piece] );
-          //if ( temp >= 0 ) // encourage
-            //    factor = 1.0 + temp;
-            //else    //panalize
-            //    factor = 1.0 / ( 1.0 - temp );
-            //const double temp = sqrt( 1.0 * max_occurrence.at(seq) * min_occurrence.at(seq) ) / this->column_stat.at(seq)[piece];
-            //factor = sqrt(temp);
-            factor = log ( 1.0 * max_occurrence.at(seq) / this->column_stat.at(seq)[piece] );
 
-        factor_history.push_back(factor);
-            //factor = 1.0 + 0.5 * ( log (  max_occurrence.at(seq) ) + log(min_occurrence.at(seq) ) ) - log ( this->column_stat.at(seq)[piece] );
+        double factor = 1.0;
+        if (frequency_adjust_mode && max_occurrence.at(seq) != 0) {
+            factor = log (1.0 * max_occurrence.at(seq) / this->column_stat.at(seq)[piece]);
+            factor_history.push_back(factor);
         }
+
         if (debug_mode) {
             (*pfs) << '\n'
                    << "Part: " << seq
@@ -630,25 +637,21 @@ ClusterInfo::get_prior_value( const string & block_identifier, const list <Clust
                    << " Before adjustment: "<< prior << '\n';
         }
 
-        final_factor = max_val( final_factor,  factor );
+        final_factor = max_val(final_factor, factor);
         ++seq;
     }
 
-    if ( final_factor <= 1 )
+    if (final_factor <= 1) {
         prior *= final_factor;
-    else {
-        for ( vector <double>::const_iterator pv = factor_history.begin(); pv != factor_history.end(); ++pv )
-        if ( *pv > 1 )
-            prior *= *pv;
+    } else {
+        vector <double>::const_iterator pv = factor_history.begin();
+        for (; pv != factor_history.end(); ++pv)
+            if (*pv > 1)
+                prior *= *pv;
     }
 
-    if ( debug_mode )
+    if (debug_mode)
         (*pfs) << " After adjustment: " << prior << '\n';
-
-    //const double first_factor = 1.0 + log ( 1.0 * max_occurrence.at(0) / this->firstname_stat[fn_piece]);
-    //const double last_factor = 1.0 + log ( 1.0 * max_occurrence.at(1) / this->lastname_stat[ln_piece]);
-
-    //prior *= first_factor * last_factor;
 
     if (prior > prior_max) prior = prior_max;
 
@@ -861,7 +864,7 @@ disambiguate_wrapper(const map<string, ClusterInfo::cRecGroup>::iterator & p,
 
         uint32_t i = 0;
         for (i = 0; i < max_round; ++i) {
-            // TODO: Document the logic associated with current_size and new_size
+            /// @todo: TODO: Document the logic associated with current_size and new_size
             current_size = new_size;
             // TODO: Document the return values from this method, explain why we're
             // checking the return value.
