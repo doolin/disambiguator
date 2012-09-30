@@ -528,6 +528,45 @@ ClusterInfo::output_prior_value( const char * const outputfile ) const {
 }
 
 
+// TODO: Implement unit test
+// rg = "record group"
+double
+get_initial_prior(const list<Cluster> & rg, bool debug_mode) {
+
+    double numerator = 0;
+    uint32_t tt = 0;
+    static const double prior_default = 1e-6;
+
+    list<Cluster>::const_iterator q = rg.begin();
+    for (; q != rg.end(); ++q) {
+        const uint32_t c = q->get_fellows().size();
+        numerator += 1.0 * c*(c - 1);
+        tt += c;
+
+        //if (debug_mode)
+        //    (*pfs) << c << " , ";
+    }
+
+    double denominator = 1.0 * tt*(tt - 1);
+
+    if (denominator == 0)
+        denominator = 1e10;
+
+    double prior = numerator/denominator;
+
+    if (prior == 0)
+        prior = prior_default;
+
+    return prior;
+ }
+
+
+double
+adjust_prior(const ClusterInfo::ClusterList & rg, bool debug_mode) {
+
+}
+
+
 /**
  * Aim: the determine the priori probability for a
  * certain block, given its name and its components.
@@ -559,7 +598,6 @@ ClusterInfo::get_prior_value(const string & block_identifier,
     // then as class variables which can be initialized
     // as a result of configuration.
     static const double prior_max = 0.95;
-    static const double prior_default = 1e-6;
 
     std::ofstream * pfs = NULL;
     if (debug_mode) {
@@ -572,6 +610,7 @@ ClusterInfo::get_prior_value(const string & block_identifier,
 #if 1
     double numerator = 0;
     uint32_t tt = 0;
+    static const double prior_default = 1e-6;
 
     list<Cluster>::const_iterator q = rg.begin();
     for (; q != rg.end(); ++q) {
@@ -596,8 +635,9 @@ ClusterInfo::get_prior_value(const string & block_identifier,
     //return prior; // for refactored block
     //////   End refactor block //////////////////////////////
 #else
-    double prior = get_initial_prior(rg);
+    double prior = get_initial_prior(rg, debug_mode);
 #endif
+
 
     ////////////////////////////////////////////////////////
     // TODO: Refactor this block
