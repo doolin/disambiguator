@@ -33,7 +33,7 @@
  *     Now it is always set to true.
  *     However, for future expandability, the variable is still kept.
 
- * unsigned int total_num:
+ * uint32_t total_num:
  *     total_number of records. It is used to verify the completeness of "this" object.
  *
  * map < string, cRecGroup > cluster_by_block:
@@ -41,7 +41,7 @@
  *     Key = blocking identifier.
  *     Value = a list of clusters whose delegates' extracted information blocking string = Key.
  *
- * vector < map < string, unsigned int > > column_stat:
+ * vector < map < string, uint32_t > > column_stat:
  *     a vector of map:
  *     Key   = extracted string part by a Blocking_Operation object,
  *     Value = its occurrence. The vector stores the statistics for
@@ -60,13 +60,13 @@
  *     Key = pointer to the block id.
  *     Value = whether or not to disambiguate.
  *
- * vector < unsigned int > max_occurrence:
+ * vector < uint32_t > max_occurrence:
  *     data collected from column_stat that stores the
  *     maximum occurrence of each blocking string part.
  */
 
 /**
- * vector < unsigned int > max_occurrence:
+ * vector < uint32_t > max_occurrence:
  *     data collected from column_stat that stores the
  *     minimum occurrence of each blocking string part.
  *
@@ -94,7 +94,7 @@
  */
 
 /*
- *        unsigned int disambiguate_by_block (cRecGroup & to_be_disambiged_group,
+ *        uint32_t disambiguate_by_block (cRecGroup & to_be_disambiged_group,
  *                                            list <double> & prior_value,
  *                                            const cRatios & ratiosmap,
  *                                            const string * const bid,
@@ -134,7 +134,7 @@
  *        cRecGroup & get_comparision_map(const string* bid):
  *            return the reference of cluster lists whose blocking label pointer is bid.
  *
- *        unsigned int reset_block_activity(const char * filename):
+ *        uint32_t reset_block_activity(const char * filename):
  *            read data from the file and set the corresponding block to be active.
  *            Returns the number of active blocks. This is designed for debugging.
  */
@@ -172,7 +172,7 @@
  *                debug = debug mode: on or off.
  *
  *        void disambiguate(const cRatios & ratiosmap,
- *                          const unsigned int num_threads,
+ *                          const uint32_t num_threads,
  *                          const char * const debug_block_file,
  *                          const char * const prior_to_save):
  *                The function that starts the disambiguation.
@@ -198,7 +198,7 @@
  *    bool is_matching = true;
  *    bool frequency_adjust_mode = true;
  *    bool debug_mode = false;
- *    const unsigned int number_of_threads = 24; // set number of threads to 24 if the computer has 24 cores.
+ *    const uint32_t number_of_threads = 24; // set number of threads to 24 if the computer has 24 cores.
  *    ClusterInfo CIobj ( *puid_dict, is_matching, frequency_adjust_mode, debug_mode );    //create a ClusterInfo object.
  *    vector < double > thresholds;
  *    thresholds.push_back(0.99);
@@ -246,14 +246,14 @@ private:
 
     const map <string, const Record*> * const uid2record_pointer;
     const bool is_matching;
-    unsigned int total_num;
+    uint32_t total_num;
 
     map < string, cRecGroup > cluster_by_block;
-    vector < map < string, unsigned int > > column_stat;
+    vector < map < string, uint32_t > > column_stat;
     map < const string *, list <double>  > prior_data;
     map < const string *, bool > block_activity;
-    vector < unsigned int > max_occurrence;
-    vector < unsigned int > min_occurrence;
+    vector < uint32_t > max_occurrence;
+    vector < uint32_t > min_occurrence;
 
     string useless;
     const bool frequency_adjust_mode;
@@ -268,7 +268,7 @@ private:
 
     void config_prior();
 
-    unsigned int disambiguate_by_block (cRecGroup & to_be_disambiged_group,
+    uint32_t disambiguate_by_block (cRecGroup & to_be_disambiged_group,
                                         list <double> & prior_value,
                                         const cRatios & ratiosmap,
                                         const string * const bid,
@@ -294,7 +294,7 @@ private:
 
     cRecGroup & get_comparision_map(const string* bid);
 
-    unsigned int reset_block_activity( const char * filename );
+    uint32_t reset_block_activity( const char * filename );
 
     void debug_disambiguation_loop(cRecGroup::iterator, cRecGroup::iterator, const double, const ClusterHead &);
 
@@ -318,7 +318,7 @@ public:
                 const bool debug);
 
     void disambiguate(const cRatios & ratiosmap,
-                      const unsigned int num_threads,
+                      const uint32_t num_threads,
                       const char * const debug_block_file,
                       const char * const prior_to_save);
 
