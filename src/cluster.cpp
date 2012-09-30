@@ -601,6 +601,7 @@ ClusterInfo::get_prior_value(const string & block_identifier,
 
     ////////////////////////////////////////////////////////
     // TODO: Refactor this block
+#if 1
     //decompose the block_identifier string so as to
     //get the frequency of each piece
     size_t pos = 0, prev_pos = 0;
@@ -659,6 +660,9 @@ ClusterInfo::get_prior_value(const string & block_identifier,
                 prior *= *pv;
     }
     /////////// End of refactoring /////////////////////////////////////
+#else
+    prior = adjust_prior();
+#endif
 
     if (debug_mode)
         (*pfs) << " After adjustment: " << prior << '\n';
