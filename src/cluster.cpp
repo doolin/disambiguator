@@ -546,7 +546,7 @@ ClusterInfo::output_prior_value( const char * const outputfile ) const {
 
 
 // TODO: Implement unit test
-// rg = "record group"
+// rg = "record groups"
 double
 get_initial_prior(const list<Cluster> & rg, bool debug_mode) {
 
@@ -559,6 +559,8 @@ get_initial_prior(const list<Cluster> & rg, bool debug_mode) {
 
     list<Cluster>::const_iterator q = rg.begin();
     for (; q != rg.end(); ++q) {
+        // get_fellows() returns a RecordPList, which
+        // are the records associated with a particular Cluster
         const uint32_t c = q->get_fellows().size();
         numerator += 1.0 * c*(c - 1);
         tt += c;
