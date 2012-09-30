@@ -66,5 +66,7 @@ echo $cyanf"## Berkeley"
 echo -e $testval
 
 
-echo $reset
+./integration.rb
 
+
+echo $reset
