@@ -1,3 +1,7 @@
+## Unignoring for test purposes
+!prior*.txt
+
+## Executables using cppunit
 assigneecomparison
 fetchrecords
 ratios
@@ -23,5 +27,7 @@ record
 typedefs
 idtest
 distest
+
+## The usual suspects...
 *.o
 a.out
