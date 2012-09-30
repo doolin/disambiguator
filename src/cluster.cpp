@@ -567,9 +567,11 @@ ClusterInfo::get_prior_value(const string & block_identifier,
         (*pfs) << "Content size: " << '\n';
     }
 
+    // TODO: Refactor into prior_initial_value or something.
     double numerator = 0;
     uint32_t tt = 0;
 
+    // ///////////////////////////////////////////////////////
     // TODO: Refactor this block.
     list<Cluster>::const_iterator q = rg.begin();
     for (; q != rg.end(); ++q) {
@@ -590,8 +592,9 @@ ClusterInfo::get_prior_value(const string & block_identifier,
 
     if (prior == 0)
         prior = prior_default;
+    //////   End refactor block //////////////////////////////
 
-    ///////////////////////////////////
+    ////////////////////////////////////////////////////////
     // TODO: Refactor this block
     //decompose the block_identifier string so as to
     //get the frequency of each piece
@@ -650,7 +653,7 @@ ClusterInfo::get_prior_value(const string & block_identifier,
             if (*pv > 1)
                 prior *= *pv;
     }
-    /////////// End of refactoring ////////////////
+    /////////// End of refactoring /////////////////////////////////////
 
     if (debug_mode)
         (*pfs) << " After adjustment: " << prior << '\n';
