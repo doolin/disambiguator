@@ -59,8 +59,8 @@ echo $testval
 echo
 
 testdir=/data/patentdata/disambiguation/experiments/earth/berkeley
-finalfile="./data/final_berkeley.txt"
-rarenamefile="./data/rare_names_berkeley.txt"
+finalfile="./data/berkeley/final_berkeley.txt"
+rarenamefile="./data/berkeley/rare_names_berkeley.txt"
 testval=`test_disambiguation $testdir $finalfile $rarenamefile`
 echo $cyanf"## Berkeley"
 echo -e $testval
