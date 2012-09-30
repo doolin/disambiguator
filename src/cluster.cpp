@@ -77,13 +77,17 @@ bool
 ClusterInfo::is_consistent() const {
 
     uint32_t temp_total = 0;
-    for ( map < string, cRecGroup >::const_iterator cp = cluster_by_block.begin(); cp != cluster_by_block.end(); ++cp ) {
-        for ( cRecGroup::const_iterator cq = cp->second.begin(); cq != cp ->second.end(); ++ cq ) {
+
+    map < string, cRecGroup >::const_iterator cp = cluster_by_block.begin();
+    for (; cp != cluster_by_block.end(); ++cp ) {
+        for (cRecGroup::const_iterator cq = cp->second.begin(); cq != cp ->second.end(); ++ cq ) {
             temp_total += cq->get_fellows().size();
         }
     }
-    if ( temp_total != total_num )
+
+    if (temp_total != total_num)
         return false;
+
     return true;
 }
 
@@ -112,7 +116,8 @@ ClusterInfo::is_consistent() const {
  *  Finally, use the variable "column_stat" to reset "min_occurrence" and "max_occurence".
  */
 void
-ClusterInfo::retrieve_last_comparision_info ( const cBlocking_Operation & blocker, const char * const past_comparision_file) {
+ClusterInfo::retrieve_last_comparision_info (
+    const cBlocking_Operation & blocker, const char * const past_comparision_file) {
 
     try {
         const uint32_t num_columns = blocker.num_involved_columns();
@@ -173,6 +178,7 @@ ClusterInfo::retrieve_last_comparision_info ( const cBlocking_Operation & blocke
                     tempv.push_back(value);
                     prev_pos = pos + secondary_delim_size;
                 }
+
                 ClusterHead th(key, val);
                 Cluster tempc(th, tempv);
                 tempc.self_repair();
@@ -440,22 +446,29 @@ ClusterInfo::reset_block_activity( const char * const filename ) {
     }
 
     std::cout << "Done." << std::endl;
-    if ( cnt != 0 )
+
+    if (cnt != 0) {
         std::cout << cnt <<  " blocks have been activated." << std::endl;
-    else {
+    } else {
+
         std::cout << "Warning: Since 0 blocks are active, all will be ACTIVATED instead." << std::endl;
         for ( map< const string *, bool>::iterator p = block_activity.begin(); p != block_activity.end(); ++p )
             p->second = true;
         cnt = block_activity.size();
     }
+
     return cnt;
 }
 
 
 /**
  * Aim: set up the prior value for all the blocks.
- * Algorithm: if in debug mode, only configure the relevant blocks. Otherwise, configure all the blocks.
- *         NOTE: the actual determination of priori values is by the function "get_prior_value".
+ *
+ * Algorithm: if in debug mode, only configure the
+ * relevant blocks. Otherwise, configure all the blocks.
+ *
+ * NOTE: the actual determination of priori values is by
+ * the function "get_prior_value".
  */
 void ClusterInfo::config_prior()  {
 
@@ -468,13 +481,16 @@ void ClusterInfo::config_prior()  {
     map < const string *, list<double> >::iterator pp;
 
     for ( map<string, cRecGroup >::const_iterator cpm = cluster_by_block.begin(); cpm != cluster_by_block.end(); ++ cpm) {
+
         if ( block_activity.empty())
             break;
+
         const string * pstr = & cpm->first ;
         pmdebug = this->block_activity.find( pstr );
-        if ( pmdebug == this->block_activity.end() )
+
+        if ( pmdebug == this->block_activity.end() ) {
             continue;
-        else {
+        } else {
             if ( debug_mode && pmdebug->second == false )
                 continue;
         }
@@ -496,12 +512,15 @@ void
 ClusterInfo::output_prior_value( const char * const outputfile ) const {
 
     std::ofstream of(outputfile);
-    for ( map<const string *, list<double> >::const_iterator p = prior_data.begin(); p != prior_data.end(); ++p ) {
+
+    map<const string *, list<double> >::const_iterator p = prior_data.begin();
+    for (; p != prior_data.end(); ++p ) {
         of << *(p->first) << " : ";
-        for ( list<double>::const_iterator q = p->second.begin(); q != p->second.end(); ++q )
+        for (list<double>::const_iterator q = p->second.begin(); q != p->second.end(); ++q)
             of << *q << ", ";
         of << '\n';
     }
+
     std::cout << "Prior values are saved in " << outputfile << std::endl;
 }
 
@@ -649,10 +668,10 @@ ClusterInfo::disambiguate(const cRatios & ratio,
                           const char * const debug_block_file,
                           const char * const prior_to_save) {
 
-    if ( is_matching_cluster() != true )
+    if (is_matching_cluster() != true)
         throw cException_Cluster_Error("Wrong type of clusters for disambiguation.");
 
-    if ( this->thresholds.empty() )
+    if (this->thresholds.empty())
         throw cException_Cluster_Error("Thresholds have not been set up yet.");
 
     uint32_t size_to_disambig = this->reset_block_activity(debug_block_file);
