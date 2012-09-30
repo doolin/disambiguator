@@ -68,8 +68,10 @@ ClusterInfo::get_comparision_map(const string * bid) {
 
 /**
  * Aim: to check the consistency of a ClusterInfo object
+ *
  * Algorithm: sum up the number of records after disambiguation and
  * compare it with that before disambiguation.
+ *
  * It is a very crude consistency check, and the functionality
  * can be expanded if necessary.
  */
@@ -78,9 +80,10 @@ ClusterInfo::is_consistent() const {
 
     uint32_t temp_total = 0;
 
-    map < string, ClusterList >::const_iterator cp = cluster_by_block.begin();
+    map<string, ClusterList >::const_iterator cp = cluster_by_block.begin();
     for (; cp != cluster_by_block.end(); ++cp ) {
-        for (ClusterList::const_iterator cq = cp->second.begin(); cq != cp ->second.end(); ++ cq ) {
+        ClusterList::const_iterator cq = cp->second.begin();
+        for (; cq != cp ->second.end(); ++ cq ) {
             temp_total += cq->get_fellows().size();
         }
     }
@@ -416,29 +419,37 @@ ClusterInfo::reset_block_activity( const char * const filename ) {
 
     const char * const delim = ClusterInfo::secondary_delim;
     uint32_t cnt = 0;
-    std::cout << "Resetting block activity for debug purpose in accordance with file " << filename << " ...  " << std::endl;
+
+    std::cout << "Resetting block activity for debug purpose in accordance with file "
+              << filename << " ...  " << std::endl;
+
     this->block_activity.clear();
-    map < string , ClusterList >::const_iterator cpm;
-    for ( cpm = cluster_by_block.begin(); cpm != cluster_by_block.end(); ++cpm ) {
+
+    map<string , ClusterList>::const_iterator cpm;
+    for (cpm = cluster_by_block.begin(); cpm != cluster_by_block.end(); ++cpm) {
         block_activity.insert(std::pair<const string*, bool>(&cpm->first, false));
     }
 
 
     std::ifstream infile(filename);
     string data;
-    while ( getline(infile, data)) {
+
+    while (getline(infile, data)) {
 
         while(true)   {
             size_t  pos(0);
-            if (   (pos = data.find(delim)) != string::npos   )
+
+            if ((pos = data.find(delim)) != string::npos)
                 data.replace(pos, strlen(delim), cBlocking_Operation::delim);
             else
                 break;
         }
+
         cpm = this->cluster_by_block.find(data);
-        if ( cpm == cluster_by_block.end())
+
+        if (cpm == cluster_by_block.end()) {
             std::cout << data << " is not a good block identifier." << std::endl;
-        else {
+        } else {
             const string * pstr = & cluster_by_block.find(data)->first;
             block_activity.find(pstr)->second = true;
             ++cnt;
@@ -451,8 +462,11 @@ ClusterInfo::reset_block_activity( const char * const filename ) {
         std::cout << cnt <<  " blocks have been activated." << std::endl;
     } else {
 
-        std::cout << "Warning: Since 0 blocks are active, all will be ACTIVATED instead." << std::endl;
-        for ( map< const string *, bool>::iterator p = block_activity.begin(); p != block_activity.end(); ++p )
+        std::cout << "Warning: Since 0 blocks are active, all will be ACTIVATED instead."
+                  << std::endl;
+
+        map< const string *, bool>::iterator p = block_activity.begin();
+        for (; p != block_activity.end(); ++p)
             p->second = true;
         cnt = block_activity.size();
     }
