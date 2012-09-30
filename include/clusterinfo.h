@@ -20,19 +20,19 @@
  *    be used for the next run.
  */
 
-/*
+/**
  * Private:
  *
  * const map <string, const Record*> * const uid2record_pointer: 
  *     The binary tree map.
  *     Key   = string of unique record id
  *     Value = the record pointer whose unique record id is the Key.
- 
+
  * const bool is_matching:
  *     a boolean indicating the status of the "this" object.
  *     Now it is always set to true.
  *     However, for future expandability, the variable is still kept.
- 
+
  * unsigned int total_num:
  *     total_number of records. It is used to verify the completeness of "this" object.
  *
@@ -53,7 +53,7 @@
  *     Value = a list of double numbers that records the history of priors.
  */
 
-/*
+/**
  * map < const string *, bool > block_activity:
  *     a binary map used to check whether disambiguation
  *     within a certain block should occur.
@@ -185,26 +185,6 @@
  *                block will be saved. Perfect for analysis and debugging.
  */
 
-/**
- *        ~ClusterInfo(): destructor.
- *
- *        const map < string, cRecGroup> & get_cluster_map () const:
- *            return the variable cluster_by_block.
- *
- *        bool is_matching_cluster() const:
- *            return whether the variable "is_matching" of the object.
- *
- *        bool is_consistent() const:
- *            performs a consistency check of the object and returns the result.
- *
- *        const vector < double > & set_thresholds ( const vector < double > & input ):
- *            set the threshold stages for the disambiguation.
- *            Since the disambiguation is a progressive process,
- *            the input vector is supposed to be monotonically descending.
- *            For example: 0.99, 0.98, 0.95, 0.90.
- *
- */
-
 
 /*
  *    Example of Use:
@@ -290,16 +270,27 @@ private:
 
     unsigned int disambiguate_by_block ( cRecGroup & to_be_disambiged_group,  list <double> & prior_value,
                                             const cRatios & ratiosmap, const string * const bid, const double threshold ) ;
+
     void retrieve_last_comparision_info ( const cBlocking_Operation & blocker, const char * const past_comparision_file);
+
     void output_prior_value( const char * const prior_to_save ) const;
+
     ClusterInfo ( const ClusterInfo &);
+
     void print(std::ostream & os) const;
+
     const string & get_useless_string() const {return useless;}
+
     double get_prior_value( const string & block_identifier, const list <Cluster> & rg );
+
     const map < const string *, list<double> > & get_prior_map() const {return prior_data;}
+
     map < const string*, list <double> > & get_prior_map() {return prior_data;};
+
     const cRecGroup & get_comparision_map(const string* bid) const;
+
     cRecGroup & get_comparision_map(const string* bid);
+
     unsigned int reset_block_activity( const char * filename );
 
     void debug_disambiguation_loop(cRecGroup::iterator, cRecGroup::iterator, const double, const ClusterHead &);
@@ -307,6 +298,7 @@ private:
 public:
 
     static const char * const primary_delim;
+
     static const char * const secondary_delim;
 
     ~ClusterInfo() {}
@@ -318,20 +310,48 @@ public:
     void preliminary_consolidation(const cBlocking_Operation & blocker, const list < const Record *> & all_rec_list);
 
     ClusterInfo(const map <string, const Record * > & input_uid2record,
-                  const bool input_is_matching ,
-                  const bool aum ,
-                  const bool debug);
+                const bool input_is_matching ,
+                const bool aum ,
+                const bool debug);
 
     void disambiguate(const cRatios & ratiosmap, const unsigned int num_threads, const char * const debug_block_file, const char * const prior_to_save);
 
 
- /**
-  * @return the variable cluster_by_block.
-  */
-    const map < string, cRecGroup> & get_cluster_map () const {return cluster_by_block;}
 
-    bool is_matching_cluster() const {return is_matching;};
+/**
+ * const map < string, cRecGroup> & get_cluster_map () const:
+ *     return the variable cluster_by_block.
+ */
 
+
+/**
+ * const vector < double > & set_thresholds ( const vector < double > & input ):
+ *     set the threshold stages for the disambiguation.
+ *     Since the disambiguation is a progressive process,
+ *     the input vector is supposed to be monotonically descending.
+ *     For example: 0.99, 0.98, 0.95, 0.90.
+ */
+
+    /**
+     * @return the variable cluster_by_block.
+     */
+    const map<string, cRecGroup> & get_cluster_map () const {
+      return cluster_by_block;
+    }
+
+   /**
+    * bool is_matching_cluster() const:
+    * return whether the variable "is_matching" of the object.
+    */
+    bool is_matching_cluster() const {
+      return is_matching;
+    };
+
+   /**
+    * bool is_consistent() const:
+    * performs a consistency check of the
+    * object and returns the result.
+    */
     bool is_consistent() const;
 
    /**
@@ -344,7 +364,7 @@ public:
     *
     * @todo Document the assumption on how the threshholds are ordered
     */
-    const vector < double > & set_thresholds (const vector < double > & input);
+    const vector<double> & set_thresholds (const vector<double> & input);
 };
 
 
