@@ -2,6 +2,7 @@
 !prior*.txt
 
 ## Executables using cppunit
+clusterinfo
 assigneecomparison
 fetchrecords
 ratios

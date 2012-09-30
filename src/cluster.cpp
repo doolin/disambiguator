@@ -270,7 +270,9 @@ ClusterInfo::retrieve_last_comparision_info (
 /**
  * Aim: to read the previous disambiguation results and configure
  * them to conform to the new blocking mechanism.
+ *
  * Algorithm: call the retrieve_last comparison_info function.
+ *
  * Afterwards, reconfigure the middle names. Then count
  * the total number of records and save it.
  */
@@ -280,6 +282,7 @@ ClusterInfo::reset_blocking(const cBlocking_Operation & blocker,
 
     total_num = 0;
     useless = blocker.get_useless_string();
+
     retrieve_last_comparision_info(blocker, past_comparision_file);
 
     for (map<string, ClusterList>::iterator p = cluster_by_block.begin();
