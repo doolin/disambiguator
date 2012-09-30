@@ -567,23 +567,22 @@ ClusterInfo::get_prior_value(const string & block_identifier,
         (*pfs) << "Content size: " << '\n';
     }
 
+    // ///////////////////////////////////////////////////////
     // TODO: Refactor into prior_initial_value or something.
     double numerator = 0;
     uint32_t tt = 0;
 
-    // ///////////////////////////////////////////////////////
-    // TODO: Refactor this block.
     list<Cluster>::const_iterator q = rg.begin();
     for (; q != rg.end(); ++q) {
         const uint32_t c = q->get_fellows().size();
-        numerator += 1.0 * c * ( c - 1 );
+        numerator += 1.0 * c*(c - 1);
         tt += c;
 
         if (debug_mode)
             (*pfs) << c << " , ";
     }
 
-    double denominator = 1.0 * tt * ( tt - 1 );
+    double denominator = 1.0 * tt*(tt - 1);
 
     if (denominator == 0)
         denominator = 1e10;
