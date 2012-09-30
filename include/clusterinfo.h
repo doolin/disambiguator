@@ -42,7 +42,7 @@
  */
 
 /**
- * map < string, cRecGroup > cluster_by_block:
+ * map < string, ClusterList > cluster_by_block:
  * the binary tree map.
  * Key = blocking identifier.
  * Value = a list of clusters whose delegates' extracted information blocking string = Key.
@@ -118,7 +118,7 @@
  */
 
 /*
- *        uint32_t disambiguate_by_block (cRecGroup & to_be_disambiged_group,
+ *        uint32_t disambiguate_by_block (ClusterList & to_be_disambiged_group,
  *                                            list <double> & prior_value,
  *                                            const cRatios & ratiosmap,
  *                                            const string * const bid,
@@ -152,10 +152,10 @@
  *        map < const string*, list <double> > & get_prior_map():
  *            returns the reference of the priori probability map.
  *
- *        const cRecGroup & get_comparision_map(const string* bid) const:
+ *        const ClusterList & get_comparision_map(const string* bid) const:
  *            return the const reference of cluster lists whose blocking label pointer is bid.
  *
- *        cRecGroup & get_comparision_map(const string* bid):
+ *        ClusterList & get_comparision_map(const string* bid):
  *            return the reference of cluster lists whose blocking label pointer is bid.
  *
  *        uint32_t reset_block_activity(const char * filename):
@@ -215,9 +215,10 @@ class ClusterInfo {
 
 public:
     typedef set<const Record *> recordset;
-    typedef list<Cluster> cRecGroup;
+    //typedef list<Cluster> ClusterList;
+    typedef list<Cluster> ClusterList;
 
-    friend bool disambiguate_wrapper(const map<string, ClusterInfo::cRecGroup>::iterator & p,
+    friend bool disambiguate_wrapper(const map<string, ClusterInfo::ClusterList>::iterator & p,
                                      ClusterInfo & cluster,
                                      const cRatios & ratiosmap );
 
@@ -227,7 +228,7 @@ private:
     const bool is_matching;
     uint32_t total_num;
 
-    map < string, cRecGroup > cluster_by_block;
+    map < string, ClusterList > cluster_by_block;
     vector < map < string, uint32_t > > column_stat;
     map < const string *, list <double>  > prior_data;
     map < const string *, bool > block_activity;
@@ -247,7 +248,7 @@ private:
 
     void config_prior();
 
-    uint32_t disambiguate_by_block (cRecGroup & to_be_disambiged_group,
+    uint32_t disambiguate_by_block (ClusterList & to_be_disambiged_group,
                                     list <double> & prior_value,
                                     const cRatios & ratiosmap,
                                     const string * const bid,
@@ -276,13 +277,13 @@ private:
       return prior_data;
     };
 
-    const cRecGroup & get_comparision_map(const string* bid) const;
+    const ClusterList & get_comparision_map(const string* bid) const;
 
-    cRecGroup & get_comparision_map(const string* bid);
+    ClusterList & get_comparision_map(const string* bid);
 
     uint32_t reset_block_activity( const char * filename );
 
-    void debug_disambiguation_loop(cRecGroup::iterator, cRecGroup::iterator, const double, const ClusterHead &);
+    void debug_disambiguation_loop(ClusterList::iterator, ClusterList::iterator, const double, const ClusterHead &);
 
 
 public:
@@ -359,10 +360,10 @@ public:
                       const char * const prior_to_save);
 
     /**
-     * const map < string, cRecGroup> & get_cluster_map () const:
+     * const map < string, ClusterList> & get_cluster_map () const:
      * @return the variable cluster_by_block.
      */
-    const map<string, cRecGroup> & get_cluster_map () const {
+    const map<string, ClusterList> & get_cluster_map () const {
       return cluster_by_block;
     }
 

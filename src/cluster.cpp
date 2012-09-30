@@ -40,11 +40,11 @@ ClusterInfo::ClusterInfo(const map <string, const Record*> & input_uid2record,
 /**
  * @return the list of clusters by the pointer of blocking id string.
  */
-// cRecGroup is a list<Cluster>
-const ClusterInfo::cRecGroup &
+// ClusterList is a list<Cluster>
+const ClusterInfo::ClusterList &
 ClusterInfo::get_comparision_map(const string * bid) const {
 
-    map<string, cRecGroup>::const_iterator q = cluster_by_block.find(*bid);
+    map<string, ClusterList>::const_iterator q = cluster_by_block.find(*bid);
     if (q == cluster_by_block.end()) {
         throw cException_Attribute_Not_In_Tree(bid->c_str());
     }
@@ -55,10 +55,10 @@ ClusterInfo::get_comparision_map(const string * bid) const {
 /**
  * @return the list of clusters by the pointer of blocking id string.
  */
-ClusterInfo::cRecGroup &
+ClusterInfo::ClusterList &
 ClusterInfo::get_comparision_map(const string * bid) {
 
-    map<string, cRecGroup>::iterator q = cluster_by_block.find(*bid);
+    map<string, ClusterList>::iterator q = cluster_by_block.find(*bid);
     if (q == cluster_by_block.end()) {
         throw cException_Attribute_Not_In_Tree(bid->c_str());
     }
@@ -78,9 +78,9 @@ ClusterInfo::is_consistent() const {
 
     uint32_t temp_total = 0;
 
-    map < string, cRecGroup >::const_iterator cp = cluster_by_block.begin();
+    map < string, ClusterList >::const_iterator cp = cluster_by_block.begin();
     for (; cp != cluster_by_block.end(); ++cp ) {
-        for (cRecGroup::const_iterator cq = cp->second.begin(); cq != cp ->second.end(); ++ cq ) {
+        for (ClusterList::const_iterator cq = cp->second.begin(); cq != cp ->second.end(); ++ cq ) {
             temp_total += cq->get_fellows().size();
         }
     }
@@ -127,7 +127,7 @@ ClusterInfo::retrieve_last_comparision_info (
         const uint32_t primary_delim_size = strlen(primary_delim);
         const uint32_t secondary_delim_size = strlen(secondary_delim);
         RecordPList empty_set;
-        map < string , cRecGroup >::iterator prim_iter;
+        map < string , ClusterList >::iterator prim_iter;
         map < const string*, map < const Record *, double> >::iterator prim_co_iter;
         uint32_t count = 0;
         const uint32_t base = 100000;
@@ -142,7 +142,7 @@ ClusterInfo::retrieve_last_comparision_info (
 
         if (infile.good()) {
             string filedata;
-            cRecGroup::iterator pm;
+            ClusterList::iterator pm;
 
             while ( getline(infile, filedata)) {
                 register size_t pos = 0, prev_pos = 0;
@@ -187,8 +187,8 @@ ClusterInfo::retrieve_last_comparision_info (
                     prim_iter->second.push_back(tempc);
                 } else {
 
-                    cRecGroup one_elem(1, tempc);
-                    prim_iter = cluster_by_block.insert(std::pair<string, cRecGroup>(b_id, one_elem)).first;
+                    ClusterList one_elem(1, tempc);
+                    prim_iter = cluster_by_block.insert(std::pair<string, ClusterList>(b_id, one_elem)).first;
                     for ( uint32_t i = 0; i < num_columns; ++i ) {
                         this->column_stat.at(i)[column_part.at(i)] += 1;
                     }
@@ -279,10 +279,10 @@ ClusterInfo::reset_blocking(const cBlocking_Operation & blocker,
     useless = blocker.get_useless_string();
     retrieve_last_comparision_info(blocker, past_comparision_file);
 
-    for (map<string, cRecGroup>::iterator p = cluster_by_block.begin();
+    for (map<string, ClusterList>::iterator p = cluster_by_block.begin();
         p != cluster_by_block.end(); ++p) {
 
-        cRecGroup::iterator cp = p->second.begin();
+        ClusterList::iterator cp = p->second.begin();
         for (; cp != p->second.end(); ++cp) {
             if (cMiddlename::is_enabled()) {
                 cp->change_mid_name();
@@ -290,10 +290,10 @@ ClusterInfo::reset_blocking(const cBlocking_Operation & blocker,
         }
     }
 
-    for (map<string, cRecGroup>::const_iterator p = cluster_by_block.begin();
+    for (map<string, ClusterList>::const_iterator p = cluster_by_block.begin();
          p != cluster_by_block.end(); ++p) {
 
-        for (cRecGroup::const_iterator cp = p->second.begin(); cp != p->second.end(); ++cp) {
+        for (ClusterList::const_iterator cp = p->second.begin(); cp != p->second.end(); ++cp) {
             total_num += cp->get_fellows().size();
         }
     }
@@ -313,7 +313,7 @@ ClusterInfo::preliminary_consolidation(const cBlocking_Operation & blocker,
     total_num = 0;
     cluster_by_block.clear();
     useless = blocker.get_useless_string();
-    map < string, cRecGroup >::iterator mi;
+    map < string, ClusterList >::iterator mi;
     const RecordPList empty_fellows;
 
     for (list<const Record *>::const_iterator p = all_rec_list.begin();
@@ -324,25 +324,25 @@ ClusterInfo::preliminary_consolidation(const cBlocking_Operation & blocker,
         if ( mi == cluster_by_block.end() ) {
             ClusterHead th(*p, 1);
             Cluster tc(th, empty_fellows);
-            cRecGroup tr(1, tc);
-            mi = cluster_by_block.insert(std::pair<string, cRecGroup>(temp, tr)).first;
+            ClusterList tr(1, tc);
+            mi = cluster_by_block.insert(std::pair<string, ClusterList>(temp, tr)).first;
         }
         mi->second.front().insert_elem(*p);
     }
 
 
     for ( mi = cluster_by_block.begin(); mi != cluster_by_block.end(); ++mi ) {
-        for ( cRecGroup::iterator gi = mi->second.begin(); gi != mi->second.end(); ++gi) {
+        for ( ClusterList::iterator gi = mi->second.begin(); gi != mi->second.end(); ++gi) {
             gi->self_repair();
         }
     }
 
     std::cout << "Preliminary consolidation done." << std::endl;
 
-    for (map <string, cRecGroup>::const_iterator p  = cluster_by_block.begin();
+    for (map <string, ClusterList>::const_iterator p  = cluster_by_block.begin();
          p != cluster_by_block.end(); ++p) {
 
-        for (cRecGroup::const_iterator cp = p->second.begin(); cp != p->second.end(); ++cp)
+        for (ClusterList::const_iterator cp = p->second.begin(); cp != p->second.end(); ++cp)
             total_num += cp->get_fellows().size();
     }
 }
@@ -380,8 +380,8 @@ ClusterInfo::print(std::ostream & os) const {
     const uint32_t uid_index = Record::get_index_by_name(uid_name);
     static const cException_Vector_Data except(uid_name.c_str());
 
-    for ( map <string, cRecGroup >::const_iterator q = cluster_by_block.begin(); q != cluster_by_block.end(); ++q ) {
-        for ( cRecGroup::const_iterator p = q->second.begin(); p != q->second.end(); ++p ) {
+    for ( map <string, ClusterList >::const_iterator q = cluster_by_block.begin(); q != cluster_by_block.end(); ++q ) {
+        for ( ClusterList::const_iterator p = q->second.begin(); p != q->second.end(); ++p ) {
             const Attribute * key_pattrib = p->get_cluster_head().m_delegate->get_attrib_pointer_by_index(uid_index);
             os << * key_pattrib->get_data().at(0) << primary_delim;
 
@@ -418,7 +418,7 @@ ClusterInfo::reset_block_activity( const char * const filename ) {
     uint32_t cnt = 0;
     std::cout << "Resetting block activity for debug purpose in accordance with file " << filename << " ...  " << std::endl;
     this->block_activity.clear();
-    map < string , cRecGroup >::const_iterator cpm;
+    map < string , ClusterList >::const_iterator cpm;
     for ( cpm = cluster_by_block.begin(); cpm != cluster_by_block.end(); ++cpm ) {
         block_activity.insert(std::pair<const string*, bool>(&cpm->first, false));
     }
@@ -480,7 +480,7 @@ void ClusterInfo::config_prior()  {
     list <double> empty_list;
     map<const string *, list<double> >::iterator pp;
 
-    map<string, cRecGroup >::const_iterator cpm = cluster_by_block.begin();
+    map<string, ClusterList >::const_iterator cpm = cluster_by_block.begin();
     for (; cpm != cluster_by_block.end(); ++ cpm) {
 
         if (block_activity.empty())
@@ -696,9 +696,9 @@ ClusterInfo::disambiguate(const cRatios & ratio,
     config_prior();
 
     std::cout << "Starting disambiguation ... ..." << std::endl;
-    cRecGroup emptyone;
+    ClusterList emptyone;
     const RecordPList emptyset;
-    map<string, cRecGroup>::iterator pdisambiged;
+    map<string, ClusterList>::iterator pdisambiged;
 
     // now starting disambiguation.
     // here can be multithreaded.
@@ -727,11 +727,11 @@ ClusterInfo::disambiguate(const cRatios & ratio,
     uint32_t max_inventor = 0;
     const Cluster * pmax = NULL;
 
-    map<string, cRecGroup >::const_iterator p = cluster_by_block.begin();
+    map<string, ClusterList >::const_iterator p = cluster_by_block.begin();
     for (; p != cluster_by_block.end(); ++p) {
-        const cRecGroup & galias = p->second;
+        const ClusterList & galias = p->second;
 
-        for ( cRecGroup::const_iterator q = galias.begin(); q != galias.end(); ++q ) {
+        for ( ClusterList::const_iterator q = galias.begin(); q != galias.end(); ++q ) {
             const uint32_t t = q->get_fellows().size();
 
             if (t > max_inventor) {
@@ -764,7 +764,7 @@ void
 Worker::run() {
 
     const uint32_t base = 10000;
-    map<string, ClusterInfo::cRecGroup>::iterator pthis;
+    map<string, ClusterInfo::ClusterList>::iterator pthis;
 
     while (true) {
 
@@ -794,7 +794,7 @@ Worker::run() {
 
 
 void
-warn_block_failure(const map<string, ClusterInfo::cRecGroup>::iterator & p) {
+warn_block_failure(const map<string, ClusterInfo::ClusterList>::iterator & p) {
 
   std::cout << "============= POSSIBLE FAILURE IN BLOCK ==============" << std::endl;
   std::cout << p->first << " exceeded max rounds block disambiguation" << std::endl;
@@ -803,7 +803,7 @@ warn_block_failure(const map<string, ClusterInfo::cRecGroup>::iterator & p) {
 
 
 void
-warn_very_big_blocks(const map<string, ClusterInfo::cRecGroup>::iterator & p) {
+warn_very_big_blocks(const map<string, ClusterInfo::ClusterList>::iterator & p) {
 
    std::cout << "Block Very Big: " << p->first
              << " Size = " << p->second.size() << std::endl;
@@ -811,7 +811,7 @@ warn_very_big_blocks(const map<string, ClusterInfo::cRecGroup>::iterator & p) {
 
 
 void
-warn_empty_block(const map<string, ClusterInfo::cRecGroup>::iterator & p) {
+warn_empty_block(const map<string, ClusterInfo::ClusterList>::iterator & p) {
 
   std::cout << "Block Without Any Infomation Tag: " << p->first 
             << " Size = " << p->second.size() << "-----SKIPPED."
@@ -833,7 +833,7 @@ warn_empty_block(const map<string, ClusterInfo::cRecGroup>::iterator & p) {
 // the loop out of this function.
 // TODO: typedef the leading parameter, it's ugly.
 bool
-disambiguate_wrapper(const map<string, ClusterInfo::cRecGroup>::iterator & p,
+disambiguate_wrapper(const map<string, ClusterInfo::ClusterList>::iterator & p,
                      ClusterInfo & cluster,
                      const cRatios & ratio ) {
 
@@ -913,8 +913,8 @@ ClusterInfo::set_thresholds ( const vector < double > & input ) {
 
 
 void
-ClusterInfo::debug_disambiguation_loop(cRecGroup::iterator  first_iter,
-    cRecGroup::iterator second_iter,
+ClusterInfo::debug_disambiguation_loop(ClusterList::iterator  first_iter,
+    ClusterList::iterator second_iter,
     const double prior_value,
     const ClusterHead & result) {
 
@@ -934,25 +934,25 @@ ClusterInfo::debug_disambiguation_loop(cRecGroup::iterator  first_iter,
  * Algorithm: call the Cluster::disambiguate method and,
  * if necessary, the Cluster::merge method.
  */
-// NOTE: clusterinfo.h:257:    typedef list < Cluster > cRecGroup;
+// NOTE: clusterinfo.h:257:    typedef list < Cluster > ClusterList;
 //       Expect the location of the typedef to change and the name
 //       will probably also change to something like ClusterList
 uint32_t /* block size, most likely */
-ClusterInfo::disambiguate_by_block(cRecGroup & to_be_disambiged_group,
+ClusterInfo::disambiguate_by_block(ClusterList & to_be_disambiged_group,
                                    list <double> & prior_list,
                                    const cRatios & ratio,
                                    const string * const bid, // blocking_id
                                    const double threshold ) {
 
     const bool should_update_prior = false;
-    cRecGroup::iterator first_iter, second_iter;
+    ClusterList::iterator first_iter, second_iter;
     const double prior_value = prior_list.back();
 
     for ( first_iter = to_be_disambiged_group.begin(); first_iter != to_be_disambiged_group.end(); ++first_iter) {
         second_iter = first_iter;
         for ( ++second_iter; second_iter != to_be_disambiged_group.end(); ) {
 
-            // TODO: Find out where the cRecGroup->iterator->disambiguate callback is set.
+            // TODO: Find out where the ClusterList->iterator->disambiguate callback is set.
             // The iterator points to a Cluster object.
             ClusterHead result = first_iter->disambiguate(*second_iter, prior_value, threshold);
 

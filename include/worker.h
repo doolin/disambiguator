@@ -12,7 +12,7 @@ class Worker : public Thread {
 
 /**
  * Private:
- *        map < string, ClusterInfo::cRecGroup >::iterator * ppdisambiged:
+ *        map < string, ClusterInfo::ClusterList >::iterator * ppdisambiged:
  *        the pointer to an iterator that is a cursor of progress of disambiguation.
  *
  *        const cRatios * pratios: the pointer to a cRatio object.
@@ -22,7 +22,7 @@ class Worker : public Thread {
  *        void run(): the overriding function of base class, implementing details of disambiguation in each thread.
  */
 private:
-    map < string, ClusterInfo::cRecGroup >::iterator * ppdisambiged;
+    map < string, ClusterInfo::ClusterList >::iterator * ppdisambiged;
     const cRatios * pratios;
     ClusterInfo & cluster_ref;
 
@@ -32,7 +32,7 @@ private:
 
 /**
  * Public:
- *         explicit Worker( map < string, ClusterInfo::cRecGroup >::iterator & input_pdisambiged,
+ *         explicit Worker( map < string, ClusterInfo::ClusterList >::iterator & input_pdisambiged,
                                             const cRatios & ratiosmap, ClusterInfo & inputcluster): constructor
  *        ~Worker(): destructor
  *        static void zero_count(): clear the variable "count" to zero
@@ -40,7 +40,7 @@ private:
  *
  */
 public:
-    explicit Worker( map < string, ClusterInfo::cRecGroup >::iterator & input_pdisambiged,
+    explicit Worker( map < string, ClusterInfo::ClusterList >::iterator & input_pdisambiged,
             const cRatios & ratiosmap,
             ClusterInfo & inputcluster
     ) : ppdisambiged(&input_pdisambiged), pratios(&ratiosmap), cluster_ref(inputcluster) {}
