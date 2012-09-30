@@ -562,8 +562,72 @@ get_initial_prior(const list<Cluster> & rg, bool debug_mode) {
 
 
 double
-adjust_prior(const ClusterInfo::ClusterList & rg, bool debug_mode) {
+ClusterInfo::adjust_prior(const ClusterInfo::ClusterList & rg,
+                          const string & block_identifier,
+                          double prior,
+                          bool debug_mode) {
 
+    //decompose the block_identifier string so as to
+    //get the frequency of each piece
+    size_t pos = 0, prev_pos = 0;
+    uint32_t seq = 0;
+    double final_factor = 0.0;
+    vector <double> factor_history;
+
+    // attention. the uninvolved index is subject
+    // to the blocking configuration. so even if
+    // mid name is not a blocking part, it should
+    // be in the configuration file.
+    // index for middlename, which is not involved in
+    // the adjustment. change to other trash value if disabled.
+    // TODO: This is too fragile, get rid of it some how.
+    const uint32_t uninvolved_index = 1; 
+
+    while (true) {
+        pos = block_identifier.find(cBlocking_Operation::delim, prev_pos );
+        if (pos == string::npos)
+            break;
+
+        string piece = block_identifier.substr( prev_pos, pos - prev_pos );
+        prev_pos = pos + cBlocking_Operation::delim.size();
+
+        // TODO: uninvolved_index is a hardwired parameter
+        if (seq == uninvolved_index) {
+            ++seq;
+            continue;
+        }
+
+        double factor = 1.0;
+        if (frequency_adjust_mode && max_occurrence.at(seq) != 0) {
+            factor = log (1.0 * max_occurrence.at(seq) / this->column_stat.at(seq)[piece]);
+            factor_history.push_back(factor);
+        }
+
+        /*
+        if (debug_mode) {
+            (*pfs) << '\n'
+                   << "Part: " << seq
+                   << " Max occurrence: " << max_occurrence.at(seq)
+                   << " Min occurrence: " << min_occurrence.at(seq)
+                   << " Self occurrence: " << this->column_stat.at(seq)[piece]
+                   << " Before adjustment: "<< prior << '\n';
+        }
+        */
+
+        final_factor = max_val(final_factor, factor);
+        ++seq;
+    }
+
+    if (final_factor <= 1) {
+        prior *= final_factor;
+    } else {
+        vector <double>::const_iterator pv = factor_history.begin();
+        for (; pv != factor_history.end(); ++pv)
+            if (*pv > 1)
+                prior *= *pv;
+    }
+
+    return prior;
 }
 
 

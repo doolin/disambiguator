@@ -240,6 +240,10 @@ private:
     const bool debug_mode;
     vector < double > thresholds;
 
+    double adjust_prior(const ClusterList & rg,
+                        const string & block_id,
+                        double prior,
+                        bool debug);
 
     class cException_Cluster_Error: public cAbstract_Exception {
     public:
