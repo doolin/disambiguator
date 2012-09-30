@@ -400,5 +400,8 @@ public:
 };
 
 
+double get_initial_prior(const list<Cluster> & rg, bool debug_mode);
+
+
 
 #endif /* PATENT_CLUSTERINFO_H */

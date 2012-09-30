@@ -40,7 +40,7 @@ private:
   static const cRatios * pratio;
 
  /**
-  * static const map < const Record *, RecordPList, cSort_by_attrib > * reference_pointer:
+  * static const map<const Record *, RecordPList, cSort_by_attrib> * reference_pointer:
   * a pointer that points to a patent tree, which can be obtained in
   * a cBlocking_Operation_By_Coauthor object.
   */
@@ -85,9 +85,9 @@ public:
   *  merge the "mergee" cluster into "*this", and set
   *  the cluster head of the new cluster to be info.
   */
-   void merge( Cluster & mergee, const ClusterHead & info);
+  void merge( Cluster & mergee, const ClusterHead & info);
 
- /**
+/**
   * ClusterHead disambiguate(const Cluster & rhs, const double prior,
   * const double mutual_threshold) const:
   *  disambiguate "*this" cluster with rhs cluster,
@@ -104,7 +104,9 @@ public:
 
   //const RecordPList & get_fellows() const:
   //get the members (actually it is reference to const) of the cluster.
-  const RecordPList & get_fellows() const {return m_fellows;}
+  const RecordPList & get_fellows() const {
+    return m_fellows;
+  }
 
   //const ClusterHead & get_cluster_head () const:
   //get the cluster head (const reference) of the cluster.
