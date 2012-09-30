@@ -407,11 +407,11 @@ Cluster::patents_gap(const Cluster & rhs) const {
 
   // ABS...? AYFKM...?
 	if (this->first_patent_year > rhs.last_patent_year)
-		x = this->first_patent_year - rhs.last_patent_year ;
+		x = this->first_patent_year - rhs.last_patent_year;
 	else if  (this->last_patent_year < rhs.first_patent_year)
-		x = rhs.first_patent_year - this->last_patent_year ;
+		x = rhs.first_patent_year - this->last_patent_year;
 
-	if ( x > 500 ) {
+	if (x > 500) {
 		throw cException_Other("Patent gap error.");
   }
 
@@ -447,7 +447,7 @@ Cluster::add_uid2uinv(Uid2UinvTree & uid2uinv ) const {
 	Uid2UinvTree::iterator q;
 
   RecordPList::const_iterator p = this->m_fellows.begin();
-	for (; p != m_fellows.end(); ++p ) {
+	for (; p != m_fellows.end(); ++p) {
 
 		q = uid2uinv.find(*p);
 		if (q != uid2uinv.end()) {
