@@ -23,72 +23,74 @@
 /*
  * Private:
  *
- *         const map <string, const Record*> * const uid2record_pointer: 
- *             The binary tree map.
- *             Key   = string of unique record id
- *             Value = the record pointer whose unique record id is the Key.
+ * const map <string, const Record*> * const uid2record_pointer: 
+ *     The binary tree map.
+ *     Key   = string of unique record id
+ *     Value = the record pointer whose unique record id is the Key.
+ 
+ * const bool is_matching:
+ *     a boolean indicating the status of the "this" object.
+ *     Now it is always set to true.
+ *     However, for future expandability, the variable is still kept.
+ 
+ * unsigned int total_num:
+ *     total_number of records. It is used to verify the completeness of "this" object.
  *
- *         const bool is_matching:
- *             a boolean indicating the status of the "this" object.
- *             Now it is always set to true.
- *             However, for future expandability, the variable is still kept.
+ * map < string, cRecGroup > cluster_by_block:
+ *     the binary tree map.
+ *     Key = blocking identifier.
+ *     Value = a list of clusters whose delegates' extracted information blocking string = Key.
  *
- *         unsigned int total_num:
- *             total_number of records. It is used to verify the completeness of "this" object.
+ * vector < map < string, unsigned int > > column_stat:
+ *     a vector of map:
+ *     Key   = extracted string part by a Blocking_Operation object,
+ *     Value = its occurrence. The vector stores the statistics for
+ *     all the separate parts by the blocking_operation object.
  *
- *         map < string, cRecGroup > cluster_by_block:
- *             the binary tree map.
- *             Key = blocking identifier.
- *             Value = a list of clusters whose delegates' extracted information blocking string = Key.
- *
- *         vector < map < string, unsigned int > > column_stat:
- *             a vector of map:
- *             Key   = extracted string part by a Blocking_Operation object,
- *             Value = its occurrence. The vector stores the statistics for
- *                     all the separate parts by the blocking_operation object.
- *
- *         map < const string *, list <double>  > prior_data:
- *             a binary map used to keep track of prior values.
- *             Key = pointer to the blocking id.
- *             Value = a list of double numbers that records the history of priors.
+ * map < const string *, list <double>  > prior_data:
+ *     a binary map used to keep track of prior values.
+ *     Key = pointer to the blocking id.
+ *     Value = a list of double numbers that records the history of priors.
  */
 
 /*
- *         map < const string *, bool > block_activity:
- *             a binary map used to check whether disambiguation
- *             within a certain block should occur.
- *             Key = pointer to the block id.
- *             Value = whether or not to disambiguate.
+ * map < const string *, bool > block_activity:
+ *     a binary map used to check whether disambiguation
+ *     within a certain block should occur.
+ *     Key = pointer to the block id.
+ *     Value = whether or not to disambiguate.
  *
- *         vector < unsigned int > max_occurrence:
- *             data collected from column_stat that stores the
- *             maximum occurrence of each blocking string part.
+ * vector < unsigned int > max_occurrence:
+ *     data collected from column_stat that stores the
+ *     maximum occurrence of each blocking string part.
+ */
+
+/**
+ * vector < unsigned int > max_occurrence:
+ *     data collected from column_stat that stores the
+ *     minimum occurrence of each blocking string part.
  *
- *         vector < unsigned int > max_occurrence:
- *             data collected from column_stat that stores the
- *             minimum occurrence of each blocking string part.
+ * string useless:
+ *     a string that stores only the delimiters of Blocking_Operation objects.
+ *     In other words, blocking id of such string has no information at all.
  *
- *         string useless:
- *             a string that stores only the delimiters of Blocking_Operation objects.
- *             In other words, blocking id of such string has no information at all.
+ * const bool frequency_adjust_mode:
+ *     whether to use frequency to adjust the prior of a certain block.
  *
- *         const bool frequency_adjust_mode:
- *             whether to use frequency to adjust the prior of a certain block.
+ * const bool debug_mode:
+ *     debug mode. In debug mode, only certain blocks will be
+ *     disambiguated, and the progress is printed.
  *
- *         const bool debug_mode:
- *             debug mode. In debug mode, only certain blocks will be
- *             disambiguated, and the progress is printed.
+ * vector < double > thresholds:
+ *     thresholds. The disambiguation is running in a progressive way,
+ *     so the threshold are expected to be
+ *     like [ 0.99, 0.98, 0.95, ...] in a descending manner.
  *
- *         vector < double > thresholds:
- *             thresholds. The disambiguation is running in a progressive way,
- *             so the threshold are expected to be
- *             like [ 0.99, 0.98, 0.95, ...] in a descending manner.
+ *class cException_Cluster_Error:
+ *    exception type used in ClusterInfo.
  *
- *        class cException_Cluster_Error:
- *            exception type used in ClusterInfo.
- *
- *        void config_prior():
- *            config the priori probabilities.
+ *void config_prior():
+ *    config the priori probabilities.
  */
 
 /*
