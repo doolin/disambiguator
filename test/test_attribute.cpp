@@ -137,6 +137,33 @@ public:
     describe_test(INDENT4, buffer);
     CPPUNIT_ASSERT(4 == similarity);
 
+    string n13s("MATTHEW");
+    cFirstname n13(n13s.c_str());
+    n13.split_string(n13s.c_str());
+
+    string n14s("MATTHEW T");
+    cFirstname n14(n14s.c_str());
+    n14.split_string(n14s.c_str());
+
+    string n15s("MATTHEW TALIN");
+    cFirstname n15(n15s.c_str());
+    n15.split_string(n15s.c_str());
+
+    similarity = n13.compare(n14);
+    sprintf(buffer, teststr, n13s.c_str(), n14s.c_str(), similarity);
+    describe_test(INDENT4, buffer);
+    CPPUNIT_ASSERT(4 == similarity);
+
+    similarity = n13.compare(n15);
+    sprintf(buffer, teststr, n13s.c_str(), n15s.c_str(), similarity);
+    describe_test(INDENT4, buffer);
+    CPPUNIT_ASSERT(4 == similarity);
+
+    similarity = n14.compare(n15);
+    sprintf(buffer, teststr, n14s.c_str(), n15s.c_str(), similarity);
+    describe_test(INDENT4, buffer);
+    CPPUNIT_ASSERT(4 == similarity);
+
   }
 
 
@@ -309,6 +336,32 @@ public:
     describe_test(INDENT4, buffer);
     CPPUNIT_ASSERT(3 == similarity);
 
+    string e13s("MATTHEW");
+    cMiddlename e13(e13s.c_str());
+    e13.split_string(e13s.c_str());
+
+    string e14s("MATTHEW T");
+    cMiddlename e14(e14s.c_str());
+    e14.split_string(e14s.c_str());
+
+    string e15s("MATTHEW TALIN");
+    cMiddlename e15(e15s.c_str());
+    e15.split_string(e15s.c_str());
+
+    similarity = e13.compare(e14);
+    sprintf(buffer, teststr, e13s.c_str(), e14s.c_str(), similarity);
+    describe_test(INDENT4, buffer);
+    CPPUNIT_ASSERT(1 == similarity);
+
+    similarity = e13.compare(e15);
+    sprintf(buffer, teststr, e13s.c_str(), e15s.c_str(), similarity);
+    describe_test(INDENT4, buffer);
+    CPPUNIT_ASSERT(1 == similarity);
+
+    similarity = e14.compare(e15);
+    sprintf(buffer, teststr, e14s.c_str(), e15s.c_str(), similarity);
+    describe_test(INDENT4, buffer);
+    CPPUNIT_ASSERT(3 == similarity);
 
     delete foobar;
   }
@@ -428,6 +481,20 @@ Totally different names:
 
     similarity = l12.compare(l12);
     sprintf(buffer, teststr, l12s.c_str(), l12s.c_str(), similarity);
+    describe_test(INDENT4, buffer);
+    CPPUNIT_ASSERT(5 == similarity);
+
+    //MARX with MARX
+    string l14s("MARX");
+    cLastname l14(l14s.c_str());
+    l14.split_string(l14s.c_str());
+
+    string l15s("MARX");
+    cLastname l15(l15s.c_str());
+    l15.split_string(l15s.c_str());
+
+    similarity = l14.compare(l15);
+    sprintf(buffer, teststr, l14s.c_str(), l15s.c_str(), similarity);
     describe_test(INDENT4, buffer);
     CPPUNIT_ASSERT(5 == similarity);
 
@@ -559,10 +626,10 @@ Totally different names:
 
 
   void runTest() {
-    //compare_firstname();
-    //compare_middlename();
-    //compare_lastname();
-    compare_assignee();
+    compare_firstname();
+    compare_middlename();
+    compare_lastname();
+    //compare_assignee();
     compare_class();
     compare_coauthor();
     compare_distance();
