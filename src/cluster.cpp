@@ -561,15 +561,6 @@ ClusterInfo::get_prior_value(const string & block_identifier,
     static const double prior_max = 0.95;
     static const double prior_default = 1e-6;
 
-    //attention. the uninvolved index is subject
-    //to the blocking configuration. so even if
-    //mid name is not a blocking part, it should
-    //be in the configuration file.
-    //index for middlename, which is not involved in
-    //the adjustment. change to other trash value if disabled.
-    // TODO: This is too fragile, get rid of it some how.
-    const uint32_t uninvolved_index = 1; 
-
     std::ofstream * pfs = NULL;
     if (debug_mode) {
         pfs = new std::ofstream ("prior_debug.txt");
@@ -600,6 +591,7 @@ ClusterInfo::get_prior_value(const string & block_identifier,
     if (prior == 0)
         prior = prior_default;
 
+    ///////////////////////////////////
     // TODO: Refactor this block
     //decompose the block_identifier string so as to
     //get the frequency of each piece
@@ -607,6 +599,15 @@ ClusterInfo::get_prior_value(const string & block_identifier,
     uint32_t seq = 0;
     double final_factor = 0.0;
     vector <double> factor_history;
+
+    // attention. the uninvolved index is subject
+    // to the blocking configuration. so even if
+    // mid name is not a blocking part, it should
+    // be in the configuration file.
+    // index for middlename, which is not involved in
+    // the adjustment. change to other trash value if disabled.
+    // TODO: This is too fragile, get rid of it some how.
+    const uint32_t uninvolved_index = 1; 
 
     while (true) {
         pos = block_identifier.find(cBlocking_Operation::delim, prev_pos );
@@ -649,6 +650,7 @@ ClusterInfo::get_prior_value(const string & block_identifier,
             if (*pv > 1)
                 prior *= *pv;
     }
+    /////////// End of refactoring ////////////////
 
     if (debug_mode)
         (*pfs) << " After adjustment: " << prior << '\n';
