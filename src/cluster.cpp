@@ -535,6 +535,9 @@ get_initial_prior(const list<Cluster> & rg, bool debug_mode) {
 
     double numerator = 0;
     uint32_t tt = 0;
+    // TODO: Move to headerfile as #define,
+    // then as class variables which can be initialized
+    // as a result of configuration.
     static const double prior_default = 1e-6;
 
     list<Cluster>::const_iterator q = rg.begin();
@@ -658,11 +661,6 @@ double
 ClusterInfo::get_prior_value(const string & block_identifier,
                              const list <Cluster> & rg) {
 
-    // TODO: Move these to headerfile as #define,
-    // then as class variables which can be initialized
-    // as a result of configuration.
-    static const double prior_max = 0.95;
-
     std::ofstream * pfs = NULL;
     if (debug_mode) {
         pfs = new std::ofstream ("prior_debug.txt");
@@ -674,6 +672,9 @@ ClusterInfo::get_prior_value(const string & block_identifier,
 #if 1
     double numerator = 0;
     uint32_t tt = 0;
+    // TODO: Move to headerfile as #define,
+    // then as class variables which can be initialized
+    // as a result of configuration.
     static const double prior_default = 1e-6;
 
     list<Cluster>::const_iterator q = rg.begin();
@@ -706,6 +707,7 @@ ClusterInfo::get_prior_value(const string & block_identifier,
     ////////////////////////////////////////////////////////
     // TODO: Refactor this block
 #if 1
+
     //decompose the block_identifier string so as to
     //get the frequency of each piece
     size_t pos = 0, prev_pos = 0;
@@ -765,11 +767,16 @@ ClusterInfo::get_prior_value(const string & block_identifier,
     }
     /////////// End of refactoring /////////////////////////////////////
 #else
-    prior = adjust_prior();
+    prior = adjust_prior(rg, block_identifier, prior, debug_mode);
 #endif
 
     if (debug_mode)
         (*pfs) << " After adjustment: " << prior << '\n';
+
+    // TODO: Move to headerfile as #define,
+    // then as class variables which can be initialized
+    // as a result of configuration.
+    static const double prior_max = 0.95;
 
     if (prior > prior_max) prior = prior_max;
 
