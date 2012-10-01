@@ -4,6 +4,8 @@
 source ./bashcolors.sh
 initializeANSI
 
+./clusterinfo
+
 echo "Fetch records test"
 ./fetchrecords
 
