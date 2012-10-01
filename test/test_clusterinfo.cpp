@@ -25,6 +25,11 @@ private:
 public:
   ClusterInfoTest(std::string name) : CppUnit::TestCase(name) {
     describe_test(INDENT0, name.c_str());
+    requested_columns.push_back(string("Firstname"));
+    requested_columns.push_back(string("Lastname"));
+    requested_columns.push_back(string("Middlename"));
+    requested_columns.push_back(string("Assignee"));
+    requested_columns.push_back(string("AsgNum"));
   }
 
   void load_fake_data() {
@@ -32,9 +37,6 @@ public:
     describe_test(INDENT2, "Loading fake data for clustering...");
 
     const char * filename = "testdata/clustertest.csv";
-    requested_columns.push_back(string("Firstname"));
-    requested_columns.push_back(string("Lastname"));
-    requested_columns.push_back(string("Middlename"));
     bool successful = fetch_records_from_txt(source, filename, requested_columns);
 
     if (not successful)
@@ -43,6 +45,9 @@ public:
 
 
   void create_cluster() {
+
+    describe_test(INDENT2, "Creating clusters...");
+
     Attribute::register_class_names(get_column_names());
     Record * r = make_quuxalot_record();
     ClusterHead ch(r, 0.9953);
