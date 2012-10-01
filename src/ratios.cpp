@@ -7,17 +7,20 @@
 
 const char * cRatios::primary_delim = "#";
 const char * cRatios::secondary_delim = ",";
+// TODO: Use #define LAPLACE_BASE 5 instead
 const uint32_t cRatioComponent::laplace_base = 5;
 
 
 vector<uint32_t>
 get_max_similarity(const vector<string> & attrib_names)  {
 
+  // TODO: SimilarityProfile sp;
     vector<uint32_t> sp;
 
     vector<string>::const_iterator p = attrib_names.begin();
     for (; p != attrib_names.end(); ++p) {
-        const Attribute * pAttrib = Record::get_sample_record().get_attrib_pointer_by_index(Record::get_index_by_name(*p));
+        const Attribute * pAttrib = Record::get_sample_record().
+                                    get_attrib_pointer_by_index(Record::get_index_by_name(*p));
         const uint32_t max_entry = pAttrib->get_attrib_max_value();
         sp.push_back(max_entry);
     }
@@ -213,6 +216,9 @@ cRatioComponent::prepare(const char * x_file,
     sp_stats(x_list, x_counts);
     sp_stats(m_list, m_counts);
 
+
+    //////////////////////////////
+    // TODO: Refactor into a laplace correction function.
     std::cout << "Before LAPLACE CORRECTION: " << std::endl;
     std::cout << "Size of non-match pair list = " << x_list.size() << std::endl;
     std::cout << "Size of match pair list = " << m_list.size() << std::endl;
@@ -223,12 +229,13 @@ cRatioComponent::prepare(const char * x_file,
     // laplace correction
     SPCountsIndex::const_iterator p, q;
     const uint32_t count_to_consider = 100;
+    //set <SimilarityProfile, SimilarityCompare > all_possible;
     set <vector<uint32_t>, SimilarityCompare > all_possible;
 
     for (p = x_counts.begin(); p != x_counts.end(); ++p) {
 
         if (m_counts.find(p->first) == m_counts.end() &&
-            p->second < count_to_consider ) {
+            p->second < count_to_consider) {
             continue;
         } else {
             all_possible.insert(p->first);
@@ -238,15 +245,15 @@ cRatioComponent::prepare(const char * x_file,
     for (p = m_counts.begin(); p != m_counts.end(); ++p) {
 
         if (x_counts.find(p->first) == x_counts.end() &&
-            p->second < count_to_consider ) {
+            p->second < count_to_consider) {
             continue;
         } else {
             all_possible.insert(p->first);
         }
     }
 
+    //set<SimilarityProfile, SimilarityCompare >::const_iterator ps = all_possible.begin();
     set<vector<uint32_t>, SimilarityCompare >::const_iterator ps = all_possible.begin();
-
     for (; ps != all_possible.end(); ++ps) {
 
         SPCountsIndex::iterator p = x_counts.find(*ps);
@@ -270,6 +277,10 @@ cRatioComponent::prepare(const char * x_file,
     std::cout << "Match unique profile number = " << m_counts.size() << std::endl;
     //ratios = count of match / count of non-match;
 
+    /////////////  End refactoring //////////
+
+    // //////////////////////////////////////////
+    // TODO: Refactor this into `create_counts` or something similar.
     uint32_t num_xcount_without_mcount = 0;
     uint32_t num_mcount_without_xcount = 0;
 
@@ -282,7 +293,10 @@ cRatioComponent::prepare(const char * x_file,
                 (p->first, 1.0 * q->second / p->second));
         }
     }
+    //////////// End refactor
 
+    //////////////////
+    // TODO: Refactor
     SPCountsIndex::iterator pp = x_counts.begin();
     for (; pp != x_counts.end(); ) {
 
@@ -325,6 +339,7 @@ cRatioComponent::prepare(const char * x_file,
                   << " match similarity profiles that are not available in non-match ones."
                   << std::endl;
     }
+    /////////////////// End refactor
 
     smooth();
     similarity_map.clear();
