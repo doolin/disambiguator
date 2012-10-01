@@ -12,6 +12,7 @@
 #include <cluster.h>
 #include <clusterinfo.h>
 #include <training.h>
+#include <ratios.h>
 
 #include "testdata.h"
 #include "testutils.h"
@@ -23,6 +24,7 @@ private:
 
   list<Record> source;
   vector<string> requested_columns;
+  RecordPList record_pointers;
 
 public:
   ClusterInfoTest(std::string name) : CppUnit::TestCase(name) {
@@ -30,8 +32,10 @@ public:
     requested_columns.push_back(string("Firstname"));
     requested_columns.push_back(string("Lastname"));
     requested_columns.push_back(string("Middlename"));
+    requested_columns.push_back(string("Patent"));
     requested_columns.push_back(string("Assignee"));
     requested_columns.push_back(string("AsgNum"));
+    requested_columns.push_back(string("Unique_Record_ID"));
   }
 
   void load_fake_data() {
@@ -43,6 +47,25 @@ public:
 
     if (not successful)
       exit(-1);
+
+    create_record_plist(source, record_pointers);
+
+    map<string, const Record *> uid_dict;
+    const string uid_identifier = cUnique_Record_ID::static_get_class_name();
+    create_btree_uid2record_pointer(uid_dict, source, uid_identifier);
+
+    bool matching_mode         = true;
+    bool frequency_adjust_mode = false;
+    bool debug_mode            = false;
+    ClusterInfo match(uid_dict, matching_mode, frequency_adjust_mode, debug_mode);
+
+    const uint32_t num_coauthors_to_group = 2;
+    cBlocking_Operation_By_Coauthors blocker_coauthor(record_pointers, num_coauthors_to_group);
+
+    vector<string> comparators;
+    comparators.push_back("Firstname");
+    comparators.push_back("Lastname");
+    Record::activate_comparators_by_name(comparators);
   }
 
 
@@ -55,8 +78,9 @@ public:
     ClusterHead ch(r, 0.9953);
     RecordPList rl = get_record_list();
     cBlocking_Operation_By_Coauthors  blocker_coauthor = get_blocker_coathor();
-    Cluster::set_reference_patent_tree_pointer( blocker_coauthor.get_patent_tree());
+    Cluster::set_reference_patent_tree_pointer(blocker_coauthor.get_patent_tree());
     //Cluster * c = new Cluster(ch, rl);
+    //Cluster * c = new Cluster(ch, record_pointers);
     //delete c;
   }
 
