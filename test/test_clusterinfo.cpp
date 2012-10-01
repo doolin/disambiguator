@@ -10,6 +10,8 @@
 #include <disambiguation.h>
 #include <engine.h>
 #include <cluster.h>
+#include <clusterinfo.h>
+#include <training.h>
 
 #include "testdata.h"
 #include "testutils.h"
@@ -58,10 +60,20 @@ public:
     //delete c;
   }
 
+  void test_get_initial_prior() {
+
+    describe_test(INDENT2, "Testing get_initial_prior");
+
+    ClusterInfo::ClusterList rg;
+    double prior = get_initial_prior(rg, false);
+
+    std::cout << "prior: " << prior << std::endl;
+  }
 
   void runTest() {
     load_fake_data();
     create_cluster();
+    test_get_initial_prior();
   }
 };
 
