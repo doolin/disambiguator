@@ -128,7 +128,7 @@ public:
     rg.push_back(c2);
 
     double prior = get_initial_prior(rg, false);
-    std::cout << "prior: " << prior << std::endl;
+    //std::cout << "prior: " << prior << std::endl;
 
     CPPUNIT_ASSERT ((0.333333-prior) < 0.00001);
 

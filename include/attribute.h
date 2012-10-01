@@ -582,11 +582,14 @@ public:
 
     static void static_deactivate_comparator() {
 
-        if ( attrib_group == INERT_ATTRIB_GROUP_IDENTIFIER ) return;
+        if (attrib_group == INERT_ATTRIB_GROUP_IDENTIFIER)
+          return;
 
         bool_comparator_activated = false;
+       /*
         std::cout << static_get_class_name()
                   << " comparison is deactivated." << std::endl;
+        */
         Record_update_active_similarity_names() ;
     }
 

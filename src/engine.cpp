@@ -487,14 +487,14 @@ fetch_records_from_txt(list <Record> & source,
 
     // TODO: Move to its own function, get it covered
     // with a unit test, call it from somewhere else.
-    std::cout << "Polymorphic data types are: ";
+    //std::cout << "Polymorphic data types are: ";
     vector <string> string_cache(num_cols);
     const uint32_t string_cache_size = 2048;
     for (uint32_t i = 0; i < num_cols; ++i) {
         string_cache.at(i).reserve(string_cache_size);
     }
 
-    std::cout << "Reading " << txt_file << " ......"<< std::endl;
+    //std::cout << "Reading " << txt_file << " ......"<< std::endl;
 
     unsigned long size = 0;
     const uint32_t base  =  100000;
@@ -505,7 +505,7 @@ fetch_records_from_txt(list <Record> & source,
     // Extracts characters from ifstream (instream) and stores them 
     // into a string (line) until a delimitation character is found.
     // In this case, since a delimiter isn't given, it's assumed to be \n.
-    std::cout << "Reading input data file..." << std::endl;
+    //std::cout << "Reading input data file..." << std::endl;
     // TODO: Move all this to its own function
     while (getline(instream, line)) {
 
@@ -570,8 +570,8 @@ fetch_records_from_txt(list <Record> & source,
         }
     }
 
-    std::cout << std::endl;
-    std::cout << size << " records have been fetched from "<< txt_file << std::endl;
+    //std::cout << std::endl;
+    //std::cout << size << " records have been fetched from "<< txt_file << std::endl;
 
     // TODO: This thing evidently is some sort of "insta-record" for
     // handiness elsewhere in the code.

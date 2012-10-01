@@ -31,9 +31,11 @@ ClusterInfo::ClusterInfo(const map <string, const Record*> & input_uid2record,
                            is_matching(input_is_matching),
                            frequency_adjust_mode(aum), debug_mode(debug) {
 
+   /*
     std::cout << "A cluster information class is set up." << std::endl;
     std::cout << "FREQUENCY_ADJUST_PRIOR_MODE: " << (frequency_adjust_mode ? "ON" : "OFF")
               << "       DEBUG MODE: " << (debug_mode ? "ON" : "OFF") << std::endl;
+    */
 } ;
 
 
