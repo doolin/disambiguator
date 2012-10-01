@@ -25,8 +25,11 @@ private:
   list<Record> source;
   vector<string> requested_columns;
   RecordPList record_pointers;
+  vector<Record *> rpv;
+
 
 public:
+
   ClusterInfoTest(std::string name) : CppUnit::TestCase(name) {
     describe_test(INDENT0, name.c_str());
     requested_columns.push_back(string("Firstname"));
@@ -66,6 +69,14 @@ public:
 
     const uint32_t num_coauthors_to_group = 2;
     cBlocking_Operation_By_Coauthors blocker_coauthor(record_pointers, num_coauthors_to_group);
+
+    //cBlocking_Operation_By_Coauthors  blocker_coauthor = get_blocker_coathor();
+    Cluster::set_reference_patent_tree_pointer(blocker_coauthor.get_patent_tree());
+
+    list<Record>::iterator i = source.begin();
+    for (; i != source.end(); ++i) {
+      rpv.push_back(&(*i));
+    }
 
     vector<string> comparators;
     comparators.push_back("Firstname");
