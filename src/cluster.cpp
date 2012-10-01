@@ -388,20 +388,21 @@ ClusterInfo::print(std::ostream & os) const {
     const uint32_t uid_index = Record::get_index_by_name(uid_name);
     static const cException_Vector_Data except(uid_name.c_str());
 
-    for ( map <string, ClusterList >::const_iterator q = cluster_by_block.begin(); q != cluster_by_block.end(); ++q ) {
-        for ( ClusterList::const_iterator p = q->second.begin(); p != q->second.end(); ++p ) {
+    // TODO: Some easy cleanup.
+    for (map<string, ClusterList >::const_iterator q = cluster_by_block.begin(); q != cluster_by_block.end(); ++q) {
+        for (ClusterList::const_iterator p = q->second.begin(); p != q->second.end(); ++p) {
             const Attribute * key_pattrib = p->get_cluster_head().m_delegate->get_attrib_pointer_by_index(uid_index);
             os << * key_pattrib->get_data().at(0) << primary_delim;
 
             double cohesion_value;
-            if ( is_matching )
+            if (is_matching)
                 cohesion_value = p->get_cluster_head().m_cohesion;
             else
                 cohesion_value = 0;
 
             os << cohesion_value << primary_delim;
 
-            for ( RecordPList::const_iterator q = p->get_fellows().begin(); q != p->get_fellows().end(); ++q ) {
+            for (RecordPList::const_iterator q = p->get_fellows().begin(); q != p->get_fellows().end(); ++q) {
                 const Attribute * value_pattrib = (*q)->get_attrib_pointer_by_index(uid_index);
                 os << * value_pattrib->get_data().at(0) << secondary_delim;
             }
@@ -767,7 +768,7 @@ ClusterInfo::get_prior_value(const string & block_identifier,
 
         if (debug_mode) {
             (*pfs) << '\n'
-                   << "Part: " << seq
+                   << " Part: " << seq
                    << " Max occurrence: " << max_occurrence.at(seq)
                    << " Min occurrence: " << min_occurrence.at(seq)
                    << " Self occurrence: " << this->column_stat.at(seq)[piece]
@@ -855,15 +856,16 @@ ClusterInfo::disambiguate(const cRatios & ratio,
 
     output_prior_value(prior_to_save);
 
-
+    ////////////////////////////////////////////
+    // Refactor into its own logging function.
     uint32_t max_inventor = 0;
     const Cluster * pmax = NULL;
 
     map<string, ClusterList >::const_iterator p = cluster_by_block.begin();
     for (; p != cluster_by_block.end(); ++p) {
         const ClusterList & galias = p->second;
-
-        for ( ClusterList::const_iterator q = galias.begin(); q != galias.end(); ++q ) {
+        ClusterList::const_iterator q = galias.begin();
+        for (; q != galias.end(); ++q ) {
             const uint32_t t = q->get_fellows().size();
 
             if (t > max_inventor) {
@@ -881,6 +883,8 @@ ClusterInfo::disambiguate(const cRatios & ratio,
               << "." << * pmax->get_cluster_head().m_delegate->get_data_by_index(li).at(0)
               << "  ID = " << * pmax->get_cluster_head().m_delegate->get_data_by_index(ui).at(0)
               << ". Size = " << max_inventor << std::endl;
+    //////////////// End refactor /////////////////////////
+
 }
 
 
@@ -1080,27 +1084,28 @@ ClusterInfo::disambiguate_by_block(ClusterList & to_be_disambiged_group,
     ClusterList::iterator first_iter, second_iter;
     const double prior_value = prior_list.back();
 
-    for ( first_iter = to_be_disambiged_group.begin(); first_iter != to_be_disambiged_group.end(); ++first_iter) {
+    first_iter = to_be_disambiged_group.begin();
+    for (; first_iter != to_be_disambiged_group.end(); ++first_iter) {
         second_iter = first_iter;
-        for ( ++second_iter; second_iter != to_be_disambiged_group.end(); ) {
+        for (++second_iter; second_iter != to_be_disambiged_group.end();) {
 
             // TODO: Find out where the ClusterList->iterator->disambiguate callback is set.
             // The iterator points to a Cluster object.
             ClusterHead result = first_iter->disambiguate(*second_iter, prior_value, threshold);
 
             // TODO: move the NULL delegate check to the debug function.
-            if ( debug_mode && result.m_delegate != NULL) {
+            if (debug_mode && result.m_delegate != NULL) {
                 this->debug_disambiguation_loop(first_iter, second_iter, prior_value, result);
             }
 
             // TODO: Well, this looks like a pretty critical piece of code...
             // merging clusters and stuff. A likely candidate for unit testing.
-            if ( result.m_delegate != NULL ) {
+            if (result.m_delegate != NULL) {
                 first_iter->merge(*second_iter, result);
                 to_be_disambiged_group.erase( second_iter++ );
-            }
-            else
+            } else {
                 ++second_iter;
+            }
         }
     }
 
