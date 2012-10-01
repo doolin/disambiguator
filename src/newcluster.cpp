@@ -18,10 +18,15 @@ Cluster::Cluster(const ClusterHead & info, const RecordPList & fellows)
   // amazingly bad practice. If this class **NEEDS** this static member
   // set as a precondition, then the class is designed WRONG. By definition,
   // WRONG. This is WRONG DESIGN.
+  // TODO: Find out why and where patent tree reference pointer is needed,
+  // why it's used, and figure out a way to get rid of this exception.
 	if (NULL == reference_pointer) {
 		throw cException_Other("Critical Error: Patent tree reference pointer is not set yet.");
   }
 
+  // TODO: Refactor all this into an init() method (or init_private)
+  // such that it can be called from this constructor, and possibly
+  // as its own method.
 	this->first_patent_year = invalid_year;
 	this->last_patent_year = invalid_year;
   // This is also wrong design. Don't do work in constructors. Not ever.
@@ -290,13 +295,15 @@ Cluster::self_repair() {
  * Aim: to find a representative/delegate for a cluster.
  *
  * Algorithm: for each specified column, build a binary map of
- * const Attribute pointer -> uint32_t ( as a counter).
+ * const Attribute pointer -> uint32_t (as a counter).
  * Then traverse the whole cluster and fill in the counter.
  * Finally, get the most frequent.
  */
 void
 Cluster::find_representative()  {
 
+  // TODO: This smells like something which ought to be in
+  // a configuration variable.
 	static const string useful_columns[] = {
     cFirstname::static_get_class_name(),
     cMiddlename::static_get_class_name(),
@@ -308,32 +315,39 @@ Cluster::find_representative()  {
   };
 
 	static const uint32_t nc = sizeof(useful_columns)/sizeof(string);
-	vector < map < const Attribute *, uint32_t > > tracer( nc );
-	vector < uint32_t > indice;
+	vector<map<const Attribute *, uint32_t> > tracer(nc);
+  // TODO: Rename this to "local_index" or something.
+	vector<uint32_t> indice;
 
-	for ( uint32_t i = 0; i < nc; ++i )
-		indice.push_back ( Record::get_index_by_name( useful_columns[i]));
+	for (uint32_t i = 0; i < nc; ++i)
+		indice.push_back(Record::get_index_by_name(useful_columns[i]));
 
-	for ( RecordPList::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p ) {
-		for ( uint32_t i = 0 ; i < nc; ++i ) {
+	for (RecordPList::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p) {
+		for (uint32_t i = 0 ; i < nc; ++i) {
 			const Attribute * pA = (*p)->get_attrib_pointer_by_index(indice.at(i));
-			++ tracer.at(i)[pA];
+			++tracer.at(i)[pA];
 		}
 	}
 
-	vector < const Attribute * > most;
-	for ( uint32_t i = 0; i < nc ; ++i ) {
+
+  // TODO: Refactor this block.
+	vector<const Attribute *> most;
+	for (uint32_t i = 0; i < nc ; ++i) {
+
 		const Attribute * most_pA = NULL;
 		uint32_t most_cnt = 0;
-		for ( map < const Attribute *, uint32_t >::const_iterator p = tracer.at(i).begin(); p != tracer.at(i).end(); ++p ) {
-			if ( p->second > most_cnt ) {
+
+		for (map < const Attribute *, uint32_t >::const_iterator p = tracer.at(i).begin(); p != tracer.at(i).end(); ++p) {
+			if (p->second > most_cnt) {
 				most_cnt = p->second;
 				most_pA = p->first;
 			}
 		}
-		most.push_back( most_pA );
+		most.push_back(most_pA);
 	}
+  ///////////////////// End refactor
 
+  // TODO: Refactor into max_attribute_count or something
 	uint32_t m_cnt = 0;
 	const Record * mp = NULL;
 	for (RecordPList::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p) {
@@ -350,6 +364,8 @@ Cluster::find_representative()  {
 			mp = *p;
 		}
 	}
+  // return mp;// from refactor
+  // /// End refactor
 
 	this->m_info.m_delegate = mp;
 }
@@ -367,7 +383,8 @@ Cluster::update_year_range() {
     // This is segfaulting on test data
 		const string * py = pAttribYear->get_data().at(0);
 		uint32_t year = atoi ( py->c_str());
-		if ( year > 2100 || year < 1500 ) {
+
+		if (year > 2100 || year < 1500) {
 			//(*p)->print();
 			//throw cException_Other("Application year error.");
 			continue;
@@ -426,17 +443,20 @@ Cluster::update_locations() {
 	static const uint32_t latindex = Record::get_index_by_name(cLatitude::static_get_class_name());
 
   RecordPList::const_iterator p = this->m_fellows.begin();
-	for (; p != this->m_fellows.end(); ++p ) {
+	for (; p != this->m_fellows.end(); ++p) {
 
 		const Attribute * pA = (*p)->get_attrib_pointer_by_index(latindex);
-		const cLatitude * pAttribLat = dynamic_cast< const cLatitude *> ( pA );
+		const cLatitude * pAttribLat = dynamic_cast< const cLatitude *>(pA);
 
 		if (pAttribLat == 0) {
 			(*p)->print();
 			std::cerr << "Data type is " << typeid(*pA).name() << std::endl;
 			throw cException_Other("bad cast from cAttrib to cLatitude. Cluster::update_location error.");
 		}
-		if (pAttribLat->is_informative()) locs.insert(pAttribLat);
+
+		if (pAttribLat->is_informative())
+      locs.insert(pAttribLat);
+
 	}
 }
 
