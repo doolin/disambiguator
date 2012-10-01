@@ -12,28 +12,28 @@
 
 \section{Overview}
 
-The source code is an implementation of authorship 
+The source code is an implementation of authorship
 disambiguation algorithm described by Vetle
-Torvik et al 2009. While it is originally designed 
+Torvik et al 2009. While it is originally designed
 for the disambiguation of inventors in the United
-States Patent and Trademark Office (USPTO) database, 
+States Patent and Trademark Office (USPTO) database,
 minor modifications in the source file can
 provide solutions for problems of the similar kind.
 
-The algorithm uses Bayesian theorem to calculate the 
+The algorithm uses Bayesian theorem to calculate the
 probability of match between two records based
-on the comparison between the two records in significant 
-attributes such as names, geographical location and companies, 
+on the comparison between the two records in significant
+attributes such as names, geographical location and companies,
 etc. The algorithm includes three major steps: 1. Blocking,
-2. Training, and 3. Disambiguation.  The details of each 
+2. Training, and 3. Disambiguation.  The details of each
 step are described in the following sections.
 
-The source code is written in C++ and uses many features 
-of C++, such as polymorphism, template, STL library, etc. 
-Therefore, a fairly good understanding of C++ is expected 
-to fully understand the code. The code also outsources 
+The source code is written in C++ and uses many features
+of C++, such as polymorphism, template, STL library, etc.
+Therefore, a fairly good understanding of C++ is expected
+to fully understand the code. The code also outsources
 IBM CPLEX for quadratic programming. Import and export of the
-disambiguation result may need some APIs of SQL/SQLite. 
+disambiguation result may need some APIs of SQL/SQLite.
 The code is compiled in Linux by GNU gcc/g++/make.
 
 
@@ -52,94 +52,94 @@ The code is compiled in Linux by GNU gcc/g++/make.
 
 
 
-This is a schematic of the whole disambiguation process. 
+This is a schematic of the whole disambiguation process.
 Each array represents one step, with the
-square box of identical color representing the source 
+square box of identical color representing the source
 code files that implements the step, and the round
-box of identical color representing the necessary 
+box of identical color representing the necessary
 definitions of relevant classes and/or functions.
 
 
 The disambiguation is an iterative process: 
 the result of previous disambiguation serves as the input of
-the next round disambiguation. For each round of disambiguation, 
+the next round disambiguation. For each round of disambiguation,
 there are three major steps: blocking, training and disambiguation.
 
 \subsection{Blocking}
 
-Blocking of records is the first step of disambiguation. 
+Blocking of records is the first step of disambiguation.
 The whole point of blocking is to avoid most
-unnecessary comparisons without much accuracy loss. Records 
+unnecessary comparisons without much accuracy loss. Records
 of similar attributes are blocked
-together since they are likely to be a match. Because the 
+together since they are likely to be a match. Because the
 aim of disambiguation is individual inventors,
-the most significant attributes – names – are 
+the most significant attributes – names – are
 usually adopted as the blocking rules. It is critical to
-remember that ONLY records within the same blocks are 
+remember that ONLY records within the same blocks are
 compared and thus disambiguated.
 
 
-Iterative blocking in a permissive way is applied in the 
-disambiguation, because it is assumed that after each round 
-of disambiguation, blocks are well disambiguated and thus 
-similar and/or more stringent blockings are meaningless. 
-For example, the first round of blocking is exact 
-first names + exact last names, the second can 
-be first 5 characters of first names + first 8 characters 
-of last names, and the third round can be first 
+Iterative blocking in a permissive way is applied in the
+disambiguation, because it is assumed that after each round
+of disambiguation, blocks are well disambiguated and thus
+similar and/or more stringent blockings are meaningless.
+For example, the first round of blocking is exact
+first names + exact last names, the second can
+be first 5 characters of first names + first 8 characters
+of last names, and the third round can be first
 3 characters of first names + first 5 characters of last names.
 
 
 \subsection{Training}
 
-The point of training is to obtain the ratios database for 
+The point of training is to obtain the ratios database for
 similarity profiles based on training sets.
 
 \subsubsection{Similarity Profiles}
 
-Similarity profiles are defined as multi-dimensional variables 
-that describe the similarity of two records. Each record has 
-many attributes, such as first name, last name, assignee, street, 
-city, country, etc. Similarity profiles are selected attributes 
-that are believed to be influential in pairwise comparisons; thus, 
-they are decided by users and can be different in each round of 
-disambiguation. For example, similarity profiles in the first round 
-of disambiguation can be “first name + last name + assignee + 
-city”, while those in the second round can be “ last name + 
-assignee + street ”. Each attribute in a similarity profile is 
+Similarity profiles are defined as multi-dimensional variables
+that describe the similarity of two records. Each record has
+many attributes, such as first name, last name, assignee, street,
+city, country, etc. Similarity profiles are selected attributes
+that are believed to be influential in pairwise comparisons; thus,
+they are decided by users and can be different in each round of
+disambiguation. For example, similarity profiles in the first round
+of disambiguation can be “first name + last name + assignee +
+city”, while those in the second round can be “ last name +
+assignee + street ”. Each attribute in a similarity profile is
 given a score to evaluate the similarity of the attribute from the
-comparison of the two records. The score is discrete and is usually 
-non-negative integers. Scoring of each attribute is totally 
+comparison of the two records. The score is discrete and is usually
+non-negative integers. Scoring of each attribute is totally
 user-defined, and, conceptually, has to be fully understood by users.
-Similarity profiles refer to the multi-dimensional integers obtained 
+Similarity profiles refer to the multi-dimensional integers obtained
 from the comparison.
 
 
 
 \subsubsection{Training sets}
 
-Training sets contain pairs of records that are believed 
+Training sets contain pairs of records that are believed
 with high confidence to be either match or
-non-match. In the USPTO patent inventor disambiguation, 
+non-match. In the USPTO patent inventor disambiguation,
 there are four training sets:
 
 \begin{enumerate}
 
-\item match pairs to train personal information based 
-on patent information: this set is created by selecting 
-record pairs belonging to the same blocks and having at 
+\item match pairs to train personal information based
+on patent information: this set is created by selecting
+record pairs belonging to the same blocks and having at
 least two common coauthors.
 
-\item non-match pairs to train personal information based 
+\item non-match pairs to train personal information based
 on patent information: this set is created by
-selecting record pairs that share the same patent id but 
+selecting record pairs that share the same patent id but
 different author sequence of that patent.
 
-\item match pairs to train patent information based on 
+\item match pairs to train patent information based on
 personal information: this set is created by
 selecting record pairs that share exact rare names.
 
-\item non-match pairs to train patent information based on 
+\item non-match pairs to train patent information based on
 personal information: this set is created by
 selecting record pairs whose names are both rare and different.
 
@@ -149,24 +149,24 @@ selecting record pairs whose names are both rare and different.
 \subsubsection{Ratios database}
 
 
-The ratio value of a given similarity profile, or R-value, 
-is defined as the frequency of the similarity profile in the 
-match set divided by the frequency of the same similarity 
-profile in the non-match set. Ratios database, therefore, 
-is the mapping of all possible similarity profiles to 
-their corresponding r-values. In the patent disambiguation, 
+The ratio value of a given similarity profile, or R-value,
+is defined as the frequency of the similarity profile in the
+match set divided by the frequency of the same similarity
+profile in the non-match set. Ratios database, therefore,
+is the mapping of all possible similarity profiles to
+their corresponding r-values. In the patent disambiguation,
 personal information is assumed to be independent from patent
-information, so r-value of a similarity profile is the 
+information, so r-value of a similarity profile is the
 multiple of the r-value of the personal information
-part of the similarity profile and that of the patent 
+part of the similarity profile and that of the patent
 information part of it. By using the four training sets
-described above, the ratios database can be obtained. Usually 
-the ratios database is implemented as a binary search tree. 
-Since it is likely that some similarity profiles are not 
-observed in match or non-match sets, interpolation and 
+described above, the ratios database can be obtained. Usually
+the ratios database is implemented as a binary search tree.
+Since it is likely that some similarity profiles are not
+observed in match or non-match sets, interpolation and
 extrapolation of those profiles become necessary. Moreover, the
-similarity profiles are assumed to be monotonic. Quadratic 
-programming is adopted to accomplish the monotonicity 
+similarity profiles are assumed to be monotonic. Quadratic
+programming is adopted to accomplish the monotonicity
 enforcement, the interpolation and the extrapolation.
 
 
@@ -649,7 +649,7 @@ caliber threshold, the new result is added to the priority queue.
 \item If the new result is less than the lowest value and also less than the
 caliber threshold, discard the new result.
 
-o The average value of the priority queue is then calculated after the exhaustive
+\item The average value of the priority queue is then calculated after the exhaustive
 comparisons finish. If the average is greater than the caliber threshold, the two
 clusters are labeled as of a same inventor and will be followed by a merge of the
 clusters; otherwise, the comparison of the clusters stops here.
