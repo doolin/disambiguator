@@ -990,6 +990,7 @@ write_tset02(const char * current_file, list<RecordPair> pair_list) {
 // for a list of pointers to records. This operation is performed
 // in build_patent_tree as well.
 // TODO: Figure out why there needs to be two of these.
+// TODO: Move this to the record.cpp file
 void
 create_record_plist(const list<Record> & rl,  RecordPList & rpl) {
 

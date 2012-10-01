@@ -330,4 +330,7 @@ void         choose_rare_words  (const WordCounter word_map,
 
 vector<uint32_t> get_blocking_indices(const vector<string> & column_names);
 
+void create_record_plist(const list<Record> & rl,  RecordPList & rpl);
+
+
 #endif /* PATENT_TRAINING_H */
