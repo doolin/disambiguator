@@ -411,23 +411,23 @@ Assignee
 \end{verbatim}
 
 
-This means that the blocking identification for round 5 is 
+This means that the blocking identification for round 5 is
 created from three attributes:
 
 \begin{itemize}
 
-\item First name: the raw data is read from the index 1 position 
-of the first name attribute object (see more details in source codes), 
+\item First name: the raw data is read from the index 1 position
+of the first name attribute object (see more details in source codes),
 and is truncated from the index 0 position of the string for a
 maximum length of 3 characters in a forward direction ( left to right ).
 
-\item Middle name: the raw data is read from the index 1 position 
-of the middle name attribute object (see more details in source codes), 
+\item Middle name: the raw data is read from the index 1 position
+of the middle name attribute object (see more details in source codes),
 and is truncated from the index 0 position of the string for a
 maximum length of 0 characters in a backward direction ( right to left ).
 
 \item Last name: the raw data is read from the index 0 position of
-the last name attribute object (see more details in source codes), 
+the last name attribute object (see more details in source codes),
 and is truncated from the index 0 position of the string for a
 maximum length of 5 characters in a forward direction ( left to right ).
 And the components of similarity profiles are: first name, middle name,
@@ -437,7 +437,7 @@ last name, latitude (geographical location), coauthor, assignee (company).
 
 \subsection{Export Disambiguation Results}
 
-The results of disambiguation can be exported to a 
+The results of disambiguation can be exported to a
 SQLite database by running the \texttt{txt2sqlite3}
 executable file.
 
@@ -449,23 +449,23 @@ executable file.
 \subsection{Data Structure}
 
 
-The disambiguation engine is designed in an object-oriented 
+The disambiguation engine is designed in an object-oriented
 way. The key concepts in the whole engine include:
 
 
 \begin{itemize}
 
-\item Attributes: conceptualized as the information in each 
-column in the database. The attribute class has a complicated 
+\item Attributes: conceptualized as the information in each
+column in the database. The attribute class has a complicated
 hierarchy and thus requires much more understanding. As for the
-implementation, each CONCRETE attribute class has multiple 
+implementation, each CONCRETE attribute class has multiple
 pointers to data strings. See more details in the source code.
 
 \item Records: a vector of attributes representing a full 
 record in the database. More strictly, each
 record contains a vector of pointers to attributes.
 
-\item Clusters: conceptualized as a unique inventor having 
+\item Clusters: conceptualized as a unique inventor having
 multiple records. Each cluster contains a list of
 pointers to records.
 
@@ -600,35 +600,35 @@ from \texttt{cAttribute\_Singe\_Mode<cLatitude\_Data>}.
 
 \subsection{Customization of Cluster Comparisons}
 
-Comparison between two clusters, a critical part of 
+Comparison between two clusters, a critical part of
 disambiguation, includes several configurable
 steps that can be very influential to the results.
 When two clusters are compared:
 
 \begin{itemize}
 
-\item  The two representatives of the clusters are compared 
-to get a post-probability. If the probability does not pass 
+\item  The two representatives of the clusters are compared
+to get a post-probability. If the probability does not pass
 a minimum screening threshold, the clusters are judged to be of
-different inventors and should not merge. The comparison of 
+different inventors and should not merge. The comparison of
 the clusters stops here.
 
 \item If the probability passes the minimum threshold, then:
 
 \begin{itemize}
 
-\item Another threshold, dependent on the features of the 
-clusters, is calculated and will be used as a caliber in the 
+\item Another threshold, dependent on the features of the
+clusters, is calculated and will be used as a caliber in the
 further disambiguation of the two clusters. The threshold
-depends on the cohesions of the two clusters, the career 
-gap between the clusters, the number of common locations 
+depends on the cohesions of the two clusters, the career
+gap between the clusters, the number of common locations
 between the clusters, etc.
 
-\item A priority queue of a given size is created. The size 
+\item A priority queue of a given size is created. The size
 of the queue depends on the size of both clusters. The larger
 the clusters, the larger the queue size.
 
-\item Exhaustive comparisons between members of the two 
+\item Exhaustive comparisons between members of the two
 clusters are performed, and the results are fed into the
 priority queue in the following manner.
 
