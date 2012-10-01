@@ -521,7 +521,7 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
     // There is another version of this in training.cpp and in the build_patent_tree
     // function.
     RecordPList all_rec_pointers;
-    for (list<Record>::const_iterator p = all_records.begin(); p != all_records.end(); ++p ) {
+    for (list<Record>::const_iterator p = all_records.begin(); p != all_records.end(); ++p) {
         all_rec_pointers.push_back(&(*p));
     }
 
@@ -560,7 +560,9 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
     ClusterInfo match (uid_dict, matching_mode, frequency_adjust_mode, debug_mode);
     match.set_thresholds(threshold_vec);
 
-    char xset01[buff_size], tset05[buff_size], ratiofile[buff_size];
+    char xset01[buff_size];
+    char tset05[buff_size];
+    char ratiofile[buff_size];
     char matchfile[buff_size];
     // TODO: Move stat_patent declaration further down in the file, closer
     // to where it's being used. This will allow future refactoring.
@@ -568,9 +570,11 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
     char stat_personal[buff_size];
     char oldmatchfile[buff_size];
     char debug_block_file[buff_size];
-    char network_file[buff_size],
-    postprocesslog[buff_size], prior_save_file[buff_size];
+    char network_file[buff_size];
+    char postprocesslog[buff_size];
+    char prior_save_file[buff_size];
     char roundstr[buff_size];
+
     sprintf(oldmatchfile,"%s", EngineConfiguration::previous_disambiguation_result.c_str() );
 
 
@@ -581,7 +585,6 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
 
     if (debug_mode) network_clustering = false;
 
-    unsigned int round = starting_round;
 
 
     // TODO: move this declaration to where it's being used, such that it
@@ -594,12 +597,14 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
     // that clusters will instantiate. Bogus.
     cBlocking_Operation_By_Coauthors blocker_coauthor(all_rec_pointers, num_coauthors_to_group);
 
+    // TODO: Refactor
     std::cout << "Reconfiguring ..." << std::endl;
     const Reconfigurator_AsianNames corrector_asiannames;
     std::for_each (all_rec_pointers.begin(), all_rec_pointers.end(), corrector_asiannames);
     Reconfigurator_Coauthor corrector_coauthor (blocker_coauthor.get_patent_tree());
     std::for_each (all_rec_pointers.begin(), all_rec_pointers.end(), corrector_coauthor);
     std::cout << "Reconfiguration done." << std::endl;
+    ///////// End refactor
 
     Cluster::set_reference_patent_tree_pointer(blocker_coauthor.get_patent_tree());
 
@@ -611,6 +616,7 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
     // `is_blockingconfig_success` needs to be a boolean
     int is_blockingconfig_success;
 
+    unsigned int round = starting_round;
     while (true) {
 
         sprintf(roundstr, "%d", round);
@@ -630,7 +636,6 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
         sprintf(network_file, "%s/network_%d.txt", working_dir.c_str(), round);
         sprintf(postprocesslog, "%s/postprocesslog_%d.txt", working_dir.c_str(), round);
         sprintf(prior_save_file, "%s/prior_saved_%d.txt", working_dir.c_str(), round);
-
 
         Record::activate_comparators_by_name(BlockingConfiguration::active_similarity_attributes);
         //now training
@@ -689,7 +694,7 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
             const cBlocking_Operation_Multiple_Column_Manipulate & blocker_ref =
                     dynamic_cast<cBlocking_Operation_Multiple_Column_Manipulate &> (*BlockingConfiguration::active_blocker_pointer);
             make_changable_training_sets_by_patent(all_rec_pointers, blocker_ref.get_blocking_attribute_names(),
-                    blocker_ref.get_blocking_string_manipulators(), limit,  training_changable_vec);
+                    blocker_ref.get_blocking_string_manipulators(), limit, training_changable_vec);
         }
 
         const cRatios * ratio_pointer;
