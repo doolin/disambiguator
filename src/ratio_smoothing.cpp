@@ -1,9 +1,3 @@
-/*
- * DisambigClusterSmoothing.cpp
- *
- *  Created on: Jan 25, 2011
- *      Author: ysun
- */
 
 #include <limits>
 #include <climits>
@@ -27,7 +21,7 @@ static const bool should_do_name_range_check = true;
 // TODO: unit test
 uint32_t
 sp2index (const SimilarityProfile & sp, const SimilarityProfile & min_sp,
-    const SimilarityProfile & max_sp) {
+          const SimilarityProfile & max_sp) {
 
     if (sp.size() != min_sp.size()) {
         throw cException_Other("Convertion error in smoothing.");
@@ -142,6 +136,7 @@ find_neighbours(const SimilarityProfile & sp,
 }
 
 
+// TODO: Smells like magic method for adjusting results.
 double
 get_weight (const uint32_t x_count, const uint32_t m_count) {
 
@@ -157,7 +152,7 @@ compute_total_nodes(const SimilarityProfile & min_sp,
 
     uint32_t total_nodes = 1;
     // This is too clever and bad practice. STL provides
-    // a maximum uint32, and that should be used in this
+    // a maximum uint32_t, and that should be used in this
     // case. And yes, I know that the STL uses -1 to
     // signify maximum unsigned values, but we're not
     // writing STL code now, are we? That's right, we're
@@ -253,7 +248,7 @@ smoothing_inter_extrapolation_cplex(
     const SimilarityProfile & max_sp,
     const SPCountsIndex & x_counts,
     const SPCountsIndex & m_counts,
-    const vector<string> & attribute_names,
+    const vector<string> & attribute_names, // TODO: Delete this argument, not used
     const bool name_range_check,
     const bool backup_quadprog ) {
 
@@ -453,6 +448,7 @@ smoothing_inter_extrapolation_cplex(
 }
 
 
+// TODO: Move this into the ratios.cpp file.
 void
 cRatios::smooth() {
 
@@ -461,8 +457,15 @@ cRatios::smooth() {
     const SimilarityProfile max = get_max_similarity (this->attrib_names);
     const SimilarityProfile min (max.size(), 0);
 
-    smoothing_inter_extrapolation_cplex(this->final_ratios, min, max, x_counts, m_counts,
-            this->get_attrib_names(), should_do_name_range_check, false);
+    smoothing_inter_extrapolation_cplex(this->final_ratios,
+                                        min,
+                                        max,
+                                        x_counts,
+                                        m_counts,
+                                        // TODO: Unit test cRatios::get_attrib_names()
+                                        this->get_attrib_names(), // delete, not needed
+                                        should_do_name_range_check,
+                                        false);
 
     std::cout << "Ratios smoothing done. " << std::endl;
 }
@@ -470,6 +473,7 @@ cRatios::smooth() {
 
 // This is probably dead code, but it's being called from something which
 // is being linked, so we have to keep it in for now.
+// TODO: Move into ratio_component.cpp file
 #if 1
 void
 cRatioComponent::smooth() {
@@ -482,9 +486,16 @@ cRatioComponent::smooth() {
 
     //smoothing( ratio_map, similarity_map, x_counts, m_counts, this->get_attrib_names(), should_do_name_range_check );
     const SimilarityProfile max = get_max_similarity (this->attrib_names);
-    const SimilarityProfile min ( max.size(), 0);
-    smoothing_inter_extrapolation_cplex(temp_map, min, max, x_counts, m_counts,
-            this->get_attrib_names(), should_do_name_range_check, true);
+    const SimilarityProfile min (max.size(), 0);
+
+    smoothing_inter_extrapolation_cplex(temp_map,
+                                        min,
+                                        max,
+                                        x_counts,
+                                        m_counts,
+                                        this->get_attrib_names(), // delete, not needed
+                                        should_do_name_range_check,
+                                        true);
 
     map<SimilarityProfile, double, SimilarityCompare>:: iterator p = ratio_map.begin();
     for (; p != ratio_map.end(); ++p) {
