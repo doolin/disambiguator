@@ -35,6 +35,11 @@ public:
     requested_columns.push_back(string("Patent"));
     requested_columns.push_back(string("Assignee"));
     requested_columns.push_back(string("AsgNum"));
+    requested_columns.push_back(string("ApplyYear"));
+    requested_columns.push_back(string("Latitude"));
+    requested_columns.push_back(string("Longitude"));
+    requested_columns.push_back(string("Street"));
+    requested_columns.push_back(string("Country"));
     requested_columns.push_back(string("Unique_Record_ID"));
   }
 
