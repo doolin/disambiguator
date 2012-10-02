@@ -13,6 +13,7 @@
 // TODO: Move this into a header all other headers include:
 #include <stdint.h>
 
+#include "typedefs.h"
 #include "attribute.h"
 #include "threading.h"
 
@@ -90,12 +91,14 @@ public:
     *  vector <uint32_t> record_compare(const Record & rhs) const:
     *  compare (*this) with rhs and get a similarity profile.
     *  NOTE THAT SIMILARITY PROFILES ARE vector <uint32_t>s;
+    *
     *  Example: if (Firstname, Lastname, Assignee, class, Coauthor) are
     *  activated for comparison, the function will return a
     *  vector < uint32_t > of 5-dimensions, each of which
     *  indicating a score for its corresponding column.
     */
-    vector <uint32_t> record_compare(const Record & rhs) const;
+    //vector <uint32_t> record_compare(const Record & rhs) const;
+    SimilarityProfile record_compare(const Record & rhs) const;
 
    /**
     *  vector <uint32_t> record_compare_by_attrib_indice (const Record &rhs,
@@ -107,7 +110,8 @@ public:
     *  and the attrib_indice_to_compare = [ 0, 2, 3],
     *  then the return value is a vector < uint32_t > = [ Firstname, Assignee, Class];
     */
-    vector <uint32_t> record_compare_by_attrib_indice (const Record &rhs,
+    //vector <uint32_t> record_compare_by_attrib_indice (const Record &rhs,
+    SimilarityProfile record_compare_by_attrib_indice (const Record &rhs,
         const vector<uint32_t> & attrib_indice_to_compare) const;
 
 
