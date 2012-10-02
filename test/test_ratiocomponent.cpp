@@ -32,16 +32,33 @@ public:
   }
 
  ~RatioComponentTest() {
+    describe_test(INDENT2, "Destroying RatioComponentTest.");
     delete ft;
   }
 
   void load_fake_data() {
     const string filename("testdata/clustertest.csv");
+    describe_test(INDENT2, "From load_fake_data in RatioComponentTest.");
     ft->load_fake_data(filename);
   }
 
+
+  void test_sp_stats() {
+
+    describe_test(INDENT2, "From test_sp_stats in RatioComponentTest.");
+
+    TrainingPairs tps;
+    SPCountsIndex m_counts, x_counts;
+    rc->sp_stats(tps, m_counts);
+    rc->sp_stats(tps, x_counts);
+  }
+
+
   void test_create_ratios() {
 
+    describe_test(INDENT2, "From test_create_ratios in RatioComponentTest.");
+
+    // create training pairs
     // Create x_counts and m_counts
     // maybe clear ratio_map.
     // call rc->create_ratios();
@@ -50,6 +67,7 @@ public:
 
   void runTest() {
     load_fake_data();
+    test_sp_stats();
     test_create_ratios();
   }
 };
