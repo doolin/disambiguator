@@ -206,6 +206,11 @@ cRatioComponent::stats_output(const char * filename) const {
 
 
 void
+cRatioComponent::create_ratios() {
+}
+
+
+void
 cRatioComponent::prepare(const char * x_file,
                          const char * m_file) {
 
@@ -284,12 +289,12 @@ cRatioComponent::prepare(const char * x_file,
     std::cout << "AFTER LAPLACE CORRECTION:" << std::endl;
     std::cout << "Non-match unique profile number = " << x_counts.size() << std::endl;
     std::cout << "Match unique profile number = " << m_counts.size() << std::endl;
-    //ratios = count of match / count of non-match;
 
     /////////////  End refactoring //////////
 
     // //////////////////////////////////////////
-    // TODO: Refactor this into `create_counts` or something similar.
+    // TODO: Refactor this into `create_ratios` or something similar.
+    //ratios = count of match / count of non-match;
     uint32_t num_xcount_without_mcount = 0;
     uint32_t num_mcount_without_xcount = 0;
 
