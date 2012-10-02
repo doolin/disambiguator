@@ -36,6 +36,11 @@ public:
     //std::cout << "tn: " << tn << std::endl;
     CPPUNIT_ASSERT(12 == tn);
   }
+
+  void test_get_max_similarity() {
+
+    //SimilarityProfile sp = get_max_similarity(names);
+  }
 };
 
 
@@ -43,6 +48,7 @@ void test_ratio_smoothing() {
 
   RatioSmoothingTest * rt = new RatioSmoothingTest(std::string("initial test"));
   rt->test_compute_total_nodes();
+  rt->test_get_max_similarity();
   delete rt;
 }
 
