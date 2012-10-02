@@ -60,38 +60,35 @@ cRatioComponent::sp_stats (const TrainingPairs & trainpairs,
 
     const RecordIndex & dict = *puid_tree;
     RecordIndex::const_iterator pm;
-    SPCountsIndex::iterator psp;
+    SPCountsIndex::iterator sp_iter;
 
     TrainingPairs::const_iterator p = trainpairs.begin();
     for (; p != trainpairs.end(); ++p) {
 
+        // TODO: Refactor these next two blocks to enforce DRY
         pm = dict.find(p->first);
-
         if (pm == dict.end()) {
             throw cException_Attribute_Not_In_Tree(
                 (string("\"") + p->first + string ("\"") ).c_str());
         }
+        const Record * plhs = pm->second;
 
-        const Record *plhs = pm->second;
         pm = dict.find(p->second);
-
         if (pm == dict.end()) {
             throw cException_Attribute_Not_In_Tree(
                 (string("\"") + p->second + string ("\"") ).c_str());
         }
+        const Record * prhs = pm->second;
 
-        const Record *prhs = pm->second;
         SimilarityProfile sp = plhs->record_compare_by_attrib_indice(*prhs, component_indice_in_record);
-
-        // debug
         // print_similarity_profile_size();
 
-        psp = sp_counts.find(sp);
+        sp_iter = sp_counts.find(sp);
 
-        if (psp == sp_counts.end()) {
+        if (sp_iter == sp_counts.end()) {
             sp_counts.insert(std::pair<SimilarityProfile, uint32_t>(sp, 1));
         } else {
-            ++(psp->second);
+            ++(sp_iter->second);
         }
     }
 }
@@ -333,8 +330,8 @@ cRatioComponent::prepare(const char * x_file,
 
         std::cout << "Discovered " << num_xcount_without_mcount
                   << " non-match similarity profiles that are not available in matched ones. "
-                  << std::endl 
-                  << "And " 
+                  << std::endl
+                  << "And "
                   << num_mcount_without_xcount 
                   << " match similarity profiles that are not available in non-match ones."
                   << std::endl;
@@ -418,7 +415,7 @@ cRatios::cRatios(const vector<const cRatioComponent *> & component_pointer_vecto
     x_counts.insert(std::pair<vector<uint32_t>, uint32_t > (null_vect, 0));
     m_counts.insert(std::pair<vector<uint32_t>, uint32_t > (null_vect, 0));
 
-    p = component_pointer_vector.begin(); 
+    p = component_pointer_vector.begin();
     for (p; p != component_pointer_vector.end(); ++p ) {
         More_Components(**p);
     }
@@ -434,7 +431,7 @@ cRatios::cRatios(const vector<const cRatioComponent *> & component_pointer_vecto
       map < const SimilarityProfile, double, SimilarityCompare>::const_iterator firstline = final_ratios.begin();
       //vector< uint32_t >::const_iterator k = firstline.begin(); 
       SimilarityProfile vec = (*firstline).first;
-      SimilarityProfile::const_iterator k = vec.begin(); 
+      SimilarityProfile::const_iterator k = vec.begin();
       //for (k; k < firstline.end(); ++k) {
       //for (k; k != firstline.end(); ++k) {
       for (k; k != vec.end(); ++k) {
