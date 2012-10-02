@@ -25,6 +25,8 @@ private:
   list<Record> source;
   vector<string> requested_columns;
   RecordPList record_pointers;
+  // Accessory container for unit testing, not
+  // present in the disambiguation code.
   vector<Record *> rpv;
 
 
@@ -58,6 +60,7 @@ public:
 
     create_record_plist(source, record_pointers);
 
+    // IPDict
     map<string, const Record *> uid_dict;
     const string uid_identifier = cUnique_Record_ID::static_get_class_name();
     create_btree_uid2record_pointer(uid_dict, source, uid_identifier);
