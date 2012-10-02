@@ -207,6 +207,19 @@ cRatioComponent::stats_output(const char * filename) const {
 
 void
 cRatioComponent::create_ratios() {
+
+  SPCountsIndex::const_iterator p, q;
+  //ratios = count of match / count of non-match;
+  for (p = x_counts.begin(); p != x_counts.end(); ++p) {
+      q = m_counts.find( p->first );
+      if (q == m_counts.end()) 
+          continue;
+      else {
+          ratio_map.insert(std::pair<SimilarityProfile, double>
+              (p->first, 1.0 * q->second / p->second));
+      }
+  }
+
 }
 
 
@@ -553,10 +566,14 @@ cRatios::More_Components(const cRatioComponent & additional_component) {
             }
 
             temp_ratios.insert(std::pair<SimilarityProfile, double>(key, p->second * vv->second));
+
             temp_x_counts.insert(std::pair<vector<uint32_t>, uint32_t >(key,
-                  this->x_counts.find(p->first)->second + additional_component.get_x_counts().find(vv->first)->second));
+                  this->x_counts.find(p->first)->second + additional_component.
+                     get_x_counts().find(vv->first)->second));
+
             temp_m_counts.insert(std::pair<vector<uint32_t>, uint32_t >(key,
-                  this->m_counts.find(p->first)->second + additional_component.get_m_counts().find(vv->first)->second));
+                  this->m_counts.find(p->first)->second + additional_component.
+                     get_m_counts().find(vv->first)->second));
         }
     }
 
