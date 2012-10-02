@@ -18,8 +18,8 @@
 using std::map;
 using std::set;
 
-/*
- * Declaration ( and definition ) of static members in some classes.
+/**
+ * Declaration (and definition) of static members.
  */
 vector <string> Record::column_names;
 vector <string> Record::active_similarity_names;
@@ -28,13 +28,19 @@ const Record * Record::sample_record_pointer = NULL;
 //const string cBlocking_Operation::delim = "##";
 
 
-/*
- * Aim: to check the number of columns that are supposed to be useful in a Record object.
- *         Firstname, middlename, lastname, assignee (company), latitude and city are believed to be useful.
- *         Other attributes, such as street and coauthor, are allowed to be missing.
- * Algorithm: use " is_informative() " function to check each specified attribute, and return the sum.
+/**
+ * Aim: to check the number of columns that are
+ * supposed to be useful in a Record object.
+ *
+ * Firstname, middlename, lastname, assignee (company),
+ * latitude and city are believed to be useful.
+ *
+ * Other attributes, such as street and coauthor,
+ * are allowed to be missing.
+ *
+ * Algorithm: use " is_informative() " function to
+ * check each specified attribute, and return the sum.
  */
-
 uint32_t
 Record::informative_attributes() const {
 
@@ -64,7 +70,8 @@ Record::print_sample_record() {
   pr->print();
 }
 
-/*
+
+/**
  * Aim: to keep updated the names of current similarity profile columns.
  * Algorithm: use a static sample Record pointer to check the comparator status of each attribute.
  *                 Clears the original Record::active_similarity_names and update with a newer one.
@@ -85,7 +92,8 @@ Record::update_active_similarity_names() {
     }
 }
 
-/*
+
+/**
  * Aim: a global function that performs the same functionality
  * as the above one. However, this function is declared and callable in
  * the template implementations in "DisambigDefs.h", where Record has 
@@ -120,19 +128,22 @@ Record::print() const {
 }
 
 
-/*
- * Aim: compare (*this) record object with rhs record object, and 
- * return a similarity profile ( which is vector < uint32_t > ) 
+/**
+ * Aim: compare (*this) record object with rhs record object, and
+ * return a similarity profile (which is vector<uint32_t>)
  * for all activated columns.
+ *
  * Algorithm: call each attribute pointer's "compare" method.
  */
-
-vector <uint32_t>
+//vector <uint32_t>
+SimilarityProfile
 Record::record_compare(const Record & rhs) const {
 
     static const bool detail_debug = false;
     vector <uint32_t > rec_comp_result;
 
+    /////////////////////////////////////
+    // TODO: Refactor this debugging code
     if ( detail_debug ) {
 
         static const uint32_t uid_index = Record::get_index_by_name(cUnique_Record_ID::static_get_class_name());
@@ -149,13 +160,17 @@ Record::record_compare(const Record & rhs) const {
             std::cout << std::endl << std::endl;
         }
     }
+    /////////////////////////////// End refactor /////////////////
 
+    ///////////////////////// /////////////////
+    // TODO: Refactor this block as it's duplicated
+    // with record_compare_attrib_indice
     try {
 
-        for ( uint32_t i = 0; i < this->vector_pdata.size(); ++i ) {
+        for (uint32_t i = 0; i < this->vector_pdata.size(); ++i) {
             try {
                 uint32_t stage_result = this->vector_pdata[i]->compare(*(rhs.vector_pdata[i]));
-                rec_comp_result.push_back( stage_result );
+                rec_comp_result.push_back(stage_result);
             }
             catch (const cException_No_Comparision_Function & err) {
                 //std::cout << err.what() << " does not have comparision function. " << std::endl; //for debug purpose
@@ -166,9 +181,11 @@ Record::record_compare(const Record & rhs) const {
         std::cout << "Skipped" << std::endl;
         rec_comp_result.clear();
     }
+    /////////////////// End refactor /////////////////
 
-    //for debug only.
-    if ( detail_debug ) {
+    // //////////////////////////////////////////////
+    // TODO: Refactor to it's own function
+    if (detail_debug) {
         static const uint32_t uid_index = Record::get_index_by_name(cUnique_Record_ID::static_get_class_name());
         const string debug_string = "06476708-1";
         const string * ps = this->get_attrib_pointer_by_index(uid_index)->get_data().at(0);
@@ -188,21 +205,22 @@ Record::record_compare(const Record & rhs) const {
             std::cout << std::endl << std::endl;
         }
     }
+    /////////////////// End refactor /////////////////
 
     return rec_comp_result;
 }
 
 
-
-/*
- * Aim: compare (*this) record object with rhs record object, and returns a similarity profile for columns that
+/**
+ * Aim: compare (*this) record object with rhs record object,
+ * and returns a similarity profile for columns that
  * are both activated and passed in the "attrib_indice_to_compare" vector.
  * Algorithm: call each attribute pointer's "compare" method.
- *
  */
-vector <uint32_t>
-Record::record_compare_by_attrib_indice (const Record &rhs, 
-                                          const vector < uint32_t > & attrib_indice_to_compare) const {
+//vector <uint32_t>
+SimilarityProfile
+Record::record_compare_by_attrib_indice (const Record &rhs,
+                                         const vector < uint32_t > & attrib_indice_to_compare) const {
 
     vector <uint32_t > rec_comp_result;
 
@@ -213,7 +231,7 @@ Record::record_compare_by_attrib_indice (const Record &rhs,
             try {
                 uint32_t i = attrib_indice_to_compare.at(j);
                 uint32_t stage_result = this->vector_pdata[i]->compare(*(rhs.vector_pdata[i]));
-                rec_comp_result.push_back( stage_result );
+                rec_comp_result.push_back(stage_result);
             }
             catch (const cException_No_Comparision_Function & err) {
                 //std::cout << err.what() << " does not have comparision function. " << std::endl;
@@ -239,8 +257,8 @@ Record::record_exact_compare(const Record & rhs ) const {
 
     uint32_t result = 0;
 
-    for ( uint32_t i = 0; i < this->vector_pdata.size(); ++i ) {
-        int ans = this->vector_pdata.at(i)->exact_compare( * rhs.vector_pdata.at(i));
+    for (uint32_t i = 0; i < this->vector_pdata.size(); ++i) {
+        int ans = this->vector_pdata.at(i)->exact_compare(*rhs.vector_pdata.at(i));
 
         if ( 1 == ans ) ++result;
     }
@@ -287,10 +305,10 @@ Record::get_index_by_name(const string & inputstr) {
 
 
 /**
- * Aim: get the index of the desired column name in the 
+ * Aim: get the index of the desired column name in the
  * active similarity profile columns.
- * 
- * Algorithm: exhaustive comparison. Time complexity = O(n); 
+ *
+ * Algorithm: exhaustive comparison. Time complexity = O(n);
  * if no matching is found, a exception will be thrown.
  */
 uint32_t
@@ -301,6 +319,15 @@ Record::get_similarity_index_by_name(const string & inputstr) {
             return i;
 
     throw cException_ColumnName_Not_Found(inputstr.c_str());
+}
+
+
+bool
+cant_find_label(const vector<string> & labels, const string & classlabel) {
+
+  if (std::find(labels.begin(), labels.end(), classlabel) == labels.end())
+    return true;
+  return false;
 }
 
 
@@ -315,6 +342,7 @@ Record::activate_comparators_by_name (const vector<string> & inputvec) {
         const string & classlabel = (*p)->get_class_name();
 
         if (std::find(inputvec.begin(), inputvec.end(), classlabel) == inputvec.end()) {
+        //if (cant_find_label(inputvec, classlabel)) {
             (*p)->deactivate_comparator();
         }
         else {
