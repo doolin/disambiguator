@@ -52,6 +52,15 @@ cRatioComponent::cRatioComponent(const RecordIndex & uid_tree,
 };
 
 
+
+/**
+ * Count the occurrences of each distinct similarity profile.
+ *
+ * Loop over all the training pairs, compute the similarity
+ * profile for each pair, increment the similarity profile count.
+ *
+ * TODO: Refactor the record checks.
+ */
 void
 cRatioComponent::sp_stats (const TrainingPairs & trainpairs,
                            SPCountsIndex & sp_counts) const {
@@ -210,6 +219,9 @@ cRatioComponent::prepare(const char * x_file,
 
     read_train_pairs(x_list, x_file);
     read_train_pairs(m_list, m_file);
+
+    // sp_stats builds the count indexes for
+    // match and non-match SimilarityProfiles.
     sp_stats(x_list, x_counts);
     sp_stats(m_list, m_counts);
 
