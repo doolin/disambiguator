@@ -28,8 +28,10 @@ cBlocking_Operation_Multiple_Column_Manipulate::cBlocking_Operation_Multiple_Col
 
 
 cBlocking_Operation_Multiple_Column_Manipulate::cBlocking_Operation_Multiple_Column_Manipulate (
-    const StringManipulator * const * pinputvsm, const string * pcolumnnames,
-    const uint32_t  * pdi, const uint32_t num_col) {
+    const StringManipulator * const * pinputvsm,
+    const string * pcolumnnames,
+    const uint32_t  * pdi,
+    const uint32_t num_col) {
 
     for (uint32_t i = 0; i < num_col; ++i) {
         vsm.push_back(*pinputvsm++);
@@ -54,7 +56,8 @@ cBlocking_Operation_Multiple_Column_Manipulate::extract_blocking_info(const Reco
 
     string temp;
     for (uint32_t i = 0; i < vsm.size(); ++i) {
-        temp += vsm[i]->manipulate(* p->get_data_by_index(indice[i]).at( pdata_indice.at(i)));
+        temp += vsm[i]->manipulate(* p->get_data_by_index(indice[i]).
+                at( pdata_indice.at(i)));
         temp += delim;
     }
     return temp;
@@ -98,7 +101,8 @@ cBlocking_Operation_By_Coauthors::cBlocking_Operation_By_Coauthors(
 
     if (num_coauthors > 4) {
         std::cout << "================ WARNING =====================" << std::endl;
-        std::cout << "Number of coauthors in which cBlocking_Operation_By_Coauthors uses is probably too large. Number of coauthors = " << num_coauthors << std::endl;
+        std::cout << "Number of coauthors in which cBlocking_Operation_By_Coauthors uses ";
+        std::cout << "is probably too large. Number of coauthors = " << num_coauthors << std::endl;
         std::cout << "==================END OF WARNING ================" << std::endl;
     }
 
@@ -194,16 +198,18 @@ cBlocking_Operation_By_Coauthors::build_uid2uinv_tree(const ClusterInfo & cluste
     // Maybe should be RecordGroup
     typedef list<Cluster> ClusterList;
 
-    std::cout << "Building trees: 1. Unique Record ID to Unique Inventer ID. 2 Unique Inventer ID to Number of holding patents ........" << std::endl;
+    std::cout << "Building trees: 1. Unique Record ID to Unique Inventer ID. ";
+    std::cout << "2 Unique Inventer ID to Number of holding patents ........";
+    std::cout << std::endl;
 
     map<string, ClusterList>::const_iterator p = cluster.get_cluster_map().begin();
     for (; p != cluster.get_cluster_map().end(); ++p) {
 
         ClusterList::const_iterator q = p->second.begin();
-        for (;  q != p->second.end(); ++q) {
+        for (; q != p->second.end(); ++q) {
 
             const Record * value = q->get_cluster_head().m_delegate;
-            map < const Record *, uint32_t >::iterator pcount = uinv2count_tree.find(value);
+            map<const Record *, uint32_t>::iterator pcount = uinv2count_tree.find(value);
             if (pcount == uinv2count_tree.end())
                 pcount = uinv2count_tree.insert(std::pair<const Record *, uint32_t>(value, 0)).first;
 
@@ -219,29 +225,30 @@ cBlocking_Operation_By_Coauthors::build_uid2uinv_tree(const ClusterInfo & cluste
 }
 
 
-/*
- * Aim: to get a list of top N coauthors (as represented by a const Record pointer)
- * of an inventor to whom prec (a unique record id) belongs.
+/**
+ * Aim: to get a list of top N coauthors
+ * (as represented by a const Record pointer)
+ * of an inventor to whom prec (a unique
+ * record id) belongs.
  *
  * Algorithm:
  *
- *         1. create a binary tree T(std::map)
- *            Key = number of holding patents,
- *            value = const Record pointer to the unique inventor.
+ *  1. create a binary tree T(std::map)
+ *     Key = number of holding patents,
+ *     value = const Record pointer to the unique inventor.
  *
- *         2. For any associated record r:
- *                 find r in the uinv2count tree.
- *                 if number of nodes in T < N, insert (count(r), r) into T;
- *                 else
- *                     if count(r) > front of T:
- *                         delete front of T from T
- *                         insert ( count(r), r );
+ *  2. For any associated record r:
+ *   find r in the uinv2count tree.
+ *   if number of nodes in T < N, insert (count(r), r) into T;
+ *   else
+ *       if count(r) > front of T:
+ *           delete front of T from T
+ *           insert ( count(r), r );
  *
- *         3. return values in T.
- *
+ *  3. return values in T.
  */
 RecordPList cBlocking_Operation_By_Coauthors::get_topN_coauthors(
-    const Record * prec, const uint32_t topN ) const {
+    const Record * prec, const uint32_t topN) const {
 
     const RecordPList & list_alias = patent_tree.find(prec)->second;
     map<uint32_t, RecordPList> occurrence_map;
