@@ -2,8 +2,6 @@
 #include <string>
 #include <vector>
 
-#include <cppunit/TestCase.h>
-
 #include <disambiguation.h>
 #include <engine.h>
 #include <cluster.h>
@@ -16,21 +14,8 @@
 #include "testutils.h"
 
 
-class FakeTest : public CppUnit::TestCase {
-
-private:
-
-  list<Record> source;
-  vector<string> requested_columns;
-  RecordPList record_pointers;
-  // Accessory container for unit testing, not
-  // present in the disambiguation code.
-  vector<Record *> rpv;
-  string csvfilename;
-
-public:
-
-  FakeTest(string name, string filename) : CppUnit::TestCase(name), csvfilename(filename) {
+FakeTest::FakeTest(string name, string filename)
+  : CppUnit::TestCase(name), csvfilename(filename) {
 
     describe_test(INDENT0, name.c_str());
 
@@ -46,9 +31,11 @@ public:
     requested_columns.push_back(string("Street"));
     requested_columns.push_back(string("Country"));
     requested_columns.push_back(string("Unique_Record_ID"));
-  }
+}
 
-  void load_fake_data(string csvfilename) {
+
+void
+FakeTest::load_fake_data(string csvfilename) {
 
     describe_test(INDENT2, "Loading fake data for clustering...");
 
@@ -62,7 +49,7 @@ public:
     create_record_plist(source, record_pointers);
 
     // IPDict
-    map<string, const Record *> uid_dict;
+    //map<string, const Record *> uid_dict;
     const string uid_identifier = cUnique_Record_ID::static_get_class_name();
     create_btree_uid2record_pointer(uid_dict, source, uid_identifier);
 
@@ -88,12 +75,10 @@ public:
     Record::activate_comparators_by_name(comparators);
   }
 
-
-  void runTest() {
-    load_fake_data(csvfilename);
+  RecordIndex *
+  FakeTest::get_uid_dict() {
+    return &uid_dict;
   }
-};
-
 
 void
 test_fake() {
