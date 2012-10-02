@@ -173,15 +173,11 @@ public:
 
 
 /**
- * map < cSimilarity_With_Monotonicity_Dimension, MonotonicSet > similarity_map:
- *       a map of similarity profiles and their monotonic set for a certain dimension.
- *
- * vector < string > attrib_names:
- *     attribute names that belong the the atribute group.
- *
- * map < vector < uint32_t > , uint32_t, SimilarityCompare > x_counts, m_counts:
- *       maps of similarity profiles to their occurrences in non-match and match training sets.
+ * map<cSimilarity_With_Monotonicity_Dimension, MonotonicSet > similarity_map:
+ * a map of similarity profiles and their monotonic set for a certain dimension.
  */
+
+
 
 /**
 *
@@ -237,6 +233,10 @@ private:
 
     map<cSimilarity_With_Monotonicity_Dimension, MonotonicSet> similarity_map;
 
+   /**
+    * vector<string> attrib_names:
+    * attribute names that belong to the atribute group.
+    */
     vector<string> attrib_names;
 
    /**
@@ -246,7 +246,10 @@ private:
     */
     bool is_ready;
 
-    // SPCountsIndex
+   /**
+    * map<vector<uint32_t>, uint32_t, SimilarityCompare> x_counts, m_counts:
+    * maps of similarity profiles to their occurrences in non-match and match training sets.
+    */
     //map <vector<uint32_t>, uint32_t, SimilarityCompare > x_counts, m_counts;
     SPCountsIndex x_counts, m_counts;
 
