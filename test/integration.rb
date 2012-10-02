@@ -52,7 +52,7 @@ class Tset < IntegrationTest
   end
 
   def test_tsets
-    (2..2).each_with_index do |num|
+    (1..6).each_with_index do |num|
       tset = "tset05_#{num}"
       testfile  = "#{@@testdir}/#{tset}.txt"
       priorfile = "./data/berkeley/#{tset}.txt"
@@ -69,5 +69,6 @@ end
 
 
 prior = Prior.new
+#prior.test_priors
 tset = Tset.new
 tset.test_tsets
