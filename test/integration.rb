@@ -11,13 +11,27 @@ class IntegrationTest
 
   @@testdir      = "/data/patentdata/disambiguation/experiments/earth/berkeley"
 
+  def print_headline(testname)
+    color = @@colors[116]
+    print "#{color}## Integration testing for #{testname}", RESET, "\n"
+  end
+
+  def print_passed(testname)
+    color = @@colors[116]
+    print "  #{color} Passed: #{testname}", RESET, "\n"
+  end
+
+  def print_failed(testname)
+    color = @@colors[116]
+    print "  #{color} Failed: #{testname}", RESET, "\n"
+  end
 end
 
 
 class Prior < IntegrationTest
 
   def initialize
-    print "## #{@colors[116]} Integration testing for priors", RESET, "\n"
+    print_headline("priors")
   end
 
   def test_priors
@@ -30,23 +44,30 @@ class Prior < IntegrationTest
   end
 end
 
+
 class Tset < IntegrationTest
 
   def initialize
-    print "## #{@@colors[116]} Integration testing for tsets", RESET, "\n"
+    print_headline("tsets")
   end
 
   def test_tsets
     (2..2).each_with_index do |num|
-      testfile  = "#{@@testdir}/tset05_#{num}.txt"
-      priorfile = "./data/berkeley/tset05_#{num}.txt"
+      tset = "tset05_#{num}"
+      testfile  = "#{@@testdir}/#{tset}.txt"
+      priorfile = "./data/berkeley/#{tset}.txt"
       results = `diff -y --suppress-common-lines #{testfile} #{priorfile}`
-      puts results unless results == ""
+      if results
+        print_passed(tset)
+      else
+        print_failed(tset)
+      end
     end
   end
 
 end
 
 
+prior = Prior.new
 tset = Tset.new
 tset.test_tsets
