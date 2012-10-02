@@ -191,6 +191,8 @@ public:
  */
 class cRatioComponent {
 
+    friend class RatioComponentTest;
+
     class cException_Partial_SP_Missing : public cAbstract_Exception {
     public:
         cException_Partial_SP_Missing(const char* errmsg)
