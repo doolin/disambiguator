@@ -19,14 +19,14 @@ INCLUDES = -I/usr/local/include -I$(CPLEXINCLUDE) -I$(CONCERTINCLUDE) -I../inclu
 AM_CXXFLAGS = -O0 -g -Wall -Wextra -Wformat-zero-length -Wno-unused-parameter -Wno-uninitialized # -pedantic -ansi
 #CXXFLAGS = $(AM_CXXFLAGS)
 
-LDADD = ../src/libdisambiguation.a 
+LDADD = ../src/libdisambiguation.a
 AM_LDFLAGS = $(shell cppunit-config --libs) -L$(CPLEXLIB) -lilocplex -lcplex -L$(CONCERTLIB) -lconcert
 
 
 TESTS = distest idtest typedefs record blocking attribute stringmanipulator \
 	comparators comparesimilarities strcmp95 rarenames engineconfig           \
 	abbreviation misspell namecompare jwcmp similarity clusterhead cluster engine \
-	training ratios fetchrecords assigneecomparison clusterinfo fake
+	training ratios fetchrecords assigneecomparison clusterinfo ratiocomponent
 
 bin_PROGRAMS = $(TESTS)
 
@@ -35,7 +35,8 @@ bin_PROGRAMS = $(TESTS)
 
 COMMON = testdata.cpp testutils.cpp
 
-fake_SOURCES = fake.cpp $(COMMON)
+#fake_SOURCES = fake.cpp $(COMMON)
+ratiocomponent_SOURCES = test_ratiocomponent.cpp fake.cpp $(COMMON)
 distest_SOURCES = test_initial.cpp
 engine_SOURCES = test_engine.cpp $(COMMON)
 idtest_SOURCES = test_uniqueid.cpp

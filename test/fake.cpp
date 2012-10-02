@@ -105,6 +105,7 @@ test_fake() {
 }
 
 
+#if 0 // not working anymore, need to build libtest.a
 #ifdef fake_STANDALONE
 int
 main(int UP(argc), char ** UP(argv)) {
@@ -112,4 +113,5 @@ main(int UP(argc), char ** UP(argv)) {
   test_fake();
   return 0;
 }
+#endif
 #endif
