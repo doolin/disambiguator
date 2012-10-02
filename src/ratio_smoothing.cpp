@@ -44,7 +44,7 @@ sp2index (const SimilarityProfile & sp, const SimilarityProfile & min_sp,
 // TODO: unit test
 SimilarityProfile
 index2sp (uint32_t index, const SimilarityProfile & min_sp,
-    const SimilarityProfile & max_sp) {
+          const SimilarityProfile & max_sp) {
 
     static const uint32_t ulimit = 0 - 1;
     SimilarityProfile sp (min_sp);

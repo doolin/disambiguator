@@ -607,6 +607,7 @@ cRatios::read_ratios_file(const char * filename) {
     SimilarityProfile key;
     while (getline(infile, filedata)) {
 
+      // TODO: replace this with a templated callback
         key.clear();
         pos = prev_pos = 0;
         while ((pos = filedata.find(secondary_delim, prev_pos)) != string::npos) {
@@ -619,17 +620,19 @@ cRatios::read_ratios_file(const char * filename) {
 
         const double value = atof(filedata.substr(pos).c_str());
 
-        final_ratios.insert(std::pair<SimilarityProfile, double >(key, value));
+        final_ratios.insert(std::pair<SimilarityProfile, double>(key, value));
     }
+
+    // TODO: This should probably not go here, invoke from calling function.
+    Record::activate_comparators_by_name(attrib_names);
 
     std::cout << filename << " has been loaded as the final ratios file"<< std::endl;
     std::cout << "Resetting similarity profiles ... ..." << std::endl;
-    Record::activate_comparators_by_name(attrib_names);
     std::cout << "-----Similarity Profiles reset.-------" << std::endl;
 }
 
 
-
+// TODO: Move this to record.cpp
 const Record *
 retrieve_record_pointer_by_unique_id(const string & uid,
                                      const RecordIndex & uid_tree) {
