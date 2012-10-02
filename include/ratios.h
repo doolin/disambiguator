@@ -262,7 +262,13 @@ private:
     *   profiles ( part of a complete similarity profile ) are stored
     *   in the map of similarity profiles to their occurrences "sp_counts".
     */
-     void sp_stats (const TrainingPairs & trainpairs, SPCountsIndex & sp_counts) const;
+    void sp_stats (const TrainingPairs & trainpairs, SPCountsIndex & sp_counts) const;
+
+   /**
+    * Use the counts to create the ratios, store into the similarity profile
+    * database/lookup table.
+    */
+    void create_ratios();
 
     //void read_train_pairs(list<std::pair<string, string> > & trainpairs, const char * txt_file) const;
     void read_train_pairs(TrainingPairs & trainpairs, const char * txt_file) const;
