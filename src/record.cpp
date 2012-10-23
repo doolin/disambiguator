@@ -224,6 +224,11 @@ Record::record_compare_by_attrib_indice (const Record &rhs,
 
     vector <uint32_t > rec_comp_result;
 
+    if (0 == attrib_indice_to_compare.size()) {
+      std::cout << "Attrib index is empty" << std::endl;
+      exit(0);
+    }
+
     try {
 
         for ( uint32_t j = 0; j < attrib_indice_to_compare.size(); ++j ) {
@@ -231,6 +236,7 @@ Record::record_compare_by_attrib_indice (const Record &rhs,
             try {
                 uint32_t i = attrib_indice_to_compare.at(j);
                 uint32_t stage_result = this->vector_pdata[i]->compare(*(rhs.vector_pdata[i]));
+                //std::cout << "stage_result: " << stage_result << std::endl;
                 rec_comp_result.push_back(stage_result);
             }
             catch (const cException_No_Comparision_Function & err) {
