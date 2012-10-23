@@ -400,6 +400,7 @@ EngineConfiguration::config_engine(const char * filename, std::ostream & os) {
         return false;
 }
 
+
 int
 disambiguate_main(std::string & engineconf, std::string & blockingconf) {
 
@@ -649,6 +650,7 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
         switch (round) {
             case 1:
             {
+                // TODO: Refactor this block.
                 vector<string> presort_columns;
                 StringRemainSame operator_no_change;
                 presort_columns.push_back(cFirstname::static_get_class_name());
@@ -673,12 +675,12 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
                 ;
         }
 
-        cFirstname::set_truncation(firstname_prev_truncation,
-            BlockingConfiguration::firstname_cur_truncation);
+        cFirstname::set_truncation(firstname_prev_truncation, BlockingConfiguration::firstname_cur_truncation);
         firstname_prev_truncation = BlockingConfiguration::firstname_cur_truncation;
         match.reset_blocking(*BlockingConfiguration::active_blocker_pointer, oldmatchfile);
 
         if (network_clustering) {
+            // TODO: Try to refactor this block.
             blocker_coauthor.build_uid2uinv_tree(match);
             ClusterSet cs;
             //cs.convert_from_ClusterInfo(&match);
@@ -699,6 +701,7 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
 
         const cRatios * ratio_pointer;
         if (!use_available_ratios) {
+            // TODO: Try to refactor all this.
             personalinfo.prepare(training_changable_vec.at(0).c_str(), training_changable_vec.at(1).c_str());
             patentinfo.prepare(training_stable_vec.at(0).c_str(), training_stable_vec.at(1).c_str());
 
