@@ -423,5 +423,9 @@ void             print_similarity                     (const SimilarityProfile &
 
 void             print_similarity_profile_size        (const SimilarityProfile & s);
 
+/**
+ * TODO: Probably ought to be private or protected.
+ */
+void             print_map                            (SPRatiosIndex & m);
 
 #endif /* PATENT_RATIOS_H */

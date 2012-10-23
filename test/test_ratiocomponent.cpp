@@ -77,12 +77,14 @@ public:
     CPPUNIT_ASSERT(1 == rc->m_counts.size());
     SPCountsIndex::const_iterator mc = rc->m_counts.begin();
     CPPUNIT_ASSERT(3 == mc->second);
+    describe_pass(INDENT4, "Correctly builds similarity match counts");
 
     rc->sp_stats(x_list, rc->x_counts);
     //std::cout << "Number of different non-match profiles (x_counts): " << rc->x_counts.size() << std::endl;
     CPPUNIT_ASSERT(1 == rc->x_counts.size());
     SPCountsIndex::const_iterator xc = rc->x_counts.begin();
     CPPUNIT_ASSERT(1 == xc->second);
+    describe_pass(INDENT4, "Correctly builds similarity non-match counts");
 
 
     //std::cout << "m_count value: " << (*c).second << std::endl;
@@ -95,12 +97,46 @@ public:
 
     describe_test(INDENT2, "From test_create_ratios in RatioComponentTest.");
 
-    // create training pairs
-    // Create x_counts and m_counts
-    // maybe clear ratio_map.
+    SimilarityProfile sp1;
+    sp1.push_back(1);
+    sp1.push_back(2);
+    rc->x_counts.insert(std::pair<SimilarityProfile, uint32_t>(sp1, 2));
+
+    SimilarityProfile sp2;
+    sp2.push_back(4);
+    sp2.push_back(4);
+    rc->m_counts.insert(std::pair<SimilarityProfile, uint32_t>(sp2, 9));
+    rc->x_counts.insert(std::pair<SimilarityProfile, uint32_t>(sp2, 2));
+
+    SimilarityProfile sp3;
+    sp3.push_back(3);
+    sp3.push_back(4);
+    rc->m_counts.insert(std::pair<SimilarityProfile, uint32_t>(sp3, 4));
+    rc->x_counts.insert(std::pair<SimilarityProfile, uint32_t>(sp3, 2));
+
+    SimilarityProfile sp4;
+    sp4.push_back(2);
+    sp4.push_back(4);
+    rc->m_counts.insert(std::pair<SimilarityProfile, uint32_t>(sp4, 1));
+    rc->x_counts.insert(std::pair<SimilarityProfile, uint32_t>(sp4, 7));
+
+
+    rc->ratio_map.clear();
     rc->create_ratios();
+    CPPUNIT_ASSERT(3 == rc->ratio_map.size());
+
+    SPRatiosIndex::const_iterator ri;
+    ri = rc->ratio_map.find(sp2);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(9.0/2.0, ri->second, 0.001);
+    ri = rc->ratio_map.find(sp3);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0/2.0, ri->second, 0.001);
+    ri = rc->ratio_map.find(sp4);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0/7.0, ri->second, 0.001);
+
+    describe_pass(INDENT4, "Correctly computes ratios from match and non-match counts");
+
     //std::cout << "Size of ratio_map: " << rc->ratio_map.size() << std::endl;
-    // Find a way to test the result of that call.
+    //print_map(rc->ratio_map);
   }
 
   void runTest() {

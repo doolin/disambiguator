@@ -502,7 +502,7 @@ cRatios::cRatios(const char * filename) {
 void
 print_similarity(const SimilarityProfile & s) {
 
-  std::cout << "From :" << __FUNCTION__ << ", " << __FILE__ 
+  std::cout << "From " << __FUNCTION__ << ", " << __FILE__ 
             << ":" << __LINE__ << std::endl;
 
   std::cout << "Size of sp: " << s.size();
@@ -526,7 +526,16 @@ print_value(uint32_t i) {
 
 
 void
+print_value(double d) {
+  std::cout << "From " << __FUNCTION__ << ", " << __FILE__ << ":" << __LINE__ << std::endl;
+  std::cout << "Value: " << d << std::endl;
+}
+
+
+void
 print_map(SPRatiosIndex & m) {
+
+  std::cout << "From " << __FUNCTION__ << ", " << __FILE__ << ":" << __LINE__ << std::endl;
 
   SPRatiosIndex::const_iterator mi = m.begin();
   for (mi; mi != m.end(); ++mi) {
