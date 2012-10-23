@@ -135,6 +135,24 @@ public:
 
 
 /**
+ * vector < uint32_t > positions_in_ratios:
+ * positions of the current components in the complete similarity profile.
+ */
+
+/**
+ * map<cSimilarity_With_Monotonicity_Dimension, MonotonicSet > similarity_map:
+ * a map of similarity profiles and their monotonic set for a certain dimension.
+ */
+
+/**
+*
+ *  void read_train_pairs ( list < std::pair < string, string > & trainpairs, const char * txt_file ) const:
+ *      read the list of pairs of unique record numbers ( training sets ) from the
+ *      specified "txt_file" into the list "trainpairs".
+ */
+
+
+/**
  * cRatioComponent:
  * This class is used as intermediate steps to finalize a cRatio object.
  * In the current engine, a complete similarity
@@ -148,46 +166,6 @@ public:
  * introduced below ) reads all the necessary cRatioComponent
  * objects to finalize, after which the cRatioComponents are
  * useless.
- */
-
-/*
- * Private:
- */
-
-
-/**
- * vector < uint32_t > positions_in_ratios:
- * positions of the current components in the complete similarity profile.
- */
-
-/**
- * vector < uint32_t > positions_in_record:
- * position of the current components in the Record::column_names.
- */
-
-/**
- * const string attrib_group:
- * the attribute GROUP identifier for which the
- * cRatioComponent object represents.
- */
-
-
-/**
- * map<cSimilarity_With_Monotonicity_Dimension, MonotonicSet > similarity_map:
- * a map of similarity profiles and their monotonic set for a certain dimension.
- */
-
-
-
-/**
-*
- *  void read_train_pairs ( list < std::pair < string, string > & trainpairs, const char * txt_file ) const:
- *      read the list of pairs of unique record numbers ( training sets ) from the
- *      specified "txt_file" into the list "trainpairs".
- *
- *  void get_similarity_info():
- *      to get the information of similarity profiles of the attribute group.
- *
  */
 class cRatioComponent {
 
@@ -221,8 +199,17 @@ private:
 
     vector<uint32_t> positions_in_ratios;
 
+   /**
+    * vector<uint32_t> positions_in_record:
+    * position of the current components in the Record::column_names.
+    */
     vector<uint32_t> positions_in_record;
 
+   /**
+    * const string attrib_group:
+    * the attribute GROUP identifier for which the
+    * cRatioComponent object represents.
+    */
     const string attrib_group;
 
    /**
@@ -275,6 +262,10 @@ private:
     //void read_train_pairs(list<std::pair<string, string> > & trainpairs, const char * txt_file) const;
     void read_train_pairs(TrainingPairs & trainpairs, const char * txt_file) const;
 
+   /**
+    *  void get_similarity_info():
+    *      to get the information of similarity profiles of the attribute group.
+    */
     void get_similarity_info();
 
 public:
