@@ -7,6 +7,7 @@
 #include <cluster.h>
 #include <clusterinfo.h>
 #include <training.h>
+#include <record.h>
 #include <ratios.h>
 
 #include "fake.h"
@@ -45,6 +46,10 @@ FakeTest::load_fake_data(string csvfilename) {
 
     if (not successful)
       exit(-1);
+
+    Record * r = &source.front();
+    Record::set_sample_record(r);
+
 
     create_record_plist(source, record_pointers);
 
