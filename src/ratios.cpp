@@ -262,6 +262,8 @@ cRatioComponent::prepare(const char * x_file,
 
     // laplace correction
     SPCountsIndex::const_iterator p, q;
+    // TODO: document count_to_consider, move the value into a
+    // #define in the appropriate header.
     const uint32_t count_to_consider = 100;
     //set <SimilarityProfile, SimilarityCompare > all_possible;
     set <vector<uint32_t>, SimilarityCompare > all_possible;
@@ -331,9 +333,10 @@ cRatioComponent::prepare(const char * x_file,
 #endif
 
     //////////////////
-    // TODO: Refactor
+    // TODO: Refactor into `compare_profile_existence`
     uint32_t num_xcount_without_mcount = 0;
     uint32_t num_mcount_without_xcount = 0;
+
     SPCountsIndex::iterator pp = x_counts.begin();
     for (; pp != x_counts.end(); ) {
 
@@ -349,6 +352,7 @@ cRatioComponent::prepare(const char * x_file,
     SPCountsIndex::iterator qq = m_counts.begin();
     for (; qq != m_counts.end(); ) {
 
+        // This needs to be a "contains" macro or something...
         if (ratio_map.find(qq->first) == ratio_map.end() ) {
             m_counts.erase ( qq++ );
             ++num_mcount_without_xcount;
