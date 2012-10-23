@@ -419,4 +419,9 @@ bool             dump_match                           (const char * sqlite3_targ
 uint32_t         compute_total_nodes                  (const SimilarityProfile & min_sp,
                                                        const SimilarityProfile & max_sp);
 
+void             print_similarity                     (const SimilarityProfile & s);
+
+void             print_similarity_profile_size        (const SimilarityProfile & s);
+
+
 #endif /* PATENT_RATIOS_H */

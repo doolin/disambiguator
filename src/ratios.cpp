@@ -28,16 +28,17 @@ get_max_similarity(const vector<string> & attrib_names)  {
 }
 
 
+// TODO: make this utility function work
 void
-print_similarity_profile_size() {
+print_similarity_profile_size(const SimilarityProfile & sp) {
 
-#if 0
+#if 1
     std::cout << "Size of Similarity Profile = "
-              <<  similarity_profile.size()
+              <<  sp.size()
               << ". Similarity Profile = ";
 
-    vector<uint32_t>::const_iterator tt = similarity_profile.begin();
-    for (tt != similarity_profile.end(); ++tt) {
+    vector<uint32_t>::const_iterator tt = sp.begin();
+    for (; tt != sp.end(); ++tt) {
         std::cout << *tt << ":";
     }
     std::cout << std::endl;
@@ -90,7 +91,7 @@ cRatioComponent::sp_stats (const TrainingPairs & trainpairs,
         const Record * prhs = pm->second;
 
         SimilarityProfile sp = plhs->record_compare_by_attrib_indice(*prhs, component_indice_in_record);
-        // print_similarity_profile_size();
+        //print_similarity_profile_size(sp);
 
         sp_iter = sp_counts.find(sp);
 
@@ -209,12 +210,18 @@ void
 cRatioComponent::create_ratios() {
 
   SPCountsIndex::const_iterator p, q;
-  //ratios = count of match / count of non-match;
+
+  // ratios = count of match / count of non-match;
+  // We'll walk the non-match training set as its bigger
+  // by definition. This procedure will miss similarities
+  // occurring only in the match set; mitigating that has
+  // to be done elsewhere.
   for (p = x_counts.begin(); p != x_counts.end(); ++p) {
-      q = m_counts.find( p->first );
-      if (q == m_counts.end()) 
+
+      q = m_counts.find(p->first);
+      if (q == m_counts.end()) {
           continue;
-      else {
+      } else {
           ratio_map.insert(std::pair<SimilarityProfile, double>
               (p->first, 1.0 * q->second / p->second));
       }
@@ -494,9 +501,11 @@ print_similarity(const SimilarityProfile & s) {
   std::cout << "From :" << __FUNCTION__ << ", " << __FILE__ 
             << ":" << __LINE__ << std::endl;
 
+  std::cout << "Size of sp: " << s.size();
+
   std::cout << "(";
 
-  SimilarityProfile::const_iterator i = s.begin(); 
+  SimilarityProfile::const_iterator i = s.begin();
   for (i; i != s.end()-1; ++i) {
     std::cout << *i << ", ";
   }
