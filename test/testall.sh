@@ -58,6 +58,8 @@ echo "engine test"
 echo "ratios test"
 ./ratios
 
+./ratiocomponent
+
 echo "integration test"
 source ./integration.sh
 
