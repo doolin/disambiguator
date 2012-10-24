@@ -289,7 +289,7 @@ public:
     */
     void prepare(const char* x_flie, const char * m_file);
 
-    void laplace_correction();
+    void laplace_correction(TrainingPairs x_list, TrainingPairs m_list);
 
     const SPRatiosIndex & get_ratios_map() const {
 

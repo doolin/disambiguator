@@ -231,30 +231,8 @@ cRatioComponent::create_ratios() {
 
 
 void
-cRatioComponent::laplace_correction() {
-
-}
-
-void
-cRatioComponent::prepare(const char * x_file,
-                         const char * m_file) {
-
-    //list<std::pair<string, string>> x_list, m_list;
-    TrainingPairs x_list, m_list;
-    x_counts.clear();
-    m_counts.clear();
-    ratio_map.clear();
-
-    get_similarity_info();
-
-    read_train_pairs(x_list, x_file);
-    read_train_pairs(m_list, m_file);
-
-    // sp_stats builds the count indexes for
-    // match and non-match SimilarityProfiles.
-    sp_stats(x_list, x_counts);
-    sp_stats(m_list, m_counts);
-
+cRatioComponent::laplace_correction(TrainingPairs x_list,
+                                    TrainingPairs m_list) {
 
     //////////////////////////////
     // TODO: Refactor into a laplace correction function.
@@ -318,6 +296,96 @@ cRatioComponent::prepare(const char * x_file,
     std::cout << "Match unique profile number = " << m_counts.size() << std::endl;
 
     /////////////  End refactoring //////////
+}
+
+
+void
+cRatioComponent::prepare(const char * x_file,
+                         const char * m_file) {
+
+    //list<std::pair<string, string>> x_list, m_list;
+    TrainingPairs x_list, m_list;
+    x_counts.clear();
+    m_counts.clear();
+    ratio_map.clear();
+
+    get_similarity_info();
+
+    read_train_pairs(x_list, x_file);
+    read_train_pairs(m_list, m_file);
+
+    // sp_stats builds the count indexes for
+    // match and non-match SimilarityProfiles.
+    sp_stats(x_list, x_counts);
+    sp_stats(m_list, m_counts);
+
+
+#if 1
+    //////////////////////////////
+    // TODO: Refactor into a laplace correction function.
+    std::cout << "Before LAPLACE CORRECTION: " << std::endl;
+    std::cout << "Size of non-match pair list = " << x_list.size() << std::endl;
+    std::cout << "Size of match pair list = " << m_list.size() << std::endl;
+
+    std::cout << "Non-match unique profile number = " << x_counts.size() << std::endl;
+    std::cout << "Match unique profile number = " << m_counts.size() << std::endl;
+
+    // laplace correction
+    SPCountsIndex::const_iterator p, q;
+    // TODO: document count_to_consider, move the value into a
+    // #define in the appropriate header.
+    const uint32_t count_to_consider = 100;
+    //set <SimilarityProfile, SimilarityCompare > all_possible;
+    set <vector<uint32_t>, SimilarityCompare > all_possible;
+
+    for (p = x_counts.begin(); p != x_counts.end(); ++p) {
+
+        if (m_counts.find(p->first) == m_counts.end() &&
+            p->second < count_to_consider) {
+            continue;
+        } else {
+            all_possible.insert(p->first);
+        }
+    }
+
+    for (p = m_counts.begin(); p != m_counts.end(); ++p) {
+
+        if (x_counts.find(p->first) == x_counts.end() &&
+            p->second < count_to_consider) {
+            continue;
+        } else {
+            all_possible.insert(p->first);
+        }
+    }
+
+    //set<SimilarityProfile, SimilarityCompare >::const_iterator ps = all_possible.begin();
+    set<vector<uint32_t>, SimilarityCompare >::const_iterator ps = all_possible.begin();
+    for (; ps != all_possible.end(); ++ps) {
+
+        SPCountsIndex::iterator p = x_counts.find(*ps);
+
+        if (x_counts.end() == p) {
+            x_counts.insert(std::pair<vector<uint32_t>, uint32_t>(*ps, laplace_base));
+        } else {
+            p->second += laplace_base;
+        }
+
+        p = m_counts.find(*ps);
+        if (m_counts.end() == p) {
+            m_counts.insert(std::pair<vector<uint32_t>, uint32_t>(*ps, laplace_base));
+        } else {
+            p->second += laplace_base;
+        }
+    }
+
+    std::cout << "AFTER LAPLACE CORRECTION:" << std::endl;
+    std::cout << "Non-match unique profile number = " << x_counts.size() << std::endl;
+    std::cout << "Match unique profile number = " << m_counts.size() << std::endl;
+
+    /////////////  End refactoring //////////
+#else
+    laplace_correction(x_list, m_list);
+#endif
 
     // //////////////////////////////////////////
 #if 1
