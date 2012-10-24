@@ -291,7 +291,12 @@ public:
     */
     void prepare(const char* x_flie, const char * m_file);
 
-    void laplace_correction(TrainingPairs x_list, TrainingPairs m_list);
+   /**
+    * Laplace correction for handling missing similarity profiles.
+    * Look for the `laplace_base` and `laplace_max_count` variables
+    * for setting the parameter values appropriately.
+    */
+    void laplace_correction();
 
     const SPRatiosIndex & get_ratios_map() const {
 

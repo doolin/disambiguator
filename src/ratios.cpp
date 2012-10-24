@@ -229,13 +229,13 @@ cRatioComponent::create_ratios() {
 
 }
 
+// TODO: 1. move into header, then 2. make configurable.
 #ifndef LAPLACE_MAX_COUNT
 #define LAPLACE_MAX_COUNT 100
 #endif
 
 void
-cRatioComponent::laplace_correction(TrainingPairs x_list,
-                                    TrainingPairs m_list) {
+cRatioComponent::laplace_correction() {
 
     SPCountsIndex::const_iterator p;
     const uint32_t laplace_max_count = LAPLACE_MAX_COUNT;
