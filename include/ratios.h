@@ -289,6 +289,8 @@ public:
     */
     void prepare(const char* x_flie, const char * m_file);
 
+    void laplace_correction();
+
     const SPRatiosIndex & get_ratios_map() const {
 
         if (is_ready) {

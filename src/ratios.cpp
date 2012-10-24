@@ -231,6 +231,11 @@ cRatioComponent::create_ratios() {
 
 
 void
+cRatioComponent::laplace_correction() {
+
+}
+
+void
 cRatioComponent::prepare(const char * x_file,
                          const char * m_file) {
 
