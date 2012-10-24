@@ -237,9 +237,11 @@ cRatioComponent::create_ratios() {
 void
 cRatioComponent::laplace_correction() {
 
+    set <SimilarityProfile, SimilarityCompare> all_possible;
+
+    ////// TODO: Refactor
     SPCountsIndex::const_iterator p;
     const uint32_t laplace_max_count = LAPLACE_MAX_COUNT;
-    set <SimilarityProfile, SimilarityCompare> all_possible;
 
     for (p = x_counts.begin(); p != x_counts.end(); ++p) {
 
@@ -260,6 +262,7 @@ cRatioComponent::laplace_correction() {
             all_possible.insert(p->first);
         }
     }
+    ///////  End refactor
 
     set<SimilarityProfile, SimilarityCompare>::const_iterator ps = all_possible.begin();
     for (; ps != all_possible.end(); ++ps) {
