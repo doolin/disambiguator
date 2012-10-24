@@ -81,7 +81,9 @@ typedef set<const SimilarityProfile *, cMonotonic_Similarity_Compare> MonotonicS
  * set structure. The primary purpose of the class
  * is to allow comparison of similarity profiles
  * skipping a certain entry in the profile.
- *
+ */
+
+/**
  * Private:
  *         const SimilarityProfile * psim: pointer to a similarity profile.
  *
@@ -90,7 +92,9 @@ typedef set<const SimilarityProfile *, cMonotonic_Similarity_Compare> MonotonicS
  *
  *         bool compare_without_primary( const SimilarityProfile * p1, const SimilarityProfile * p2 ) const:
  *             compare the similarity profiles in all dimensions except the "monotonic_dimension" dimension.
- *
+ */
+
+/**
  * Public:
  *        bool operator < ( const cSimilarity_With_Monotonicity_Dimension & rhs) const:
  *            comparison function that is used only in map/set.
@@ -99,7 +103,9 @@ typedef set<const SimilarityProfile *, cMonotonic_Similarity_Compare> MonotonicS
  *
  *        cSimilarity_With_Monotonicity_Dimension( const SimilarityProfile * p, const uint32_t dm ):
  *                constructor.
- *
+ */
+
+/**
  * Use of the above classes is primarily in the DisambigRatioSmoothing.cpp.
  * It is not expected to have a very solid understanding of the above
  * classes, unless smoothing, interpolation and extrapolation of
@@ -116,7 +122,6 @@ private:
     bool compare_without_primary(const SimilarityProfile * p1,
         const SimilarityProfile * p2 ) const;
 
-
 public:
 
     bool operator < (const cSimilarity_With_Monotonicity_Dimension & rhs) const;
@@ -131,25 +136,6 @@ public:
         : psim (p), monotonic_dimension(dm) {}
 };
 
-
-
-
-/**
- * vector < uint32_t > positions_in_ratios:
- * positions of the current components in the complete similarity profile.
- */
-
-/**
- * map<cSimilarity_With_Monotonicity_Dimension, MonotonicSet > similarity_map:
- * a map of similarity profiles and their monotonic set for a certain dimension.
- */
-
-/**
-*
- *  void read_train_pairs ( list < std::pair < string, string > & trainpairs, const char * txt_file ) const:
- *      read the list of pairs of unique record numbers ( training sets ) from the
- *      specified "txt_file" into the list "trainpairs".
- */
 
 
 /**
@@ -197,6 +183,10 @@ private:
     //map< SimilarityProfile, double, SimilarityCompare > ratio_map;
     SPRatiosIndex ratio_map;
 
+   /**
+    * vector<uint32_t> positions_in_ratios:
+    * positions of the current components in the complete similarity profile.
+    */
     vector<uint32_t> positions_in_ratios;
 
    /**
@@ -220,6 +210,11 @@ private:
     //const map<string, const Record *> * puid_tree;
     const RecordIndex * puid_tree;
 
+
+   /**
+    * map<cSimilarity_With_Monotonicity_Dimension, MonotonicSet > similarity_map:
+    * a map of similarity profiles and their monotonic set for a certain dimension.
+    */
     map<cSimilarity_With_Monotonicity_Dimension, MonotonicSet> similarity_map;
 
    /**
@@ -259,12 +254,17 @@ private:
     */
     void create_ratios();
 
+   /**
+    *  void read_train_pairs ( list < std::pair < string, string > & trainpairs, const char * txt_file ) const:
+    *      read the list of pairs of unique record numbers ( training sets ) from the
+    *      specified "txt_file" into the list "trainpairs".
+    */
     //void read_train_pairs(list<std::pair<string, string> > & trainpairs, const char * txt_file) const;
     void read_train_pairs(TrainingPairs & trainpairs, const char * txt_file) const;
 
    /**
     *  void get_similarity_info():
-    *      to get the information of similarity profiles of the attribute group.
+    *   to get the information of similarity profiles of the attribute group.
     */
     void get_similarity_info();
 
@@ -277,7 +277,7 @@ public:
     };
 
    /**
-    *  cRatioComponent ( const map < string, const Record * > uid_tree, const string & groupname ):
+    *  cRatioComponent (const map < string, const Record * > uid_tree, const string & groupname):
     *
     *  @param uid_tree  map of unique record id string to its record pointer.
     *  @param groupname attribute group name.
