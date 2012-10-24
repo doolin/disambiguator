@@ -237,12 +237,6 @@ void
 cRatioComponent::laplace_correction(TrainingPairs x_list,
                                     TrainingPairs m_list) {
 
-    std::cout << "Before LAPLACE CORRECTION: "        << std::endl;
-    std::cout << "Size of non-match pair list = "     << x_list.size() << std::endl;
-    std::cout << "Size of match pair list = "         << m_list.size() << std::endl;
-    std::cout << "Non-match unique profile number = " << x_counts.size() << std::endl;
-    std::cout << "Match unique profile number = "     << m_counts.size() << std::endl;
-
     SPCountsIndex::const_iterator p;
     const uint32_t laplace_max_count = LAPLACE_MAX_COUNT;
     set <SimilarityProfile, SimilarityCompare> all_possible;
@@ -285,10 +279,6 @@ cRatioComponent::laplace_correction(TrainingPairs x_list,
             p->second += laplace_base;
         }
     }
-
-    std::cout << "AFTER LAPLACE CORRECTION:"          << std::endl;
-    std::cout << "Non-match unique profile number = " << x_counts.size() << std::endl;
-    std::cout << "Match unique profile number = "     << m_counts.size() << std::endl;
 
 }
 
@@ -378,7 +368,15 @@ cRatioComponent::prepare(const char * x_file,
 
     /////////////  End refactoring //////////
 #else
+    std::cout << "Before LAPLACE CORRECTION: "        << std::endl;
+    std::cout << "Size of non-match pair list = "     << x_list.size() << std::endl;
+    std::cout << "Size of match pair list = "         << m_list.size() << std::endl;
+    std::cout << "Non-match unique profile number = " << x_counts.size() << std::endl;
+    std::cout << "Match unique profile number = "     << m_counts.size() << std::endl;
     laplace_correction(x_list, m_list);
+    std::cout << "AFTER LAPLACE CORRECTION:"          << std::endl;
+    std::cout << "Non-match unique profile number = " << x_counts.size() << std::endl;
+    std::cout << "Match unique profile number = "     << m_counts.size() << std::endl;
 #endif
 
     // //////////////////////////////////////////
