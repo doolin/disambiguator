@@ -229,27 +229,23 @@ cRatioComponent::create_ratios() {
 
 }
 
+#ifndef LAPLACE_MAX_COUNT
+#define LAPLACE_MAX_COUNT 100
+#endif
 
 void
 cRatioComponent::laplace_correction(TrainingPairs x_list,
                                     TrainingPairs m_list) {
 
-    //////////////////////////////
-    // TODO: Refactor into a laplace correction function.
-    std::cout << "Before LAPLACE CORRECTION: " << std::endl;
-    std::cout << "Size of non-match pair list = " << x_list.size() << std::endl;
-    std::cout << "Size of match pair list = " << m_list.size() << std::endl;
-
+    std::cout << "Before LAPLACE CORRECTION: "        << std::endl;
+    std::cout << "Size of non-match pair list = "     << x_list.size() << std::endl;
+    std::cout << "Size of match pair list = "         << m_list.size() << std::endl;
     std::cout << "Non-match unique profile number = " << x_counts.size() << std::endl;
-    std::cout << "Match unique profile number = " << m_counts.size() << std::endl;
+    std::cout << "Match unique profile number = "     << m_counts.size() << std::endl;
 
-    // laplace correction
     SPCountsIndex::const_iterator p, q;
-    // TODO: document count_to_consider, move the value into a
-    // #define in the appropriate header.
-    const uint32_t count_to_consider = 100;
-    //set <SimilarityProfile, SimilarityCompare > all_possible;
-    set <vector<uint32_t>, SimilarityCompare > all_possible;
+    const uint32_t count_to_consider = LAPLACE_MAX_COUNT;
+    set <SimilarityProfile, SimilarityCompare> all_possible;
 
     for (p = x_counts.begin(); p != x_counts.end(); ++p) {
 
@@ -271,8 +267,7 @@ cRatioComponent::laplace_correction(TrainingPairs x_list,
         }
     }
 
-    //set<SimilarityProfile, SimilarityCompare >::const_iterator ps = all_possible.begin();
-    set<vector<uint32_t>, SimilarityCompare >::const_iterator ps = all_possible.begin();
+    set<SimilarityProfile, SimilarityCompare>::const_iterator ps = all_possible.begin();
     for (; ps != all_possible.end(); ++ps) {
 
         SPCountsIndex::iterator p = x_counts.find(*ps);
@@ -291,11 +286,10 @@ cRatioComponent::laplace_correction(TrainingPairs x_list,
         }
     }
 
-    std::cout << "AFTER LAPLACE CORRECTION:" << std::endl;
+    std::cout << "AFTER LAPLACE CORRECTION:"          << std::endl;
     std::cout << "Non-match unique profile number = " << x_counts.size() << std::endl;
-    std::cout << "Match unique profile number = " << m_counts.size() << std::endl;
+    std::cout << "Match unique profile number = "     << m_counts.size() << std::endl;
 
-    /////////////  End refactoring //////////
 }
 
 
