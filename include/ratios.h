@@ -285,7 +285,9 @@ public:
     explicit cRatioComponent(const RecordIndex & uid_tree, const string & groupname);
 
    /**
-    * TODO: FIXME: Document this method.
+    * `prepare` is a wrapper function which sets up all the ratios and
+    * similarities before feeding everything into the QP for interpolation
+    * and extrapolation of missing similarity and ratio values.
     */
     void prepare(const char* x_flie, const char * m_file);
 
