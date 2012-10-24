@@ -153,16 +153,26 @@ public:
     sp6.push_back(1);
     rc->x_counts.insert(std::pair<SimilarityProfile, uint32_t>(sp6, 68));
 
-    SPCountsIndex::const_iterator mc, xc;
+    SimilarityProfile sp7;
+    sp7.push_back(3);
+    sp7.push_back(3);
+    rc->m_counts.insert(std::pair<SimilarityProfile, uint32_t>(sp7, 163));
+
+    SPCountsIndex::const_iterator mc, xc, hc;
     mc = rc->m_counts.find(sp5);
     CPPUNIT_ASSERT(1 == mc->second);
     xc = rc->x_counts.find(sp6);
     CPPUNIT_ASSERT(68 == xc->second);
+    hc = rc->m_counts.find(sp7);
+    CPPUNIT_ASSERT(163 == hc->second);
 
     rc->laplace_correction();
 
     CPPUNIT_ASSERT(6 == mc->second);
     CPPUNIT_ASSERT(68 == xc->second);
+    // TODO: Explain why this should be incremented.
+    CPPUNIT_ASSERT(168 == hc->second);
+
     describe_pass(INDENT4, "Performs Laplace base adjustment correctly");
   }
 
