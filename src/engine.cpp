@@ -211,6 +211,10 @@ disambiguate_by_set (const Record * key1,
 
     //ATTENSION: RETURN A NON-NULL POINTER TO TELL IT IS A
     //MERGE. NEED TO FIND A REPRESENTATIVE IN THE MERGE PART.
+    // TODO: The "probability" returned here is actually the value
+    // used to initialize the cohesion in the ClusterHead
+    // instantiated immediately after this call returns.
+    // TODO: CAVEAT: cohesion
     return std::pair<const Record *, double>(key1, probability);
 }
 

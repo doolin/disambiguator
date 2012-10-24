@@ -228,7 +228,9 @@ Cluster::disambiguate(const Cluster & rhs,
 	if ( threshold_to_use > max_threshold )
 		threshold_to_use = max_threshold;
 
-	std::pair<const Record *, double > ans (disambiguate_by_set (this->m_info.m_delegate,
+  // TODO: CAVEAT: cohesion is what is actually returned here, associated with
+  // a record from the cluster being examined.
+ 	std::pair<const Record *, double > ans (disambiguate_by_set (this->m_info.m_delegate,
                                                                this->m_fellows,
                                                                this->m_info.m_cohesion,
 												                                       rhs.m_info.m_delegate,
@@ -238,6 +240,7 @@ Cluster::disambiguate(const Cluster & rhs,
                                                               *pratio,
                                                                threshold_to_use));
 
+  // TODO: CAVEAT: cohesion
 	return ClusterHead(ans.first, ans.second);
 
 }
