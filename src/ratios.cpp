@@ -239,12 +239,15 @@ cRatioComponent::laplace_correction() {
 
     set <SimilarityProfile, SimilarityCompare> all_possible;
 
-    ////// TODO: Refactor
+    ////// TODO: Refactor twice to DRY up these loops.
     SPCountsIndex::const_iterator p;
     const uint32_t laplace_max_count = LAPLACE_MAX_COUNT;
 
     for (p = x_counts.begin(); p != x_counts.end(); ++p) {
 
+        // TODO: Explain why the second condition is < instead
+        // of >, which would seem to make more sense. I'm missing
+        // something here...?
         if (m_counts.find(p->first) == m_counts.end() &&
             p->second < laplace_max_count) {
             continue;
