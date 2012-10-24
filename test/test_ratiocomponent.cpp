@@ -139,10 +139,39 @@ public:
     //print_map(rc->ratio_map);
   }
 
+
+  void test_laplace_correction() {
+
+    SimilarityProfile sp5;
+    sp5.push_back(2);
+    sp5.push_back(2);
+    rc->m_counts.insert(std::pair<SimilarityProfile, uint32_t>(sp5, 1));
+    rc->x_counts.insert(std::pair<SimilarityProfile, uint32_t>(sp5, 7));
+
+    SimilarityProfile sp6;
+    sp6.push_back(2);
+    sp6.push_back(1);
+    rc->x_counts.insert(std::pair<SimilarityProfile, uint32_t>(sp6, 68));
+
+    SPCountsIndex::const_iterator mc, xc;
+    mc = rc->m_counts.find(sp5);
+    CPPUNIT_ASSERT(1 == mc->second);
+    xc = rc->x_counts.find(sp6);
+    CPPUNIT_ASSERT(68 == xc->second);
+
+    rc->laplace_correction();
+
+    CPPUNIT_ASSERT(6 == mc->second);
+    CPPUNIT_ASSERT(68 == xc->second);
+    describe_pass(INDENT4, "Performs Laplace base adjustment correctly");
+  }
+
+
   void runTest() {
     //load_fake_data();
     test_sp_stats();
     test_create_ratios();
+    test_laplace_correction();
   }
 };
 
