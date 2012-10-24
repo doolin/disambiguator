@@ -243,7 +243,7 @@ cRatioComponent::laplace_correction(TrainingPairs x_list,
     std::cout << "Non-match unique profile number = " << x_counts.size() << std::endl;
     std::cout << "Match unique profile number = "     << m_counts.size() << std::endl;
 
-    SPCountsIndex::const_iterator p, q;
+    SPCountsIndex::const_iterator p;
     const uint32_t laplace_max_count = LAPLACE_MAX_COUNT;
     set <SimilarityProfile, SimilarityCompare> all_possible;
 
