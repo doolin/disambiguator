@@ -96,8 +96,10 @@ string cBlocking_Operation_Multiple_Column_Manipulate::extract_column_info (cons
  */
 cBlocking_Operation_By_Coauthors::cBlocking_Operation_By_Coauthors(
     const RecordPList & all_rec_pointers,
-    const ClusterInfo & cluster, const uint32_t coauthors)
-    : patent_tree(cSort_by_attrib(cPatent::static_get_class_name())), num_coauthors(coauthors) {
+    const ClusterInfo & cluster,
+    const uint32_t coauthors)
+    : patent_tree(cSort_by_attrib(cPatent::static_get_class_name())),
+      num_coauthors(coauthors) {
 
     if (num_coauthors > 4) {
         std::cout << "================ WARNING =====================" << std::endl;
@@ -118,12 +120,15 @@ cBlocking_Operation_By_Coauthors::cBlocking_Operation_By_Coauthors(
 
 
 cBlocking_Operation_By_Coauthors::cBlocking_Operation_By_Coauthors(
-    const RecordPList & all_rec_pointers, const uint32_t coauthors)
-    : patent_tree(cSort_by_attrib(cPatent::static_get_class_name())), num_coauthors(coauthors) {
+    const RecordPList & all_rec_pointers,
+    const uint32_t coauthors)
+    : patent_tree(cSort_by_attrib(cPatent::static_get_class_name())),
+      num_coauthors(coauthors) {
 
     if (num_coauthors > 4) {
         std::cout << "================ WARNING =====================" << std::endl;
-        std::cout << "Number of coauthors in which cBlocking_Operation_By_Coauthors uses is probably too large. Number of coauthors = " << num_coauthors << std::endl;
+        std::cout << "Number of coauthors in which cBlocking_Operation_By_Coauthors uses "
+                  << " is probably too large. Number of coauthors = " << num_coauthors << std::endl;
         std::cout << "==================END OF WARNING ================" << std::endl;
     }
 
@@ -152,14 +157,14 @@ void
 cBlocking_Operation_By_Coauthors::build_patent_tree(
     const RecordPList & all_rec_pointers) {
 
-    map < const Record *, RecordPList, cSort_by_attrib >::iterator ppatentmap;
+    map<const Record *, RecordPList, cSort_by_attrib>::iterator ppatentmap;
 
     RecordPList::const_iterator p = all_rec_pointers.begin();
     for (; p != all_rec_pointers.end(); ++p) {
         ppatentmap = patent_tree.find(*p);
 
         if (ppatentmap == patent_tree.end()) {
-            RecordPList temp ( 1, *p);
+            RecordPList temp (1, *p);
             patent_tree.insert(std::pair<const Record *, RecordPList> (*p, temp));
         }
         else {

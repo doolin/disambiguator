@@ -359,7 +359,7 @@ class cBlocking_Operation_By_Coauthors : public cBlocking_Operation {
 private:
 
    /**
-    *  map < const Record *, RecordPList, cSort_by_attrib > patent_tree:
+    *  map<const Record *, RecordPList, cSort_by_attrib> patent_tree:
     *  a binary tree to sort records by patent information.
     *  key = const Record pointer, value = list < const Record * >,
     *  comparison function = an object of cSort_by_attrib, which
