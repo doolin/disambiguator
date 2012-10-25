@@ -315,10 +315,8 @@ public:
 };
 
 
+
 class ClusterInfo;
-
-
-
 
 /**
  * cBlocking_Operation_By_Coauthor:
@@ -395,13 +393,6 @@ private:
     */
     void build_patent_tree(const RecordPList & allrec);
 
-   /**
-    *  RecordPList get_topN_coauthors( const Record * pRec, const unsigned int topN) const:
-    *  find the top N most prolific coauthors of the input pRec record
-    *  pointer, and return a list of const Record pointers.
-    */
-    RecordPList get_topN_coauthors( const Record *, const unsigned int topN) const;
-
 
 public:
 
@@ -422,6 +413,14 @@ public:
     */
     cBlocking_Operation_By_Coauthors(const RecordPList & allrec,
         const unsigned int num_coauthors);
+
+   /**
+    *  RecordPList get_topN_coauthors( const Record * pRec, const unsigned int topN) const:
+    *  find the top N most prolific coauthors of the input pRec record
+    *  pointer, and return a list of const Record pointers.
+    */
+    // TODO: Move this back to private, or protected/friend or something.
+    RecordPList get_topN_coauthors( const Record *, const unsigned int topN) const;
 
    /**
     * string extract_blocking_info(const Record * prec) const;
