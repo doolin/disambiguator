@@ -47,6 +47,15 @@ public:
     cob = ft->get_coauthor_blocking();
    }
 
+
+  void test_read_blocking_config() {
+    std::ofstream devnull("/dev/null");
+    int result;
+    result = BlockingConfiguration::config_blocking("./fixtures/BlockingConfig.txt", string("Round 1"), devnull);
+    CPPUNIT_ASSERT(0 == result);
+    describe_pass(INDENT2, "Reads a valid blocking file correctly");
+  }
+
   void test_multi_column_blocking() {
 #if 0
     const vector<const StringManipulator *> & inputvsm;
@@ -76,6 +85,7 @@ public:
   }
 
   void runTest() {
+    test_read_blocking_config();
     test_multi_column_blocking();
     //test_get_topN_coauthors();
     //test_coauthor_blocking();
