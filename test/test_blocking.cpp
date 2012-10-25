@@ -43,16 +43,34 @@ public:
     ft = new FakeTest(string("Fake RatioComponentTest"), filename);
     ft->load_fake_data(filename);
     recpointers = ft->get_recpointers();
+    cob = ft->get_coauthor_blocking();
    }
 
+  void test_multi_column_blocking() {
+  }
+
+ /**
+  * Coauthor blocking looks like a real pain, so letting this ride for now.
+  * Will return to it later.
+  */
+  void test_get_topN_coauthors() {
+    const Record * prec = recpointers.front();
+    std::cout << "front pointer: " << recpointers.front() << std::endl;
+    prec->print();
+    //cob->get_topN_coauthors(prec, 2);
+  }
+
   void test_coauthor_blocking() {
-    cob = ft->get_coauthor_blocking();
+    //const Record * prec = recpointers.front();
+    std::cout << "front pointer: " << recpointers.front() << std::endl;
     //std::string bi = cob->extract_blocking_info(recpointers.front());
     //std::cout << "blocking info: " << bi << std::endl;
   }
 
   void runTest() {
-    test_coauthor_blocking();
+    test_multi_column_blocking();
+    //test_get_topN_coauthors();
+    //test_coauthor_blocking();
   }
 };
 
