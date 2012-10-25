@@ -18,9 +18,6 @@ echo "Record test"
 echo "String Manipulator test"
 `./stringmanipulator`
 
-echo "Blocking test"
-`./blocking`
-
 echo "Dis? test"
 `./distest`
 
@@ -59,6 +56,9 @@ echo "ratios test"
 ./ratios
 
 ./ratiocomponent
+
+echo "Blocking test"
+./blocking
 
 echo "integration test"
 source ./integration.sh
