@@ -59,7 +59,7 @@ misspell_SOURCES = test_misspell.cpp
 namecompare_SOURCES = test_namecompare.cpp
 engineconfig_SOURCES = test_engineconfig.cpp
 comparesimilarities_SOURCES = test_compare.cpp
-blocking_SOURCES = test_blocking.cpp
+blocking_SOURCES = test_blocking.cpp $(COMMON)
 stringmanipulator_SOURCES = test_string_manipulator.cpp
 strcmp95_SOURCES = test_strcmp95.cpp
 
