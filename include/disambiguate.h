@@ -4,7 +4,7 @@
 #define PATENT_DISAMBIGUATE_H
 
 namespace EngineConfiguration {
-    bool config_engine( const char * filename, std::ostream & os );
+    bool config_engine(const char * filename, std::ostream & os);
 }
 
 namespace BlockingConfiguration {
@@ -29,12 +29,12 @@ namespace BlockingConfiguration {
         }
         ~cBlockingDetail() { delete m_psm; }
     };
-    int config_blocking ( const char * filename, const string & module_id);
+
+    int config_blocking (const char * filename, const string & module_id);
+    int config_blocking (const char * filename, const string & module_id, std::ostream &);
 }
 
-int BlockingConfiguration::config_blocking(const char * filename, const string & module_id);
-
-int Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigFile );
+int Full_Disambiguation(const char * EngineConfigFile, const char * BlockingConfigFile);
 
 
 #endif /* PATENT_DISAMBIGUATE_H */

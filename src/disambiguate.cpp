@@ -51,7 +51,7 @@ namespace BlockingConfiguration {
     vector<BlockingConfiguration::cBlockingDetail> BlockingConfig;
     vector<string> active_similarity_attributes;
     const string ACTIVE_SIMILARITY_ATTRIBUTES_LABEL = "ACTIVE SIMILARITY ATTRIBUTES";
-    std::auto_ptr < cBlocking_Operation > active_blocker_pointer;
+    std::auto_ptr<cBlocking_Operation> active_blocker_pointer;
     unsigned int firstname_cur_truncation = 0;
 }
 
@@ -89,45 +89,62 @@ namespace EngineConfiguration {
 }
 
 
-
 int BlockingConfiguration::config_blocking(const char * filename, const string & module_id) {
 
-    std::cout << std::endl;
-    std::cout << "====================== " << module_id << " ===========================" << std::endl;
-    std::cout << "Reading Blocking Configuration from " << filename << " ... ..." << std::endl;
-    std::cout << std::endl;
+   std::ostream & output = std::cout;
+   BlockingConfiguration::config_blocking(filename, module_id, output);
+}
+
+
+int BlockingConfiguration::config_blocking(const char * filename, const string & module_id, std::ostream & outstream) {
+
+    std::ostream & output = outstream;
+
+    output << std::endl;
+    output << "====================== " << module_id << " ===========================" << std::endl;
+    output << "Reading Blocking Configuration from " << filename << " ... ..." << std::endl;
+    output << std::endl;
+
     const char * delim = ":";
     const char * secondary_delim = ",";
     const char module_specifier = '[';
     const unsigned int delim_len = strlen(delim);
     const unsigned int secondary_delim_len = strlen(secondary_delim);
     std::ifstream infile(filename);
-    if ( ! infile.good() ) {
-        std::cout << "Blocking configuration file " << filename << " does not exist." << std::endl;
+
+    if (!infile.good()) {
+        output << "Blocking configuration file " << filename
+               << " does not exist." << std::endl;
         return 1;
     }
+
     string linedata;
     size_t pos, prevpos;
     BlockingConfiguration::BlockingConfig.clear();
 
-    while ( getline ( infile, linedata ) && linedata.find(module_id) == string::npos );
-    if ( ! infile ) {
-        std::cout << "Cannot find module id: " << module_id << std::endl;
+    while (getline(infile, linedata) && linedata.find(module_id) == string::npos);
+
+    if (!infile) {
+        output << "Cannot find module id: " << module_id << std::endl;
         return 2;
     }
 
     do {
-        getline ( infile, linedata );
-        if ( linedata.find(module_specifier) != string::npos )
+        getline (infile, linedata);
+
+        if (linedata.find(module_specifier) != string::npos)
             break;
-        if ( linedata.find(BlockingConfiguration::ACTIVE_SIMILARITY_ATTRIBUTES_LABEL) != string::npos )
+
+        if (linedata.find(BlockingConfiguration::ACTIVE_SIMILARITY_ATTRIBUTES_LABEL) != string::npos)
             break;
-        if ( ! infile ) {
-            std::cout << "End of file." << std::endl;
+
+        if (!infile) {
+            output << "End of file." << std::endl;
             break;
         }
+
         pos = linedata.find(delim);
-        if ( pos == string::npos )
+        if (pos == string::npos)
             continue;
 
         string lhs (linedata.c_str(), pos );
@@ -154,14 +171,14 @@ int BlockingConfiguration::config_blocking(const char * filename, const string &
         temp.m_isforward = ( forwardstr == "false" ) ? false : true;
 
 
-        std::cout << "Column name = " << columnname
-                << ", Data index = " << temp.m_dataindex
-                << ", Beginning position = " << temp.m_begin
-                << ", Number of chars = " << temp.m_nchar
-                << ", Direction = " << ( temp.m_isforward ? "true" : "false")
-                << std::endl;
+        output << "Column name = " << columnname
+               << ", Data index = " << temp.m_dataindex
+               << ", Beginning position = " << temp.m_begin
+               << ", Number of chars = " << temp.m_nchar
+               << ", Direction = " << (temp.m_isforward ? "true" : "false")
+               << std::endl;
 
-        if ( columnname == cFirstname::static_get_class_name() )
+        if (columnname == cFirstname::static_get_class_name())
             BlockingConfiguration::firstname_cur_truncation = temp.m_nchar;
 
         BlockingConfiguration::BlockingConfig.push_back(temp);
@@ -173,18 +190,18 @@ int BlockingConfiguration::config_blocking(const char * filename, const string &
     pos = linedata.find(delim);
     prevpos = pos + delim_len;
     BlockingConfiguration::active_similarity_attributes.clear();
-    std::cout << "Similarity Profiles include :";
+    output << "Similarity Profiles include :";
     do {
         pos = linedata.find(secondary_delim, prevpos);
         const string tempname = remove_headtail_space( linedata.substr(prevpos, pos - prevpos) );
         prevpos = pos + secondary_delim_len ;
         if ( ! tempname.empty()) {
             BlockingConfiguration::active_similarity_attributes.push_back(tempname);
-            std::cout << tempname << ", ";
+            output << tempname << ", ";
         }
 
     } while ( pos != string::npos );
-    std::cout << std::endl;
+    output << std::endl;
 
 
     vector<const StringManipulator *> pstring_oper;
@@ -625,6 +642,7 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
         sprintf(roundstr, "%d", round);
         module_name = module_prefix + roundstr;
 
+        // Successive reads of the blocking configuration file.
         is_blockingconfig_success = BlockingConfiguration::config_blocking(BlockingConfigFile, module_name);
         if (is_blockingconfig_success != 0) break;
 
