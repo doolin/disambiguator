@@ -187,29 +187,31 @@ int BlockingConfiguration::config_blocking( const char * filename, const string 
     std::cout << std::endl;
 
 
-    vector < const StringManipulator *> pstring_oper;
-    vector < string > columns_for_blocking;
-    vector < unsigned int > data_indice_for_blocking;
-    for ( vector < BlockingConfiguration::cBlockingDetail >::const_iterator p = BlockingConfiguration::BlockingConfig.begin();
-            p != BlockingConfiguration::BlockingConfig.end(); ++p ) {
+    vector<const StringManipulator *> pstring_oper;
+    vector<string> columns_for_blocking;
+    vector<unsigned int> data_indice_for_blocking;
+
+    vector<BlockingConfiguration::cBlockingDetail>::const_iterator p = BlockingConfiguration::BlockingConfig.begin();
+    for (; p != BlockingConfiguration::BlockingConfig.end(); ++p) {
 
         pstring_oper.push_back(p->m_psm);
         columns_for_blocking.push_back(p->m_columnname);
         data_indice_for_blocking.push_back(p->m_dataindex);
 
         StringTruncate * q = dynamic_cast< StringTruncate *>(p->m_psm);
-        if ( q == NULL ) {
-            std::cout << "------> ATTENTION: STRING OPERATOR OF " << p->m_columnname << " CANNOT BE DYNAMICALLY CAST. SKIP THIS OPERATION." << std::endl;
+        if (q == NULL) {
+            std::cout << "------> ATTENTION: STRING OPERATOR OF "
+                      << p->m_columnname
+                      << " CANNOT BE DYNAMICALLY CAST. SKIP THIS OPERATION."
+                      << std::endl;
+        } else {
+            q->set_truncater(p->m_begin, p->m_nchar, p->m_isforward);
         }
-        else {
-            q->set_truncater( p->m_begin, p->m_nchar, p->m_isforward);
-        }
-
     }
-    std::auto_ptr < cBlocking_Operation> bptr (
+
+    std::auto_ptr<cBlocking_Operation> bptr (
             new cBlocking_Operation_Multiple_Column_Manipulate (pstring_oper, columns_for_blocking, data_indice_for_blocking));
     BlockingConfiguration::active_blocker_pointer = bptr;
-
 
     return 0;
 }
