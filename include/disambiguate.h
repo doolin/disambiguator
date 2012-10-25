@@ -32,6 +32,8 @@ namespace BlockingConfiguration {
     int config_blocking ( const char * filename, const string & module_id);
 }
 
+int BlockingConfiguration::config_blocking(const char * filename, const string & module_id);
+
 int Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigFile );
 
 

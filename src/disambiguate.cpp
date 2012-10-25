@@ -48,8 +48,8 @@ remove_headtail_space(const string & s) {
 namespace BlockingConfiguration {
     using std::string;
     using std::vector;
-    vector < BlockingConfiguration::cBlockingDetail > BlockingConfig;
-    vector < string > active_similarity_attributes;
+    vector<BlockingConfiguration::cBlockingDetail> BlockingConfig;
+    vector<string> active_similarity_attributes;
     const string ACTIVE_SIMILARITY_ATTRIBUTES_LABEL = "ACTIVE SIMILARITY ATTRIBUTES";
     std::auto_ptr < cBlocking_Operation > active_blocker_pointer;
     unsigned int firstname_cur_truncation = 0;
@@ -90,7 +90,7 @@ namespace EngineConfiguration {
 
 
 
-int BlockingConfiguration::config_blocking( const char * filename, const string & module_id ) {
+int BlockingConfiguration::config_blocking(const char * filename, const string & module_id) {
 
     std::cout << std::endl;
     std::cout << "====================== " << module_id << " ===========================" << std::endl;

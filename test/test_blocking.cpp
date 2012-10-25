@@ -17,6 +17,7 @@
 #include "fake.h"
 
 
+#include <disambiguate.h>
 #include <attribute.h>
 #include <cluster.h>
 #include <newcluster.h>
