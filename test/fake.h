@@ -15,6 +15,7 @@ private:
   vector<Record *> rpv;
   string csvfilename;
   map<string, const Record *> uid_dict;
+  const cBlocking_Operation_By_Coauthors * coauthor_blocking;
 
 public:
 
@@ -23,6 +24,10 @@ public:
   void load_fake_data(string csvfilename);
 
   RecordIndex * get_uid_dict();
+
+  RecordPList get_recpointers();
+
+  const cBlocking_Operation_By_Coauthors * get_coauthor_blocking();
 
   void runTest() {
     load_fake_data(csvfilename);

@@ -4,29 +4,58 @@
 
 #include <cppunit/TestCase.h>
 
+#include <disambiguation.h>
+#include <engine.h>
+#include <cluster.h>
+#include <clusterinfo.h>
+#include <training.h>
+#include <record.h>
+#include <ratios.h>
+
+#include "testdata.h"
+#include "testutils.h"
+#include "fake.h"
+
+
 #include <attribute.h>
-#include <strcmp95.h>
-#include <txt2sqlite3.h>
+#include <cluster.h>
+#include <newcluster.h>
+#include <record.h>
+#include <engine.h>
+#include <blocking_operation.h>
+#include "fake.h"
 
 #include "testutils.h"
 
 
 class BlockingTest : public CppUnit::TestCase {
 
+private:
+  FakeTest * ft;
+  RecordPList recpointers;
+  const cBlocking_Operation_By_Coauthors * cob;
+
 public:
   BlockingTest(std::string name) : CppUnit::TestCase(name) {
-    describe_test(INDENT0, name.c_str());
-  }
 
-  void delete_blocking() {
-    //cBlocking * rc = new cBlocking();
-    //delete rc;
+    describe_test(INDENT0, name.c_str());
+    const string filename("testdata/clustertest.csv");
+    ft = new FakeTest(string("Fake RatioComponentTest"), filename);
+    ft->load_fake_data(filename);
+    recpointers = ft->get_recpointers();
+   }
+
+  void test_coauthor_blocking() {
+    cob = ft->get_coauthor_blocking();
+    //std::string bi = cob->extract_blocking_info(recpointers.front());
+    //std::cout << "blocking info: " << bi << std::endl;
   }
 
   void runTest() {
-    delete_blocking();
+    test_coauthor_blocking();
   }
 };
+
 
 void
 test_blocking() {

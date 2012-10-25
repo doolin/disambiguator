@@ -50,7 +50,6 @@ FakeTest::load_fake_data(string csvfilename) {
     Record * r = &source.front();
     Record::set_sample_record(r);
 
-
     create_record_plist(source, record_pointers);
 
     // IPDict
@@ -65,6 +64,7 @@ FakeTest::load_fake_data(string csvfilename) {
 
     const uint32_t num_coauthors_to_group = 2;
     cBlocking_Operation_By_Coauthors blocker_coauthor(record_pointers, num_coauthors_to_group);
+    coauthor_blocking = &blocker_coauthor;
 
     //cBlocking_Operation_By_Coauthors  blocker_coauthor = get_blocker_coathor();
     Cluster::set_reference_patent_tree_pointer(blocker_coauthor.get_patent_tree());
@@ -78,12 +78,25 @@ FakeTest::load_fake_data(string csvfilename) {
     comparators.push_back("Firstname");
     comparators.push_back("Lastname");
     Record::activate_comparators_by_name(comparators);
-  }
+}
 
-  RecordIndex *
-  FakeTest::get_uid_dict() {
-    return &uid_dict;
-  }
+
+RecordIndex *
+FakeTest::get_uid_dict() {
+  return &uid_dict;
+}
+
+
+const cBlocking_Operation_By_Coauthors *
+FakeTest::get_coauthor_blocking() {
+  return coauthor_blocking;
+}
+
+
+RecordPList
+FakeTest::get_recpointers() {
+  return record_pointers;
+}
 
 void
 test_fake() {
