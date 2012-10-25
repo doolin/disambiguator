@@ -52,7 +52,7 @@ namespace BlockingConfiguration {
     vector<string> active_similarity_attributes;
     const string ACTIVE_SIMILARITY_ATTRIBUTES_LABEL = "ACTIVE SIMILARITY ATTRIBUTES";
     std::auto_ptr<cBlocking_Operation> active_blocker_pointer;
-    unsigned int firstname_cur_truncation = 0;
+    uint32_t firstname_cur_truncation = 0;
 }
 
 namespace EngineConfiguration {
@@ -75,15 +75,15 @@ namespace EngineConfiguration {
 
     string working_dir;
     string source_csv_file;
-    unsigned int number_of_threads;
+    uint32_t number_of_threads;
     bool generate_stable_training_sets;
     bool use_available_ratios_database;
     vector < double > thresholds;
     vector < string > involved_columns;
     bool frequency_adjustment_mode;
     bool debug_mode;
-    unsigned int number_of_training_pairs;
-    unsigned int starting_round;
+    uint32_t number_of_training_pairs;
+    uint32_t starting_round;
     string previous_disambiguation_result;
     bool postprocess_after_each_round;
 }
@@ -108,8 +108,8 @@ int BlockingConfiguration::config_blocking(const char * filename, const string &
     const char * delim = ":";
     const char * secondary_delim = ",";
     const char module_specifier = '[';
-    const unsigned int delim_len = strlen(delim);
-    const unsigned int secondary_delim_len = strlen(secondary_delim);
+    const uint32_t delim_len = strlen(delim);
+    const uint32_t secondary_delim_len = strlen(secondary_delim);
     std::ifstream infile(filename);
 
     if (!infile.good()) {
@@ -206,7 +206,7 @@ int BlockingConfiguration::config_blocking(const char * filename, const string &
 
     vector<const StringManipulator *> pstring_oper;
     vector<string> columns_for_blocking;
-    vector<unsigned int> data_indice_for_blocking;
+    vector<uint32_t> data_indice_for_blocking;
 
     vector<BlockingConfiguration::cBlockingDetail>::const_iterator p = BlockingConfiguration::BlockingConfig.begin();
     for (; p != BlockingConfiguration::BlockingConfig.end(); ++p) {
@@ -240,7 +240,7 @@ EngineConfiguration::config_engine(const char * filename, std::ostream & os) {
 
     os << "Reading Engine Configuration from " << filename << " ... ..." << std::endl;
     const char * delim = "=";
-    const unsigned int delim_len = strlen(delim);
+    const uint32_t delim_len = strlen(delim);
     std::ifstream infile(filename);
     if ( ! infile.good() ) {
         std::cout << "Engine configuration file " << filename << " does not exist." << std::endl;
@@ -373,7 +373,7 @@ EngineConfiguration::config_engine(const char * filename, std::ostream & os) {
 
         else if ( clean_lhs == EngineConfiguration::THRESHOLDS_LABEL ) {
             const char * strdelim = ", ";
-            const unsigned int strdelim_len = strlen(strdelim);
+            const uint32_t strdelim_len = strlen(strdelim);
             size_t strpos = 0, strprevpos = 0;
             EngineConfiguration::thresholds.clear();
             os << EngineConfiguration::THRESHOLDS_LABEL << " : ";
@@ -393,7 +393,7 @@ EngineConfiguration::config_engine(const char * filename, std::ostream & os) {
 
         else if ( clean_lhs == EngineConfiguration::NECESSARY_ATTRIBUTES_LABEL ) {
             const char * strdelim = ", ";
-            const unsigned int strdelim_len = strlen(strdelim);
+            const uint32_t strdelim_len = strlen(strdelim);
             size_t strpos = 0, strprevpos = 0;
             EngineConfiguration::involved_columns.clear();
             os << EngineConfiguration::NECESSARY_ATTRIBUTES_LABEL << " : ";
@@ -511,13 +511,13 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
     const bool use_available_ratios       = EngineConfiguration::use_available_ratios_database;
     const string working_dir              = EngineConfiguration::working_dir;
     const vector<double> threshold_vec    = EngineConfiguration::thresholds ;
-    const unsigned int num_threads        = EngineConfiguration::number_of_threads;
+    const uint32_t num_threads        = EngineConfiguration::number_of_threads;
     const vector<string> column_vec       = EngineConfiguration::involved_columns;
-    const unsigned int limit              = EngineConfiguration::number_of_training_pairs;
+    const uint32_t limit              = EngineConfiguration::number_of_training_pairs;
     bool frequency_adjust_mode            = EngineConfiguration::frequency_adjustment_mode;
     bool debug_mode                       = EngineConfiguration::debug_mode;
-    const unsigned int starting_round     = EngineConfiguration::starting_round;
-    const unsigned int buff_size = 512;
+    const uint32_t starting_round     = EngineConfiguration::starting_round;
+    const uint32_t buff_size = 512;
 
    /**
     * Read in the CSV file containing consolidated inventor-patent instances.
@@ -611,7 +611,7 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
     // can be refactored out soon.
     cRatioComponent personalinfo(uid_dict, string("Personal") );
 
-    const unsigned int num_coauthors_to_group = 2;
+    const uint32_t num_coauthors_to_group = 2;
 
     // BOGOSITY: This needs to be set before the "patent tree" is initialized so
     // that clusters will instantiate. Bogus.
@@ -629,14 +629,14 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
     Cluster::set_reference_patent_tree_pointer(blocker_coauthor.get_patent_tree());
 
     vector<string> prev_train_vec;
-    unsigned int firstname_prev_truncation = BlockingConfiguration::firstname_cur_truncation;
+    uint32_t firstname_prev_truncation = BlockingConfiguration::firstname_cur_truncation;
 
     const string module_prefix = "Round ";
     string module_name ;
     // `is_blockingconfig_success` needs to be a boolean
     int is_blockingconfig_success;
 
-    unsigned int round = starting_round;
+    uint32_t round = starting_round;
     while (true) {
 
         sprintf(roundstr, "%d", round);
@@ -683,7 +683,7 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
 
                 const vector<const StringManipulator *> presort_strman(presort_columns.size(),
                     &operator_no_change);
-                const vector<unsigned int> presort_data_indice(presort_columns.size(), 0);
+                const vector<uint32_t> presort_data_indice(presort_columns.size(), 0);
 
                 const cBlocking_Operation_Multiple_Column_Manipulate presort_blocker(
                     presort_strman, presort_columns, presort_data_indice);
