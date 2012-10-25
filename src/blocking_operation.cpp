@@ -14,7 +14,8 @@
 cBlocking_Operation_Multiple_Column_Manipulate::cBlocking_Operation_Multiple_Column_Manipulate (
     const vector<const StringManipulator *> & inputvsm,
     const vector<string> & columnnames,
-    const vector < uint32_t > & di) : vsm(inputvsm), attributes_names(columnnames) {
+    const vector<uint32_t> & di)
+    : vsm(inputvsm), attributes_names(columnnames) {
 
     if (inputvsm.size() != columnnames.size())
         throw cException_Other("Critical Error in cBlocking_Operation_Multiple_Column_Manipulate: size of string manipulaters is different from size of columns");
@@ -30,7 +31,7 @@ cBlocking_Operation_Multiple_Column_Manipulate::cBlocking_Operation_Multiple_Col
 cBlocking_Operation_Multiple_Column_Manipulate::cBlocking_Operation_Multiple_Column_Manipulate (
     const StringManipulator * const * pinputvsm,
     const string * pcolumnnames,
-    const uint32_t  * pdi,
+    const uint32_t * pdi,
     const uint32_t num_col) {
 
     for (uint32_t i = 0; i < num_col; ++i) {
