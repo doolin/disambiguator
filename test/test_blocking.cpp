@@ -10,18 +10,6 @@
 
 #include "testutils.h"
 
-#if  0
-const list<const Record *>  psource(new Record()); 
-const vector <string> blocking_column_names(1, "Testem");
-const vector<const cString_Manipulator*> pmanipulators(new cString_Manipulator()) 
-//onst string & unique_identifier = 
-
-cBlocking::cBlocking (const list<const Record *> & psource,
-						const vector<string> & blocking_column_names,
-						const vector<const cString_Manipulator*>& pmanipulators,
-						const string & unique_identifier);
-#endif
-
 
 class BlockingTest : public CppUnit::TestCase {
 
