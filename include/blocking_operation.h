@@ -263,11 +263,13 @@ public:
    /**
     * cBlocking_Operation_Multiple_Column_Manipulate (
     * const StringManipulator * const* pinputvsm,
-    * const string * pcolumnnames, const unsigned int  * pdi, const unsigned int num_col ):
+    * const string * pcolumnnames,
+    * const unsigned int  * pdi,
     */
     cBlocking_Operation_Multiple_Column_Manipulate (
-        const vector < const StringManipulator * > & inputvsm,
-        const vector<string> & columnnames, const vector < unsigned int > & di );
+        const vector<const StringManipulator *> & inputvsm,
+        const vector<string> & columnnames,
+        const vector<unsigned int> & di );
 
    /**
     * This is another constructor of the class object.
@@ -280,7 +282,8 @@ public:
     */
     cBlocking_Operation_Multiple_Column_Manipulate (
         const StringManipulator * const* pinputvsm,
-        const string * pcolumnnames, const unsigned int * pdi,
+        const string * pcolumnnames,
+        const unsigned int * pdi,
         const unsigned int num_col );
 
    /**
