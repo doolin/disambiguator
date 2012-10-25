@@ -54,6 +54,8 @@ public:
     result = BlockingConfiguration::config_blocking("./fixtures/BlockingConfig.txt", string("Round 1"), devnull);
     CPPUNIT_ASSERT(0 == result);
     describe_pass(INDENT2, "Reads a valid blocking file correctly");
+    // TODO: handle result = 1
+    // TODO: handle result = 2
   }
 
   void test_multi_column_blocking() {
