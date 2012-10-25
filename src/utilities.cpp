@@ -12,6 +12,7 @@ exit_with_error(const char * msg, const char * file, const char * line) {
   std::cerr << "Error: " << ", file: " << file << ":" << line << std::endl;
 }
 
+
 bool
 make_changable_training_sets_by_patent(const list <const Record*> & record_pointers,
                                        const vector<string > & blocking_column_names,
@@ -171,14 +172,14 @@ ones_temporal_unique_coauthors (const Cluster & record_cluster,
 }
 
 
-void 
+void
 one_step_postprocess(const list < Record > & all_records,
                      const char * last_disambig_result,
                      const char * outputfile) {
 
     // TODO: document valid keys for this dictionary.
     map <string, const Record *> uid_dict;
-    // 
+
     const string uid_identifier = cUnique_Record_ID::static_get_class_name();
     // uid_dict is probably the return value from create_btree_uid2record_pointer
     create_btree_uid2record_pointer(uid_dict, all_records, uid_identifier);
