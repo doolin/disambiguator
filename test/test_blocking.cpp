@@ -47,6 +47,13 @@ public:
    }
 
   void test_multi_column_blocking() {
+#if 0
+    const vector<const StringManipulator *> & inputvsm;
+    const vector<string> & columnnames;
+    iconst vector<unsigned int> & di;
+    cBlocking_Operation_Multiple_Column_Manipulate & blocker_ref =
+      cBlocking_Operation_Multiple_Column_Manipulate & blocker_ref();
+#endif
   }
 
  /**
