@@ -61,7 +61,7 @@ engineconfig_SOURCES = test_engineconfig.cpp
 comparesimilarities_SOURCES = test_compare.cpp
 blocking_SOURCES = test_blocking.cpp $(COMMON) fake.cpp
 stringmanipulator_SOURCES = test_string_manipulator.cpp
-strcmp95_SOURCES = test_strcmp95.cpp
+strcmp95_SOURCES = test_strcmp95.cpp $(COMMON)
 
 relink:
 	rm -rf $(TESTS)

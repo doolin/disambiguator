@@ -1,6 +1,7 @@
 
 #include <string>
 #include <iostream>
+#include <sstream>
 #include <cmath>
 
 #include <cppunit/Portability.h>
@@ -9,6 +10,9 @@
 #include <cppunit/TestCase.h>
 
 #include "strcmp95.h"
+
+#include "testutils.h"
+
 
 using std::string;
 
@@ -20,8 +24,14 @@ is_equal(float f1, float f2, float tol) {
 
 class Strcmp95Test : public CppUnit::TestCase {
 
+private:
+  std::stringstream description;
+
 public:
-  Strcmp95Test(std::string name) : CppUnit::TestCase(name) {}
+  Strcmp95Test(std::string name) : CppUnit::TestCase(name) {
+
+    describe_test(INDENT0, name.c_str());
+  }
 
   float compute_jw(const char * s1, const char * s2) {
     return strcmp95_modified(s1, s2);
@@ -35,82 +45,124 @@ public:
     std::cout << s1 << " vs. " << s2 << ": " << value << std::endl;
   }
 
+  std::string describe_comparison(string s1, string s2, float value) {
+    std::stringstream desc;
+    desc << s1 << " vs. " << s2 << ": " << value;
+    return desc.str();
+  }
+
+
+  void test_identical() {
+
+    string s1("foo"), s2("foo");
+    float val = compute_jw(s1, s2);
+    //print_comparison(s1, s2, val);
+    CPPUNIT_ASSERT (is_equal(val, 1.0, 0.000001));
+    describe_pass(INDENT2, "Jaro/Winkler returned 1 for identical strings");
+  }
+
+
+  void test_different() {
+
+    string s1("foo"), s2("bar");
+    float val = compute_jw(s1, s2);
+    //print_comparison(s1, s2, val);
+    CPPUNIT_ASSERT (is_equal(val, 0.0, 0.000001));
+    describe_pass(INDENT2, "Jaro/Winkler returned 0 for totally different strings");
+  }
+
+
+  void test_permuted() {
+
+    // The following were extracted from an appendix of an
+    // early version of the disambiguation paper.
+    string s1("MATTHEW");
+    string s2("HEWMATT");
+
+    float val = compute_jw(s1, s2);
+    string desc = string("Jaro/Winkler: ") + describe_comparison(s1, s2, val);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL (val, 0.4857, 0.0001);
+    describe_pass(INDENT2, desc.c_str());
+
+    val = compute_jw(s2, s1);
+    desc = string("Jaro/Winkler: ") + describe_comparison(s2, s1, val);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL (val, 0.4857, 0.0001);
+    describe_pass(INDENT2, desc.c_str());
+  }
+
+
+  void test_the_rest() {
+
+    string s1("");
+    string s2("");
+
+    float val;
+
+    s1 = "MATTHEW";
+    s2 = "MATEW";
+    val = compute_jw(s1,s2);
+    string desc = string("Jaro/Winkler: ") + describe_comparison(s2, s1, val);
+    describe_pass(INDENT2, desc.c_str());
+    CPPUNIT_ASSERT_DOUBLES_EQUAL (val, 0.94166, 0.0001);
+    //st->print_comparison(s1, s2, val);
+    //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
+
+    s2 = "MATT";
+    val = compute_jw(s1, s2);
+    //st->print_comparison(s1, s2, val);
+    //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
+
+    s2 = "MTATWEH";
+    val = compute_jw(s1, s2);
+    //st->print_comparison(s1, s2, val);
+    //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
+
+    s2 = "M";
+    val = compute_jw("MATTHEW", "M");
+    //st->print_comparison(s1, s2, val);
+    //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
+
+    s2 = "TALIN";
+    val = compute_jw(s1, s2);
+    //st->print_comparison(s1, s2, val);
+    //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
+
+    s2 = "XYZ";
+    val = compute_jw(s1, s2);
+    //st->print_comparison(s1, s2, val);
+    //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
+
+    // The next three come from Wikipedia
+    s1 = "dixon";
+    s2 = "dicksonx";
+    val = compute_jw(s1, s2);
+    //st->print_comparison(s1, s2, val);
+    //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
+
+    s1 = "duane";
+    s2 = "dwayne";
+    val = compute_jw(s1, s2);
+    //st->print_comparison(s1, s2, val);
+    //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
+
+    s1 = "MARTHA";
+    s2 = "MARHTA";
+    val = compute_jw(s1, s2);
+    //st->print_comparison(s1, s2, val);
+    //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
+  }
+
 };
 
 
 void
 test_strcmp95() {
 
-  Strcmp95Test * st = new Strcmp95Test(std::string("initial test"));
-
-  string s1("");
-  string s2("");
-
-  float val = st->compute_jw("foo", "foo");
-  //std::cout << "val: " << val << std::endl;
-  CPPUNIT_ASSERT (is_equal(val, 1.0, 0.000001));
-
-  val = st->compute_jw("bar", "foo");
-  //std::cout << "val: " << val << std::endl;
-  CPPUNIT_ASSERT (is_equal(val, 0.0, 0.000001));
-
-  // The following were extracted from an appendix of an
-  // early version of the disambiguation paper.
-  s1 = "MATTHEW";
-  s2 = "HEWMATT";
-  val = st->compute_jw("MATTHEW", "HEWMATT");
-  val = st->compute_jw(s1, s2);
-  //st->print_comparison(s1, s2, val);
-  //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
-
-  s2 = "MATEW";
-  val = st->compute_jw(s1,s2);
-  //st->print_comparison(s1, s2, val);
-  //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
-
-  s2 = "MATT";
-  val = st->compute_jw(s1, s2);
-  //st->print_comparison(s1, s2, val);
-  //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
-
-  s2 = "MTATWEH";
-  val = st->compute_jw(s1, s2);
-  //st->print_comparison(s1, s2, val);
-  //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
-
-  s2 = "M";
-  val = st->compute_jw("MATTHEW", "M");
-  //st->print_comparison(s1, s2, val);
-  //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
-
-  s2 = "TALIN";
-  val = st->compute_jw(s1, s2);
-  //st->print_comparison(s1, s2, val);
-  //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
-
-  s2 = "XYZ";
-  val = st->compute_jw(s1, s2);
-  //st->print_comparison(s1, s2, val);
-  //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
-
-  // The next three come from Wikipedia
-  s1 = "dixon";
-  s2 = "dicksonx";
-  val = st->compute_jw(s1, s2);
-  //st->print_comparison(s1, s2, val);
-  //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
-
-  s1 = "duane";
-  s2 = "dwayne";
-  val = st->compute_jw(s1, s2);
-  //st->print_comparison(s1, s2, val);
-  //CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
-
-  s1 = "MARTHA";
-  s2 = "MARHTA";
-  val = st->compute_jw(s1, s2);
-  //st->print_comparison(s1, s2, val);
-  CPPUNIT_ASSERT (is_equal(val, 92.5, 0.000001));
+  Strcmp95Test * st = new Strcmp95Test(std::string("Jaro/Winkler comparison test"));
+  st->test_identical();
+  st->test_different();
+  st->test_permuted();
+  st->test_the_rest();
 
   delete st;
 }
