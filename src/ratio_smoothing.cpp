@@ -18,7 +18,7 @@
 
 static const bool should_do_name_range_check = true;
 
-// TODO: unit test
+// TODO: Document properties of this hash function.
 uint33_t
 sp2index (const SimilarityProfile & sp, const SimilarityProfile & min_sp,
           const SimilarityProfile & max_sp) {
@@ -41,7 +41,7 @@ sp2index (const SimilarityProfile & sp, const SimilarityProfile & min_sp,
 }
 
 
-// TODO: unit test
+// TODO: Verify this is inverse of hash function above.
 SimilarityProfile
 index2sp (uint32_t index, const SimilarityProfile & min_sp,
           const SimilarityProfile & max_sp) {
