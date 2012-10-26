@@ -73,6 +73,15 @@ Street match and in USA
 
 #include "testutils.h"
 
+SimilarityProfile
+csp(uint32_t s1, uint32_t s2) {
+  SimilarityProfile sp;
+  sp.push_back(s1);
+  sp.push_back(s2);
+  return sp;
+}
+
+
 class SimilarityTest : public CppUnit::TestCase {
 
 private:
@@ -82,32 +91,44 @@ public:
   SimilarityTest(std::string name) : CppUnit::TestCase(name) {
 
     describe_test(INDENT0, name.c_str());
+
+    max.push_back(2);
+    max.push_back(2);
+    min.push_back(0);
+    min.push_back(0);
   }
 
   void test_sp2index() {
 
     sp.push_back(1);
     sp.push_back(1);
-    max.push_back(2);
-    max.push_back(2);
-    min.push_back(0);
-    min.push_back(0);
     uint32_t index = sp2index(sp, min, max);
-    std::cout << "sp2index: " << index << std::endl;
+    CPPUNIT_ASSERT(4 == index);
+    //std::cout << "sp2index: " << index << std::endl;
 
     sp.clear();
     sp.push_back(1);
     sp.push_back(0);
     index = sp2index(sp, min, max);
-    std::cout << "sp2index: " << index << std::endl;
+    CPPUNIT_ASSERT(3 == index);
+    //std::cout << "sp2index: " << index << std::endl;
+    describe_pass(INDENT2, "Retrieved index given similarity profile");
   }
 
   void test_index2sp() {
 
+    SimilarityProfile sp = index2sp(4, min, max);
+    CPPUNIT_ASSERT(sp == csp(1,1));
+    //print_similarity(sp);
+    sp = index2sp(3, min, max);
+    CPPUNIT_ASSERT(sp == csp(1,0));
+    //print_similarity(sp);
+    describe_pass(INDENT2, "Retrieved similarity profile given index");
   }
 
   void runTest() {
     test_sp2index();
+    test_index2sp();
   }
 };
 

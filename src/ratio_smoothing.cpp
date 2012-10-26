@@ -19,7 +19,7 @@
 static const bool should_do_name_range_check = true;
 
 // TODO: unit test
-uint32_t
+uint33_t
 sp2index (const SimilarityProfile & sp, const SimilarityProfile & min_sp,
           const SimilarityProfile & max_sp) {
 
