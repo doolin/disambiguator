@@ -68,26 +68,64 @@ Street match and in USA
 
 #endif
 
-class SimilarityTest : public CppUnit::TestCase { 
+#include <typedefs.h>
+#include <ratios.h>
 
-public: 
-  SimilarityTest(std::string name) : CppUnit::TestCase(name) {}
+#include "testutils.h"
 
-  void extract_first_word() {
+class SimilarityTest : public CppUnit::TestCase {
+
+private:
+    SimilarityProfile sp, max, min;
+
+public:
+  SimilarityTest(std::string name) : CppUnit::TestCase(name) {
+
+    describe_test(INDENT0, name.c_str());
+  }
+
+  void test_sp2index() {
+
+    sp.push_back(1);
+    sp.push_back(1);
+    max.push_back(2);
+    max.push_back(2);
+    min.push_back(0);
+    min.push_back(0);
+    uint32_t index = sp2index(sp, min, max);
+    std::cout << "sp2index: " << index << std::endl;
+
+    sp.clear();
+    sp.push_back(1);
+    sp.push_back(0);
+    index = sp2index(sp, min, max);
+    std::cout << "sp2index: " << index << std::endl;
+  }
+
+  void test_index2sp() {
+
   }
 
   void runTest() {
-    extract_first_word();
+    test_sp2index();
   }
 };
+
+
+void
+test_similarity() {
+
+  SimilarityTest * st = new SimilarityTest(std::string("Similarity test"));
+  st->runTest();
+  delete st;
+}
+
 
 #ifdef test_similarity_STANDALONE
 int
 main(int, char **) {
 
-  SimilarityTest * st = new SimilarityTest(std::string("initial test"));
-  st->runTest();
-  delete st;
+  test_similarity();
   return 0;
 }
 #endif
