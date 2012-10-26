@@ -696,16 +696,15 @@ cRatios::write_ratios_file(const char * filename) const {
     }
     outfile << primary_delim << "VALUE" << '\n';
 
-    // The actual values..
+    // TODO: SPRatiosIndex::const_iterator q = final_ratios.begin();
     map<SimilarityProfile, double, SimilarityCompare>::const_iterator q = final_ratios.begin();
     for (q; q != final_ratios.end(); ++q) {
-        SimilarityProfile::const_iterator pint = q->first.begin(); 
+
+        SimilarityProfile::const_iterator pint = q->first.begin();
         for (pint; pint != q->first.end(); ++pint) {
-	    // Currently secondary_delim is ","
-            outfile << *pint << secondary_delim;
-	}
-	// Currently primary_delim is "#"
-        outfile << primary_delim << q->second << '\n';
+            outfile << *pint << secondary_delim; // ","
+        }
+        outfile << primary_delim << q->second << '\n';  // "#"
     }
     std::cout << "Ratios file saved." << std::endl;
 }
