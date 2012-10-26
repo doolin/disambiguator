@@ -60,6 +60,8 @@ echo "ratios test"
 echo "Blocking test"
 ./blocking
 
+./similarity
+
 echo "integration test"
 source ./integration.sh
 
