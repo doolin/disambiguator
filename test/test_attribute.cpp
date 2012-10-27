@@ -728,13 +728,20 @@ Totally different names:
 };
 
 
-#ifdef test_attribute_STANDALONE
-int
-main(int UP(argc), char ** UP(argv)) {
+void
+test_attributes() {
 
   AttributeTest * at = new AttributeTest(std::string("initial test"));
   at->runTest();
   delete at;
+}
+
+
+#ifdef test_attribute_STANDALONE
+int
+main(int UP(argc), char ** UP(argv)) {
+
+  test_attributes();
   return 0;
 }
 #endif
