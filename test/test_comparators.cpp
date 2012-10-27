@@ -4,15 +4,22 @@
 #include <cppunit/extensions/TestFactory.h>
 #include <cppunit/TestCase.h>
 #include <string>
-using std::string;
 
 #include <comparators.h>
 
+#include "testutils.h"
+
+using std::string;
 
 class ComparatorsTest : public CppUnit::TestCase {
 
 public:
-  ComparatorsTest(std::string name) : CppUnit::TestCase(name) {}
+
+  ComparatorsTest(std::string name) : CppUnit::TestCase(name) {
+
+    describe_test(INDENT0, name.c_str());
+  }
+
 
  /**
   * This is insane to have a distance measure
