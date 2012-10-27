@@ -27,12 +27,14 @@ public:
   * zero distance. See comments in source code.
   */
   void test_zero() {
+
     string lat1("0.0");
     string lon1("0.0");
     string lat2("0.0");
     string lon2("0.0");
-    int distance = latloncmp(lat1, lon1, lat2, lon2);
-    CPPUNIT_ASSERT(distance == 1);
+    int result = latloncmp(lat1, lon1, lat2, lon2);
+    CPPUNIT_ASSERT(1 == result);
+    describe_pass(INDENT2, "All 0.0 lats and lons return 1");
   }
 
   void test_latloncmp() {
