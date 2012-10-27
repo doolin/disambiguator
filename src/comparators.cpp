@@ -314,8 +314,7 @@ latloncmp(const string & inputlat1, const string & inputlon1,
     int missing = ( ( fabs(lat1) < missing_val && fabs(lon1) < missing_val ) ||
                     ( fabs(lat2) < missing_val && fabs(lon2) < missing_val) ) ? 1 : 0;
 
-    if ( missing )
-        return 1;
+    if (missing) return 1;
 
     const double radlat1 = lat1 * DEG2RAD;
     const double radlon1 = lon1 * DEG2RAD;
