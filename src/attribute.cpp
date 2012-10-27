@@ -482,10 +482,12 @@ cLatitude::compare(const Attribute & right_hand_side) const {
             throw cException_Other("latitude error: score > max_value");
 
         return res;
-    }
-    catch ( const std::bad_cast & except ) {
+
+    } catch ( const std::bad_cast & except ) {
         std::cerr << except.what() << std::endl;
-        std::cerr << "Error: " << this->get_class_name() << " is compared to " << right_hand_side.get_class_name() << std::endl;
+        std::cerr << "Error: " << this->get_class_name()
+                  << " is compared to " << right_hand_side.get_class_name()
+                  << std::endl;
         throw;
     }
 }
@@ -494,8 +496,10 @@ cLatitude::compare(const Attribute & right_hand_side) const {
 uint32_t
 cLongitude::compare(const Attribute & right_hand_side) const {
 
-    if ( ! is_comparator_activated () )
+    if (!is_comparator_activated())
         throw cException_No_Comparision_Function(static_get_class_name().c_str());
+
+    // ~L1412 in attribute.h
     check_if_reconfigured();
 
 #define LONGCOMPS 0
@@ -516,16 +520,16 @@ cLongitude::compare(const Attribute & right_hand_side) const {
     try {
         uint32_t res = 0;
         const bool exact_same = this->exact_compare(right_hand_side) == 1 ;
-        if ( exact_same && this->is_informative())
-            res = 1;
 
-        if ( res > max_value )
-            res = max_value;
+        if (exact_same && this->is_informative()) res = 1;
+        if (res > max_value) res = max_value;
         return res;
-    }
-    catch ( const std::bad_cast & except ) {
+
+    } catch (const std::bad_cast & except) {
         std::cerr << except.what() << std::endl;
-        std::cerr << "Error: " << this->get_class_name() << " is compared to " << right_hand_side.get_class_name() << std::endl;
+        std::cerr << "Error: " << this->get_class_name()
+                  << " is compared to " << right_hand_side.get_class_name()
+                  << std::endl;
         throw;
     }
 }
