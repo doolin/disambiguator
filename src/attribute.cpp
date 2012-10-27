@@ -13,7 +13,6 @@ SimilarityCompare::default_sp_exception("Error: Different Similarity profile dim
 vector <string> Attribute::Derived_Class_Name_Registry;
 
 
-
 /**
  * This function splits the input string and save it into the attribute object.
  * Legacy format of data is in the form of "DATA1~COUNT1/DATA2~COUNT2/DATA3~COUNT3",
@@ -397,7 +396,7 @@ cMiddlename::compare(const Attribute & right_hand_side) const {
 uint32_t
 cLatitude::compare(const Attribute & right_hand_side) const {
 
-    if ( ! is_comparator_activated () )
+    if (!is_comparator_activated())
         throw cException_No_Comparision_Function(static_get_class_name().c_str());
 
     check_if_reconfigured();
@@ -408,26 +407,28 @@ cLatitude::compare(const Attribute & right_hand_side) const {
 
         const Attribute* const & this_longitude = this->get_interactive_vector().at(0);
         const Attribute* const & rhs_longitude = rhs.get_interactive_vector().at(0);
-        if ( this->get_data().size() != this_longitude->get_data().size() ) {
+
+        if (this->get_data().size() != this_longitude->get_data().size()) {
             std::cout << "Alignment error in latitude comparison: " << std::endl;
             this->print(std::cout);
             this_longitude->print(std::cout);
             throw cException_Interactive_Misalignment(this->get_class_name().c_str());
         }
-        if ( rhs.get_data().size() != rhs_longitude->get_data().size() ) {
+
+        if (rhs.get_data().size() != rhs_longitude->get_data().size()) {
             std::cout << "Alignment error in latitude comparison: " << std::endl;
             rhs.print(std::cout);
             rhs_longitude->print(std::cout);
             throw cException_Interactive_Misalignment(this->get_class_name().c_str());
         }
 
-        //latitude interacts with        {"Longitude", "Street", "Country"}; the sequence is important.
+        // Latitude interacts with {"Longitude", "Street", "Country"}; the sequence is important.
 
         uint32_t country_score = 0;
-        if ( this == &rhs && this->is_informative() ) {
+        if (this == &rhs && this->is_informative()) {
             res = max_value;
-        }
-        else {
+        } else {
+
             // Comparing country
             if ( this->get_interactive_vector().at(2) == rhs.get_interactive_vector().at(2) )
                 country_score = 1;
@@ -441,14 +442,15 @@ cLatitude::compare(const Attribute & right_hand_side) const {
             latlon_score = latloncmp ( * this->get_data().at(0), * this_longitude->get_data().at(0),
                                         * rhs.get_data().at(0), * rhs_longitude->get_data().at(0) );
 
-            if ( country_score == 0 )
+            if (country_score == 0) {
                 res = 0;
-            else
+            } else {
                 res = latlon_score;
+            }
         }
 
         //correction for japanese
-        if ( country_score == 1 && *this->get_interactive_vector().at(2)->get_data().at(0) == "JP" ) {
+        if (country_score == 1 && *this->get_interactive_vector().at(2)->get_data().at(0) == "JP") {
             const Attribute* const & this_street = this->get_interactive_vector().at(1);
             const Attribute* const & rhs_street = rhs.get_interactive_vector().at(1);
             if ( this_street == rhs_street && ( ! this_street->is_informative() ) )
