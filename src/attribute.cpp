@@ -401,6 +401,23 @@ cLatitude::compare(const Attribute & right_hand_side) const {
 
     check_if_reconfigured();
 
+#define LATCOMPS 0
+#if LATCOMPS
+
+    if (this->is_informative()) {
+      std::cout << "is informative\n";
+    } else {
+      std::cout << "is not informative\n";
+    }
+
+    if (this->exact_compare(right_hand_side)) {
+      std::cout << "compares exactly\n";
+    } else {
+      std::cout << "does not compare exactly \n";
+    }
+#endif
+
+
     try {
         uint32_t res = 0;
         const cLatitude & rhs = dynamic_cast< const cLatitude & > (right_hand_side);
