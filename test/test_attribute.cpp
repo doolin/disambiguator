@@ -584,8 +584,9 @@ Totally different names:
     d1.activate_comparator();
 
     similarity = d1.compare(d2);
-    std::cout << "Class similarity d1, d2: " << similarity << std::endl;
-    //CPPUNIT_ASSERT(4 == similarity);
+    //std::cout << "Class similarity d1, d2: " << similarity << std::endl;
+    CPPUNIT_ASSERT(2 == similarity);
+    describe_pass(INDENT4, "Class comparison for 2 common classes works correctly");
 
     delete foobar;
 
