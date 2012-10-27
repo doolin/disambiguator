@@ -493,6 +493,22 @@ cLongitude::compare(const Attribute & right_hand_side) const {
     if ( ! is_comparator_activated () )
         throw cException_No_Comparision_Function(static_get_class_name().c_str());
     check_if_reconfigured();
+
+#define LONGCOMPS 0
+#if LONGCOMPS
+    if (this->is_informative()) {
+      std::cout << "is informative\n";
+    } else {
+      std::cout << "is not informative\n";
+    }
+
+    if (this->exact_compare(right_hand_side)) {
+      std::cout << "compares exactly\n";
+    } else {
+      std::cout << "does not compare exactly \n";
+    }
+#endif
+
     try {
         uint32_t res = 0;
         const bool exact_same = this->exact_compare(right_hand_side) == 1 ;
