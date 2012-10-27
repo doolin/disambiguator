@@ -592,21 +592,23 @@ Totally different names:
   }
 
 
-  void compare_distance() {
+  void compare_latitude() {
 
-    describe_test(INDENT2, "Testing Distance comparison");
+    describe_test(INDENT2, "Testing Latitude comparison");
 
-#if 0
     Record * foobar = make_foobar_record();
     foobar->set_sample_record(foobar);
     uint32_t similarity;
 
-    cLatitude d1("IBM");
-    d1.split_string("IBM");
-    cLatitude d2("IBM");
-    d2.split_string("IBM");
+    cLatitude lat1("37.00");
+    lat1.split_string("37.00");
+    cLatitude lat2("37.00");
+    lat2.split_string("37.00");
 
-    d1.activate_comparator();
+    cLongitude lon1("-120.22");
+    lon1.split_string("-120.22");
+    cLongitude lon2("-120.22");
+    lon2.split_string("-120.22");
 
     similarity = d1.compare(d2);
     std::cout << "Latitude similarity d1, d2: " << similarity << std::endl;
