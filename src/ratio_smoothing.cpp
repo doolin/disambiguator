@@ -19,7 +19,7 @@
 static const bool should_do_name_range_check = true;
 
 // TODO: Document properties of this hash function.
-uint33_t
+uint32_t
 sp2index (const SimilarityProfile & sp, const SimilarityProfile & min_sp,
           const SimilarityProfile & max_sp) {
 
