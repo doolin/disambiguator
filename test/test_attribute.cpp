@@ -1,10 +1,9 @@
 
-//#include <cppunit/Portability.h>
-//#include <cppunit/portability/CppUnitSet.h>
-//#include <cppunit/extensions/TestFactory.h>
-#include <cppunit/TestCase.h>
+#include <sstream>
 #include <string>
-#include <string.h>
+#include <string.h> // Why?
+
+#include <cppunit/TestCase.h>
 
 // Really good web pages:
 // http://stackoverflow.com/questions/318064/how-do-you-declare-an-interface-in-c
@@ -30,6 +29,11 @@ public:
     describe_test(INDENT0, "Testing Attribute");
   }
 
+  string print_latitude_comparison(const string l1, const string l2, int result) {
+    std::stringstream desc;
+    desc << "Latitude test: " << l1 << ", " << l2 << ", " << result;
+    return desc.str();
+  }
 
   void compare_firstname() {
 
@@ -639,11 +643,19 @@ Totally different names:
     // Latitude compares from [0..5]
 
     similarity = lat1.compare(lat2);
-    std::cout << "Latitude similarity lat1, lat2: " << similarity << std::endl;
+    //std::cout << "Latitude similarity lat1, lat2: " << similarity << std::endl;
     CPPUNIT_ASSERT(5 == similarity);
+    const string * str1 = lat1.get_data()[0];
+    const string * str2 = lat2.get_data()[0];
+    string desc = print_latitude_comparison(str1->c_str(), str2->c_str(), similarity);
+    describe_pass(INDENT4, desc.c_str());
+
+
     similarity = lat1.compare(lat1);
-    std::cout << "Latitude similarity lat1, lat1: " << similarity << std::endl;
+    //std::cout << "Latitude similarity lat1, lat1: " << similarity << std::endl;
     CPPUNIT_ASSERT(5 == similarity);
+    desc = print_latitude_comparison(str1->c_str(), str1->c_str(), similarity);
+    describe_pass(INDENT4, desc.c_str());
 
     delete foobar;
   }
