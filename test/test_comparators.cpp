@@ -37,14 +37,29 @@ public:
     describe_pass(INDENT2, "All 0.0 lats and lons return 1");
   }
 
+
   void test_latloncmp() {
+
     string lat1("38.38");
     string lon1("102.102");
     string lat2("38.38");
     string lon2("102.102");
-    int distance = latloncmp(lat1, lon1, lat2, lon2);
-    CPPUNIT_ASSERT(distance == 5);
+    int result = latloncmp(lat1, lon1, lat2, lon2);
+    CPPUNIT_ASSERT(5 == result);
+    describe_pass(INDENT2, "Identical lats and lons return 5");
   }
+
+  void test_latlon_nullstrings() {
+
+    string lat1("");
+    string lon1("");
+    string lat2("");
+    string lon2("");
+    int result = latloncmp(lat1, lon1, lat2, lon2);
+    CPPUNIT_ASSERT(1 == result);
+    describe_pass(INDENT2, "Null string lats and lons return 1");
+  }
+
 
   void test_extract_initials() {
     string source("foo bar");
