@@ -123,9 +123,11 @@ public:
 
 void test_comparators() {
 
-  ComparatorsTest * ct = new ComparatorsTest(std::string("initial test"));
+  ComparatorsTest * ct = new ComparatorsTest(std::string("Comparators test"));
   ct->test_zero();
   ct->test_latloncmp();
+  ct->test_latlon_nullstrings();
+
   ct->test_extract_initials();
   ct->test_midnamecmp();
   ct->test_name_compare();
