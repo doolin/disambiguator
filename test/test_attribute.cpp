@@ -64,7 +64,7 @@ public:
 
     similarity = n1.compare(n2);
     sprintf(buffer, teststr, n1s.c_str(), n2s.c_str(), similarity);
-    describe_test(INDENT4, buffer);
+    describe_pass(INDENT4, buffer);
     CPPUNIT_ASSERT(0 == similarity);
 
     string n3s("");
@@ -73,7 +73,7 @@ public:
 
     similarity = n1.compare(n3);
     sprintf(buffer, teststr, n1s.c_str(), n3s.c_str(), similarity);
-    describe_test(INDENT4, buffer);
+    describe_pass(INDENT4, buffer);
     CPPUNIT_ASSERT(1 == similarity);
 
     string n4s("LEE RON ERIC");
@@ -86,7 +86,7 @@ public:
 
     similarity = n4.compare(n5);
     sprintf(buffer, teststr, n4s.c_str(), n5s.c_str(), similarity);
-    describe_test(INDENT4, buffer);
+    describe_pass(INDENT4, buffer);
     CPPUNIT_ASSERT(4 == similarity);
 
     string n6s("JOHNERIC");
@@ -99,7 +99,7 @@ public:
 
     similarity = n6.compare(n7);
     sprintf(buffer, teststr, n6s.c_str(), n7s.c_str(), similarity);
-    describe_test(INDENT4, buffer);
+    describe_pass(INDENT4, buffer);
     CPPUNIT_ASSERT(2 == similarity);
 
     string n8s("ERIC");
@@ -112,7 +112,7 @@ public:
 
     similarity = n8.compare(n9);
     sprintf(buffer, teststr, n8s.c_str(), n9s.c_str(), similarity);
-    describe_test(INDENT4, buffer);
+    describe_pass(INDENT4, buffer);
     CPPUNIT_ASSERT(4 == similarity);
 
     string n10s("ALEX NICHOLAS");
@@ -125,7 +125,7 @@ public:
 
     similarity = n10.compare(n11);
     sprintf(buffer, teststr, n10s.c_str(), n11s.c_str(), similarity);
-    describe_test(INDENT4, buffer);
+    describe_pass(INDENT4, buffer);
     CPPUNIT_ASSERT(4 == similarity);
 
     string n12s("ALEX NICHOLA");
@@ -134,7 +134,7 @@ public:
 
     similarity = n10.compare(n12);
     sprintf(buffer, teststr, n10s.c_str(), n12s.c_str(), similarity);
-    describe_test(INDENT4, buffer);
+    describe_pass(INDENT4, buffer);
     CPPUNIT_ASSERT(4 == similarity);
 
     string n13s("MATTHEW");
@@ -151,17 +151,17 @@ public:
 
     similarity = n13.compare(n14);
     sprintf(buffer, teststr, n13s.c_str(), n14s.c_str(), similarity);
-    describe_test(INDENT4, buffer);
+    describe_pass(INDENT4, buffer);
     CPPUNIT_ASSERT(4 == similarity);
 
     similarity = n13.compare(n15);
     sprintf(buffer, teststr, n13s.c_str(), n15s.c_str(), similarity);
-    describe_test(INDENT4, buffer);
+    describe_pass(INDENT4, buffer);
     CPPUNIT_ASSERT(4 == similarity);
 
     similarity = n14.compare(n15);
     sprintf(buffer, teststr, n14s.c_str(), n15s.c_str(), similarity);
-    describe_test(INDENT4, buffer);
+    describe_pass(INDENT4, buffer);
     CPPUNIT_ASSERT(4 == similarity);
 
   }
@@ -189,7 +189,7 @@ public:
 
     similarity = d1.compare(d2);
     sprintf(buffer, teststr, d1s.c_str(), d2s.c_str(), similarity);
-    describe_test(INDENT4, buffer);
+    describe_pass(INDENT4, buffer);
     CPPUNIT_ASSERT(2 == similarity);
 
 
@@ -202,18 +202,18 @@ public:
 
     similarity = d3.compare(d4);
     sprintf(buffer, teststr, d3s.c_str(), d4s.c_str(), similarity);
-    describe_test(INDENT4, buffer);
+    describe_pass(INDENT4, buffer);
     CPPUNIT_ASSERT(3 == similarity);
 
     similarity = d1.compare(d3);
     sprintf(buffer, teststr, d1s.c_str(), d3s.c_str(), similarity);
-    describe_test(INDENT4, buffer);
+    describe_pass(INDENT4, buffer);
     CPPUNIT_ASSERT(1 == similarity);
 
     similarity = d1.compare(d4);
     d1.get_data();
     sprintf(buffer, teststr, d1s.c_str(), d4s.c_str(), similarity);
-    describe_test(INDENT4, buffer);
+    describe_pass(INDENT4, buffer);
     CPPUNIT_ASSERT(1 == similarity);
 
 
@@ -222,7 +222,7 @@ public:
     d5.split_string(d5s.c_str());
     similarity = d1.compare(d5);
     sprintf(buffer, teststr, d1s.c_str(), d5s.c_str(), similarity);
-    describe_test(INDENT4, buffer);
+    describe_pass(INDENT4, buffer);
     CPPUNIT_ASSERT(1 == similarity);
 
     string d6s("AnnaYvette");
@@ -230,7 +230,7 @@ public:
     d6.split_string("AnnaYvette");
     similarity = d1.compare(d6);
     sprintf(buffer, teststr, d1s.c_str(), d6s.c_str(), similarity);
-    describe_test(INDENT4, buffer);
+    describe_pass(INDENT4, buffer);
     CPPUNIT_ASSERT(2 == similarity);
 
     string d7s("Anna");
@@ -246,7 +246,7 @@ public:
     d9.split_string(d9s.c_str());
     similarity = d8.compare(d9);
     sprintf(buffer, teststr, d8s.c_str(), d9s.c_str(), similarity);
-    describe_test(INDENT4, buffer);
+    describe_pass(INDENT4, buffer);
     CPPUNIT_ASSERT(2 == similarity);
 
 
@@ -255,12 +255,12 @@ public:
     d10.split_string(d10s.c_str());
     similarity = d4.compare(d10);
     sprintf(buffer, teststr, d4s.c_str(), d10s.c_str(), similarity);
-    describe_test(INDENT4, buffer);
+    describe_pass(INDENT4, buffer);
     CPPUNIT_ASSERT(0 == similarity);
 
     similarity = d5.compare(d9);
     sprintf(buffer, teststr, d5s.c_str(), d9s.c_str(), similarity);
-    describe_test(INDENT4, buffer);
+    describe_pass(INDENT4, buffer);
     CPPUNIT_ASSERT(1 == similarity);
 
 #if 0
@@ -285,7 +285,7 @@ public:
 
     similarity = e1.compare(e2);
     sprintf(buffer, teststr, e1s.c_str(), e2s.c_str(), similarity);
-    describe_test(INDENT4, buffer);
+    describe_pass(INDENT4, buffer);
     CPPUNIT_ASSERT(0 == similarity);
 
     string e3s("JOHN ERIC");
@@ -298,7 +298,7 @@ public:
 
     similarity = e3.compare(e4);
     sprintf(buffer, teststr, e3s.c_str(), e4s.c_str(), similarity);
-    describe_test(INDENT4, buffer);
+    describe_pass(INDENT4, buffer);
     CPPUNIT_ASSERT(1 == similarity);
 
     string e5s("THOMAS ERIC ALEX");
@@ -311,7 +311,7 @@ public:
 
     similarity = e5.compare(e6);
     sprintf(buffer, teststr, e5s.c_str(), e6s.c_str(), similarity);
-    describe_test(INDENT4, buffer);
+    describe_pass(INDENT4, buffer);
     CPPUNIT_ASSERT(0 == similarity);
 
     string e7s("THOMAS ERIC RON ALEX EDWARD");
@@ -324,7 +324,7 @@ public:
 
     similarity = e7.compare(e8);
     sprintf(buffer, teststr, e7s.c_str(), e8s.c_str(), similarity);
-    describe_test(INDENT4, buffer);
+    describe_pass(INDENT4, buffer);
     CPPUNIT_ASSERT(0 == similarity);
 
     string e9s("THOMAS ERIC LEE");
@@ -333,7 +333,7 @@ public:
 
     similarity = e1.compare(e9);
     sprintf(buffer, teststr, e1s.c_str(), e9s.c_str(), similarity);
-    describe_test(INDENT4, buffer);
+    describe_pass(INDENT4, buffer);
     CPPUNIT_ASSERT(3 == similarity);
 
     string e13s("MATTHEW");
@@ -350,17 +350,17 @@ public:
 
     similarity = e13.compare(e14);
     sprintf(buffer, teststr, e13s.c_str(), e14s.c_str(), similarity);
-    describe_test(INDENT4, buffer);
+    describe_pass(INDENT4, buffer);
     CPPUNIT_ASSERT(1 == similarity);
 
     similarity = e13.compare(e15);
     sprintf(buffer, teststr, e13s.c_str(), e15s.c_str(), similarity);
-    describe_test(INDENT4, buffer);
+    describe_pass(INDENT4, buffer);
     CPPUNIT_ASSERT(1 == similarity);
 
     similarity = e14.compare(e15);
     sprintf(buffer, teststr, e14s.c_str(), e15s.c_str(), similarity);
-    describe_test(INDENT4, buffer);
+    describe_pass(INDENT4, buffer);
     CPPUNIT_ASSERT(3 == similarity);
 
     delete foobar;
@@ -398,7 +398,7 @@ Totally different names:
 
     similarity = l1.compare(l2);
     sprintf(buffer, teststr, l1s.c_str(), l2s.c_str(), similarity);
-    describe_test(INDENT4, buffer);
+    describe_pass(INDENT4, buffer);
     CPPUNIT_ASSERT(1 == similarity);
 
     string l3s("");
@@ -407,7 +407,7 @@ Totally different names:
 
     similarity = l1.compare(l3);
     sprintf(buffer, teststr, l1s.c_str(), l3s.c_str(), similarity);
-    describe_test(INDENT4, buffer);
+    describe_pass(INDENT4, buffer);
     CPPUNIT_ASSERT(0 == similarity);
 
     string l4s("DE AMOUR");
@@ -420,7 +420,7 @@ Totally different names:
 
     similarity = l4.compare(l5);
     sprintf(buffer, teststr, l4s.c_str(), l5s.c_str(), similarity);
-    describe_test(INDENT4, buffer);
+    describe_pass(INDENT4, buffer);
     CPPUNIT_ASSERT(3 == similarity);
 
     //VAN DE WAALS/VAN DES WAALS
@@ -434,7 +434,7 @@ Totally different names:
 
     similarity = l6.compare(l7);
     sprintf(buffer, teststr, l6s.c_str(), l7s.c_str(), similarity);
-    describe_test(INDENT4, buffer);
+    describe_pass(INDENT4, buffer);
     CPPUNIT_ASSERT(4 == similarity);
 
     //DE AMOUR/DEAMOUR
@@ -448,7 +448,7 @@ Totally different names:
 
     similarity = l8.compare(l9);
     sprintf(buffer, teststr, l8s.c_str(), l9s.c_str(), similarity);
-    describe_test(INDENT4, buffer);
+    describe_pass(INDENT4, buffer);
     CPPUNIT_ASSERT(4 == similarity);
 
     //JOHNSTON/JOHNSON
@@ -462,7 +462,7 @@ Totally different names:
 
     similarity = l10.compare(l11);
     sprintf(buffer, teststr, l10s.c_str(), l11s.c_str(), similarity);
-    describe_test(INDENT4, buffer);
+    describe_pass(INDENT4, buffer);
     CPPUNIT_ASSERT(4 == similarity);
 
     //DE AMOUR/DE AMOURS
@@ -476,12 +476,12 @@ Totally different names:
 
     similarity = l12.compare(l13);
     sprintf(buffer, teststr, l12s.c_str(), l13s.c_str(), similarity);
-    describe_test(INDENT4, buffer);
+    describe_pass(INDENT4, buffer);
     CPPUNIT_ASSERT(4 == similarity);
 
     similarity = l12.compare(l12);
     sprintf(buffer, teststr, l12s.c_str(), l12s.c_str(), similarity);
-    describe_test(INDENT4, buffer);
+    describe_pass(INDENT4, buffer);
     CPPUNIT_ASSERT(5 == similarity);
 
     //MARX with MARX
@@ -495,7 +495,7 @@ Totally different names:
 
     similarity = l14.compare(l15);
     sprintf(buffer, teststr, l14s.c_str(), l15s.c_str(), similarity);
-    describe_test(INDENT4, buffer);
+    describe_pass(INDENT4, buffer);
     CPPUNIT_ASSERT(5 == similarity);
 
 
