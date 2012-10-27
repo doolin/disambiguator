@@ -707,10 +707,14 @@ Totally different names:
     // Longitude compares from [0..1]
 
     similarity = lon1.compare(lon2);
-    std::cout << "Longitude similarity l1, l2: " << similarity << std::endl;
+    //std::cout << "Longitude similarity l1, l2: " << similarity << std::endl;
+    CPPUNIT_ASSERT(0 == similarity);
+    describe_fail(INDENT4, "Longitude fails from bug in implementation");
+
     similarity = lon1.compare(lon1);
-    std::cout << "Longitude similarity l1, l1: " << similarity << std::endl;
-    //CPPUNIT_ASSERT(4 == similarity);
+    //std::cout << "Longitude similarity l1, l1: " << similarity << std::endl;
+    CPPUNIT_ASSERT(1 == similarity);
+    describe_pass(INDENT4, "Longitude passes as a result of passing same object for comparison");
 
     delete foobar;
   }

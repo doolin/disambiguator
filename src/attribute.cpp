@@ -496,8 +496,9 @@ cLatitude::compare(const Attribute & right_hand_side) const {
 uint32_t
 cLongitude::compare(const Attribute & right_hand_side) const {
 
-    if (!is_comparator_activated())
+    if (!is_comparator_activated()) {
         throw cException_No_Comparision_Function(static_get_class_name().c_str());
+    }
 
     // ~L1412 in attribute.h
     check_if_reconfigured();
