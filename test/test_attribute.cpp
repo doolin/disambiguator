@@ -644,9 +644,7 @@ Totally different names:
     std::cout << "Latitude similarity lat1, lat1: " << similarity << std::endl;
     CPPUNIT_ASSERT(5 == similarity);
 
-    //delete foobar;
-
-
+    delete foobar;
   }
 
 
@@ -694,7 +692,7 @@ Totally different names:
     lon1.activate_comparator();
 
     // Longitude compares from [0..1]
-#if 1
+
     similarity = lon1.compare(lon2);
     std::cout << "Longitude similarity l1, l2: " << similarity << std::endl;
     similarity = lon1.compare(lon1);
@@ -702,8 +700,6 @@ Totally different names:
     //CPPUNIT_ASSERT(4 == similarity);
 
     delete foobar;
-#endif
-
   }
 
 
