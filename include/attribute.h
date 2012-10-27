@@ -1314,9 +1314,9 @@ public:
 
 /**
  * Attribute_Interactive_Mode:
- * This template class is used when a certain class has interaction with 
+ * This template class is used when a certain class has interaction with
  * other class. To use the mode, a concrete non-interactive
- * class should be defined first, followed by the inheritance of the 
+ * class should be defined first, followed by the inheritance of the
  * interactive class from the template which includes the non-interactive
  * data type.
  * Two classes can be defined as interactive with each other.
@@ -1816,24 +1816,18 @@ class cApplyYear: public Attribute_Single_Mode<cApplyYear> {
 
 public:
     cApplyYear(const char * UP(source) = NULL ){}
-    //SHOULD NOT OVERRIDE THE COMPARISON FUNCTION SINCE LONGITUDE
-    //IS NOT BEING COMPARED. IT IS WITH THE LATITUDE COMPARISION.
 };
 
 
 class cAppYear: public Attribute_Single_Mode<cAppYear> {
 public:
     cAppYear(const char * UP(source) = NULL ){}
-    //SHOULD NOT OVERRIDE THE COMPARISON FUNCTION SINCE LONGITUDE
-    //IS NOT BEING COMPARED. IT IS WITH THE LATITUDE COMPARISION.
 };
 
 
 class cGYear: public Attribute_Single_Mode<cGYear> {
 public:
     cGYear(const char * UP(source) = NULL ){}
-    //SHOULD NOT OVERRIDE THE COMPARISON FUNCTION SINCE LONGITUDE
-    //IS NOT BEING COMPARED. IT IS WITH THE LATITUDE COMPARISION.
 };
 
 
@@ -1841,10 +1835,12 @@ class cCity: public Attribute_Single_Mode <cCity> {
 
 public:
     cCity(const char * UP(source) = NULL ) {}
-    //SHOULD NOT OVERRIDE THE COMPARISON FUNCTION SINCE LONGITUDE
-    //IS NOT BEING COMPARED. IT IS WITH THE LATITUDE COMPARISION.
     bool split_string(const char*);
-    int exact_compare( const Attribute & rhs ) const { return this == & rhs; }
+
+    // FIXME: This should return type bool
+    int exact_compare(const Attribute & rhs) const {
+      return this == & rhs;
+    }
 };
 
 
