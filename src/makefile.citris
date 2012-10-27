@@ -2,8 +2,10 @@
 #CC=icc
 #CFLAGS=-O3 -g -xsse4.1 -ipo -static-intel -Wall
 
-CXX=g++
-CC=gcc
+#CXX=g++
+#CC=gcc
+CXX=icc
+CC=icc
 
 #CFLAGS=-O3 -g -Wall -I/usr/local/include -L/usr/local/lib
 # Profiling

@@ -1,66 +1,53 @@
 
+#include "ratios.h"
 #include "postprocess.h"
 
 #include "cluster.h"
-#include "fileoper.h"
 
 extern "C" {
-    #include "strcmp95.h"
+  #include "strcmp95.h"
 }
-
-#if 0
-cCluster_Set & cCluster_Set::convert_from_ClusterInfo( const cCluster_Info * ps) {
-    if ( ps == NULL )
-        throw cException_Other("NULL pointer.");
-
-    this->consolidated.clear();
-
-    for ( map < string, cCluster_Info::cRecGroup >::const_iterator p = ps->get_cluster_map().begin(); p != ps->get_cluster_map().end(); ++p ) {
-        for ( cCluster_Info::cRecGroup::const_iterator q = p->second.begin(); q != p->second.end(); ++q ) {
-            //this->consolidated.insert(*q);
-            this->consolidated.push_back(*q);
-        }
-    }
-    return *this;
-}
-#endif
 
 
 void
-find_associated_nodes(const cCluster & center, const map < const Record *, const Record *> & uid2uinv,
-                      const map < const Record *, cGroup_Value, cSort_by_attrib > & patent_tree,
+find_associated_nodes(const Cluster & center,
+                      const Uid2UinvTree & uid2uinv,
+                      const PatentTree & patent_tree,
                       set < const Record * > & associated_delegates) {
 
     associated_delegates.clear();
 
-    for ( cGroup_Value::const_iterator p = center.get_fellows().begin(); p != center.get_fellows().end(); ++p ) {
-        map < const Record *, cGroup_Value, cSort_by_attrib >::const_iterator ipat = patent_tree.find(*p);
-        if ( ipat == patent_tree.end() ) {
+    for (RecordPList::const_iterator p = center.get_fellows().begin(); p != center.get_fellows().end(); ++p ) {
+
+        PatentTree::const_iterator ipat = patent_tree.find(*p);
+        if (ipat == patent_tree.end()) {
             (*p)->print();
             throw cException_Attribute_Not_In_Tree("Cannot find the patent.");
         }
 
-        for ( cGroup_Value::const_iterator cgi = ipat->second.begin(); cgi != ipat->second.end(); ++cgi ) {
-            if ( *cgi == *p )
-                continue;
-            map < const Record *, const Record *>::const_iterator q = uid2uinv.find(*cgi);
-            if ( q == uid2uinv.end() )
+        for (RecordPList::const_iterator cgi = ipat->second.begin(); cgi != ipat->second.end(); ++cgi) {
+
+            if ( *cgi == *p ) continue;
+
+            Uid2UinvTree::const_iterator q = uid2uinv.find(*cgi);
+            if (q == uid2uinv.end()) {
                 throw cException_Attribute_Not_In_Tree("Cannot find the unique record pointer.");
+            }
             associated_delegates.insert(q->second);
         }
 
     }
 
-    for ( cGroup_Value::const_iterator p = center.get_fellows().begin(); p != center.get_fellows().end(); ++p ) {
+    for (RecordPList::const_iterator p = center.get_fellows().begin(); p != center.get_fellows().end(); ++p) {
         associated_delegates.erase(*p);
     }
 }
 
 
 void
-post_polish(cCluster_Set & m, map < const Record *,
-            const Record *> & uid2uinv,
-            const map < const Record *, cGroup_Value, cSort_by_attrib > & patent_tree,
+post_polish(ClusterSet & m,
+            Uid2UinvTree & uid2uinv,
+            const PatentTree & patent_tree,
             const string & logfile) {
 
     std::cout << "Starting post processing ... ..." << std::endl;
@@ -94,7 +81,7 @@ post_polish(cCluster_Set & m, map < const Record *,
     map < const Record *, Cluster_Container::iterator >::const_iterator z;
 
     for ( Cluster_Container ::iterator p = m.get_modifiable_set().begin(); p != m.get_modifiable_set().end(); ++p ) {
-        record2cluster.insert( std::pair < const Record *, Cluster_Container::iterator > (p->get_cluster_head().m_delegate, p ) );
+        record2cluster.insert(std::pair < const Record *, Cluster_Container::iterator > (p->get_cluster_head().m_delegate, p ) );
     }
 
     unsigned int round_cnt;
@@ -196,7 +183,7 @@ post_polish(cCluster_Set & m, map < const Record *,
 
 
 
-                    double first_score = strcmp95_modified(pfirst->c_str(), qfirst->c_str() );
+                    double first_score = strcmp95_modified(pfirst->c_str(), qfirst->c_str());
                     double last_score = strcmp95_modified(plast->c_str(), qlast->c_str());
 
                     if ( first_score > threshold  && last_score > threshold  ) {
@@ -217,14 +204,19 @@ post_polish(cCluster_Set & m, map < const Record *,
                             //continue;
                             throw cException_Attribute_Not_In_Tree("Record pointer not in tree.");
                         }
+
+                        // TODO: Move this to its own function.
+                        // need to do 4 things:
+                        // 1. merge,
+                        // 2. delete/update from cluster_set,
+                        // 3. update record2cluster,
+                        // 4. and update uid2uiv map
+
                         Cluster_Container::iterator pmergee = z->second;
-
-                        // need to do 4 things: merge, delete/update from cluster_set, update record2cluster, and update uid2uiv map
-
-                        //1, merge
+                        //1. merge
                         pmerger->merge(*pmergee, pmerger->get_cluster_head());
 
-                        //2, delete from record2cluster;
+                        //2. delete from record2cluster;
                         const Record * newhead = pmerger->get_cluster_head().m_delegate;
                         record2cluster.erase(*s);
                         if ( *r != newhead ) {
@@ -234,15 +226,15 @@ post_polish(cCluster_Set & m, map < const Record *,
                         }
 
 
-                        //3, update the uid2uinv map;
-                        for ( cGroup_Value::const_iterator p = pmerger->get_fellows().begin(); p != pmerger->get_fellows().end(); ++p ) {
+                        //3. update the uid2uinv map;
+                        for ( RecordPList::const_iterator p = pmerger->get_fellows().begin(); p != pmerger->get_fellows().end(); ++p ) {
                             map < const Record *, const Record *>::iterator t = uid2uinv.find(*p);
                             if ( t == uid2uinv.end() )
                                 throw cException_Attribute_Not_In_Tree("Record pointer not in uid2uinv tree.");
                             t->second = pmerger->get_cluster_head().m_delegate;
                         }
 
-                        //4, delete from cluster_set
+                        //4. delete from cluster_set
                         m.get_modifiable_set().erase(pmergee);
 
 
@@ -265,7 +257,7 @@ post_polish(cCluster_Set & m, map < const Record *,
 
 
 void
-cCluster_Set::output_results( const char * dest_file) const {
+ClusterSet::output_results( const char * dest_file) const {
 
     std::cout << "Writing to " << dest_file << " ... ...";
     std::ostream::sync_with_stdio(false);
@@ -279,14 +271,14 @@ cCluster_Set::output_results( const char * dest_file) const {
 
         const Attribute * key_pattrib = p->get_cluster_head().m_delegate->get_attrib_pointer_by_index(uid_index);
 
-        os << * key_pattrib->get_data().at(0) << cCluster_Info::primary_delim;
+        os << * key_pattrib->get_data().at(0) << ClusterInfo::primary_delim;
         double cohesion_value = p->get_cluster_head().m_cohesion;
-        os << cohesion_value << cCluster_Info::primary_delim;
+        os << cohesion_value << ClusterInfo::primary_delim;
 
-        for ( cGroup_Value::const_iterator q = p->get_fellows().begin(); q != p->get_fellows().end(); ++q ) {
+        for ( RecordPList::const_iterator q = p->get_fellows().begin(); q != p->get_fellows().end(); ++q ) {
             const Attribute * value_pattrib = (*q)->get_attrib_pointer_by_index(uid_index);
 
-            os << * value_pattrib->get_data().at(0) << cCluster_Info::secondary_delim;
+            os << * value_pattrib->get_data().at(0) << ClusterInfo::secondary_delim;
         }
         os << '\n';
     }
@@ -296,25 +288,27 @@ cCluster_Set::output_results( const char * dest_file) const {
 
 
 void
-cCluster_Set::read_from_file(const char * filename,
-                             const map <string, const Record*> & uid_tree) {
+ClusterSet::read_from_file(const char * filename,
+                           const map <string, const Record*> & uid_tree) {
 
     unsigned int count = 0;
     const unsigned int base = 100000;
-    const unsigned int primary_delim_size = strlen(cCluster_Info::primary_delim);
-    const unsigned int secondary_delim_size = strlen(cCluster_Info::secondary_delim);
+    const unsigned int primary_delim_size = strlen(ClusterInfo::primary_delim);
+    const unsigned int secondary_delim_size = strlen(ClusterInfo::secondary_delim);
     std::ifstream infile ( filename);
 
     if (infile.good()) {
+
         string filedata;
         while ( getline(infile, filedata)) {
+
             register size_t pos = 0, prev_pos = 0;
-            pos = filedata.find(cCluster_Info::primary_delim, prev_pos);
+            pos = filedata.find(ClusterInfo::primary_delim, prev_pos);
             string keystring = filedata.substr( prev_pos, pos - prev_pos);
             const Record * key = retrieve_record_pointer_by_unique_id( keystring, uid_tree );
             prev_pos = pos + primary_delim_size;
 
-            pos = filedata.find(cCluster_Info::primary_delim, prev_pos);
+            pos = filedata.find(ClusterInfo::primary_delim, prev_pos);
             double val = 0;
             if ( true ) {
                 string cohesionstring = filedata.substr( prev_pos, pos - prev_pos);
@@ -323,21 +317,23 @@ cCluster_Set::read_from_file(const char * filename,
             prev_pos = pos + primary_delim_size;
 
 
-            cGroup_Value tempv;
-            while ( ( pos = filedata.find(cCluster_Info::secondary_delim, prev_pos) )!= string::npos){
+            RecordPList tempv;
+            while ( ( pos = filedata.find(ClusterInfo::secondary_delim, prev_pos) )!= string::npos){
                 string valuestring = filedata.substr( prev_pos, pos - prev_pos);
                 const Record * value = retrieve_record_pointer_by_unique_id( valuestring, uid_tree);
                 tempv.push_back(value);
                 prev_pos = pos + secondary_delim_size;
             }
-            cCluster_Head th(key, val);
-            cCluster tempc(th, tempv);
+
+            ClusterHead th(key, val);
+            Cluster tempc(th, tempv);
             tempc.self_repair();
             this->consolidated.push_back(tempc);
 
             ++count;
-            if ( count % base == 0 )
+            if ( count % base == 0 ) {
                 std::cout << count << " records have been loaded from the cluster file. " << std::endl;
+            }
         }
         std::cout << "Totally, " << count << " records have been loaded from " << filename << std::endl;
     }

@@ -140,11 +140,11 @@ public:
  * Therefore, this class should be used very cautiously, as it wipes everything about coauthor WHENEVER an object of such class is created.
  *
  * Private:
- *         const map < const Record *, cGroup_Value, cSort_by_attrib > * reference_pointer: a pointer to a patent tree, which can be obtained in a cBlocking_Operation_By_Coauthor object.
+ *         const map < const Record *, RecordPList, cSort_by_attrib > * reference_pointer: a pointer to a patent tree, which can be obtained in a cBlocking_Operation_By_Coauthor object.
  *         const unsigned int coauthor_index: the index of the coauthor column in many columns.
  *
  * Public:
- *         Reconfigurator_Coauthor ( const map < const Record *, cGroup_Value, cSort_by_attrib > & patent_authors):
+ *         Reconfigurator_Coauthor ( const map < const Record *, RecordPList, cSort_by_attrib > & patent_authors):
  *             create a class object through a patent tree ( which is usually from a cBlocking_Operation_By_Coauthor object ).
  *         void reconfigure ( const Record * ) const: virtual function.
  *
@@ -161,10 +161,10 @@ public:
 class Reconfigurator_Coauthor : public Record_Reconfigurator {
 
 private:
-    const map < const Record *, cGroup_Value, cSort_by_attrib > * reference_pointer;
+    const map < const Record *, RecordPList, cSort_by_attrib > * reference_pointer;
     const unsigned int coauthor_index;
 public:
-    Reconfigurator_Coauthor ( const map < const Record *, cGroup_Value, cSort_by_attrib > & patent_authors);
+    Reconfigurator_Coauthor ( const map < const Record *, RecordPList, cSort_by_attrib > & patent_authors);
     void reconfigure ( const Record * ) const;
 };
 

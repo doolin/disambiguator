@@ -9,9 +9,9 @@
 #include <attribute.h>
 
 
-class CompareTest : public CppUnit::TestCase { 
+class CompareTest : public CppUnit::TestCase {
 
-public: 
+public:
   CompareTest( std::string name ) : CppUnit::TestCase( name ) {}
 
   void check_less_than() {
@@ -55,11 +55,13 @@ public:
 };
 
 
+#ifdef test_compare_STANDALONE
 int
-main(int argc, char ** argv) {
+main(int UP(argc), char ** UP(argv)) {
 
   CompareTest * ct = new CompareTest(std::string("SimilarityCompare test"));
   ct->runTest();
   delete ct;
   return 0;
 }
+#endif

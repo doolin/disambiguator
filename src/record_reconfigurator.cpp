@@ -62,10 +62,13 @@ Reconfigurator_AsianNames::reconfigure( const Record * p ) const {
 }
 
 
-Reconfigurator_Interactives::Reconfigurator_Interactives( const string & my_name,
-        const vector < string > & relevant_attribs ) {
+Reconfigurator_Interactives::Reconfigurator_Interactives(const string & my_name,
+        const vector<string > & relevant_attribs) {
+
     my_index = Record::get_index_by_name(my_name);
-    for ( vector<string>::const_iterator p = relevant_attribs.begin(); p != relevant_attribs.end(); ++p ) {
+
+    vector<string>::const_iterator p = relevant_attribs.begin();
+    for (;  p != relevant_attribs.end(); ++p) {
         unsigned int idx = Record::get_index_by_name(*p);
         relevant_indice.push_back(idx);
     }
@@ -95,7 +98,7 @@ Reconfigurator_Interactives::reconfigure ( const Record * p ) const {
  * Reconfigurator_Coauthor objects shall NEVER happen during disambiguation.
  *
  */
-Reconfigurator_Coauthor::Reconfigurator_Coauthor ( const map < const Record *, cGroup_Value, cSort_by_attrib > & patent_authors) :
+Reconfigurator_Coauthor::Reconfigurator_Coauthor ( const map < const Record *, RecordPList, cSort_by_attrib > & patent_authors) :
         reference_pointer ( & patent_authors), coauthor_index ( Record::get_index_by_name(cCoauthor::static_get_class_name())) {
     cCoauthor::clear_data_pool();
     cCoauthor::clear_attrib_pool();
@@ -119,7 +122,7 @@ Reconfigurator_Coauthor::reconfigure(const Record * p) const {
     static const StringExtractFirstWord firstname_extracter;
     static const StringRemoveSpace lastname_extracter;
 
-    map < const Record *, cGroup_Value, cSort_by_attrib >::const_iterator cpm;
+    map < const Record *, RecordPList, cSort_by_attrib >::const_iterator cpm;
     cCoauthor temp;
 
     cpm = reference_pointer->find( p);
@@ -127,9 +130,9 @@ Reconfigurator_Coauthor::reconfigure(const Record * p) const {
     if ( cpm == reference_pointer->end())
         throw cException_Other("Missing patent data.");
 
-    const cGroup_Value & patent_coauthors = cpm->second;
+    const RecordPList & patent_coauthors = cpm->second;
 
-    for ( cGroup_Value::const_iterator q = patent_coauthors.begin(); q != patent_coauthors.end(); ++q ) {
+    for ( RecordPList::const_iterator q = patent_coauthors.begin(); q != patent_coauthors.end(); ++q ) {
 
         if ( *q == p )
             continue;

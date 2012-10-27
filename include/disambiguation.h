@@ -4,4 +4,8 @@
 
 #include "typedefs.h"
 
+#define STRINGIZE_DETAIL(x) #x
+#define STRINGIZE(x) STRINGIZE_DETAIL(x)
+
+
 #endif /* PATENT_DISAMBIGUATION_H */

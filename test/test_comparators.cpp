@@ -4,15 +4,22 @@
 #include <cppunit/extensions/TestFactory.h>
 #include <cppunit/TestCase.h>
 #include <string>
-using std::string;
 
 #include <comparators.h>
 
+#include "testutils.h"
+
+using std::string;
 
 class ComparatorsTest : public CppUnit::TestCase {
 
 public:
-  ComparatorsTest(std::string name) : CppUnit::TestCase(name) {}
+
+  ComparatorsTest(std::string name) : CppUnit::TestCase(name) {
+
+    describe_test(INDENT0, name.c_str());
+  }
+
 
  /**
   * This is insane to have a distance measure
@@ -20,22 +27,39 @@ public:
   * zero distance. See comments in source code.
   */
   void test_zero() {
+
     string lat1("0.0");
     string lon1("0.0");
     string lat2("0.0");
     string lon2("0.0");
-    int distance = latloncmp(lat1, lon1, lat2, lon2);
-    CPPUNIT_ASSERT(distance == 1);
+    int result = latloncmp(lat1, lon1, lat2, lon2);
+    CPPUNIT_ASSERT(1 == result);
+    describe_pass(INDENT2, "All 0.0 lats and lons return 1");
   }
 
+
   void test_latloncmp() {
+
     string lat1("38.38");
     string lon1("102.102");
     string lat2("38.38");
     string lon2("102.102");
-    int distance = latloncmp(lat1, lon1, lat2, lon2);
-    CPPUNIT_ASSERT(distance == 5);
+    int result = latloncmp(lat1, lon1, lat2, lon2);
+    CPPUNIT_ASSERT(5 == result);
+    describe_pass(INDENT2, "Identical lats and lons return 5");
   }
+
+  void test_latlon_nullstrings() {
+
+    string lat1("");
+    string lon1("");
+    string lat2("");
+    string lon2("");
+    int result = latloncmp(lat1, lon1, lat2, lon2);
+    CPPUNIT_ASSERT(1 == result);
+    describe_pass(INDENT2, "Null string lats and lons return 1");
+  }
+
 
   void test_extract_initials() {
     string source("foo bar");
@@ -75,7 +99,7 @@ public:
   * weight.
   */
   void test_name_compare() {
-    
+
     string s1("foo");
     string s2("bar");
     string s3("baz");
@@ -99,9 +123,11 @@ public:
 
 void test_comparators() {
 
-  ComparatorsTest * ct = new ComparatorsTest(std::string("initial test"));
+  ComparatorsTest * ct = new ComparatorsTest(std::string("Comparators test"));
   ct->test_zero();
   ct->test_latloncmp();
+  ct->test_latlon_nullstrings();
+
   ct->test_extract_initials();
   ct->test_midnamecmp();
   ct->test_name_compare();
@@ -109,9 +135,9 @@ void test_comparators() {
 }
 
 
-#ifdef comparators_STANDALONE
+#ifdef test_comparators_STANDALONE
 int
-main(int argc, char ** argv) {
+main(int, char **) {
   test_comparators();
   return 0;
 }

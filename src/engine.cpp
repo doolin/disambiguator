@@ -24,108 +24,154 @@ using std::set;
  * Algorithm: STL map find.
  */
 double
-fetch_ratio(const vector < unsigned int > & ratio_to_lookup,
-            const map < vector  < unsigned int>,
-            double, SimilarityCompare > & ratiosmap ) {
+fetch_ratio(const vector < uint32_t > & ratio_to_lookup,
+            const map <SimilarityProfile, double, SimilarityCompare > & ratiosmap ) {
 
-    map < vector < unsigned int >, double, SimilarityCompare >::const_iterator p = ratiosmap.find( ratio_to_lookup);
-    if ( p == ratiosmap.end())
+  //SPRatiosIndex::const_iterator...
+    map <SimilarityProfile, double, SimilarityCompare >::const_iterator p = ratiosmap.find( ratio_to_lookup);
+
+    if (p == ratiosmap.end()) {
         return 0;
-    else
+    } else {
         return p->second;
+    }
 }
 
 
+// TODO: See if this works:
+// typedef std::pair<const Record *, double> Representative;
 std::pair<const Record *, double>
 disambiguate_by_set (const Record * key1,
-                     const cGroup_Value & match1,
+                     const RecordPList & match1,
                      const double cohesion1,
                      const Record * key2,
-                     const cGroup_Value & match2,
+                     const RecordPList & match2,
                      const double cohesion2,
                      const double prior,
-                     const cRatios & ratio,  const double mutual_threshold ) {
+                     const cRatios & ratio,
+                     const double mutual_threshold) {
 
-    static const unsigned int firstname_index = Record::get_similarity_index_by_name(cFirstname::static_get_class_name());
-    static const unsigned int midname_index = Record::get_similarity_index_by_name(cMiddlename::static_get_class_name());
-    static const unsigned int lastname_index = Record::get_similarity_index_by_name(cLastname::static_get_class_name());
-    static const unsigned int country_index = Record::get_index_by_name(cCountry::static_get_class_name());
+  // TODO: See if these declarations can be moved outside of this function and
+  // declared at the file level, which would promote a much nicer refactoring.
+    static const uint32_t firstname_index = Record::get_similarity_index_by_name(cFirstname::static_get_class_name());
+    static const uint32_t midname_index = Record::get_similarity_index_by_name(cMiddlename::static_get_class_name());
+    static const uint32_t lastname_index = Record::get_similarity_index_by_name(cLastname::static_get_class_name());
+    static const uint32_t country_index = Record::get_index_by_name(cCountry::static_get_class_name());
     static const bool country_check = true;
 
 
-    //prescreening.
+    // TODO: Why is this not a configuration parameter?
     const bool prescreening = true;
-    if ( prescreening ) {
-        if ( country_check ) {
+
+    // TODO: Refactor prescreening block
+    if (prescreening) {
+      // TODO: Refactor this check
+        if (country_check) {
+
             const Attribute * p1 = key1->get_attrib_pointer_by_index(country_index);
             const Attribute * p2 = key2->get_attrib_pointer_by_index(country_index);
-            if ( p1 != p2 && p1->is_informative() && p2->is_informative() )
-                return std::pair<const Record *, double> (NULL, 0);
+
+            if (p1 != p2 && p1->is_informative() && p2->is_informative()) {
+              // TODO: consider making the following a macro to sweep it out
+              // of the way, i.e., return NULL_RECORD.
+              return std::pair<const Record *, double> (NULL, 0);
+            }
         }
 
+        // TODO: Unit test record compare
+        vector<uint32_t> screen_sp = key1->record_compare(*key2);
 
-        vector < unsigned int > screen_sp = key1->record_compare(*key2);
+        // TODO: Unit test fetch_ratio()
         const double screen_r = fetch_ratio(screen_sp, ratio.get_ratios_map());
         const double screen_p = 1.0 / ( 1.0 + ( 1.0 - prior )/ prior / screen_r );
-        if ( screen_p < 0.3 || screen_sp.at(firstname_index) == 0 || screen_sp.at(midname_index) == 0 || screen_sp.at(lastname_index) == 0 )
+        // TODO: The 0.3 value should be a parameter, preferably by configuration.
+        // TODO: Consider refactoring the sp screening code, can be reused below.
+        // The following enforces presence of some sort of match on all three
+        // names. Note: the middle name matching returns a 1 for the case when
+        // one of the records has a middle name but the other does not. See
+        // the midnamecmp function for details.
+        if (screen_p                       < 0.3 ||
+            screen_sp.at(firstname_index) == 0   ||
+            screen_sp.at(midname_index)   == 0   ||
+            screen_sp.at(lastname_index)  == 0) {
+
             return std::pair<const Record *, double> (NULL, 0);
+        }
     }
+
     const bool partial_match_mode = true;
 
+    // TODO: Why is this not a configuration parameter?
+    // Is the value 0.7 related to the value 0.3 above?
     const double minimum_threshold = 0.7;
-    const double threshold = max_val <double> (minimum_threshold, mutual_threshold * cohesion1 * cohesion2);
-    static const cException_Unknown_Similarity_Profile except(" Fatal Error in Disambig by set.");
 
-    const unsigned int match1_size = match1.size();
-    const unsigned int match2_size = match2.size();
+    const double threshold = max_val<double>(minimum_threshold,
+        mutual_threshold * cohesion1 * cohesion2);
+    //static const cException_Unknown_Similarity_Profile except(" Fatal Error in Disambig by set.");
 
-    //const unsigned int required_candidates = static_cast< unsigned int > ( 1.0 * sqrt(1.0 * match1_size * match2_size ));
-    //const unsigned int candidates_for_averaging = 2 * required_candidates - 1 ;
-    unsigned int candidates_for_averaging = match1_size * match2_size / 4 ;
-    if ( candidates_for_averaging == 0 )
+    const uint32_t match1_size = match1.size();
+    const uint32_t match2_size = match2.size();
+
+    //const uint32_t required_candidates = static_cast< uint32_t>(1.0 * sqrt(1.0 * match1_size * match2_size));
+    //const uint32_t candidates_for_averaging = 2 * required_candidates - 1 ;
+
+    uint32_t candidates_for_averaging = match1_size * match2_size / 4 ;
+
+    if (candidates_for_averaging == 0) {
         candidates_for_averaging = 1;
-    if ( candidates_for_averaging == 0 )
+    }
+
+    // TODO: This really looks like dead code.
+    if (candidates_for_averaging == 0) {
         throw cException_Other("Computation of size of averaged probability is incorrect.");
+    }
 
-    set < double > probs;
-
+    set<double> probs;
     double interactive = 0;
     double cumulative_interactive = 0;
-    unsigned int qualified_count = 0;
+    uint32_t qualified_count = 0;
     //double required_interactives = 0;
-    //unsigned int required_cnt = 0;
-    for ( cGroup_Value::const_iterator p = match1.begin(); p != match1.end(); ++p ) {
-        for ( cGroup_Value::const_iterator q = match2.begin(); q != match2.end(); ++q ) {
+    //uint32_t required_cnt = 0;
+    // TODO: Should be able to refactor this whole block
+    for (RecordPList::const_iterator p = match1.begin(); p != match1.end(); ++p) {
 
-            if ( country_check ) {
+        for (RecordPList::const_iterator q = match2.begin(); q != match2.end(); ++q) {
+
+            if (country_check) {
                 const Attribute * p1 = (*p)->get_attrib_pointer_by_index(country_index);
                 const Attribute * p2 = (*q)->get_attrib_pointer_by_index(country_index);
-                if ( p1 != p2 && p1->is_informative() && p2->is_informative() )
+
+                if (p1 != p2 && p1->is_informative() && p2->is_informative()) {
                     return std::pair<const Record *, double> (NULL, 0);
+                }
             }
 
+            vector< uint32_t > tempsp = (*p)->record_compare(* *q);
 
+            // TODO: Consider inlining a template function for this check.
+            if (tempsp.at(firstname_index) == 0 ||
+                tempsp.at(midname_index)   == 0 ||
+                tempsp.at(lastname_index)  == 0) {
 
-            vector< unsigned int > tempsp = (*p)->record_compare(* *q);
-            if ( tempsp.at(firstname_index) == 0 || tempsp.at(midname_index) == 0 || tempsp.at(lastname_index) == 0 )
                 return std::pair<const Record *, double> (NULL, 0);
-
+            }
 
             double r_value = fetch_ratio(tempsp, ratio.get_ratios_map());
 
-            if ( r_value == 0 ) {
+            if (r_value == 0) {
                 interactive += 0;
-            }
-            else {
-                const double temp_prob = 1.0 / ( 1.0 + ( 1.0 - prior )/prior / r_value );
-                interactive +=  temp_prob ;
-                if ( partial_match_mode && qualified_count < candidates_for_averaging ) {
-                    if (  probs.size() >= candidates_for_averaging ) {
-                        probs.erase(probs.begin());
+            } else {
+
+                const double temp_prob = 1.0 / (1.0 + (1.0 - prior) / prior / r_value);
+                interactive +=  temp_prob;
+                if (partial_match_mode && qualified_count < candidates_for_averaging) {
+                    if (probs.size() >= candidates_for_averaging) {
+                      probs.erase(probs.begin());
                     }
                     probs.insert(temp_prob);
                 }
-                if ( partial_match_mode && temp_prob >= threshold ) {
+
+                if (partial_match_mode && temp_prob >= threshold) {
                     cumulative_interactive += temp_prob;
                     ++qualified_count;
                 }
@@ -136,204 +182,326 @@ disambiguate_by_set (const Record * key1,
     const double interactive_average = interactive / match1_size / match2_size;
     double probs_average;
 
-    if ( qualified_count > probs.size() )
+    if (qualified_count > probs.size())
         probs_average = cumulative_interactive / qualified_count;
     else
-        probs_average = std::accumulate(probs.begin(), probs.end(), 0.0 ) / probs.size();
+        probs_average = std::accumulate(probs.begin(), probs.end(), 0.0) / probs.size();
 
-    if ( interactive_average > 1 )
+    if (interactive_average > 1)
         throw cException_Invalid_Probability("Cohesion value error.");
 
-    if ( partial_match_mode && probs_average < threshold )
+    if (partial_match_mode && probs_average < threshold)
         return std::pair<const Record *, double> (NULL, probs_average);
-    if ( ( ! partial_match_mode ) && interactive_average < threshold )
+
+    if ((!partial_match_mode) && interactive_average < threshold)
         return std::pair<const Record *, double> (NULL, interactive_average);
 
 
     double inter = 0;
-    if ( partial_match_mode )
+    if (partial_match_mode)
         inter = probs_average * match1_size * match2_size;
     else
         inter = interactive;
 
-    const double probability = ( cohesion1 * match1_size * ( match1_size - 1 )
-                                + cohesion2 * match2_size * ( match2_size - 1 )
-                                + 2.0 * inter ) / ( match1_size + match2_size) / (match1_size + match2_size - 1 );
-    //ATTENSION: RETURN A NON-NULL POINTER TO TELL IT IS A MERGE. NEED TO FIND A REPRESENTATIVE IN THE MERGE PART.
-    return std::pair<const Record *, double>( key1, probability );
+    const double probability = (cohesion1 * match1_size * (match1_size - 1)
+                              + cohesion2 * match2_size * (match2_size - 1)
+                              + 2.0 * inter)
+                              / (match1_size + match2_size)
+                              / (match1_size + match2_size - 1);
 
+    //ATTENSION: RETURN A NON-NULL POINTER TO TELL IT IS A
+    //MERGE. NEED TO FIND A REPRESENTATIVE IN THE MERGE PART.
+    // TODO: The "probability" returned here is actually the value
+    // used to initialize the cohesion in the ClusterHead
+    // instantiated immediately after this call returns.
+    // TODO: CAVEAT: cohesion
+    return std::pair<const Record *, double>(key1, probability);
 }
 
 
+// TODO: This function is not called, get rid of it, or move it to utilities
+// or someplace.
 void
 copyfile(const char * target, const char * source) {
 
     std::cout << "Copying file " << source << " to " << target << std::endl;
-    std::ifstream   input( source,std::ios::binary);
-    std::ofstream   output( target,std::ios::binary);
-
-    output   <<   input.rdbuf();
-
+    std::ifstream input( source,std::ios::binary);
+    std::ofstream output( target,std::ios::binary);
+    output << input.rdbuf();
     std::cout << "File copy done." << std::endl;
 }
 
 
+std::vector<std::string>
+parse_column_names(std::string line) {
+
+  int pos = 0;
+  int prev_pos = 0;
+  const char * delim = ",";
+  const uint32_t delim_size = strlen(delim);
+  vector <string> total_col_names;
+
+  while (pos != string::npos) {
+
+      string columnname;
+
+      pos = line.find(delim, prev_pos);
+      if (pos != string::npos) {
+          columnname = line.substr(prev_pos, pos - prev_pos);
+      } else {
+          columnname = line.substr(prev_pos );
+      }
+
+      total_col_names.push_back(columnname);
+      prev_pos = pos + delim_size;
+  }
+  return total_col_names;
+}
 
 
-/*
- * Aim: to fetch records from a txt format file into memory.
- * This is a very important function.
- *
- * Algorithm:
- * First of all, read the first line in the file. The first
+// Change the name to "index_column_names"
+vector<uint32_t>
+create_column_indices(std::vector<std::string> requested_columns,
+    std::vector<std::string> total_col_names) {
+
+  std::vector<uint32_t> rci;
+  const uint32_t num_cols = requested_columns.size();
+
+  for (uint32_t i = 0; i < num_cols; ++i) {
+
+      uint32_t j;
+      for (j = 0; j < total_col_names.size(); ++j) {
+
+          // .at() is just too precious...
+          //if (requested_columns.at(i) == total_col_names.at(j)) {
+          if (requested_columns[i] == total_col_names[j]) {
+              rci.push_back(j);
+              break;
+          }
+      }
+
+      if (j == total_col_names.size()) {
+          std::cerr << "Critical Error in reading data input file" << std::endl
+          <<"Column names not available in the first line. Please Check the correctness." << std::endl;
+          throw cException_ColumnName_Not_Found(requested_columns.at(i).c_str());
+      }
+  }
+  return rci;
+}
+
+
+Attribute **
+instantiate_attributes(std::vector<std::string> column_names, int num_cols) {
+
+  Attribute ** pointer_array = new Attribute *[num_cols];
+
+  uint32_t pos =  0;
+  uint32_t prev_pos = 0;
+  uint32_t position_in_ratios = 0;
+
+  for (uint32_t i = 0; i < num_cols; ++i) {
+
+      const int pos_in_query = Attribute::position_in_registry(column_names[i]);
+
+      if ( pos_in_query == -1 ) {
+          for ( uint32_t j = 0; j < i; ++j )
+              delete pointer_array[j];
+          delete [] pointer_array;
+          throw cException_ColumnName_Not_Found(column_names[i].c_str());
+      } else {
+          pointer_array[i] = create_attribute_instance (column_names[i].c_str() );
+      }
+
+#ifdef HLKJHLKJJHGKJHKJHKFHGFKHG
+      if ( Record::column_names[i] == cLongitude::class_name ) {
+          cLatitude::interactive_column_indice_in_query.push_back(i);
+      }
+      else if ( Record::column_names[i] == cStreet::class_name ) {
+          cLatitude::interactive_column_indice_in_query.push_back(i);
+      }
+      else if ( Record::column_names[i] == cCountry::class_name ) {
+          cLatitude::interactive_column_indice_in_query.push_back(i);
+      }
+      else if ( Record::column_names[i] == cAsgNum::class_name ) {
+          cAssignee::interactive_column_indice_in_query.push_back(i);
+      }
+#endif
+
+      // If this crashes, will need to add code in the function `create_attribute_instance`
+      // Also, it's stupid that this is used to check whether something is
+      // instantiated.
+      if ( pointer_array[i]->get_attrib_group() != string("None") ) {
+          //std::cout << "pointer_array[i]->get_attrib_group(): " << pointer_array[i]->get_attrib_group() << std::endl;
+          // TODO: What is this for? Get rid of it.
+          ++position_in_ratios;
+      }
+  }
+  return pointer_array;
+}
+
+
+vector <const Attribute *>
+parse_line(string line,
+           vector<uint32_t> requested_column_indice,
+           Attribute ** pointer_array,
+           uint32_t num_cols,
+           const char * delim,
+           vector<string> & string_cache) {
+
+  const uint32_t delim_size = strlen(delim);
+  vector <const Attribute *> temp_vec_attrib;
+  const Attribute * pAttrib;
+
+  for (uint32_t i = 0; i < num_cols ; ++i) {
+
+      // What does column_location point at?
+      uint32_t column_location = 0;
+      // Given the second iteration, what does prev_pos point at?
+      uint32_t pos = 0;
+      uint32_t prev_pos = 0;
+
+      while (column_location++ != requested_column_indice.at(i)) {
+          pos = line.find(delim, prev_pos);
+          prev_pos = pos + delim_size;
+      }
+
+      pos = line.find(delim, prev_pos);
+
+      // Find a link to string::npos
+      if (pos == string::npos) {
+
+          // Find a link to .size for whatever type line is
+          if ( prev_pos != line.size() ) {
+              // Link to the substr method
+              // I don't understand why the work "link" keeps
+              // getting used for variable assignment.
+              // TODO: Write a blog post about this, and about the
+              // general notion of using generally accepted labels
+              // for common things instead fucking making up shit
+              // arbitrarily. It's variable assignment, not "linking".
+              string_cache[i] = line.substr(prev_pos);
+          } else {
+              string_cache[i] = "";
+          }
+
+      } else {
+          // This looks where the actual value is parsed
+          string_cache[i] = line.substr(prev_pos, pos - prev_pos);
+      }
+
+      // Link to the reset_data method
+      // Why is this here? What purpose is it serving? This smells.
+      // TODO: Figure out why this is here and see about putting
+      // it somewhere else. Definitely unit test this 
+      pointer_array[i]->reset_data(string_cache[i].c_str());
+      // Link to the clone method
+      //HERE CREATED NEW CLASS INSTANCES.
+      pAttrib = pointer_array[i]->clone();
+      temp_vec_attrib.push_back(pAttrib);
+  }
+
+  return temp_vec_attrib;
+}
+
+
+void
+print_involved_attributes(Attribute ** pointer_array,
+    uint32_t num_cols) {
+
+    std::cout << "Involved attributes are: ";
+    for (uint32_t i = 0; i < num_cols; ++i) {
+        std::cout << pointer_array[i]->get_class_name() << ", ";
+    }
+    std::cout << std::endl;
+}
+
+
+void
+print_polymorphic_data_types(Attribute ** pointer_array,
+    uint32_t num_cols) {
+
+    std::cout << "Polymorphic data types are: ";
+    for (uint32_t i = 0; i < num_cols; ++i) {
+        std::cout << typeid(*pointer_array[i]).name()<< ", ";
+    }
+    std::cout << std::endl;
+}
+
+
+void
+check_interactive_consistency(Attribute ** pointer_array,
+    uint32_t num_cols,
+    std::vector<std::string> column_names) {
+
+    // TODO: See if this can be moved to the instantiate_attributes function.
+    // Or to it's own function which is called from instantiate attributes
+    // always do this for all the attribute classes
+    for (uint32_t i = 0; i < num_cols; ++i) {
+        pointer_array[i]->check_interactive_consistency(column_names);
+    }
+}
+
+
+/**
+ * 1. First of all, read the first line in the file. The first
  * line should include all the information of each column. ie. They
  * are usually the * column names. The format of the first line is
- * "Column Name1,Column Name 2,Column Name3,...,Column Name Last".If the delimiter is not
- * comma, change the function variable "delim".
- * Second, check the argument "requested_columns" in all the columns,
+ * "Column Name1,Column Name 2,Column Name3,...,Column Name Last".
+ * If the delimiter is not * comma, change the function variable "delim".
+ *
+ * 2. Second, check the argument "requested_columns" in all the columns,
  * and record the indice of requested_columns
- * Third, starting from the second line to the end of the file,
+ *
+ * 3. Third, starting from the second line to the end of the file,
  * read relevant information with the help of delimiters and indice,
  * and save them in appropriate attributes.
- * Finally, do some concrete class related stuff, like setting
- * static members and run reconfigurations.
  *
+ * 4. Finally, do some concrete class related stuff, like setting
+ * static members and run reconfigurations.
  */
-
 bool
 fetch_records_from_txt(list <Record> & source,
                        const char * txt_file,
-                       const vector<string> &requested_columns) {
+                       const vector<string> & requested_columns) {
 
     std::ifstream::sync_with_stdio(false);
-    const char * delim = ",";    // this deliminator should never occur in the data.
-    const unsigned int delim_size = strlen(delim);
-    std::ifstream instream(txt_file);
+    const char * delim = ",";
+    const uint32_t delim_size = strlen(delim);
+    register size_t pos, prev_pos;
 
+    std::ifstream instream(txt_file);
     if (!instream.good()) {
         throw cException_File_Not_Found(txt_file);
     }
 
     string line;
-    //getline(instream, line);
-    //if ( line != raw_txt_authenticator )
-    //    throw cException_File_Not_Found("Specified file is not a valid one.");
-    //std::cout << "requested_columns.size: " << requested_columns.size << std::endl; 
-    std::cout << "requested_columns[0]: " << requested_columns[0] << std::endl; 
-
-    vector <string> total_col_names;
     getline(instream, line);
-    register size_t pos, prev_pos;
-    pos = prev_pos = 0;
-
-    while (  pos != string::npos){
-        std::cout << "pos " << pos << std::endl;
-        std::cout << "string::npos " << std::string::npos << std::endl;
-        pos = line.find(delim, prev_pos);
-        string columnname;
-        if ( pos != string::npos )
-            columnname = line.substr( prev_pos, pos - prev_pos);
-        else
-            columnname = line.substr( prev_pos );
-        total_col_names.push_back(columnname);
-        prev_pos = pos + delim_size;
-        std::cout << "columnname: " << columnname << std::endl;
-    }
+    vector<string> total_col_names = parse_column_names(line);
 
     Attribute::register_class_names(requested_columns);
-    const unsigned int num_cols = requested_columns.size();
-    std::cout << "num_cols: " << num_cols << std::endl;
-    vector < unsigned int > requested_column_indice;
-
-    for ( unsigned int i = 0; i < num_cols; ++i ) {
-        unsigned int j;
-        for (  j = 0; j < total_col_names.size(); ++j ) {
-            if ( requested_columns.at(i) == total_col_names.at(j) ) {
-                requested_column_indice.push_back(j);
-                break;
-            }
-        }
-        if ( j == total_col_names.size() ) {
-            std::cerr << "Critical Error in reading " << txt_file << std::endl
-            <<"Column names not available in the first line. Please Check the correctness." << std::endl;
-            throw cException_ColumnName_Not_Found(requested_columns.at(i).c_str());
-        }
-    }
-
+    vector<uint32_t> requested_column_indice;
+    const uint32_t num_cols = requested_columns.size();
+    requested_column_indice = create_column_indices(requested_columns, total_col_names);
 
     Record::column_names = requested_columns;
-    Attribute ** pointer_array = new Attribute *[num_cols];
+    Attribute ** pointer_array;
+    pointer_array = instantiate_attributes(Record::column_names, num_cols);
 
-    pos = prev_pos = 0;
-    unsigned int position_in_ratios = 0;
+    check_interactive_consistency(pointer_array, num_cols, Record::column_names);
 
-    for ( unsigned int i = 0; i < num_cols; ++i ) {
-
-        const int pos_in_query = Attribute::position_in_registry(Record::column_names[i]);
-        std::cout << "pos_in_query: " << pos_in_query << std::endl;
-        std::cout << "Record::column_names[i]: " << Record::column_names[i] << std::endl;
-
-        if ( pos_in_query == -1 ) {
-            for ( unsigned int j = 0; j < i; ++j )
-                delete pointer_array[j];
-            delete [] pointer_array;
-            throw cException_ColumnName_Not_Found(Record::column_names[i].c_str());
-        } else {
-            pointer_array[i] = create_attribute_instance ( Record::column_names[i].c_str() );
-        }
-
-#if 0
-        if ( Record::column_names[i] == cLongitude::class_name ) {
-            cLatitude::interactive_column_indice_in_query.push_back(i);
-        }
-        else if ( Record::column_names[i] == cStreet::class_name ) {
-            cLatitude::interactive_column_indice_in_query.push_back(i);
-        }
-        else if ( Record::column_names[i] == cCountry::class_name ) {
-            cLatitude::interactive_column_indice_in_query.push_back(i);
-        }
-        else if ( Record::column_names[i] == cAsgNum::class_name ) {
-            cAssignee::interactive_column_indice_in_query.push_back(i);
-        }
-#endif
-
-        // If this crashes, will need to add code in the function `create_attribute_instance`
-        if ( pointer_array[i]->get_attrib_group() != string("None") ) {
-            std::cout << "pointer_array[i]->get_attrib_group(): " << pointer_array[i]->get_attrib_group() << std::endl;
-            ++position_in_ratios;
-        }
-    }
-
-    std::cout << std::endl;
-
-    // always do this for all the attribute classes
-    for ( unsigned int i = 0; i < num_cols; ++i ) {
-        pointer_array[i]->check_interactive_consistency(Record::column_names);
-    }
-
-    std::cout << "Involved attributes are: ";
-    for ( unsigned int i = 0; i < num_cols; ++i )
-        std::cout << pointer_array[i]->get_class_name() << ", ";
-    std::cout << std::endl;
-
-    std::cout << "Polymorphic data types are: ";
-    for ( unsigned int i = 0; i < num_cols; ++i )
-        std::cout << typeid(*pointer_array[i]).name()<< ", ";
-    std::cout << std::endl;
-
-    std::cout << "Polymorphic data types are: ";
+    // TODO: Move to its own function, get it covered
+    // with a unit test, call it from somewhere else.
+    //std::cout << "Polymorphic data types are: ";
     vector <string> string_cache(num_cols);
-    const unsigned int string_cache_size = 2048;
-    for ( unsigned int i = 0; i < num_cols; ++i ) {
+    const uint32_t string_cache_size = 2048;
+    for (uint32_t i = 0; i < num_cols; ++i) {
         string_cache.at(i).reserve(string_cache_size);
     }
 
-    std::cout << "Polymorphic data types are: ";
-    unsigned long size = 0;
-    std::cout << "Reading " << txt_file << " ......"<< std::endl;
+    //std::cout << "Reading " << txt_file << " ......"<< std::endl;
 
-    std::cout << "Polymorphic data types are: ";
-    const unsigned int base  =  100000;
+    unsigned long size = 0;
+    const uint32_t base  =  100000;
     const Attribute * pAttrib;
     vector <const Attribute *> temp_vec_attrib;
     //vector <const Attribute *> Latitude_interactive_attribute_pointers;
@@ -341,23 +509,22 @@ fetch_records_from_txt(list <Record> & source,
     // Extracts characters from ifstream (instream) and stores them 
     // into a string (line) until a delimitation character is found.
     // In this case, since a delimiter isn't given, it's assumed to be \n.
-    std::cout << "Reading input data file..." << std::endl;
-    while (getline(instream, line) ) {
+    //std::cout << "Reading input data file..." << std::endl;
+    // TODO: Move all this to its own function
+    while (getline(instream, line)) {
 
-        //std::cout << "line: " << line << std::endl;
-
-        // vector.clear is an stl method, calls all destructors
         temp_vec_attrib.clear();
 
-        // num_cols is obtained around Line 736 above
-        for ( unsigned int i = 0; i < num_cols ; ++i ) {
+        // TODO: Move all this to its own function as well
+#if 1
+        for (uint32_t i = 0; i < num_cols ; ++i) {
 
             // What does column_location point at?
-            unsigned int column_location = 0;
+            uint32_t column_location = 0;
             // Given the second iteration, what does prev_pos point at?
             pos = prev_pos = 0;
 
-            // requested_column_indice is vector<unsigned int> defined
+            // requested_column_indice is vector<uint32_t> defined
             // around Line 738 above, see vector.at
             while (column_location++ != requested_column_indice.at(i)) {
                 // See string.find: http://www.cplusplus.com/reference/string/string/find/
@@ -381,35 +548,54 @@ fetch_records_from_txt(list <Record> & source,
             }
 
             // Link to the reset_data method
+            // Why is this here? What purpose is it serving? This smells.
+            // TODO: Figure out why this is here and see about putting
+            // it somewhere else.
             pointer_array[i]->reset_data(string_cache[i].c_str());
             // Link to the clone method
             pAttrib = pointer_array[i]->clone();    //HERE CREATED NEW CLASS INSTANCES.
             temp_vec_attrib.push_back(pAttrib);
         }
+#else
+        temp_vec_attrib = parse_line(string line,
+                                     vector<uint32_t> requested_column_indice,
+                                     Attribute ** pointer_array,
+                                     uint32_t num_cols,
+                                     const char * delim,
+                                     vector<string> & string_cache);
+#endif
 
         Record temprec(temp_vec_attrib);
         source.push_back( temprec );
 
         ++size;
-        if ( size % base == 0 )
+        if (size % base == 0) {
             std::cout << size << " records obtained." << std::endl;
+        }
     }
-    std::cout << std::endl;
-    std::cout << size << " records have been fetched from "<< txt_file << std::endl;
+
+    //std::cout << std::endl;
+    //std::cout << size << " records have been fetched from "<< txt_file << std::endl;
+
+    // TODO: This thing evidently is some sort of "insta-record" for
+    // handiness elsewhere in the code.
+    // TODO: Get rid of this thing.
+    // TODO: It's used to "activate comparators" allowing attributes to
+    // to be compared. It's crazy.
     Record::sample_record_pointer = & source.front();
 
-    for ( unsigned int i = 0; i < num_cols; ++i )
+    // TODO: Create a little function for this which can be unit tested
+    for (uint32_t i = 0; i < num_cols; ++i) {
         delete pointer_array[i];
+    }
     delete [] pointer_array;
 
-    for ( list< Record>::iterator ci = source.begin(); ci != source.end(); ++ci )
+    // TODO: Put this in it's own function and unit test it.
+    // It's spinning the whole record list. It needs to go
+    // somewhere else, probably in the calling function.
+    for (list< Record>::iterator ci = source.begin(); ci != source.end(); ++ci) {
         ci->reconfigure_record_for_interactives();
-
-    std::cout << "Sample Record:---------" << std::endl;
-    Record::sample_record_pointer->print();
-    std::cout << "-----------------" << std::endl;
-
-    //exit(0);
+    }
 
     return true;
 }
@@ -419,6 +605,7 @@ Attribute *
 create_attribute_instance ( const string & id ) {
 
     Attribute *p = NULL;
+
     if ( id == cFirstname::static_get_class_name() ) {
         p = new cFirstname;
     }
@@ -437,6 +624,7 @@ create_attribute_instance ( const string & id ) {
     else if ( id == cStreet::static_get_class_name() ) {
         p = new cStreet;
     }
+
     else if ( id == cState::static_get_class_name() ) {
         p = new cState;
     }
@@ -452,9 +640,10 @@ create_attribute_instance ( const string & id ) {
     else if ( id == cinvnum::static_get_class_name() ) {
         p = new cinvnum;
     }
+
     //else if ( id == cAppDateStr::static_get_class_name() ) {
-//        p = new cAppDateStr;
-//    }
+    //   p = new cAppDateStr;
+    // }
     else if ( id == cAppDate::static_get_class_name() ) {
         p = new cAppDate;
     }
@@ -470,6 +659,7 @@ create_attribute_instance ( const string & id ) {
     else if ( id == cAssignee::static_get_class_name() ) {
         p = new cAssignee;
     }
+
     else if ( id == cAsgNum::static_get_class_name() ) {
         p = new cAsgNum;
     }
@@ -482,6 +672,7 @@ create_attribute_instance ( const string & id ) {
     else if ( id == cAppYear::static_get_class_name() ) {
         p = new cAppYear;
     }
+
     else if ( id == cGYear::static_get_class_name() ) {
         p = new cGYear;
     }
@@ -494,8 +685,9 @@ create_attribute_instance ( const string & id ) {
     else if ( id == cClass_M2::static_get_class_name() ) {
         p = new cClass_M2;
     }
-    else
+    else {
         p = NULL;
+    }
 
     return p;
 }
@@ -510,13 +702,16 @@ reconfigure_interactives (const Record_Reconfigurator * pc,
 
 
 void
-cAssignee::configure_assignee( const list < const Record *> & recs) {
+cAssignee::configure_assignee(const list<const Record *> & recs) {
 
-    static const unsigned int asgnumidx = Record::get_index_by_name(cAsgNum::static_get_class_name());
+    static const uint32_t asgnumidx = Record::get_index_by_name(cAsgNum::static_get_class_name());
 
-    for ( list< const Record *>::const_iterator p = recs.begin(); p != recs.end(); ++p ) {
-        const cAsgNum * pasgnum = dynamic_cast < const cAsgNum *> ( (*p)->get_attrib_pointer_by_index(asgnumidx) );
-        if ( ! pasgnum ) {
+    list< const Record *>::const_iterator p = recs.begin();
+    for (; p != recs.end(); ++p) {
+
+        const cAsgNum * pasgnum = dynamic_cast<const cAsgNum *>((*p)->get_attrib_pointer_by_index(asgnumidx));
+
+        if (!pasgnum) {
             throw cException_Other("Cannot perform dynamic cast to cAsgNum.");
         }
         ++cAssignee::asgnum2count_tree[pasgnum];
@@ -527,15 +722,15 @@ cAssignee::configure_assignee( const list < const Record *> & recs) {
 
 
 void
-build_patent_tree(map < const Record *, cGroup_Value, cSort_by_attrib > & patent_tree,
-                        const list < const Record * > & all_rec_pointers ) {
+build_patent_tree(PatentTree & patent_tree, const RecordPList & all_rec_pointers) {
 
-    map < const Record *, cGroup_Value, cSort_by_attrib >::iterator ppatentmap;
-    for ( list < const Record * >::const_iterator p = all_rec_pointers.begin(); p != all_rec_pointers.end(); ++p ) {
+    PatentTree::iterator ppatentmap;
+    RecordPList::const_iterator p = all_rec_pointers.begin();
+    for (; p != all_rec_pointers.end(); ++p) {
         ppatentmap = patent_tree.find(*p);
         if ( ppatentmap == patent_tree.end() ) {
-            cGroup_Value temp ( 1, *p);
-            patent_tree.insert( std::pair < const Record *, cGroup_Value > (*p, temp) );
+            RecordPList temp ( 1, *p);
+            patent_tree.insert( std::pair < const Record *, RecordPList > (*p, temp) );
         }
         else {
             ppatentmap->second.push_back(*p);
@@ -545,12 +740,17 @@ build_patent_tree(map < const Record *, cGroup_Value, cSort_by_attrib > & patent
 
 
 void
-build_patent_tree(map < const Record *, cGroup_Value, cSort_by_attrib > & patent_tree,
-                  const list < Record > & all_records ) {
+build_patent_tree(PatentTree & patent_tree,
+                  const list<Record> & all_records) {
 
-    list < const Record *> all_pointers;
-    for ( list < Record >::const_iterator p = all_records.begin(); p != all_records.end(); ++p )
+  // There is a function call for building RecordPList,
+  // should use that instead. Check training.cpp for
+  // the create_record_plist function.
+    RecordPList all_pointers;
+    list<Record>::const_iterator p = all_records.begin();
+    for (; p != all_records.end(); ++p) {
         all_pointers.push_back(&(*p));
+    }
     build_patent_tree(patent_tree, all_pointers);
 }
 

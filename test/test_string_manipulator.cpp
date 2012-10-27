@@ -124,7 +124,7 @@ public:
 };
 
 int
-main(int argc, char ** argv) {
+main(int, char **) {
 
   StringManipulatorTest * rt = new StringManipulatorTest(std::string("initial test"));
   rt->runTest();

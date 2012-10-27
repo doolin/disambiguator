@@ -19,7 +19,7 @@ AC_PROG_CC
 AC_CHECK_LIB([boost_unit_test_framework], [main])
 
 # FIXME: Replace `main' with a function in `-lconcert':
-AC_CHECK_LIB([concert], [main])
+AC_CHECK_LIB([concert], [__ZN22IloHashSavedIntDomainID2Ev])
 
 # FIXME: Replace `main' with a function in `-lcplex':
 AC_CHECK_LIB([cplex], [main])

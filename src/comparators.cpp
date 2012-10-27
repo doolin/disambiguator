@@ -11,119 +11,98 @@
 #include "comparators.h"
 
 extern "C" {
-    #include "strcmp95.h"
+#include "strcmp95.h"
 }
 
 using std::list;
 
-//this function is to get the incontinuous longest common subsequence of two vectors.
-//for example, the mid name comparision uses the function | or the following continuous function.
-template <typename Tp, typename Functor>
-vector <Tp> Longest_Common_Subsequence_Incontinuous(const vector <Tp> & s1, const vector <Tp> &s2, const Functor & func) {
 
-    static const vector < Tp > emptyresult;
-    if(s1.empty()||s2.empty())
-        return emptyresult;
-    const int m=s1.size()+1;
-    const int n=s2.size()+1;
-    vector <int> row(n, 0);
-    vector < vector <int> > lcs(m, row);
-    //int lcs[100][100];
-    int i,j;
-    for(i=0;i<m;i++)
-        for(j=0;j<n;j++)
-            lcs[i][j]=0;
+int
+is_abbreviation(const char * s1, const char * s2) {
 
-
-    for(i=1;i<m;i++) {
-        for(j=1;j<n;j++)
-        {
-            //if(s1[i-1]==s2[j-1])
-            if ( func( s1[i-1], s2[j-1] ) )
-                lcs[i][j]=lcs[i-1][j-1]+1;
-            else
-                lcs[i][j]=lcs[i-1][j]>=lcs[i][j-1]?lcs[i-1][j]:lcs[i][j-1];//get the upper or lefter max value
-        }
+    int cnt = 0;
+    while ( *s1 != '\0' && *s2 != '\0' && *s1 == *s2 ) {
+        ++s1;
+        ++s2;
+        ++cnt;
     }
-    i=m-2;
-    j=n-2;
-    list < Tp > ss;
-    while(i!=-1 && j!=-1)
-    {
-        //if(s1[i]==s2[j])
-        if ( func( s1[i], s2[j] ) )
-        {
-            ss.push_front(s1[i]);
-            i--;
-            j--;
+    if ( *s1 != '\0' && *s2 != '\0' )
+        return 0;
+    //else if ( *s1 == '\0' && *s2 == '\0' )
+    //    return 2;
+    else
+        return cnt;
+}
+
+
+int
+is_misspell( const char * s1, const char * s2 ) {
+    const int size_diff = strlen(s1)- strlen(s2);
+    const char * plong = NULL, *pshort = NULL;
+    int hit = 0;
+
+
+    if ( size_diff == 1 || size_diff == -1  ) {
+        // one character is missing
+        if ( size_diff == 1 ) {
+            plong = s1;
+            pshort = s2;
         }
+        else {
+            plong = s2;
+            pshort = s1;
+        }
+
+        while ( *pshort != '\0' ) {
+            if ( *plong++ != *pshort++ ) {
+                if ( hit )
+                    return 0;
+                ++plong;
+                hit = 1;
+            }
+        }
+
+        if ( *pshort != '\0' && *plong != '\0' )
+            return 0;
         else
-        {
-            if(lcs[i+1][j+1]==lcs[i][j])
-            {
-                i--;
-                j--;
+            return 1;
+    }
+
+    else if ( size_diff == 0) {
+        //switch or misspell
+        while ( *s1 != '\0' ) {
+            if ( *s1 != *s2 ) {
+                if ( hit )
+                    return 0;
+                else {
+                    hit = 1;
+                    plong = s1;
+                    pshort = s2;
+                    ++s1;
+                    ++s2;
+                    if ( *s1 == '\0' )
+                        return 3; //misspelling of last char
+                }
+
             }
+            ++s1;
+            ++s2;
+        }
+        if ( hit == 0 )
+            return 4; //exact match
+        else {
+            if ( *plong != *pshort && *( plong + 1 ) == *(pshort + 1) )
+                return 3; //misspelling
+            else if ( *plong == * (pshort + 1) && *pshort == *(plong + 1 ))
+                return 2; //switch of 2 chars
             else
-            {
-                if(lcs[i][j+1]>=lcs[i+1][j])
-                    i--;
-                else
-                    j--;
-            }
+                return 0;
         }
     }
+    else
+        return 0;
 
-    vector < Tp > ans (ss.begin(), ss.end());
-    return ans;
 }
-
-
-template <typename Tp, typename Functor>
-vector <Tp> Longest_Common_Subsequence_Continuous(const vector <Tp> & s1, const vector <Tp> &s2, const Functor & func) {
-    static const vector < Tp > emptyresult;
-    if (s1.empty() || s2.empty() )
-        return emptyresult;
-
-    const int m = s1.size();
-    const int n = s2.size();
-
-    vector < int > c(m, 0);
-    int max, maxj,i,j;
-    maxj = 0 ;
-    max = 0;
-    for( i = 0; i < n ; ++i )   {
-          for( j = m - 1 ; j >= 0 ; --j )   {
-              if( func (s2[i], s1[j] ) )   {
-                  if ( i == 0 || j == 0 )
-                      c[j] = 1;
-                  else
-                      c[j] = c[j-1] + 1;
-              }
-              else
-                  c[j]=0;
-              if( c[j] > max )   {
-                  max = c[j];
-                  maxj = j;
-              }
-          }
-    }
-
-    if( max == 0 )
-        return emptyresult;
-    vector <Tp> ss ( emptyresult);
-    for( j = maxj - max + 1; j <= maxj ; ++j )
-        ss.push_back( s1[j] );
-    return ss;
-}
-
-
-inline bool
-cSentence_JWComparator::operator()(const string * ps1, const string * ps2) const {
-
-    const double compres = strcmp95_modified(ps1->c_str(), ps2->c_str());
-    return compres > threshold;
-};
 
 
 char *
@@ -187,10 +166,10 @@ jwcmp(const string & str1, const string& str2) {
 int
 midnamecmp (const string & s1, const string & s2) {
 
-    if ( s1.empty() && s2.empty() )
-        return 2;
+    if (s1.empty() && s2.empty())
+      return 2;
 
-    if ( s1.empty() || s2.empty() )
+    if (s1.empty() || s2.empty())
         return 1;
 
     const char * p1 = s1.c_str();
@@ -335,8 +314,7 @@ latloncmp(const string & inputlat1, const string & inputlon1,
     int missing = ( ( fabs(lat1) < missing_val && fabs(lon1) < missing_val ) ||
                     ( fabs(lat2) < missing_val && fabs(lon2) < missing_val) ) ? 1 : 0;
 
-    if ( missing )
-        return 1;
+    if (missing) return 1;
 
     const double radlat1 = lat1 * DEG2RAD;
     const double radlon1 = lon1 * DEG2RAD;
@@ -469,51 +447,6 @@ asgcmp (const string & s1, const string &s2) {
 
 
 int
-asgcmp_to_test(const vector <string> & asg1,
-               const vector <string> & asg2,
-               const map<string, std::pair<string, unsigned int> > * const asg_table_pointer) {
-
-    map<string, std::pair<string, unsigned int> >::const_iterator p1, p2;
-    p1 = asg_table_pointer->find(asg1.at(0));
-    p2 = asg_table_pointer->find(asg2.at(0));
-
-    if ( p1 == asg_table_pointer->end() || p2 == asg_table_pointer->end() ) {
-        std::cout << "Error: either assignee is not found in the assignee tree. "
-                  << asg1.at(0) << " or " << asg2.at(0) << std::endl;
-        exit(3);
-    }
-
-    int score = 0;
-    if ( p1->second.first == p2->second.first && p1->second.first.size() > 3 ) {
-
-        score = 6;
-        if ( p1->second.second < 100 || p2->second.second < 100)
-            score += 2;
-        else if ( p1->second.second < 1000 || p2->second.second < 1000 )
-            score += 1;
-    } else {
-
-        const double jw_threshold = 0.9;
-        static const cSentence_JWComparator sjw(jw_threshold);
-        vector < const string * > vec_asg1;
-        vector < string >::const_iterator q1 = asg1.begin();
-
-        for ( ++q1; q1 != asg1.end(); ++q1 )
-            vec_asg1.push_back(&(*q1));
-
-        vector < const string * > vec_asg2;
-        vector < string >::const_iterator q2 = asg2.begin();
-
-        for ( ++q2; q2 != asg2.end(); ++q2 )
-            vec_asg2.push_back(&(*q2));
-
-        score = Longest_Common_Subsequence_Incontinuous <const string *, cSentence_JWComparator>(vec_asg1, vec_asg2, sjw).size();
-    }
-    return score;
-}
-
-
-int
 name_compare(const string & s1,
              const string & s2,
              const unsigned int prev,
@@ -525,7 +458,7 @@ name_compare(const string & s1,
     int misspell_score = is_misspell(s1.c_str(), s2.c_str()) ;
     if (misspell_score) return 3;
 
-    unsigned int abbrev_score = is_abbreviation ( s1.c_str(), s2.c_str());
+    unsigned int abbrev_score = is_abbreviation (s1.c_str(), s2.c_str());
     if (abbrev_score == 0) {
         return 0;
     } else if ( cur != 0 && cur <= abbrev_score ) {

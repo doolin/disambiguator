@@ -3,6 +3,9 @@
 \usepackage{moreverb}
 \usepackage{graphicx}
 
+\newcommand{\rvalue}{$r$-value}
+\newcommand{\rvalues}{$r$-values}
+
 \begin{document}
 
 \title{Manual of Disambiguation}
@@ -12,28 +15,28 @@
 
 \section{Overview}
 
-The source code is an implementation of authorship 
+The source code is an implementation of authorship
 disambiguation algorithm described by Vetle
-Torvik et al 2009. While it is originally designed 
+Torvik et al 2009. While it is originally designed
 for the disambiguation of inventors in the United
-States Patent and Trademark Office (USPTO) database, 
+States Patent and Trademark Office (USPTO) database,
 minor modifications in the source file can
 provide solutions for problems of the similar kind.
 
-The algorithm uses Bayesian theorem to calculate the 
+The algorithm uses Bayesian theorem to calculate the
 probability of match between two records based
-on the comparison between the two records in significant 
-attributes such as names, geographical location and companies, 
+on the comparison between the two records in significant
+attributes such as names, geographical location and companies,
 etc. The algorithm includes three major steps: 1. Blocking,
-2. Training, and 3. Disambiguation.  The details of each 
+2. Training, and 3. Disambiguation.  The details of each
 step are described in the following sections.
 
-The source code is written in C++ and uses many features 
-of C++, such as polymorphism, template, STL library, etc. 
-Therefore, a fairly good understanding of C++ is expected 
-to fully understand the code. The code also outsources 
+The source code is written in C++ and uses many features
+of C++, such as polymorphism, template, STL library, etc.
+Therefore, a fairly good understanding of C++ is expected
+to fully understand the code. The code also outsources
 IBM CPLEX for quadratic programming. Import and export of the
-disambiguation result may need some APIs of SQL/SQLite. 
+disambiguation result may need some APIs of SQL/SQLite.
 The code is compiled in Linux by GNU gcc/g++/make.
 
 
@@ -52,94 +55,96 @@ The code is compiled in Linux by GNU gcc/g++/make.
 
 
 
-This is a schematic of the whole disambiguation process. 
+This is a schematic of the whole disambiguation process.
 Each array represents one step, with the
-square box of identical color representing the source 
+square box of identical color representing the source
 code files that implements the step, and the round
-box of identical color representing the necessary 
+box of identical color representing the necessary
 definitions of relevant classes and/or functions.
 
 
 The disambiguation is an iterative process: 
 the result of previous disambiguation serves as the input of
-the next round disambiguation. For each round of disambiguation, 
+the next round disambiguation. For each round of disambiguation,
 there are three major steps: blocking, training and disambiguation.
 
 \subsection{Blocking}
 
-Blocking of records is the first step of disambiguation. 
+Blocking of records is the first step of disambiguation.
 The whole point of blocking is to avoid most
-unnecessary comparisons without much accuracy loss. Records 
+unnecessary comparisons without much accuracy loss. Records
 of similar attributes are blocked
-together since they are likely to be a match. Because the 
+together since they are likely to be a match. Because the
 aim of disambiguation is individual inventors,
-the most significant attributes – names – are 
+the most significant attributes – names – are
 usually adopted as the blocking rules. It is critical to
-remember that ONLY records within the same blocks are 
+remember that ONLY records within the same blocks are
 compared and thus disambiguated.
 
 
-Iterative blocking in a permissive way is applied in the 
-disambiguation, because it is assumed that after each round 
-of disambiguation, blocks are well disambiguated and thus 
-similar and/or more stringent blockings are meaningless. 
-For example, the first round of blocking is exact 
-first names + exact last names, the second can 
-be first 5 characters of first names + first 8 characters 
-of last names, and the third round can be first 
+Iterative blocking in a permissive way is applied in the
+disambiguation, because it is assumed that after each round
+of disambiguation, blocks are well disambiguated and thus
+similar and/or more stringent blockings are meaningless.
+For example, the first round of blocking is exact
+first names + exact last names, the second can
+be first 5 characters of first names + first 8 characters
+of last names, and the third round can be first
 3 characters of first names + first 5 characters of last names.
 
 
 \subsection{Training}
 
-The point of training is to obtain the ratios database for 
+The point of training is to obtain the ratios database for
 similarity profiles based on training sets.
 
 \subsubsection{Similarity Profiles}
 
-Similarity profiles are defined as multi-dimensional variables 
-that describe the similarity of two records. Each record has 
-many attributes, such as first name, last name, assignee, street, 
-city, country, etc. Similarity profiles are selected attributes 
-that are believed to be influential in pairwise comparisons; thus, 
-they are decided by users and can be different in each round of 
-disambiguation. For example, similarity profiles in the first round 
-of disambiguation can be “first name + last name + assignee + 
-city”, while those in the second round can be “ last name + 
-assignee + street ”. Each attribute in a similarity profile is 
+Similarity profiles are defined as multi-dimensional variables
+that describe the similarity of two records. Each record has
+many attributes, such as first name, last name, assignee, street,
+city, country, etc. Similarity profiles are selected attributes
+that are believed to be influential in pairwise comparisons; thus,
+they are decided by users and can be different in each round of
+disambiguation.
+
+For example, similarity profiles in the first round
+of disambiguation can be ``first name + last name + assignee +
+city'', while those in the second round can be ``last name +
+assignee + street''. Each attribute in a similarity profile is
 given a score to evaluate the similarity of the attribute from the
-comparison of the two records. The score is discrete and is usually 
-non-negative integers. Scoring of each attribute is totally 
+comparison of the two records. The score is discrete and is usually
+non-negative integers. Scoring of each attribute is totally
 user-defined, and, conceptually, has to be fully understood by users.
-Similarity profiles refer to the multi-dimensional integers obtained 
+Similarity profiles refer to the multi-dimensional integers obtained
 from the comparison.
 
 
 
 \subsubsection{Training sets}
 
-Training sets contain pairs of records that are believed 
+Training sets contain pairs of records that are believed
 with high confidence to be either match or
-non-match. In the USPTO patent inventor disambiguation, 
+non-match. In the USPTO patent inventor disambiguation,
 there are four training sets:
 
 \begin{enumerate}
 
-\item match pairs to train personal information based 
-on patent information: this set is created by selecting 
-record pairs belonging to the same blocks and having at 
+\item match pairs to train personal information based
+on patent information: this set is created by selecting
+record pairs belonging to the same blocks and having at
 least two common coauthors.
 
-\item non-match pairs to train personal information based 
+\item non-match pairs to train personal information based
 on patent information: this set is created by
-selecting record pairs that share the same patent id but 
+selecting record pairs that share the same patent id but
 different author sequence of that patent.
 
-\item match pairs to train patent information based on 
+\item match pairs to train patent information based on
 personal information: this set is created by
 selecting record pairs that share exact rare names.
 
-\item non-match pairs to train patent information based on 
+\item non-match pairs to train patent information based on
 personal information: this set is created by
 selecting record pairs whose names are both rare and different.
 
@@ -149,24 +154,27 @@ selecting record pairs whose names are both rare and different.
 \subsubsection{Ratios database}
 
 
-The ratio value of a given similarity profile, or R-value, 
-is defined as the frequency of the similarity profile in the 
-match set divided by the frequency of the same similarity 
-profile in the non-match set. Ratios database, therefore, 
-is the mapping of all possible similarity profiles to 
-their corresponding r-values. In the patent disambiguation, 
+The \textit{ratio value} of a given similarity profile, or \rvalue,
+is defined as the frequency of the similarity profile in the
+match set divided by the frequency of the same similarity
+profile in the non-match set. The ratios database, therefore,
+is the mapping of all possible similarity profiles to
+their corresponding \rvalues. In the patent disambiguation,
 personal information is assumed to be independent from patent
-information, so r-value of a similarity profile is the 
-multiple of the r-value of the personal information
-part of the similarity profile and that of the patent 
-information part of it. By using the four training sets
-described above, the ratios database can be obtained. Usually 
-the ratios database is implemented as a binary search tree. 
-Since it is likely that some similarity profiles are not 
-observed in match or non-match sets, interpolation and 
+information, so the \rvalue\ of a similarity profile is the
+multiple of the \rvalue\ of the personal information
+part of the similarity profile and that of the patent
+information part of it.
+
+
+By using the four training sets
+described above, the ratios database can be obtained. Usually
+the ratios database is implemented as a binary search tree.
+Since it is likely that some similarity profiles are not
+observed in match or non-match sets, interpolation and
 extrapolation of those profiles become necessary. Moreover, the
-similarity profiles are assumed to be monotonic. Quadratic 
-programming is adopted to accomplish the monotonicity 
+similarity profiles are assumed to be monotonic. Quadratic
+programming is adopted to accomplish the monotonicity
 enforcement, the interpolation and the extrapolation.
 
 
@@ -175,38 +183,38 @@ enforcement, the interpolation and the extrapolation.
 
 \subsubsection{Clusters}
 
-The smallest unit of disambiguation is a cluster, 
+The smallest unit of disambiguation is a cluster,
 which contains one or more records. A cluster is
-interpreted as a unique inventor. The ultimate 
-goal of disambiguation is to finalize clusters 
+interpreted as a unique inventor. The ultimate
+goal of disambiguation is to finalize clusters
 and their components.
 
 
 \subsubsection{Probability of Match}
 
-When two records are compared to find out the probability 
-of match, their similarity profiles are calculated first 
-by comparing relevant attributes. Then the corresponding 
-r-value is looked up from the ratios database. Finally, the 
-Bayesian theorem is applied to get the final probability 
-of match, with the help of a priori probability which 
+When two records are compared to find out the probability
+of match, their similarity profiles are calculated first
+by comparing relevant attributes. Then the corresponding
+r-value is looked up from the ratios database. Finally, the
+Bayesian theorem is applied to get the final probability
+of match, with the help of a priori probability which
 is block-dependent.
 
 
 
 \subsubsection{Cluster-based Disambiguation}
 
-During disambiguation, clusters belonging to the same 
-blocks are compared. No inter-block cluster comparisons 
-would happen. When two clusters are compared, their 
-component records are compared exhaustively to find the 
-interactive force between the two clusters. The sum of 
-the interactive probabilities is compared to internal 
+During disambiguation, clusters belonging to the same
+blocks are compared. No inter-block cluster comparisons
+would happen. When two clusters are compared, their
+component records are compared exhaustively to find the
+interactive force between the two clusters. The sum of
+the interactive probabilities is compared to internal
 probabilities of both clusters. If the comparison passes a
-predetermined threshold, the two clusters are determined 
-as of a same inventor and are merged together. The process 
-continues independently within each block until no merge 
-can happen. Once all blocks are disambiguated, the 
+predetermined threshold, the two clusters are determined
+as of a same inventor and are merged together. The process
+continues independently within each block until no merge
+can happen. Once all blocks are disambiguated, the
 disambiguation process of the current round ends.
 
 
@@ -218,12 +226,12 @@ disambiguation process of the current round ends.
 
 \begin{itemize}
 
-\item A high-end workstation (usually 8 CPUs and 
-24G RAM). 24G RAM is probably the minimum memory 
-requirement. Since multi-threading is supported, 
+\item A high-end workstation (usually 8 CPUs and
+24G RAM). 24G RAM is probably the minimum memory
+requirement. Since multi-threading is supported,
 more CPUs generally reduce time cost.
 
-\item Linux ( Ubuntu, Fedora or other compatibles )
+\item Linux (Ubuntu, Fedora or compatible)
 
 \item GCC/G++ (4.0 or higher)
 
@@ -241,31 +249,31 @@ a sqlite3 database).
 
 \subsection{Configure IBM CPLEX}
 
-IBM CPLEX package for academia is usually free for download 
-and use. Trial versions will not work as limitations apply. 
-Follow the instructions to install. Pay attention to the 
+IBM CPLEX package for academia is usually free for download
+and use. Trial versions will not work as limitations apply.
+Follow the instructions to install. Pay attention to the
 architecture (32/64 bit).
 
 
 \subsubsection{Configure SQLite3}
 
-SQLite3 is a public domain, light weight SQL database engine. 
+SQLite3 is a public domain, light weight SQL database engine.
 Download from website and install.
 
 
 \subsubsection{Configure Makefile}
 
-Edit the file \texttt{makefile} in the source code package. 
+Edit the file \texttt{makefile} in the source code package.
 Things include
 
 \begin{itemize}
 
-\item The path of IBM CPLEX library and header files 
+\item The path of IBM CPLEX library and header files
 (pay attention to architecture.)
 
 \item The path of SQLite3 library and header files
 
-\item System libraries and header files (math library, 
+\item System libraries and header files (math library,
 pthread library, etc).
 
 \item Optimization flags (optional).
@@ -276,23 +284,23 @@ pthread library, etc).
 
 \subsubsection{Compile}
 
-In the command line, in the directory where the 
+In the command line, in the directory where the
 file makefile is, type \texttt{make}
-Source codes will compile automatically. A successful 
+Source codes will compile automatically. A successful
 compilation will generate several executables, namely
 \texttt{exedisambig} and \texttt{txt2sqlite3}.
-The former is the main disambiguation program, and the 
-latter is the executable that dumps the disambiguation 
-result into sqlite3 databases. Errors in compilation are 
-usually caused by incorrect configurations in 
-the \texttt{makefile} file. If necessary, type 
-\texttt{make clean} to remove all the newly built 
+The former is the main disambiguation program, and the
+latter is the executable that dumps the disambiguation
+result into sqlite3 databases. Errors in compilation are
+usually caused by incorrect configurations in
+the \texttt{makefile} file. If necessary, type
+\texttt{make clean} to remove all the newly built
 object files, and \texttt{make} to rebuild.
 
 
 \subsection{Configuration of Disambiguation}
 
-The disambiguation is configured by two parts: 
+The disambiguation is configured by two parts:
 the disambiguation engine and the blocking rules.
 
 
@@ -311,64 +319,64 @@ text format, which is usually exported from a SQL database.
 The first line of the file consists of names of each
 attribute/column, and the rest lines are data.
 
-\item Number of threads: the number of maximum threads to 
-allow multi-threading of the program. Usually it is set to 
+\item Number of threads: the number of maximum threads to
+allow multi-threading of the program. Usually it is set to
 be the number of CPUs in the computer.
 
-\item  Generate stable training sets: match and non-match 
-training sets from rare names are usually very stable. Therefore, 
-if those training sets already exist, this switch can be set 
-to false. However, since the creation of the stable 
+\item  Generate stable training sets: match and non-match
+training sets from rare names are usually very stable. Therefore,
+if those training sets already exist, this switch can be set
+to false. However, since the creation of the stable
 training sets generally does not take too much time,
 it is usually recommended to be \texttt{true}.
 
 
-\item Use available ratios database: this switch controls 
-whether or not training should take place. Since training is 
-usually somewhat time-costly (~4 hours), this switch can be 
-set to \texttt{true} if training is unnecessary, such as 
+\item Use available ratios database: this switch controls
+whether or not training should take place. Since training is
+usually somewhat time-costly (~4 hours), this switch can be
+set to \texttt{true} if training is unnecessary, such as
 when debugging. But generally this option should be set to false.
 
-\item Thresholds: the thresholds series to determine whether 
-or not two records are a match should be set in a permissive way, 
+\item Thresholds: the thresholds series to determine whether
+or not two records are a match should be set in a permissive way,
 such as $0.99$, $0.98$, $0.95$. The reason to do this is to allow most
 similar records conglomerate first, which can help improve the accuracy.
 
-\item Necessary attributes: This option selects those necessary 
-attributes to load into the memory from the original CSV file, 
+\item Necessary attributes: This option selects those necessary
+attributes to load into the memory from the original CSV file,
 because not all the data in the original CSV file need to be loaded.
-These necessary attributes should be exactly the same as those 
+These necessary attributes should be exactly the same as those
 appearing in the first line of the CSV file.
 
 \item Adjust prior by frequency: This option controls the evaluation 
-of the priori probability for each block. It is an option that 
+of the prior probability for each block. It is an option that
 should always set to be true unless modification of the code
 occurs after thorough understanding of the code.
 
-\item Debug mode: this switch indicates whether the program is 
-for debugging or not. Set to \texttt{false} if a normal 
-disambiguation is desired. In debug mode, the program will 
-look for the debug configuration file debug\_block\_x.txt 
+\item Debug mode: this switch indicates whether the program is
+for debugging or not. Set to \texttt{false} if a normal
+disambiguation is desired. In debug mode, the program will
+look for the debug configuration file debug\_block\_x.txt
 in the working directory, where x is the current round
-of disambiguation. The debug configuration file contains all 
-the specified blocks that are of interest, and the program only 
+of disambiguation. The debug configuration file contains all
+the specified blocks that are of interest, and the program only
 disambiguates those blocks.
 
-\item Number of training pairs: the maximum of pairs of records 
+\item Number of training pairs: the maximum of pairs of records
 obtained for training. Usually set to 10 million.
 
-\item Starting round: this number specifies the round of 
+\item Starting round: this number specifies the round of
 disambiguation to start with.
 
-\item Starting file: this string specifies the file of previous 
+\item Starting file: this string specifies the file of previous
 disambiguation result from which the disambiguation starts. If the
 starting round is 1, the starting file just needs to be a valid
-location in the file system, because it will be automatically 
+location in the file system, because it will be automatically
 created or overwritten.
 
 
-\item Postprocess after each round: the switch determines whether 
-or not post-processing should be applied after each round of 
+\item Postprocess after each round: the switch determines whether
+or not post-processing should be applied after each round of
 disambiguation. It can be either true or false,
 although true is recommended.
 
@@ -411,23 +419,23 @@ Assignee
 \end{verbatim}
 
 
-This means that the blocking identification for round 5 is 
+This means that the blocking identification for round 5 is
 created from three attributes:
 
 \begin{itemize}
 
-\item First name: the raw data is read from the index 1 position 
-of the first name attribute object (see more details in source codes), 
+\item First name: the raw data is read from the index 1 position
+of the first name attribute object (see more details in source codes),
 and is truncated from the index 0 position of the string for a
 maximum length of 3 characters in a forward direction ( left to right ).
 
-\item Middle name: the raw data is read from the index 1 position 
-of the middle name attribute object (see more details in source codes), 
+\item Middle name: the raw data is read from the index 1 position
+of the middle name attribute object (see more details in source codes),
 and is truncated from the index 0 position of the string for a
 maximum length of 0 characters in a backward direction ( right to left ).
 
 \item Last name: the raw data is read from the index 0 position of
-the last name attribute object (see more details in source codes), 
+the last name attribute object (see more details in source codes),
 and is truncated from the index 0 position of the string for a
 maximum length of 5 characters in a forward direction ( left to right ).
 And the components of similarity profiles are: first name, middle name,
@@ -437,7 +445,7 @@ last name, latitude (geographical location), coauthor, assignee (company).
 
 \subsection{Export Disambiguation Results}
 
-The results of disambiguation can be exported to a 
+The results of disambiguation can be exported to a
 SQLite database by running the \texttt{txt2sqlite3}
 executable file.
 
@@ -449,23 +457,23 @@ executable file.
 \subsection{Data Structure}
 
 
-The disambiguation engine is designed in an object-oriented 
+The disambiguation engine is designed in an object-oriented
 way. The key concepts in the whole engine include:
 
 
 \begin{itemize}
 
-\item Attributes: conceptualized as the information in each 
-column in the database. The attribute class has a complicated 
+\item Attributes: conceptualized as the information in each
+column in the database. The attribute class has a complicated
 hierarchy and thus requires much more understanding. As for the
-implementation, each CONCRETE attribute class has multiple 
+implementation, each CONCRETE attribute class has multiple
 pointers to data strings. See more details in the source code.
 
 \item Records: a vector of attributes representing a full 
 record in the database. More strictly, each
 record contains a vector of pointers to attributes.
 
-\item Clusters: conceptualized as a unique inventor having 
+\item Clusters: conceptualized as a unique inventor having
 multiple records. Each cluster contains a list of
 pointers to records.
 
@@ -600,35 +608,35 @@ from \texttt{cAttribute\_Singe\_Mode<cLatitude\_Data>}.
 
 \subsection{Customization of Cluster Comparisons}
 
-Comparison between two clusters, a critical part of 
+Comparison between two clusters, a critical part of
 disambiguation, includes several configurable
 steps that can be very influential to the results.
 When two clusters are compared:
 
 \begin{itemize}
 
-\item  The two representatives of the clusters are compared 
-to get a post-probability. If the probability does not pass 
+\item  The two representatives of the clusters are compared
+to get a post-probability. If the probability does not pass
 a minimum screening threshold, the clusters are judged to be of
-different inventors and should not merge. The comparison of 
+different inventors and should not merge. The comparison of
 the clusters stops here.
 
 \item If the probability passes the minimum threshold, then:
 
 \begin{itemize}
 
-\item Another threshold, dependent on the features of the 
-clusters, is calculated and will be used as a caliber in the 
+\item Another threshold, dependent on the features of the
+clusters, is calculated and will be used as a caliber in the
 further disambiguation of the two clusters. The threshold
-depends on the cohesions of the two clusters, the career 
-gap between the clusters, the number of common locations 
+depends on the cohesions of the two clusters, the career
+gap between the clusters, the number of common locations
 between the clusters, etc.
 
-\item A priority queue of a given size is created. The size 
+\item A priority queue of a given size is created. The size
 of the queue depends on the size of both clusters. The larger
 the clusters, the larger the queue size.
 
-\item Exhaustive comparisons between members of the two 
+\item Exhaustive comparisons between members of the two
 clusters are performed, and the results are fed into the
 priority queue in the following manner.
 
@@ -649,7 +657,7 @@ caliber threshold, the new result is added to the priority queue.
 \item If the new result is less than the lowest value and also less than the
 caliber threshold, discard the new result.
 
-o The average value of the priority queue is then calculated after the exhaustive
+\item The average value of the priority queue is then calculated after the exhaustive
 comparisons finish. If the average is greater than the caliber threshold, the two
 clusters are labeled as of a same inventor and will be followed by a merge of the
 clusters; otherwise, the comparison of the clusters stops here.

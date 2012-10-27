@@ -4,47 +4,44 @@
 
 #include "newcluster.h"
 
-// forward declaration
-class cCluster_Info;
 
-struct cSort_For_Cluster {
-    bool operator () ( const cCluster & c1, const cCluster & c2 ) const {
-        return c1.get_cluster_head().m_delegate < c2.get_cluster_head().m_delegate;
-    }
-};
+typedef list < Cluster > Cluster_Container;
 
-
-//typedef set < cCluster, cSort_For_Cluster > Cluster_Container;
-typedef list < cCluster > Cluster_Container;
-
-
-class cCluster_Set {
+class ClusterSet {
 
 private:
     Cluster_Container consolidated;
-    cCluster_Set ( const cCluster_Set &);
+    ClusterSet (const ClusterSet &);
 
 public:
-    //cCluster_Set & convert_from_ClusterInfo( const cCluster_Info * );
-    const Cluster_Container & get_set() const {return consolidated;}
-    Cluster_Container  & get_modifiable_set() { return consolidated; }
-    cCluster_Set () {}
-    ~cCluster_Set() {}
-    void output_results( const char * ) const;
+
+    //ClusterSet & convert_from_ClusterInfo(const Cluster_Info *);
+
+    const Cluster_Container & get_set() const {
+      return consolidated;
+    }
+
+    Cluster_Container  & get_modifiable_set() {
+      return consolidated;
+    }
+
+    ClusterSet () {}
+
+   ~ClusterSet() {}
+
+    void output_results (const char *) const;
 
     void read_from_file (const char * filename,
-                       const map <string, const Record*> & uid_tree);
+                         const map <string, const Record*> & uid_tree);
 };
 
-void post_polish(cCluster_Set & m,
-                 map < const Record *, const Record *> & uid2uinv,
-                 const map < const Record *, cGroup_Value, cSort_by_attrib > & patent_tree,
-                 const string & logfile);
 
-
-
-
-
+void post_polish (ClusterSet & m,
+                  Uid2UinvTree & uid2uinv,
+                  //map < const Record *, const Record *> & uid2uinv,
+                  const PatentTree & patent_tree,
+                  //const map < const Record *, RecordPList, cSort_by_attrib > & patent_tree,
+                  const string & logfile);
 
 
 #endif /* PATENT_POSTPROCESS_H */

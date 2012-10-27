@@ -7,9 +7,10 @@
 using std::list;
 using std::string;
 
-const SimilarityCompare::cException_Different_Similarity_Dimensions SimilarityCompare::default_sp_exception("Error: Different Similarity profile dimensions");
-vector <string> Attribute::Derived_Class_Name_Registry;
+const SimilarityCompare::cException_Different_Similarity_Dimensions
+SimilarityCompare::default_sp_exception("Error: Different Similarity profile dimensions");
 
+vector <string> Attribute::Derived_Class_Name_Registry;
 
 
 /**
@@ -41,7 +42,7 @@ Attribute::split_string(const char* recdata) {
     const char delim = '/';
     const char secondary_delim = '~';
     const char * q;
-    unsigned int count_length;
+    uint32_t count_length;
 
     while ( (q = std::find(p, pend, delim)) != pend ) {
         // r points to the secondary delimiter
@@ -76,8 +77,14 @@ Attribute::split_string(const char* recdata) {
     // each attribute. Effective STL by Scott Meyers, Item 17
     vector< const string* > (data).swap(data);
 
-    if ( data.size() > 1 )
+    // Oh ugly, ugly code... this is not the place to
+    // enforce a length constraint. And besides, why
+    // is this "data" being held in a vector<string>
+    // when the size is only 1? Makes no sense.
+    // TODO: Get rid of this vector junk for firstnames.
+    if (data.size() > 1) {
         throw cException_Vector_Data(recdata);
+    }
 
     return true;
 }
@@ -129,8 +136,8 @@ attrib_merge (list < const Attribute * *> & l1, list < const Attribute * *> & l2
     }
 
 
-    const unsigned int l1_size = l1.size();
-    const unsigned int l2_size = l2.size();
+    const uint32_t l1_size = l1.size();
+    const uint32_t l2_size = l2.size();
 
     if ( l1_size != 1 )
         (*l1.front())->reduce_attrib(l1_size - 1);
@@ -173,21 +180,21 @@ template <> const string Attribute_Basic<cMiddlename>::attrib_group = "Personal"
 
 //template <> const string Attribute_Basic<cLatitude>::class_name = "Latitude";
 //template <> const string Attribute_Basic<cLatitude>::interactive_column_names[] = {"Longitude", "Street", "Country"};
-//template <> const unsigned int Attribute_Basic<cLatitude>::num_of_interactive_columns = 3;
+//template <> const uint32_t Attribute_Basic<cLatitude>::num_of_interactive_columns = 3;
 //template <> const string Attribute_Basic<cLatitude>::attrib_group = "Patent";
 
 template <> const string Attribute_Basic<cLatitude_Data >::class_name = "Latitude_Data";
 
 template <> const string Attribute_Basic<cLatitude >::class_name = "Latitude";
 template <> const string Attribute_Basic<cLatitude >::interactive_column_names[] = {"Longitude", "Street", "Country"};
-template <> const unsigned int Attribute_Basic<cLatitude >::num_of_interactive_columns = 3;
+template <> const uint32_t Attribute_Basic<cLatitude >::num_of_interactive_columns = 3;
 template <> const string Attribute_Basic<cLatitude >::attrib_group = "Patent";
 
 template <> const string Attribute_Basic<cLongitude_Data >::class_name = "Longitude_Data";
 template <> const string Attribute_Basic<cLongitude>::class_name = "Longitude";
 //template <> const string Attribute_Basic<cLongitude >::class_name = "Longitude";
 template <> const string Attribute_Basic<cLongitude >::interactive_column_names[] = {"Latitude"};
-template <> const unsigned int Attribute_Basic<cLongitude >::num_of_interactive_columns = 1;
+template <> const uint32_t Attribute_Basic<cLongitude >::num_of_interactive_columns = 1;
 template <> const string Attribute_Basic<cLongitude >::attrib_group = "Patent";
 
 
@@ -218,9 +225,9 @@ template <> const string Attribute_Basic<cCoauthor>::attrib_group = "Patent";
 template <> const string Attribute_Basic<cAssignee_Data >::class_name = "Assignee_Data";
 template <> const string Attribute_Basic<cAssignee>::class_name = "Assignee";
 template <> const string Attribute_Basic<cAssignee>::interactive_column_names[] = {"AsgNum"};
-template <> const unsigned int Attribute_Basic<cAssignee>::num_of_interactive_columns = 1;
-//const map<string, std::pair<string, unsigned int>  > * cAssignee::assignee_tree_pointer;
-map < const cAsgNum*, unsigned int > cAssignee:: asgnum2count_tree;
+template <> const uint32_t Attribute_Basic<cAssignee>::num_of_interactive_columns = 1;
+//const map<string, std::pair<string, uint32_t>  > * cAssignee::assignee_tree_pointer;
+map < const cAsgNum*, uint32_t > cAssignee:: asgnum2count_tree;
 bool cAssignee::is_ready = false;
 template <> const string Attribute_Basic<cAssignee>::attrib_group = "Patent";
 
@@ -246,8 +253,8 @@ template <> const string Attribute_Basic<cPatent>::class_name = "Patent";
         throw cException_No_Comparision_Function(static_get_class_name().c_str());
  */
 
-unsigned int cFirstname::previous_truncation = 0;
-unsigned int cFirstname::current_truncation = 0;
+uint32_t cFirstname::previous_truncation = 0;
+uint32_t cFirstname::current_truncation = 0;
 
 
 /**
@@ -275,20 +282,26 @@ cFirstname::split_string(const char *inputdata) {
 }
 
 
-unsigned int
+uint32_t
 cFirstname::compare(const Attribute & right_hand_side) const {
 
     // ALWAYS CHECK THE ACTIVITY OF COMPARISON FUNCTION !!
-    if ( ! this->is_comparator_activated () )
+    if (!this->is_comparator_activated ()) {
         throw cException_No_Comparision_Function(this->static_get_class_name().c_str());
+    }
 
-    if ( this == & right_hand_side )
+    if (this == &right_hand_side) {
         return this->get_attrib_max_value();
+    }
 
-    unsigned int res = 0;
-    res = name_compare(* this->get_data().at(1), * right_hand_side.get_data().at(1), previous_truncation, current_truncation);
-    if ( res > this->get_attrib_max_value() )
+    uint32_t res = 0;
+    res = name_compare(* this->get_data().at(1), *right_hand_side.get_data().at(1),
+        previous_truncation, current_truncation);
+
+    if (res > this->get_attrib_max_value()) {
         res = this->get_attrib_max_value();
+    }
+
     return res;
 }
 
@@ -340,19 +353,22 @@ cMiddlename::split_string(const char *inputdata) {
  * "" vs "" = 2 ( both missing information )
  * "DAVID" vs "" = 1 ( one missing information )
  */
-unsigned int
+uint32_t
 cMiddlename::compare(const Attribute & right_hand_side) const {
 
-    if ( ! is_comparator_activated () )
+    if (!is_comparator_activated()) {
         throw cException_No_Comparision_Function(static_get_class_name().c_str());
+    }
 
     try {
-        const cMiddlename & rhs = dynamic_cast< const cMiddlename & > (right_hand_side);
-        unsigned int res = midnamecmp(* this->get_data().at(0), * rhs.get_data().at(0));
-        if ( res > max_value )
-            res = max_value;
+
+        const cMiddlename & rhs = dynamic_cast<const cMiddlename &> (right_hand_side);
+        uint32_t res = midnamecmp(* this->get_data().at(0), *rhs.get_data().at(0));
+        if (res > max_value) res = max_value;
         return res;
+
     } catch ( const std::bad_cast & except ) {
+
         std::cerr << except.what() << std::endl;
         std::cerr << "Error: " << this->get_class_name() << " is compared to "
                   << right_hand_side.get_class_name() << std::endl;
@@ -377,61 +393,85 @@ cMiddlename::compare(const Attribute & right_hand_side) const {
  * If the distance calculated by latitude and longitude > 50 mile, score = 1
  * If countries are different, score = 0;
  */
-unsigned int
+uint32_t
 cLatitude::compare(const Attribute & right_hand_side) const {
 
-    if ( ! is_comparator_activated () )
+    if (!is_comparator_activated())
         throw cException_No_Comparision_Function(static_get_class_name().c_str());
 
     check_if_reconfigured();
 
+#define LATCOMPS 0
+#if LATCOMPS
+
+    if (this->is_informative()) {
+      std::cout << "is informative\n";
+    } else {
+      std::cout << "is not informative\n";
+    }
+
+    if (this->exact_compare(right_hand_side)) {
+      std::cout << "compares exactly\n";
+    } else {
+      std::cout << "does not compare exactly \n";
+    }
+#endif
+
+
     try {
-        unsigned int res = 0;
+        uint32_t res = 0;
         const cLatitude & rhs = dynamic_cast< const cLatitude & > (right_hand_side);
 
         const Attribute* const & this_longitude = this->get_interactive_vector().at(0);
         const Attribute* const & rhs_longitude = rhs.get_interactive_vector().at(0);
-        if ( this->get_data().size() != this_longitude->get_data().size() ) {
+
+        if (this->get_data().size() != this_longitude->get_data().size()) {
             std::cout << "Alignment error in latitude comparison: " << std::endl;
             this->print(std::cout);
             this_longitude->print(std::cout);
             throw cException_Interactive_Misalignment(this->get_class_name().c_str());
         }
-        if ( rhs.get_data().size() != rhs_longitude->get_data().size() ) {
+
+        if (rhs.get_data().size() != rhs_longitude->get_data().size()) {
             std::cout << "Alignment error in latitude comparison: " << std::endl;
             rhs.print(std::cout);
             rhs_longitude->print(std::cout);
             throw cException_Interactive_Misalignment(this->get_class_name().c_str());
         }
 
-        //latitude interacts with        {"Longitude", "Street", "Country"}; the sequence is important.
+        // Latitude interacts with {"Longitude", "Street", "Country"}; the sequence is important.
 
-        unsigned int country_score = 0;
-        if ( this == &rhs && this->is_informative() ) {
+        uint32_t country_score = 0;
+        if (this == &rhs && this->is_informative()) {
             res = max_value;
-        }
-        else {
+        } else {
+
             // Comparing country
-            if ( this->get_interactive_vector().at(2) == rhs.get_interactive_vector().at(2) )
+            const Attribute * country1 = this->get_interactive_vector().at(2);
+            const Attribute * country2 = rhs.get_interactive_vector().at(2);
+            //if (this->get_interactive_vector().at(2) == rhs.get_interactive_vector().at(2)) {
+            if (country1->get_data() == country2->get_data()) {
                 country_score = 1;
+            }
 
             // Comparing street;
-            //unsigned int street_score = 0;
+            //uint32_t street_score = 0;
 
             // Comparing Latitidue and longitude
 
-            unsigned int latlon_score = 0;
+            uint32_t latlon_score = 0;
             latlon_score = latloncmp ( * this->get_data().at(0), * this_longitude->get_data().at(0),
                                         * rhs.get_data().at(0), * rhs_longitude->get_data().at(0) );
 
-            if ( country_score == 0 )
+            if (country_score == 0) {
                 res = 0;
-            else
+            } else {
                 res = latlon_score;
+            }
         }
 
         //correction for japanese
-        if ( country_score == 1 && *this->get_interactive_vector().at(2)->get_data().at(0) == "JP" ) {
+        if (country_score == 1 && *this->get_interactive_vector().at(2)->get_data().at(0) == "JP") {
             const Attribute* const & this_street = this->get_interactive_vector().at(1);
             const Attribute* const & rhs_street = rhs.get_interactive_vector().at(1);
             if ( this_street == rhs_street && ( ! this_street->is_informative() ) )
@@ -442,34 +482,55 @@ cLatitude::compare(const Attribute & right_hand_side) const {
             throw cException_Other("latitude error: score > max_value");
 
         return res;
-    }
-    catch ( const std::bad_cast & except ) {
+
+    } catch ( const std::bad_cast & except ) {
         std::cerr << except.what() << std::endl;
-        std::cerr << "Error: " << this->get_class_name() << " is compared to " << right_hand_side.get_class_name() << std::endl;
+        std::cerr << "Error: " << this->get_class_name()
+                  << " is compared to " << right_hand_side.get_class_name()
+                  << std::endl;
         throw;
     }
 }
 
 
-unsigned int
+uint32_t
 cLongitude::compare(const Attribute & right_hand_side) const {
 
-    if ( ! is_comparator_activated () )
+    if (!is_comparator_activated()) {
         throw cException_No_Comparision_Function(static_get_class_name().c_str());
-    check_if_reconfigured();
-    try {
-        unsigned int res = 0;
-        const bool exact_same = this->exact_compare(right_hand_side) == 1 ;
-        if ( exact_same && this->is_informative())
-            res = 1;
-
-        if ( res > max_value )
-            res = max_value;
-        return res;
     }
-    catch ( const std::bad_cast & except ) {
+
+    // ~L1412 in attribute.h
+    check_if_reconfigured();
+
+#define LONGCOMPS 0
+#if LONGCOMPS
+    if (this->is_informative()) {
+      std::cout << "is informative\n";
+    } else {
+      std::cout << "is not informative\n";
+    }
+
+    if (this->exact_compare(right_hand_side)) {
+      std::cout << "compares exactly\n";
+    } else {
+      std::cout << "does not compare exactly \n";
+    }
+#endif
+
+    try {
+        uint32_t res = 0;
+        const bool exact_same = this->exact_compare(right_hand_side) == 1 ;
+
+        if (exact_same && this->is_informative()) res = 1;
+        if (res > max_value) res = max_value;
+        return res;
+
+    } catch (const std::bad_cast & except) {
         std::cerr << except.what() << std::endl;
-        std::cerr << "Error: " << this->get_class_name() << " is compared to " << right_hand_side.get_class_name() << std::endl;
+        std::cerr << "Error: " << this->get_class_name()
+                  << " is compared to " << right_hand_side.get_class_name()
+                  << std::endl;
         throw;
     }
 }
@@ -480,13 +541,13 @@ cLongitude::compare(const Attribute & right_hand_side) const {
  * A second way to score the "class" attribute.
  * Not in use now.
  */
-unsigned int
+uint32_t
 cClass_M2::compare(const Attribute & right_hand_side) const {
 
     const cClass_M2 & rhs = dynamic_cast< const cClass_M2 & > (right_hand_side);
-    const unsigned int common = this->Attribute_Set_Mode <cClass_M2>::compare( rhs );
-    const unsigned int this_size = this->attrib_set.size();
-    const unsigned int rhs_size = rhs.attrib_set.size();
+    const uint32_t common = this->Attribute_Set_Mode <cClass_M2>::compare( rhs );
+    const uint32_t this_size = this->attrib_set.size();
+    const uint32_t rhs_size = rhs.attrib_set.size();
 
     const double factor = 1.0 * common * common / this_size / rhs_size;
     if ( factor > 0.3 )
@@ -507,7 +568,7 @@ cClass_M2::compare(const Attribute & right_hand_side) const {
  * Not supposed to be used, because country attribute is mixed in the latitude comparison.
  *
  */
-unsigned int
+uint32_t
 cCountry::compare(const Attribute & right_hand_side) const {
 
     if ( ! is_comparator_activated () )
@@ -541,49 +602,59 @@ cCountry::compare(const Attribute & right_hand_side) const {
  *    Refer to the function jwcmp for more scoring information.
  *
  */
-unsigned int
+uint32_t
 cAssignee::compare(const Attribute & right_hand_side) const {
 
-    if ( ! is_comparator_activated () )
+    if (!is_comparator_activated())
         throw cException_No_Comparision_Function(static_get_class_name().c_str());
-    if ( ! cAssignee::is_ready )
+
+    // TODO: figure out where configure_assignee is invoked
+    if (!cAssignee::is_ready)
         throw cException_Other("Trees for assignee comparison are not set up yet. Run cAssignee::configure_assignee first.");
+
     try {
 
         const cAssignee & rhs = dynamic_cast< const cAssignee & > (right_hand_side);
-        //unsigned int res = asgcmp(this->get_data(), rhs.get_data(), assignee_tree_pointer);
-        //unsigned int res = asgcmp ( * this->get_data().at(0), * rhs.get_data().at(0), assignee_tree_pointer);
-        unsigned int res = 0;
-        const cAsgNum * p = dynamic_cast < const cAsgNum *> (this->get_interactive_vector().at(0));
-        if ( ! p )
+
+        //uint32_t res = asgcmp(this->get_data(), rhs.get_data(), assignee_tree_pointer);
+        //uint32_t res = asgcmp ( * this->get_data().at(0), * rhs.get_data().at(0), assignee_tree_pointer);
+
+        uint32_t res = 0;
+        const cAsgNum * p = dynamic_cast<const cAsgNum *>(this->get_interactive_vector().at(0));
+
+        if (!p)
             throw cException_Other("Cannot dynamic cast to cAsgNum *.");
 
         const cAsgNum * q = dynamic_cast < const cAsgNum *> (rhs.get_interactive_vector().at(0));
-        if ( ! q )
+        if (!q)
             throw cException_Other("Cannot dynamic cast rhs to cAsgNum *.");
 
-        if ( ! this->is_informative() || ! rhs.is_informative() ) {
+        if (!this->is_informative() || !rhs.is_informative()) {
             res = 1;
         }
-        else if ( p != q ) {
+        else if (p != q) {
             res = asgcmp(* this->get_data().at(0), * rhs.get_data().at(0));
         } else {
 
             res = 5;
-            map < const cAsgNum *, unsigned int>::const_iterator t = cAssignee::asgnum2count_tree.find(p);
-            if ( t == cAssignee::asgnum2count_tree.end() )
+            map<const cAsgNum *, uint32_t>::const_iterator t = cAssignee::asgnum2count_tree.find(p);
+
+            if (t == cAssignee::asgnum2count_tree.end())
                 throw cException_Other("AsgNum pointer is not in tree.");
-            if ( t->second < 100 )
+
+            if (t->second < 100)
                 ++res;
         }
 
-        if ( res > max_value )
+        if (res > max_value)
             res = max_value;
+
         return res;
     }
-    catch ( const std::bad_cast & except ) {
+    catch (const std::bad_cast & except) {
         std::cerr << except.what() << std::endl;
-        std::cerr << "Error: " << this->get_class_name() << " is compared to " << right_hand_side.get_class_name() << std::endl;
+        std::cerr << "Error: " << this->get_class_name() << " is compared to "
+                  << right_hand_side.get_class_name() << std::endl;
         throw;
     }
 }
