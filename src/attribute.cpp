@@ -447,8 +447,12 @@ cLatitude::compare(const Attribute & right_hand_side) const {
         } else {
 
             // Comparing country
-            if ( this->get_interactive_vector().at(2) == rhs.get_interactive_vector().at(2) )
+            const Attribute * country1 = this->get_interactive_vector().at(2);
+            const Attribute * country2 = rhs.get_interactive_vector().at(2);
+            //if (this->get_interactive_vector().at(2) == rhs.get_interactive_vector().at(2)) {
+            if (country1->get_data() == country2->get_data()) {
                 country_score = 1;
+            }
 
             // Comparing street;
             //uint32_t street_score = 0;
