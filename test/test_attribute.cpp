@@ -610,8 +610,95 @@ Totally different names:
     cLongitude lon2("-120.22");
     lon2.split_string("-120.22");
 
-    similarity = d1.compare(d2);
-    std::cout << "Latitude similarity d1, d2: " << similarity << std::endl;
+    cStreet s1("Foo");
+    s1.split_string("Foo");
+    cStreet s2("bar");
+    s2.split_string("bar");
+
+    cCountry c1("US");
+    c1.split_string("US");
+    cCountry c2("US");
+    c2.split_string("US");
+
+
+    std::vector<const Attribute *> interactives1;
+    interactives1.push_back(&lon1);
+    interactives1.push_back(&s1);
+    interactives1.push_back(&c1);
+    lat1.config_interactive(interactives1);
+
+    std::vector<const Attribute *> interactives2;
+    interactives2.push_back(&lon2);
+    interactives2.push_back(&s2);
+    interactives2.push_back(&c2);
+    lat2.config_interactive(interactives2);
+
+    lat1.activate_comparator();
+
+    // Latitude compares from [0..5]
+
+    similarity = lat1.compare(lat2);
+    std::cout << "Latitude similarity lat1, lat2: " << similarity << std::endl;
+    CPPUNIT_ASSERT(5 == similarity);
+    similarity = lat1.compare(lat1);
+    std::cout << "Latitude similarity lat1, lat1: " << similarity << std::endl;
+    CPPUNIT_ASSERT(5 == similarity);
+
+    //delete foobar;
+
+
+  }
+
+
+  void compare_longitude() {
+
+    describe_test(INDENT2, "Testing Longitude comparison");
+
+    Record * foobar = make_foobar_record();
+    foobar->set_sample_record(foobar);
+    uint32_t similarity;
+
+    cLatitude lat1("37.00");
+    lat1.split_string("37.00");
+    cLatitude lat2("37.00");
+    lat2.split_string("37.00");
+
+    cLongitude lon1("-120.22");
+    lon1.split_string("-120.22");
+    cLongitude lon2("-120.22");
+    lon2.split_string("-120.22");
+
+    cStreet s1("Foo");
+    s1.split_string("Foo");
+    cStreet s2("bar");
+    s2.split_string("bar");
+
+    cCountry c1("US");
+    c1.split_string("US");
+    cCountry c2("US");
+    c2.split_string("US");
+
+
+    std::vector<const Attribute *> interactives1;
+    interactives1.push_back(&lat1);
+    interactives1.push_back(&s1);
+    interactives1.push_back(&c1);
+    lon1.config_interactive(interactives1);
+
+    std::vector<const Attribute *> interactives2;
+    interactives2.push_back(&lat2);
+    interactives2.push_back(&s2);
+    interactives2.push_back(&c2);
+    lon2.config_interactive(interactives2);
+
+    lon1.activate_comparator();
+
+    // Longitude compares from [0..1]
+#if 1
+    similarity = lon1.compare(lon2);
+    std::cout << "Longitude similarity l1, l2: " << similarity << std::endl;
+    similarity = lon1.compare(lon1);
+    std::cout << "Longitude similarity l1, l1: " << similarity << std::endl;
     //CPPUNIT_ASSERT(4 == similarity);
 
     delete foobar;
@@ -634,10 +721,12 @@ Totally different names:
     //compare_assignee();
     compare_class();
     compare_coauthor();
-    compare_distance();
+    compare_latitude();
+    compare_longitude();
     delete_attribute();
   }
 };
+
 
 #ifdef test_attribute_STANDALONE
 int
