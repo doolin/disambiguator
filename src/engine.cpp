@@ -54,9 +54,10 @@ disambiguate_by_set (const Record * key1,
   // TODO: See if these declarations can be moved outside of this function and
   // declared at the file level, which would promote a much nicer refactoring.
     static const uint32_t firstname_index = Record::get_similarity_index_by_name(cFirstname::static_get_class_name());
-    static const uint32_t midname_index = Record::get_similarity_index_by_name(cMiddlename::static_get_class_name());
-    static const uint32_t lastname_index = Record::get_similarity_index_by_name(cLastname::static_get_class_name());
-    static const uint32_t country_index = Record::get_index_by_name(cCountry::static_get_class_name());
+    static const uint32_t midname_index   = Record::get_similarity_index_by_name(cMiddlename::static_get_class_name());
+    static const uint32_t lastname_index  = Record::get_similarity_index_by_name(cLastname::static_get_class_name());
+    static const uint32_t country_index   = Record::get_index_by_name(cCountry::static_get_class_name());
+
     static const bool country_check = true;
 
 
@@ -71,6 +72,9 @@ disambiguate_by_set (const Record * key1,
             const Attribute * p1 = key1->get_attrib_pointer_by_index(country_index);
             const Attribute * p2 = key2->get_attrib_pointer_by_index(country_index);
 
+            // TODO: Check to see if the pointer comparison is what's really intended.
+            // There needs to be table of country names somewhere, and I don't recall
+            // seeing such a thing.
             if (p1 != p2 && p1->is_informative() && p2->is_informative()) {
               // TODO: consider making the following a macro to sweep it out
               // of the way, i.e., return NULL_RECORD.
