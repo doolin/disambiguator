@@ -91,6 +91,17 @@ RecordPList get_record_list() {
   RecordPList rl;
   rl.push_back(r1);
   rl.push_back(r2);
+#if 0
+  vector<string> colnames = get_column_names();
+  //std::cout << "column names size: " << colnames.size() << std::endl;
+  Attribute::register_class_names(colnames);
+  //Attribute ** pa = instantiate_attributes(Record::column_names, colnames.size());
+  Attribute ** pa = instantiate_attributes(colnames, colnames.size());
+  std::cout << "Here\n";
+  //check_interactive_consistency(pa, colnames.size(), colnames);
+  r1->reconfigure_record_for_interactives();
+  r2->reconfigure_record_for_interactives();
+#endif
   return rl;
 }
 
