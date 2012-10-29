@@ -303,8 +303,8 @@ instantiate_attributes(std::vector<std::string> column_names, int num_cols) {
 
       const int pos_in_query = Attribute::position_in_registry(column_names[i]);
 
-      if ( pos_in_query == -1 ) {
-          for ( uint32_t j = 0; j < i; ++j )
+      if (pos_in_query == -1) {
+          for (uint32_t j = 0; j < i; ++j)
               delete pointer_array[j];
           delete [] pointer_array;
           throw cException_ColumnName_Not_Found(column_names[i].c_str());
@@ -312,7 +312,7 @@ instantiate_attributes(std::vector<std::string> column_names, int num_cols) {
           pointer_array[i] = create_attribute_instance (column_names[i].c_str() );
       }
 
-#ifdef HLKJHLKJJHGKJHKJHKFHGFKHG
+#if 0
       if ( Record::column_names[i] == cLongitude::class_name ) {
           cLatitude::interactive_column_indice_in_query.push_back(i);
       }
@@ -330,11 +330,14 @@ instantiate_attributes(std::vector<std::string> column_names, int num_cols) {
       // If this crashes, will need to add code in the function `create_attribute_instance`
       // Also, it's stupid that this is used to check whether something is
       // instantiated.
-      if ( pointer_array[i]->get_attrib_group() != string("None") ) {
+#if 1
+      if (pointer_array[i]->get_attrib_group() != string("None")) {
           //std::cout << "pointer_array[i]->get_attrib_group(): " << pointer_array[i]->get_attrib_group() << std::endl;
           // TODO: What is this for? Get rid of it.
           ++position_in_ratios;
       }
+#endif
+
   }
   return pointer_array;
 }

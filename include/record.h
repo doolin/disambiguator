@@ -239,7 +239,7 @@ public:
       return *sample_record_pointer;
     }
 
-    static void set_sample_record(Record * r) {
+    static void set_sample_record(const Record * r) {
       sample_record_pointer = r;
     }
 

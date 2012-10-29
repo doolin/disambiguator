@@ -182,5 +182,9 @@ vector <const Attribute *> parse_line (string line,
                                        const char * delim,
                                        vector<string> & string_cache);
 
+void check_interactive_consistency(Attribute ** pointer_array,
+    uint32_t num_cols,
+    std::vector<std::string> column_names);
+
 
 #endif /* PATENT_ENGINE_H */
