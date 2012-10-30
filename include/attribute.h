@@ -178,7 +178,7 @@ public:
     Attribute (const char * UP(inputstring)) {}
 
    /**
-    * 5. virtual bool operator == ( const Attribute & rhs) const:
+    * 5. virtual bool operator == (const Attribute & rhs) const:
     * exact comparison between two attributes. Has a default implementation but overidable.
     */
     virtual bool operator == (const Attribute & rhs) const {

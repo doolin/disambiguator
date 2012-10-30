@@ -400,6 +400,10 @@ coauthorcmp(const string & coauthor1, const string & coauthor2) {
 }
 
 
+#if 0
+/**
+ * Don't believe this is being used.
+ */
 int
 asgcmp(const string & asg1, const string & asg2,
        const map<string, std::pair<string, unsigned int> > * const asg_table_pointer) {
@@ -426,7 +430,7 @@ asgcmp(const string & asg1, const string & asg2,
     }
     return score;
 }
-
+#endif
 
 int
 asgcmp (const string & s1, const string &s2) {

@@ -614,25 +614,31 @@ cAssignee::compare(const Attribute & right_hand_side) const {
 
     try {
 
+//std::cout << "Assignee comparison..." << std::endl;
+
         const cAssignee & rhs = dynamic_cast< const cAssignee & > (right_hand_side);
+
+//std::cout << "this.." << *this->get_data().at(0) << std::endl;
+//std::cout << "rhs..." << *rhs.get_data().at(0) << std::endl;
 
         //uint32_t res = asgcmp(this->get_data(), rhs.get_data(), assignee_tree_pointer);
         //uint32_t res = asgcmp ( * this->get_data().at(0), * rhs.get_data().at(0), assignee_tree_pointer);
 
         uint32_t res = 0;
+
         const cAsgNum * p = dynamic_cast<const cAsgNum *>(this->get_interactive_vector().at(0));
-
-        if (!p)
+        if (!p) {
             throw cException_Other("Cannot dynamic cast to cAsgNum *.");
-
+        }
         const cAsgNum * q = dynamic_cast < const cAsgNum *> (rhs.get_interactive_vector().at(0));
-        if (!q)
+        if (!q) {
             throw cException_Other("Cannot dynamic cast rhs to cAsgNum *.");
+        }
 
+        // TODO: confirm this means one side is missing an assignee
         if (!this->is_informative() || !rhs.is_informative()) {
             res = 1;
-        }
-        else if (p != q) {
+        } else if (p != q) {
             res = asgcmp(* this->get_data().at(0), * rhs.get_data().at(0));
         } else {
 
@@ -642,6 +648,9 @@ cAssignee::compare(const Attribute & right_hand_side) const {
             if (t == cAssignee::asgnum2count_tree.end())
                 throw cException_Other("AsgNum pointer is not in tree.");
 
+            // I think this number is the occurrence of asgnums in the database,
+            // hence stands in for company size.
+            // TODO: Value 100 needs to be a configuration variable.
             if (t->second < 100)
                 ++res;
         }
