@@ -62,6 +62,8 @@ echo "Blocking test"
 
 ./similarity
 
+./assigneecomparison
+
 echo "integration test"
 source ./integration.sh
 
