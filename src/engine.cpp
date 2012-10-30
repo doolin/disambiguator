@@ -51,18 +51,16 @@ disambiguate_by_set (const Record * key1,
                      const cRatios & ratio,
                      const double mutual_threshold) {
 
-  // TODO: See if these declarations can be moved outside of this function and
-  // declared at the file level, which would promote a much nicer refactoring.
+    // TODO: See if these declarations can be moved outside of this function and
+    // declared at the file level, which would promote a much nicer refactoring.
     static const uint32_t firstname_index = Record::get_similarity_index_by_name(cFirstname::static_get_class_name());
     static const uint32_t midname_index   = Record::get_similarity_index_by_name(cMiddlename::static_get_class_name());
     static const uint32_t lastname_index  = Record::get_similarity_index_by_name(cLastname::static_get_class_name());
     static const uint32_t country_index   = Record::get_index_by_name(cCountry::static_get_class_name());
 
-    static const bool country_check = true;
-
-
-    // TODO: Why is this not a configuration parameter?
+    // TODO: Why are these not configuration parameters?
     const bool prescreening = true;
+    static const bool country_check = true;
 
     // TODO: Refactor prescreening block
     if (prescreening) {
@@ -103,7 +101,6 @@ disambiguate_by_set (const Record * key1,
         }
     }
 
-    const bool partial_match_mode = true;
 
     // TODO: Why is this not a configuration parameter?
     // Is the value 0.7 related to the value 0.3 above?
@@ -134,6 +131,7 @@ disambiguate_by_set (const Record * key1,
     double interactive = 0;
     double cumulative_interactive = 0;
     uint32_t qualified_count = 0;
+    const bool partial_match_mode = true;
     //double required_interactives = 0;
     //uint32_t required_cnt = 0;
     // TODO: Should be able to refactor this whole block
@@ -150,7 +148,8 @@ disambiguate_by_set (const Record * key1,
                 }
             }
 
-            vector< uint32_t > tempsp = (*p)->record_compare(* *q);
+            //vector<uint32_t> tempsp = (*p)->record_compare(* *q);
+            SimilarityProfile tempsp = (*p)->record_compare(* *q);
 
             // TODO: Consider inlining a template function for this check.
             if (tempsp.at(firstname_index) == 0 ||
@@ -186,6 +185,7 @@ disambiguate_by_set (const Record * key1,
     const double interactive_average = interactive / match1_size / match2_size;
     double probs_average;
 
+    //set<double> probs;
     if (qualified_count > probs.size())
         probs_average = cumulative_interactive / qualified_count;
     else
@@ -708,6 +708,12 @@ reconfigure_interactives (const Record_Reconfigurator * pc,
 }
 
 
+/**
+ * Warning: AsgNums use pointer comparison instead of string
+ * comparison. This saves some space, but needs to be 
+ * watched carefully.
+ * TODO: Find out where the pointers are handled.
+ */
 void
 cAssignee::configure_assignee(const list<const Record *> & recs) {
 
@@ -717,6 +723,9 @@ cAssignee::configure_assignee(const list<const Record *> & recs) {
     for (; p != recs.end(); ++p) {
 
         const cAsgNum * pasgnum = dynamic_cast<const cAsgNum *>((*p)->get_attrib_pointer_by_index(asgnumidx));
+
+        // Print out the pointers for examination.
+        //std::cout << "pasgnum: " << pasgnum << std::endl;
 
         if (!pasgnum) {
             throw cException_Other("Cannot perform dynamic cast to cAsgNum.");
