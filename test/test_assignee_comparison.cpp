@@ -44,6 +44,10 @@ public:
   }
 
 
+  /**
+   * These need to be unscrewed, the assignee comparison doesn't
+   * work the same as the lat/long interactive.
+   */
   void compare_assignee() {
 
     describe_test(INDENT2, "Testing Assignee comparison");
@@ -76,6 +80,8 @@ public:
 
     similarity = d1.compare(d2);
     //std::cout << "Assignee similarity d1, d2: " << similarity << std::endl;
+    // 4 is correct, but likely for the wrong reason: asgnums get some
+    // sort of wierdo pointer counting thing.
     CPPUNIT_ASSERT(4 == similarity);
     describe_pass(INDENT4, "Comparing similarity for IBM");
 
@@ -106,14 +112,14 @@ public:
 
 
     uint32_t similarity = d2.compare(a3);
-    std::cout << "Assignee similarity d1, d2: " << similarity << std::endl;
+    //std::cout << "Assignee similarity d1, d2: " << similarity << std::endl;
     CPPUNIT_ASSERT(4 == similarity);
     describe_fail(INDENT4, "Comparing similarity for IBM & International Harvester");
 
   }
 
 
-  void test_r1r5() {
+  void test_r1r2() {
 
     RecordPList rp = ft->get_recpointers();
     cAssignee::configure_assignee(rp);
@@ -127,7 +133,10 @@ public:
     Record::activate_comparators_by_name(active_similarity_attributes);
 
     SimilarityProfile sp = r1.record_compare(r2);
-    print_similarity(sp);
+    uint32_t similarity = sp[0];
+    CPPUNIT_ASSERT(6 == similarity);
+    describe_pass(INDENT4, "Comparing similarity for r1 and r2");
+    //print_similarity(sp);
   }
 
 };
@@ -137,9 +146,9 @@ void
 test_fetch_records() {
 
   AssigneeComparisonTest * act = new AssigneeComparisonTest("Testing assignee_comparison");
-  //act->compare_assignee();
-  //act->test_different_assignees();
-  act->test_r1r5();
+  act->compare_assignee();
+  act->test_different_assignees();
+  act->test_r1r2();
   delete act;
 }
 

@@ -509,71 +509,6 @@ Totally different names:
   }
 
 
-  void compare_assignee() {
-
-    describe_test(INDENT2, "Testing Assignee comparison");
-
-    FakeTest ft("FakeTest for assignees", "./testdata/assignee_comparison.csv");
-    ft.load_fake_data("./testdata/assignee_comparison.csv");
-
-    //RecordPList all_rec_pointers = get_record_list();
-    // This is necessary God object.
-    // TODO: Remind myself why this object needs creating
-    //Record * foobar = make_foobar_record();
-    //foobar->set_sample_record(foobar);
-    //const Record * r = all_rec_pointers.front();
-    //r->set_sample_record(r);
-
-
-    uint32_t similarity;
-
-
-    string asgnum("H0008");
-
-    cAssignee d1("IBM");
-    d1.split_string("IBM");
-    cAsgNum asg1(asgnum.c_str());
-    asg1.split_string(asgnum.c_str());
-    vector<const Attribute *> atpv1;
-    atpv1.push_back(&asg1);
-    d1.config_interactive(atpv1);
-
-    cAssignee d2("IBM");
-    d2.split_string("IBM");
-    cAsgNum asg2(asgnum.c_str());
-    asg2.split_string(asgnum.c_str());
-    vector<const Attribute *> atpv2;
-    atpv2.push_back(&asg2);
-    d2.config_interactive(atpv2);
-
-    d1.activate_comparator();
-
-    RecordPList rp = ft.get_recpointers();
-    cAssignee::configure_assignee(rp);
-
-    similarity = d1.compare(d2);
-    //std::cout << "Assignee similarity d1, d2: " << similarity << std::endl;
-    CPPUNIT_ASSERT(4 == similarity);
-    describe_pass(INDENT4, "Comparing similarity for IBM");
-
-    cAssignee a3("International Harvester");
-    a3.split_string("International Harvester");
-    cAsgNum asg3("I77777");
-    asg3.split_string("I77777");
-    vector<const Attribute *> atpv3;
-    atpv3.push_back(&asg3);
-    a3.config_interactive(atpv3);
-
-    cAssignee::configure_assignee(rp);
-
-    similarity = d2.compare(a3);
-    //std::cout << "Assignee similarity d1, d2: " << similarity << std::endl;
-    CPPUNIT_ASSERT(4 == similarity);
-    describe_fail(INDENT4, "Comparing similarity for IBM & International Harvester");
-
-  }
-
-
   void compare_coauthor() {
 
     describe_test(INDENT2, "Testing Coauthor comparison");
@@ -753,12 +688,9 @@ Totally different names:
 
 
   void runTest() {
-#if 1
     compare_firstname();
     compare_middlename();
     compare_lastname();
-#endif
-    compare_assignee();
 #if 1
     compare_class();
     compare_coauthor();
