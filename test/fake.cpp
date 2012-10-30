@@ -98,6 +98,12 @@ FakeTest::get_recpointers() {
   return record_pointers;
 }
 
+
+vector<const Record *>
+FakeTest::get_recvecs() {
+  return rpv;
+}
+
 void
 test_fake() {
 

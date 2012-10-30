@@ -12,7 +12,7 @@ private:
   RecordPList record_pointers;
   // Accessory container for unit testing, not
   // present in the disambiguation code.
-  vector<Record *> rpv;
+  vector<const Record *> rpv;
   string csvfilename;
   map<string, const Record *> uid_dict;
   const cBlocking_Operation_By_Coauthors * coauthor_blocking;
@@ -26,6 +26,8 @@ public:
   RecordIndex * get_uid_dict();
 
   RecordPList get_recpointers();
+
+  vector<const Record *> get_recvecs();
 
   const cBlocking_Operation_By_Coauthors * get_coauthor_blocking();
 
