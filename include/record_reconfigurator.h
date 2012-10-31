@@ -5,16 +5,21 @@
 
 /**
  * Record_Reconfigurator
- *     - Reconfigurator_AsianNames
- *     - Reconfigurator_Latitude_Interactives
- *     - Reconfigurator_Coauthor
+ *  - Reconfigurator_AsianNames
+ *  - Reconfigurator_Latitude_Interactives
+ *  - Reconfigurator_Coauthor
  *
  * The record reconfigurator hierarchy is used to modify
  * the data after initial loading from text files.
+ *
+ * (The following is because record _attributes_ do not
+ * map 1-1 onto similarity _features_.)
+ *
  * For some reasons, initial data are not ideal for disambiguation,
  * and modification of such data is necessary.
  * It is also critical to reconfigure Record objects when
  * interactions between attributes exist.
+ *
  * To add more concrete classes, simply inherit the Record_Reconfigurator
  * class and implement the "void reconfigure ( const Record * ) const" virtual function.
  * To use a concrete Record_Reconfigurator class, create an object of
@@ -22,10 +27,18 @@
  *
  */
 class Record_Reconfigurator {
+
 public:
-    virtual void reconfigure ( const Record * ) const = 0;
-    void operator () ( Record & r ) const  {this->reconfigure(&r);}
-    void operator () ( const Record * p) const { this->reconfigure(p); }
+    virtual void reconfigure(const Record *) const = 0;
+
+    void operator () (Record & r) const {
+      this->reconfigure(&r);
+    }
+
+    void operator () (const Record * p) const {
+      this->reconfigure(p);
+    }
+
     virtual ~Record_Reconfigurator(){}
 };
 
@@ -98,7 +111,7 @@ private:
     const uint32_t firstname_index;
     const uint32_t middlename_index;
     const uint32_t lastname_index;
-    vector < string > east_asian;
+    vector<string> east_asian;
     const StringRemoveSpace rmvsp;
 
 public:
@@ -134,38 +147,59 @@ public:
 
 /**
  * Reconfigurator_Coauthor:
- * This class is primarily used to clean the data obtained from loading from the Coauthor column.
- * Since our coauthor column is not clean enough ( with some legacy expression ), this reconfigurator discards the information from
- * the loaded coauthor column and builds a clean one.
- * Therefore, this class should be used very cautiously, as it wipes everything about coauthor WHENEVER an object of such class is created.
- *
- * Private:
- *         const map < const Record *, RecordPList, cSort_by_attrib > * reference_pointer: a pointer to a patent tree, which can be obtained in a cBlocking_Operation_By_Coauthor object.
- *         const uint32_t coauthor_index: the index of the coauthor column in many columns.
- *
- * Public:
- *         Reconfigurator_Coauthor ( const map < const Record *, RecordPList, cSort_by_attrib > & patent_authors):
- *             create a class object through a patent tree ( which is usually from a cBlocking_Operation_By_Coauthor object ).
- *         void reconfigure ( const Record * ) const: virtual function.
- *
- *
+ * This class is primarily used to clean the data obtained
+ * from loading from the Coauthor column.
+ * Since our coauthor column is not clean enough (with some
+ * legacy expression), this reconfigurator discards the
+ * information from the loaded coauthor column and builds
+ * a clean one. Therefore, this class should be used very
+ * cautiously, as it wipes everything about coauthor
+ * WHENEVER an object of such class is created.
+ */
+
+/**
  * Example:
- * list < const Record * > complete; // create a complete list of Record objects
- * Do something to fill in the list;
- * cBlocking_Operation_By_Coauthor bobcobj( complete, 1 ); // create a cBlocking_Operation_By_Coauthor object.
- * Reconfigurator_Coauthor rcobj ( bobcobj.get_patent_tree() );    //create an object of coauthor reconfigurator. This also wipes everything of the whole coauthor column!!
- * std::for_each ( complete.begin(), complete.end(), rcobj ); // this rebuilds the coauthor for each patent.
+ * // create a complete list of Record objects
+ * list<const Record *> complete;
  *
+ * // Do something to fill in the list;
+ * cBlocking_Operation_By_Coauthor bobcobj(complete, 1);
+ *
+ * //create an object of coauthor reconfigurator. This also
+ * wipes everything of the whole coauthor column!!
+ * Reconfigurator_Coauthor rcobj (bobcobj.get_patent_tree());
+ *
+ * // this rebuilds the coauthor for each patent.
+ * std::for_each(complete.begin(), complete.end(), rcobj);
  *
  */
 class Reconfigurator_Coauthor : public Record_Reconfigurator {
 
 private:
+   /**
+    *  const map < const Record *, RecordPList, cSort_by_attrib > * reference_pointer:
+    *  a pointer to a patent tree, which can be obtained in a cBlocking_Operation_By_Coauthor object.
+    */
     const map < const Record *, RecordPList, cSort_by_attrib > * reference_pointer;
+
+   /**
+    * const uint32_t coauthor_index: the index of the coauthor column in many columns.
+    */
     const uint32_t coauthor_index;
+
 public:
-    Reconfigurator_Coauthor ( const map < const Record *, RecordPList, cSort_by_attrib > & patent_authors);
-    void reconfigure ( const Record * ) const;
+
+   /**
+    * Reconfigurator_Coauthor(const map<const Record *, RecordPList, cSort_by_attrib> & patent_authors):
+    *  create a class object through a patent tree
+    *  (which is usually from a cBlocking_Operation_By_Coauthor object).
+    */
+    Reconfigurator_Coauthor(const map<const Record *, RecordPList, cSort_by_attrib> & patent_authors);
+
+   /**
+    * void reconfigure (const Record *) const: virtual function.
+    */
+    void reconfigure (const Record *) const;
 };
 
 
