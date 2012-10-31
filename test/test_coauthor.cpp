@@ -11,6 +11,10 @@
 #include <engine.h>
 #include <newcluster.h>
 #include <attribute.h>
+#include <blocking_operation.h>
+#include <training.h>
+#include <cluster.h>
+#include <clusterinfo.h>
 
 #include "testdata.h"
 #include "colortest.h"
@@ -74,6 +78,10 @@ public:
 
 
   void test_coauthors() {
+    RecordPList rp = ft->get_recpointers();
+    cBlocking_Operation_By_Coauthors bobcobj(rp, 1);
+    Reconfigurator_Coauthor rcobj (bobcobj.get_patent_tree());
+    std::for_each(rp.begin(), rp.end(), rcobj);
   }
 
 
