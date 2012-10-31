@@ -8,6 +8,9 @@
 #define INDENT0 ""
 #define INDENT2 "  "
 #define INDENT4 "     "
+#define INDENT6 "       "
+
+typedef void (*Describer)(const char *, const char *);
 
 void describe_test(const char * indent, const char * description);
 void describe_pass(const char * indent, const char * description);

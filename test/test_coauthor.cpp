@@ -17,6 +17,7 @@
 #include "testutils.h"
 #include "fake.h"
 
+
 using std::string;
 using std::cout;
 using std::endl;
@@ -28,10 +29,12 @@ private:
   FakeTest * ft;
   RecordPList rp;
   static const short BUF_SIZE = 256;
+  Describer describer;
 
 public:
 
   CoauthorTest(std::string name) : CppUnit::TestCase(name) {
+
     describe_test(INDENT0, name.c_str());
     ft = new FakeTest("FakeTest for assignees", "./testdata/assignee_comparison.csv");
     ft->load_fake_data("./testdata/assignee_comparison.csv");
@@ -41,6 +44,9 @@ public:
 
 
   void test_r1r2() {
+
+    char buffer[BUF_SIZE];
+    char teststr[] = "Comparing %s with %s, similarity %d";
 
     RecordPList rp = ft->get_recpointers();
     vector<const Record *> rpv = ft->get_recvecs();
@@ -52,10 +58,17 @@ public:
     Record::activate_comparators_by_name(active_similarity_attributes);
 
     SimilarityProfile sp = r1.record_compare(r2);
+    //print_similarity(sp);
     uint32_t similarity = sp[0];
-    //CPPUNIT_ASSERT(6 == similarity);
-    describe_pass(INDENT4, "Comparing similarity for r1 and r2");
-    print_similarity(sp);
+    sprintf(buffer, teststr, "r1", "r2", similarity);
+
+    try {
+      CPPUNIT_ASSERT(1 == similarity);
+      describer = describe_pass;
+    } catch (CppUnit::Exception e) {
+      describer = describe_fail;
+    }
+    describer(INDENT4, buffer);
   }
 
 
@@ -81,7 +94,6 @@ int
 main(int, char **) {
 
   test_fetch_records();
-
   return 0;
 }
 #endif
