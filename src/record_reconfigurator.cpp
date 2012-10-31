@@ -88,8 +88,9 @@ Reconfigurator_Interactives::reconfigure ( const Record * p ) const {
 }
 
 
-/*
+/**
  * Aim: constructor of Reconfigurator_Coauthor
+ *
  * Algorithm: The constructor calls cCoauthor::clear_data_pool() and
  * cCoauthor::clear_attrib_pool(). So it is critical to remember that
  * construction of each Reconfigurator_Coauthor object will DESTROY
@@ -98,8 +99,11 @@ Reconfigurator_Interactives::reconfigure ( const Record * p ) const {
  * Reconfigurator_Coauthor objects shall NEVER happen during disambiguation.
  *
  */
-Reconfigurator_Coauthor::Reconfigurator_Coauthor ( const map < const Record *, RecordPList, cSort_by_attrib > & patent_authors) :
-        reference_pointer ( & patent_authors), coauthor_index ( Record::get_index_by_name(cCoauthor::static_get_class_name())) {
+Reconfigurator_Coauthor::Reconfigurator_Coauthor(
+    const map < const Record *, RecordPList, cSort_by_attrib > & patent_authors)
+    : reference_pointer (&patent_authors),
+      coauthor_index (Record::get_index_by_name(cCoauthor::static_get_class_name())) {
+
     cCoauthor::clear_data_pool();
     cCoauthor::clear_attrib_pool();
 }
@@ -107,6 +111,7 @@ Reconfigurator_Coauthor::Reconfigurator_Coauthor ( const map < const Record *, R
 
 /**
  * Aim: to recreate the whole coauthor database, and link them to appropriate pointers.
+ *
  * Algorithm: for each unique record id, find all other unique id records
  * with which this one is associated. Then extract the FULL names
  * of those records, and save in cCoauthor data pool. After that,
@@ -122,19 +127,20 @@ Reconfigurator_Coauthor::reconfigure(const Record * p) const {
     static const StringExtractFirstWord firstname_extracter;
     static const StringRemoveSpace lastname_extracter;
 
-    map < const Record *, RecordPList, cSort_by_attrib >::const_iterator cpm;
+    map<const Record *, RecordPList, cSort_by_attrib>::const_iterator cpm;
     cCoauthor temp;
 
-    cpm = reference_pointer->find( p);
+    cpm = reference_pointer->find(p);
 
-    if ( cpm == reference_pointer->end())
+    if (cpm == reference_pointer->end())
         throw cException_Other("Missing patent data.");
 
     const RecordPList & patent_coauthors = cpm->second;
 
-    for ( RecordPList::const_iterator q = patent_coauthors.begin(); q != patent_coauthors.end(); ++q ) {
+    RecordPList::const_iterator q = patent_coauthors.begin();
+    for (; q != patent_coauthors.end(); ++q ) {
 
-        if ( *q == p )
+        if (*q == p)
             continue;
 
         string fullname = firstname_extracter.manipulate( * (*q)->get_data_by_index(firstnameindex).at(0) ) + dot
@@ -143,7 +149,7 @@ Reconfigurator_Coauthor::reconfigure(const Record * p) const {
     }
 
     const Attribute * np = cCoauthor::static_add_attrib(temp, 1);
-    const Attribute ** to_change = const_cast< const Attribute ** > ( & p->get_attrib_pointer_by_index(coauthor_index));
+    const Attribute ** to_change = const_cast< const Attribute **> ( & p->get_attrib_pointer_by_index(coauthor_index));
     *to_change = np;
 
 }
