@@ -44,10 +44,10 @@ public:
  * names and last names.
  *
  * Private:
- *         const unsigned int country_index: index of country column in the record vector
- *         const unsigned int firstname_index: index of first name column in the record vector
- *         const unsigned int middlename_index: index of middle name column in the record vector
- *         const unsigned int lastname_index: index of last name column in the record vector
+ *         const uint32_t country_index: index of country column in the record vector
+ *         const uint32_t firstname_index: index of first name column in the record vector
+ *         const uint32_t middlename_index: index of middle name column in the record vector
+ *         const uint32_t lastname_index: index of last name column in the record vector
  *         vector < string > east_asian: string of east asian country ids.
  *         const StringRemoveSpace rmvsp: a sring manipulator. Perhaps not used here.
  *
@@ -94,10 +94,10 @@ public:
 class Reconfigurator_AsianNames : public Record_Reconfigurator {
 
 private:
-    const unsigned int country_index;
-    const unsigned int firstname_index;
-    const unsigned int middlename_index;
-    const unsigned int lastname_index;
+    const uint32_t country_index;
+    const uint32_t firstname_index;
+    const uint32_t middlename_index;
+    const uint32_t lastname_index;
     vector < string > east_asian;
     const StringRemoveSpace rmvsp;
 
@@ -124,8 +124,8 @@ public:
 class Reconfigurator_Interactives: public Record_Reconfigurator {
 
 private:
-    unsigned int my_index;
-    vector < unsigned int > relevant_indice;
+    uint32_t my_index;
+    vector < uint32_t > relevant_indice;
 public:
     Reconfigurator_Interactives(const string & my_name, const vector <string> & relevant_attributes);
     void reconfigure ( const Record *) const;
@@ -141,7 +141,7 @@ public:
  *
  * Private:
  *         const map < const Record *, RecordPList, cSort_by_attrib > * reference_pointer: a pointer to a patent tree, which can be obtained in a cBlocking_Operation_By_Coauthor object.
- *         const unsigned int coauthor_index: the index of the coauthor column in many columns.
+ *         const uint32_t coauthor_index: the index of the coauthor column in many columns.
  *
  * Public:
  *         Reconfigurator_Coauthor ( const map < const Record *, RecordPList, cSort_by_attrib > & patent_authors):
@@ -162,7 +162,7 @@ class Reconfigurator_Coauthor : public Record_Reconfigurator {
 
 private:
     const map < const Record *, RecordPList, cSort_by_attrib > * reference_pointer;
-    const unsigned int coauthor_index;
+    const uint32_t coauthor_index;
 public:
     Reconfigurator_Coauthor ( const map < const Record *, RecordPList, cSort_by_attrib > & patent_authors);
     void reconfigure ( const Record * ) const;
