@@ -43,34 +43,40 @@ typedef std::list<const Record * > RecordPList;
 /**
  * cSort_by_attrib:
  * A functor for comparison of attributes in associated containers such as map or set.
- *
- * @param bool operator () (const Record * prec1, const Record *prec2 ) const:
- *    comparison between two records pointers based on their content.
- *       The conparison content depends on the internal information of the
- *       cSort_by_attrib object. i.e. attrib_index;
- *
+ */
+/**
  * Example:
- * 1. cSort_by_attrib obj1( "Patent" ); this will create an instance obj1
- *    which compares two Record pointers based on the "Patent" information column.
- *    map < const Record *, VALUE_TYPE, cSort_by_attrib > m1(obj1); will
- *    create a map (binary tree) whose key is const Record pointer, and
- *       the way of sorting is through comparison of "Patent" attribute.
- *       Binary tree is ideal for fast search, insertion and deletion.
+ *   cSort_by_attrib obj1("Patent"); this will create an instance obj1
+ *   which compares two Record pointers based on the "Patent" information column.
  *
+ *   map<const Record *, VALUE_TYPE, cSort_by_attrib> m1(obj1); will
+ *   create a map (binary tree) whose key is const Record pointer, and
+ *   the way of sorting is through comparison of "Patent" attribute.
+ *   Binary tree is ideal for fast search, insertion and deletion.
  */
 class cSort_by_attrib {
+
 private:
-  //attrib_index is the column index on which the Record's comparison depends.
+    //attrib_index is the column index on which the Record's comparison depends.
     const uint32_t attrib_index;
+
 public:
+   /**
+    * comparison between two records pointers based on their content.
+    * The conparison content depends on the internal information of the
+    * cSort_by_attrib object. i.e. attrib_index;
+    */
     bool operator () (const Record * prec1, const Record *prec2 ) const {
+
         const Attribute * attr1 = prec1->vector_pdata.at(attrib_index);
         const Attribute * attr2 = prec2->vector_pdata.at(attrib_index);
-
         return attr1->get_data().at(0) < attr2->get_data().at(0);
     };
-    cSort_by_attrib(const uint32_t i): attrib_index(i) {};
-    cSort_by_attrib(const string & attrib_name): attrib_index(Record::get_index_by_name(attrib_name) ) {};
+
+    cSort_by_attrib(const uint32_t i) : attrib_index(i) {};
+
+    cSort_by_attrib(const string & attrib_name)
+      : attrib_index(Record::get_index_by_name(attrib_name)) {};
 };
 
 

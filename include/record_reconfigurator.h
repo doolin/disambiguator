@@ -177,10 +177,10 @@ class Reconfigurator_Coauthor : public Record_Reconfigurator {
 
 private:
    /**
-    *  const map < const Record *, RecordPList, cSort_by_attrib > * reference_pointer:
-    *  a pointer to a patent tree, which can be obtained in a cBlocking_Operation_By_Coauthor object.
+    * a pointer to a patent tree, which can be obtained in
+    * a cBlocking_Operation_By_Coauthor object.
     */
-    const map < const Record *, RecordPList, cSort_by_attrib > * reference_pointer;
+    const map<const Record *, RecordPList, cSort_by_attrib> * reference_pointer;
 
    /**
     * const uint32_t coauthor_index: the index of the coauthor column in many columns.
