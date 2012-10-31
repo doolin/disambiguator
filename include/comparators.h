@@ -41,10 +41,6 @@ int    classcmp         (const string & class1,
 int    coauthorcmp      (const string & coauthor1,
                          const string & coauthor2);
 
-int    asgcmp           (const string & asg1,
-                         const string & asg2,
-                         const map<string, std::pair<string, unsigned int> > * const asg_table_pointer);
-
 int    asgcmp           (const string & s1,
                          const string &s2);
 
