@@ -32,6 +32,7 @@ FakeTest::FakeTest(string name, string filename)
     requested_columns.push_back(string("Street"));
     requested_columns.push_back(string("Country"));
     requested_columns.push_back(string("Unique_Record_ID"));
+    requested_columns.push_back(string("Coauthor"));
 }
 
 
