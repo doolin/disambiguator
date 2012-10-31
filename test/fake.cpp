@@ -39,7 +39,7 @@ FakeTest::FakeTest(string name, string filename)
 void
 FakeTest::load_fake_data(string csvfilename) {
 
-    describe_test(INDENT2, "Loading fake data for clustering...");
+    describe_test(INDENT2, "Loading fake data...");
 
     //const char * filename = "testdata/clustertest.csv";
     const char * filename = csvfilename.c_str();

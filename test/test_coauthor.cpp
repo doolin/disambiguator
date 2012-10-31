@@ -36,7 +36,8 @@ public:
   CoauthorTest(std::string name) : CppUnit::TestCase(name) {
 
     describe_test(INDENT0, name.c_str());
-    ft = new FakeTest("FakeTest for assignees", "./testdata/assignee_comparison.csv");
+    // TODO: Load up a file for coauthors.
+    ft = new FakeTest("FakeTest for coauthors", "./testdata/assignee_comparison.csv");
     ft->load_fake_data("./testdata/assignee_comparison.csv");
     rp = ft->get_recpointers();
 
@@ -82,7 +83,7 @@ public:
 void
 test_fetch_records() {
 
-  CoauthorTest * ct = new CoauthorTest("Testing assignee_comparison");
+  CoauthorTest * ct = new CoauthorTest("Testing Coauthor comparison");
   ct->test_r1r2();
   ct->test_coauthors();
   delete ct;
