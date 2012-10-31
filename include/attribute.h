@@ -1744,14 +1744,19 @@ public:
 };
 
 
-class cCoauthor : public Attribute_Set_Mode < cCoauthor >  {
+class cCoauthor : public Attribute_Set_Mode <cCoauthor>  {
+
     friend class Reconfigurator_Coauthor;
+
 public:
+
     static uint32_t const max_value = 6;
 
     uint32_t get_attrib_max_value() const {
-        if ( ! is_comparator_activated() )
+
+        if (!is_comparator_activated()) {
             Attribute::get_attrib_max_value();
+        }
         return max_value;
     }
 };

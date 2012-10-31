@@ -138,7 +138,7 @@ Reconfigurator_Coauthor::reconfigure(const Record * p) const {
     const RecordPList & patent_coauthors = cpm->second;
 
     RecordPList::const_iterator q = patent_coauthors.begin();
-    for (; q != patent_coauthors.end(); ++q ) {
+    for (; q != patent_coauthors.end(); ++q) {
 
         if (*q == p)
             continue;

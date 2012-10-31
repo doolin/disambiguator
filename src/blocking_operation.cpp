@@ -87,9 +87,21 @@ string cBlocking_Operation_Multiple_Column_Manipulate::extract_column_info (cons
 }
 
 
+void
+too_many_coauthors(const uint32_t num_coauthors) {
+
+    if (num_coauthors > 4) {
+        std::cout << "================ WARNING =====================" << std::endl;
+        std::cout << "Number of coauthors in which cBlocking_Operation_By_Coauthors uses ";
+        std::cout << "is probably too large. Number of coauthors = " << num_coauthors << std::endl;
+        std::cout << "==================END OF WARNING ================" << std::endl;
+    }
+}
+
 
 /**
  * Aim: constructors of cBlocking_Operation_By_Coauthors.
+ *
  * The difference between the two constructors is that the former
  * one builds unique record id to unique inventor id binary tree,
  * whereas the latter does not, demanding external explicit call
@@ -102,12 +114,7 @@ cBlocking_Operation_By_Coauthors::cBlocking_Operation_By_Coauthors(
     : patent_tree(cSort_by_attrib(cPatent::static_get_class_name())),
       num_coauthors(coauthors) {
 
-    if (num_coauthors > 4) {
-        std::cout << "================ WARNING =====================" << std::endl;
-        std::cout << "Number of coauthors in which cBlocking_Operation_By_Coauthors uses ";
-        std::cout << "is probably too large. Number of coauthors = " << num_coauthors << std::endl;
-        std::cout << "==================END OF WARNING ================" << std::endl;
-    }
+    too_many_coauthors(num_coauthors);
 
     build_patent_tree(all_rec_pointers);
     build_uid2uinv_tree(cluster);
@@ -126,13 +133,7 @@ cBlocking_Operation_By_Coauthors::cBlocking_Operation_By_Coauthors(
     : patent_tree(cSort_by_attrib(cPatent::static_get_class_name())),
       num_coauthors(coauthors) {
 
-    if (num_coauthors > 4) {
-        std::cout << "================ WARNING =====================" << std::endl;
-        std::cout << "Number of coauthors in which cBlocking_Operation_By_Coauthors uses "
-                  << " is probably too large. Number of coauthors = " << num_coauthors << std::endl;
-        std::cout << "==================END OF WARNING ================" << std::endl;
-    }
-
+    too_many_coauthors(num_coauthors);
     build_patent_tree(all_rec_pointers);
 
     for (uint32_t i = 0; i < num_coauthors; ++i) {
