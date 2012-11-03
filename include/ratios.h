@@ -447,6 +447,15 @@ SimilarityProfile index2sp                            (uint32_t index,
                                                        const SimilarityProfile & min_sp,
                                                        const SimilarityProfile & max_sp);
 
+void             smoothing_inter_extrapolation_cplex  (SPRatiosIndex & ratio_map,
+                                                       const SimilarityProfile & min_sp,
+                                                       const SimilarityProfile & max_sp,
+                                                       const SPCountsIndex & x_counts,
+                                                       const SPCountsIndex & m_counts,
+                                                       const vector<string> & attribute_names, // TODO: Delete this argument, not used
+                                                       const bool name_range_check,            // TODO: Not used
+                                                       const bool backup_quadprog);          // TODO: Not used
+
 
 
 #endif /* PATENT_RATIOS_H */

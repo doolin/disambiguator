@@ -573,10 +573,12 @@ cRatios::cRatios(const char * filename) {
 void
 print_similarity(const SimilarityProfile & s) {
 
+/*
   std::cout << "From " << __FUNCTION__ << ", " << __FILE__ 
             << ":" << __LINE__ << std::endl;
 
   std::cout << "Size of sp: " << s.size();
+*/
 
   std::cout << "(";
 
@@ -585,7 +587,8 @@ print_similarity(const SimilarityProfile & s) {
     std::cout << *i << ", ";
   }
   std::cout << *i;
-  std::cout << ")" << std::endl;
+  std::cout << ")";
+  //std::cout << std::endl;
 }
 
 
