@@ -32,16 +32,6 @@ private:
 
     void init_mcounts() {
 
-/*
-      SP sp1 = csp(1,0);
-      SP sp2 = csp(0,1);
-      SP sp3 = csp(2,0);
-      SP sp4 = csp(2,2);
-      SP sp5 = csp(2,3);
-      SP sp6 = csp(1,2);
-      SP sp7 = csp(1,3);
-      SP sp8 = csp(3,1);
-*/
       mcount.insert(Count(sp1, 5));
       mcount.insert(Count(sp2, 2));
       mcount.insert(Count(sp3, 20));
@@ -56,16 +46,6 @@ private:
 
     void init_ncounts() {
 
-/*
-      SP sp1 = csp(1,0);
-      SP sp2 = csp(0,1);
-      SP sp3 = csp(2,0);
-      SP sp4 = csp(2,2);
-      SP sp5 = csp(2,3);
-      SP sp6 = csp(1,2);
-      SP sp7 = csp(1,3);
-      SP sp8 = csp(3,1);
-*/
       ncount.insert(Count(sp1, 5));
       ncount.insert(Count(sp2, 2));
       ncount.insert(Count(sp3, 20));
