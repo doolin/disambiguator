@@ -30,7 +30,7 @@ private:
     SPCountsIndex mcount, ncount;
     SP sp1, sp2, sp3, sp4, sp5, sp6, sp7, sp8;
 
-    void init_mcounts() {
+    void init_counts() {
 
       mcount.insert(Count(sp1, 5));
       mcount.insert(Count(sp2, 2));
@@ -40,11 +40,6 @@ private:
       mcount.insert(Count(sp6, 8));
       mcount.insert(Count(sp7, 7));
       mcount.insert(Count(sp8, 201));
-
-    }
-
-
-    void init_ncounts() {
 
       ncount.insert(Count(sp1, 5));
       ncount.insert(Count(sp2, 2));
@@ -83,8 +78,7 @@ public:
     ratio_map.insert(Ratio(sp7, 7.0));
     ratio_map.insert(Ratio(sp8, 201.0));
 
-    init_mcounts();
-    init_ncounts();
+    init_counts();
   }
 
   void print_indexes() {
