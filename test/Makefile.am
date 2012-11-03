@@ -27,7 +27,7 @@ TESTS = distest idtest typedefs record blocking attribute stringmanipulator \
 	comparators comparesimilarities strcmp95 rarenames engineconfig           \
 	abbreviation misspell namecompare jwcmp similarity clusterhead cluster engine \
 	training ratios fetchrecords assigneecomparison clusterinfo ratiocomponent \
-	coauthor
+	coauthor qp
 
 bin_PROGRAMS = $(TESTS)
 
@@ -64,6 +64,7 @@ comparesimilarities_SOURCES = test_compare.cpp
 blocking_SOURCES = test_blocking.cpp $(COMMON) fake.cpp
 stringmanipulator_SOURCES = test_string_manipulator.cpp
 strcmp95_SOURCES = test_strcmp95.cpp $(COMMON)
+qp_SOURCES = test_qp.cpp $(COMMON)
 
 relink:
 	rm -rf $(TESTS)
