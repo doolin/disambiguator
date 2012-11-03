@@ -33,22 +33,28 @@ private:
     void init_counts() {
 
       mcount.insert(Count(sp1, 5));
-      mcount.insert(Count(sp2, 2));
-      mcount.insert(Count(sp3, 20));
-      mcount.insert(Count(sp4, 35));
-      mcount.insert(Count(sp5, 101));
-      mcount.insert(Count(sp6, 8));
-      mcount.insert(Count(sp7, 7));
-      mcount.insert(Count(sp8, 201));
-
       ncount.insert(Count(sp1, 5));
+
+      mcount.insert(Count(sp2, 2));
       ncount.insert(Count(sp2, 2));
+
+      mcount.insert(Count(sp3, 20));
       ncount.insert(Count(sp3, 20));
+
+      mcount.insert(Count(sp4, 35));
       ncount.insert(Count(sp4, 35));
+
+      mcount.insert(Count(sp5, 101));
       ncount.insert(Count(sp5, 101));
+
+      mcount.insert(Count(sp6, 8));
       ncount.insert(Count(sp6, 8));
+
+      mcount.insert(Count(sp7, 7));
       ncount.insert(Count(sp7, 7));
-      ncount.insert(Count(sp8, 201));
+
+      mcount.insert(Count(sp8, 201));
+      ncount.insert(Count(sp8, 21));
 
     }
 
