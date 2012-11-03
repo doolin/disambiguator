@@ -30,9 +30,10 @@ sp2index (const SimilarityProfile & sp, const SimilarityProfile & min_sp,
 
     uint32_t index = 0;
     for (uint32_t i = 0; i < sp.size(); ++i) {
-        if ( sp.at(i) > max_sp.at(i) )
+
+        if (sp.at(i) > max_sp.at(i))
             throw cException_Other("Index range error. > max.");
-        if ( sp.at(i) < min_sp.at(i) )
+        if (sp.at(i) < min_sp.at(i))
             throw cException_Other("Index range error. < min.");
 
         index *= max_sp.at(i) - min_sp.at(i) + 1;
@@ -76,11 +77,11 @@ find_lesser_neighbour(const SimilarityProfile & sp, const SimilarityProfile & mi
 
     for (uint32_t i = 0; i < sp.size(); ++i) {
 
-        if ( min_sp.at(i) > sp.at(i) )
+        if (min_sp.at(i) > sp.at(i)) {
             throw cException_Other("Similarity input error: sp < min.");
-        else if ( min_sp.at(i) == sp.at(i))
+        } else if (min_sp.at(i) == sp.at(i)) {
             continue;
-        else {
+        } else {
             SimilarityProfile temps (sp);
             temps.at(i) -= 1;
             vs.push_back(temps);
@@ -97,9 +98,9 @@ find_greater_neighbour(const SimilarityProfile & sp, const SimilarityProfile & m
 
     for (uint32_t i = 0; i < sp.size(); ++i) {
 
-        if ( max_sp.at(i) < sp.at(i) )
+        if (max_sp.at(i) < sp.at(i))
             throw cException_Other("Similarity input error: sp > max.");
-        else if ( max_sp.at(i) == sp.at(i))
+        else if (max_sp.at(i) == sp.at(i))
             continue;
         else {
             SimilarityProfile temps (sp);
@@ -250,8 +251,8 @@ smoothing_inter_extrapolation_cplex(
     const SPCountsIndex & x_counts,
     const SPCountsIndex & m_counts,
     const vector<string> & attribute_names, // TODO: Delete this argument, not used
-    const bool name_range_check,
-    const bool backup_quadprog ) {
+    const bool name_range_check,            // TODO: Not used
+    const bool backup_quadprog ) {          // TODO: Not used
 
 #if 0
   check_counts_consistency(x_counts, m_counts, ratio_map);
