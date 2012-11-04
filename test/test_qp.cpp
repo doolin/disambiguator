@@ -13,6 +13,7 @@ typedef std::pair<SimilarityProfile, double> Ratio;
 typedef std::pair<SimilarityProfile, uint32_t> Count;
 typedef SimilarityProfile SP;
 
+// TODO: add a function which takes a uint32_t[];
 SimilarityProfile
 csp(uint32_t s1, uint32_t s2) {
   SimilarityProfile sp;
@@ -29,6 +30,7 @@ private:
     SPRatiosIndex ratio_map;
     SPCountsIndex mcount, ncount;
     SP sp1, sp2, sp3, sp4, sp5, sp6, sp7, sp8;
+
 
     void init_counts() {
 
@@ -55,8 +57,8 @@ private:
 
       mcount.insert(Count(sp8, 201));
       ncount.insert(Count(sp8, 21));
-
     }
+
 
 public:
   QPTest(std::string name) : CppUnit::TestCase(name) {
