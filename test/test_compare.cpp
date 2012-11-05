@@ -1,12 +1,15 @@
 
-#include <cppunit/Portability.h>
-#include <cppunit/portability/CppUnitSet.h>
-#include <cppunit/extensions/TestFactory.h>
+//#include <cppunit/Portability.h>
+//#include <cppunit/portability/CppUnitSet.h>
+//#include <cppunit/extensions/TestFactory.h>
+
 #include <cppunit/TestCase.h>
 #include <vector>
 
 
 #include <attribute.h>
+
+#include "testutils.h"
 
 
 class CompareTest : public CppUnit::TestCase {
@@ -55,13 +58,19 @@ public:
 };
 
 
-#ifdef test_compare_STANDALONE
-int
-main(int UP(argc), char ** UP(argv)) {
+void
+test_compare() {
 
   CompareTest * ct = new CompareTest(std::string("SimilarityCompare test"));
   ct->runTest();
   delete ct;
+}
+
+#ifdef test_compare_STANDALONE
+int
+main(int UP(argc), char ** UP(argv)) {
+
+  test_compare();
   return 0;
 }
 #endif

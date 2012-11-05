@@ -16,7 +16,7 @@ INCLUDES = -I/usr/local/include -I$(CPLEXINCLUDE) -I$(CONCERTINCLUDE) -I../inclu
 
 
 #CXXFLAGS =  -Wall -Wextra -ansi -Wignored-qualifiers # -pedantic -Wno-unused-parameter -Wno-uninitialized # -Wno-ignored-qualifiers
-AM_CXXFLAGS = -O0 -g -Wall -Wextra -Wformat-zero-length -Wno-unused-parameter -Wno-uninitialized # -pedantic -ansi
+AM_CXXFLAGS = -std=c++11 -O0 -g -Wall -Wextra -Wformat-zero-length -Wno-unused-parameter -Wno-uninitialized # -pedantic -ansi
 #CXXFLAGS = $(AM_CXXFLAGS)
 
 LDADD = ../src/libdisambiguation.a
@@ -27,7 +27,7 @@ TESTS = distest idtest typedefs record blocking attribute stringmanipulator \
 	comparators comparesimilarities strcmp95 rarenames engineconfig           \
 	abbreviation misspell namecompare jwcmp similarity clusterhead cluster engine \
 	training ratios fetchrecords assigneecomparison clusterinfo ratiocomponent \
-	coauthor qp
+	coauthor qp compare
 
 bin_PROGRAMS = $(TESTS)
 
@@ -65,6 +65,7 @@ blocking_SOURCES = test_blocking.cpp $(COMMON) fake.cpp
 stringmanipulator_SOURCES = test_string_manipulator.cpp
 strcmp95_SOURCES = test_strcmp95.cpp $(COMMON)
 qp_SOURCES = test_qp.cpp $(COMMON)
+compare_SOURCES = test_compare.cpp $(COMMON)
 
 relink:
 	rm -rf $(TESTS)

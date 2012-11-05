@@ -60,6 +60,7 @@ echo "ratios test"
 echo "Blocking test"
 ./blocking
 
+./compare
 ./similarity
 ./assigneecomparison
 ./coauthor
