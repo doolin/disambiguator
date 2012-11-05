@@ -123,17 +123,19 @@ public:
     describe_pass(INDENT2, "Retrieved similarity profile given index");
   }
 
-/*
+
+
   void test_cpp11_syntax() {
     vector<int> sp1 = {1, 2, 3};
     vector<int> sp2({1, 2, 3});
     vector<int> sp3{1, 2, 3};
   }
-*/
+
 
   void runTest() {
     test_sp2index();
     test_index2sp();
+    test_cpp11_syntax();
   }
 };
 

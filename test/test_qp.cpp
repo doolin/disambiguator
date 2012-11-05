@@ -77,6 +77,7 @@ public:
     sp7 = csp(1,3);
     sp8 = csp(3,1);
 
+
     ratio_map.insert(Ratio(sp1, 5.0));
     ratio_map.insert(Ratio(sp2, 2.0));
     ratio_map.insert(Ratio(sp3, 20.0));
