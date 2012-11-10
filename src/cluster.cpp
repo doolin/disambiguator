@@ -132,8 +132,8 @@ ClusterInfo::retrieve_last_comparision_info (
         const uint32_t primary_delim_size = strlen(primary_delim);
         const uint32_t secondary_delim_size = strlen(secondary_delim);
         RecordPList empty_set;
-        map < string , ClusterList >::iterator prim_iter;
-        map < const string*, map < const Record *, double> >::iterator prim_co_iter;
+        map<string, ClusterList>::iterator prim_iter;
+        map<const string*, map<const Record *, double> >::iterator prim_co_iter;
         uint32_t count = 0;
         const uint32_t base = 100000;
 
@@ -149,19 +149,19 @@ ClusterInfo::retrieve_last_comparision_info (
             string filedata;
             ClusterList::iterator pm;
 
-            while ( getline(infile, filedata)) {
+            while (getline(infile, filedata)) {
+
                 register size_t pos = 0, prev_pos = 0;
                 pos = filedata.find(primary_delim, prev_pos);
                 string keystring = filedata.substr( prev_pos, pos - prev_pos);
                 const Record * key = retrieve_record_pointer_by_unique_id( keystring, *uid2record_pointer);
                 const string b_id = blocker.extract_blocking_info(key);
-                vector < string > column_part (num_columns) ;
+                vector<string> column_part (num_columns) ;
 
-                for ( uint32_t i = 0; i < num_columns; ++i ) {
-                    const string temp = blocker.extract_column_info ( key, i );
+                for (uint32_t i = 0; i < num_columns; ++i) {
+                    const string temp = blocker.extract_column_info(key, i);
                     column_part.at(i) = temp;
                 }
-
 
                 prim_iter = cluster_by_block.find(b_id);
 
@@ -169,7 +169,7 @@ ClusterInfo::retrieve_last_comparision_info (
 
                 pos = filedata.find(primary_delim, prev_pos);
                 double val = 0;
-                if ( is_matching ) {
+                if (is_matching) {
                     string cohesionstring = filedata.substr( prev_pos, pos - prev_pos);
                     val = atof(cohesionstring.c_str());
                 }
@@ -177,7 +177,7 @@ ClusterInfo::retrieve_last_comparision_info (
 
 
                 RecordPList tempv;
-                while ( ( pos = filedata.find(secondary_delim, prev_pos) )!= string::npos){
+                while (( pos = filedata.find(secondary_delim, prev_pos))!= string::npos){
                     string valuestring = filedata.substr( prev_pos, pos - prev_pos);
                     const Record * value = retrieve_record_pointer_by_unique_id( valuestring, *uid2record_pointer);
                     tempv.push_back(value);
@@ -204,6 +204,8 @@ ClusterInfo::retrieve_last_comparision_info (
                     std::cout << count << " records have been loaded from the cluster file. " << std::endl;
                 }
             }
+
+
 
             std::cout << "Obtained ";
             for (uint32_t i = 0; i < num_columns; ++i) {
