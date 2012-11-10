@@ -62,7 +62,7 @@ public:
     * virtual string extract_column_info ( const Record *, unsigned int flag ) const:
     * virtual function that extract information from the (flag)th column.
     */
-    virtual string extract_column_info ( const Record *, unsigned int UP(flag)) const {
+    virtual string extract_column_info (const Record *, unsigned int UP(flag)) const {
       throw cException_Other ("Function not defined yet.");
     }
 
@@ -72,7 +72,9 @@ public:
     * virtual unsigned int num_involved_columns() const: return number
     * of columns that the extraction operates on.
     */
-    virtual unsigned int num_involved_columns() const { return 1;}
+    virtual unsigned int num_involved_columns() const {
+      return 1;
+    }
 };
 
 
@@ -218,29 +220,28 @@ public:
 
 class cBlocking_Operation_Multiple_Column_Manipulate : public cBlocking_Operation {
 
-
 private:
 
    /**
     *   vector < const StringManipulator * > vsm: the vector
     *   of string manipulator pointers.
     */
-    vector < const StringManipulator * > vsm;
+    vector<const StringManipulator *> vsm;
 
-    vector < unsigned int > indice;
+    vector<unsigned int> indice;
 
    /**
     *   vector < unsigned int > indice: the vector of column indice
     *   from which the manipulators extract information, respectively.
     */
-    vector < string > attributes_names;
+    vector<string> attributes_names;
 
    /**
     *   vector < const unsigned int * > pdata_indice: the vector of
     *   the const interger pointers indicating the positions of data in
     *   the data vector in Attribute on which the extractions take place.
     */
-    vector < unsigned int > pdata_indice;
+    vector<unsigned int> pdata_indice;
 
    /**
     *  cBlocking_Operation_Multiple_Column_Manipulate (
@@ -296,7 +297,7 @@ public:
     * string extract_column_info ( const Record * p, unsigned int flag ) const:
     * extracts information from specified column and returns a string
     */
-    string extract_column_info ( const Record * p, unsigned int flag ) const;
+    string extract_column_info (const Record * p, unsigned int flag) const;
 
    /**
     * unsigned int num_involved_columns() const :
