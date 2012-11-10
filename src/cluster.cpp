@@ -83,15 +83,14 @@ ClusterInfo::is_consistent() const {
     uint32_t temp_total = 0;
 
     map<string, ClusterList >::const_iterator cp = cluster_by_block.begin();
-    for (; cp != cluster_by_block.end(); ++cp ) {
+    for (; cp != cluster_by_block.end(); ++cp) {
         ClusterList::const_iterator cq = cp->second.begin();
-        for (; cq != cp ->second.end(); ++ cq ) {
+        for (; cq != cp ->second.end(); ++ cq) {
             temp_total += cq->get_fellows().size();
         }
     }
 
-    if (temp_total != total_num)
-        return false;
+    if (temp_total != total_num) return false;
 
     return true;
 }
@@ -132,8 +131,7 @@ ClusterInfo::retrieve_last_comparision_info (
         const uint32_t primary_delim_size = strlen(primary_delim);
         const uint32_t secondary_delim_size = strlen(secondary_delim);
         RecordPList empty_set;
-        map<string, ClusterList>::iterator prim_iter;
-        map<const string*, map<const Record *, double> >::iterator prim_co_iter;
+        //map<const string*, map<const Record *, double> >::iterator prim_co_iter;
         uint32_t count = 0;
         const uint32_t base = 100000;
 
@@ -151,10 +149,13 @@ ClusterInfo::retrieve_last_comparision_info (
 
             while (getline(infile, filedata)) {
 
+
+              //////// TODO: Refactor ////////////////////////////////////////////////////////
+                map<string, ClusterList>::iterator prim_iter;
                 register size_t pos = 0, prev_pos = 0;
                 pos = filedata.find(primary_delim, prev_pos);
-                string keystring = filedata.substr( prev_pos, pos - prev_pos);
-                const Record * key = retrieve_record_pointer_by_unique_id( keystring, *uid2record_pointer);
+                string keystring = filedata.substr(prev_pos, pos - prev_pos);
+                const Record * key = retrieve_record_pointer_by_unique_id(keystring, *uid2record_pointer);
                 const string b_id = blocker.extract_blocking_info(key);
                 vector<string> column_part (num_columns) ;
 
@@ -179,7 +180,7 @@ ClusterInfo::retrieve_last_comparision_info (
                 RecordPList tempv;
                 while (( pos = filedata.find(secondary_delim, prev_pos))!= string::npos){
                     string valuestring = filedata.substr( prev_pos, pos - prev_pos);
-                    const Record * value = retrieve_record_pointer_by_unique_id( valuestring, *uid2record_pointer);
+                    const Record * value = retrieve_record_pointer_by_unique_id(valuestring, *uid2record_pointer);
                     tempv.push_back(value);
                     prev_pos = pos + secondary_delim_size;
                 }
@@ -194,7 +195,7 @@ ClusterInfo::retrieve_last_comparision_info (
 
                     ClusterList one_elem(1, tempc);
                     prim_iter = cluster_by_block.insert(std::pair<string, ClusterList>(b_id, one_elem)).first;
-                    for ( uint32_t i = 0; i < num_columns; ++i ) {
+                    for (uint32_t i = 0; i < num_columns; ++i) {
                         this->column_stat.at(i)[column_part.at(i)] += 1;
                     }
                 }
@@ -204,7 +205,7 @@ ClusterInfo::retrieve_last_comparision_info (
                     std::cout << count << " records have been loaded from the cluster file. " << std::endl;
                 }
             }
-
+            /////////////////////// End refactor ///////////////////////////////////////////
 
 
             std::cout << "Obtained ";
@@ -213,6 +214,8 @@ ClusterInfo::retrieve_last_comparision_info (
             }
             std::cout << " unique column data." << std::endl;
 
+
+            // TODO: Refactor //////////////////////////////////////////////////////////////
             uint32_t stat_cnt = 0;
             uint32_t min_stat_cnt = 0;
 
@@ -220,28 +223,30 @@ ClusterInfo::retrieve_last_comparision_info (
 
                 stat_cnt = 0;
 
-                for ( map<string, uint32_t >::const_iterator p = column_stat.at(i).begin(); p != column_stat.at(i).end(); ++p )
-                    if ( p->second > stat_cnt && ! p->first.empty() )
+                for (map<string, uint32_t>::const_iterator p = column_stat.at(i).begin(); p != column_stat.at(i).end(); ++p)
+                    if (p->second > stat_cnt && ! p->first.empty() )
                         stat_cnt = p->second;
 
-                for ( map < string, uint32_t > ::iterator p = column_stat.at(i).begin(); p != column_stat.at(i).end(); ++p ) {
-                    if ( p->second == stat_cnt )
+                for (map<string, uint32_t>::iterator p = column_stat.at(i).begin(); p != column_stat.at(i).end(); ++p) {
+                    if (p->second == stat_cnt )
                         std::cout << "Most common " << i << "th column part = " << p->first << " Occurrence = " << stat_cnt << std::endl;
-                    if ( p->second > stat_cnt )
+                    if (p->second > stat_cnt )
                         p->second = stat_cnt;
                 }
                 max_occurrence.at(i) = stat_cnt;
 
                 min_stat_cnt = stat_cnt ;
-                for ( map<string, uint32_t >::const_iterator p = column_stat.at(i).begin(); p != column_stat.at(i).end(); ++p )
-                    if ( p->second < min_stat_cnt && ! p->first.empty() )
+                for (map<string, uint32_t >::const_iterator p = column_stat.at(i).begin(); p != column_stat.at(i).end(); ++p)
+                    if (p->second < min_stat_cnt && ! p->first.empty())
                         min_stat_cnt = p->second;
                 min_occurrence.at(i) = min_stat_cnt;
             }
 
             std::cout << past_comparision_file << " has been read into memory as "
-                      <<  ( is_matching ? "MATCHING" : "NON-MATCHING" )
+                      <<  (is_matching ? "MATCHING" : "NON-MATCHING")
                       << " reference." << std::endl;
+            /////////////  End refactor //////////////////////////////////////////////////////
+
         } else {
 
             throw cException_File_Not_Found(past_comparision_file);
@@ -279,6 +284,12 @@ ClusterInfo::retrieve_last_comparision_info (
  *
  * Afterwards, reconfigure the middle names. Then count
  * the total number of records and save it.
+ *
+ * @param past_comparison_file is the filename given by
+ * START FILE in the engine configuration, STARTING_FILE_LABEL
+ * in the engine configuration reader, and `previous_disambiguation_result`
+ * in the EngineConfiguration namespace. I've been calling it
+ * `match_cons.txt` following the original usage.
  */
 void
 ClusterInfo::reset_blocking(const cBlocking_Operation & blocker,
