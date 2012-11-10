@@ -60,16 +60,6 @@ public:
     totalnodes = compute_total_nodes(min, max);
     sprintf(buffer, teststr, totalnodes);
 
-    /*
-    try {
-      CPPUNIT_ASSERT(4 == totalnodes);
-      describer = describe_pass;
-    } catch (CppUnit::Exception e) {
-      describer = describe_fail;
-    }
-    describer(INDENT4, buffer);
-    */
-
     describer = it([totalnodes] () -> bool {
         return (4 == totalnodes);
     });
@@ -80,12 +70,20 @@ public:
     min.push_back(0);
     totalnodes = compute_total_nodes(min, max);
     sprintf(buffer, teststr, totalnodes);
+
+    /*
     try {
       CPPUNIT_ASSERT(12 == totalnodes);
       describer = describe_pass;
     } catch (CppUnit::Exception e) {
       describer = describe_fail;
     }
+    describer(INDENT4, buffer);
+    */
+
+    describer = it([totalnodes] () -> bool {
+        return (12 == totalnodes);
+    });
     describer(INDENT4, buffer);
 
   }
