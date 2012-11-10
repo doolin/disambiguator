@@ -81,31 +81,7 @@ typedef set<const SimilarityProfile *, cMonotonic_Similarity_Compare> MonotonicS
  * set structure. The primary purpose of the class
  * is to allow comparison of similarity profiles
  * skipping a certain entry in the profile.
- */
-
-/**
- * Private:
- *         const SimilarityProfile * psim: pointer to a similarity profile.
  *
- *         uint32_t monotonic_dimension: an entry in which
- *         comparison of similarity profiles will skip.
- *
- *         bool compare_without_primary( const SimilarityProfile * p1, const SimilarityProfile * p2 ) const:
- *             compare the similarity profiles in all dimensions except the "monotonic_dimension" dimension.
- */
-
-/**
- * Public:
- *        bool operator < ( const cSimilarity_With_Monotonicity_Dimension & rhs) const:
- *            comparison function that is used only in map/set.
- *
- *        const uint32_t get_monotonic_dimension() const: return the monotunic_dimension
- *
- *        cSimilarity_With_Monotonicity_Dimension( const SimilarityProfile * p, const uint32_t dm ):
- *                constructor.
- */
-
-/**
  * Use of the above classes is primarily in the DisambigRatioSmoothing.cpp.
  * It is not expected to have a very solid understanding of the above
  * classes, unless smoothing, interpolation and extrapolation of
@@ -115,22 +91,45 @@ struct cSimilarity_With_Monotonicity_Dimension {
 
 private:
 
+   /**
+    * Private:
+    * const SimilarityProfile * psim: pointer to a similarity profile.
+    */
     const SimilarityProfile * psim;
 
+   /**
+    * uint32_t monotonic_dimension: an entry in which
+    * comparison of similarity profiles will skip.
+    */
     uint32_t monotonic_dimension;
 
+   /**
+    * bool compare_without_primary( const SimilarityProfile * p1, const SimilarityProfile * p2 ) const:
+    *     compare the similarity profiles in all dimensions except the "monotonic_dimension" dimension.
+    */
     bool compare_without_primary(const SimilarityProfile * p1,
         const SimilarityProfile * p2 ) const;
 
 public:
 
+   /**
+    * bool operator < ( const cSimilarity_With_Monotonicity_Dimension & rhs) const:
+    * comparison function that is used only in map/set.
+    */
     bool operator < (const cSimilarity_With_Monotonicity_Dimension & rhs) const;
 
+   /**
+    * const uint32_t get_monotonic_dimension() const: return the monotunic_dimension
+    */
     //const uint32_t get_monotonic_dimension() const {
     uint32_t get_monotonic_dimension() const {
       return monotonic_dimension;
     }
 
+   /**
+    * cSimilarity_With_Monotonicity_Dimension( const SimilarityProfile * p, const uint32_t dm ):
+    * constructor.
+    */
     explicit cSimilarity_With_Monotonicity_Dimension(
         const SimilarityProfile * p, const uint32_t dm)
         : psim (p), monotonic_dimension(dm) {}
