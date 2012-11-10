@@ -61,23 +61,22 @@ public:
 
 
     spec.it("Max (1,1,2) and min(0,0,0) should have 12 nodes", DO_SPEC {
-        SimilarityProfile max{1, 1, 2};
-        SimilarityProfile min{0, 0, 0};
-        return (12 == compute_total_nodes(min, max));
+      SimilarityProfile max{1, 1, 2};
+      SimilarityProfile min{0, 0, 0};
+      return (12 == compute_total_nodes(min, max));
     });
 
   }
 
   void test_get_max_similarity() {
 
-
     Spec spec;
+
     spec.it("Max similarity should be (4,3,5,6,4,6)", DO_SPEC {
       vector<string> names{"Firstname", "Middlename", "Lastname", "Coauthor", "Class", "Assignee"};
       Record::activate_comparators_by_name(names);
       SimilarityProfile sp = get_max_similarity(names);
       SimilarityProfile max = {4,3,5,6,4,6};
-      //print_similarity(sp);
       return (max == get_max_similarity(names));
     });
 

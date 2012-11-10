@@ -775,6 +775,7 @@ retrieve_record_pointer_by_unique_id(const string & uid,
     }
 }
 
+
 // TODO: See about moving this to record.cpp
 void
 create_btree_uid2record_pointer(RecordIndex & uid_tree,
