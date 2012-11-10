@@ -25,13 +25,9 @@ public:
     describe_test(INDENT0, name.c_str());
   }
 
+  /*
   Describer it (std::function<bool()> test) {
 
-    static uint8_t indentation = 2;
-    auto indent = []()->const char * {
-      return string(indentation, ' ').c_str();
-    };
-    std::cout << indent() << "Indentation" << std::endl;
     Describer d;
     try {
       CPPUNIT_ASSERT(test());
@@ -39,48 +35,43 @@ public:
     } catch (CppUnit::Exception e) {
       d = describe_fail;
     }
-    indentation *= 2;
     return d;
   }
+  */
 
 
   void test_compute_total_nodes() {
 
-    char buffer[BUF_SIZE];
-    char teststr[] = "Computing totalnodes %d";
+    Spec spec;
 
-    SimilarityProfile max;
-    SimilarityProfile min;
-    uint32_t totalnodes = compute_total_nodes(min, max);
-    sprintf(buffer, teststr, totalnodes);
-
-    describer = it([totalnodes] () -> bool {
-        return (1 == totalnodes);
+    spec.it("Computing total nodes %d", [&spec](Description desc)->bool {
+      SimilarityProfile max;
+      SimilarityProfile min;
+      uint32_t totalnodes = compute_total_nodes(min, max);
+      sprintf(spec.buf, desc, totalnodes);
+      return (1 == totalnodes);
     });
-    describer(INDENT4, buffer);
 
-    max.push_back(1);
-    max.push_back(1);
-    min.push_back(0);
-    min.push_back(0);
-    totalnodes = compute_total_nodes(min, max);
-    sprintf(buffer, teststr, totalnodes);
 
-    describer = it([totalnodes] () -> bool {
-        return (4 == totalnodes);
+    spec.it("Computing total nodes, should equal 4", [](Description d)->bool {
+      SimilarityProfile max{1, 1};
+      SimilarityProfile min{0, 0};
+      return (4 == compute_total_nodes(min, max));
     });
-    describer(INDENT4, buffer);
 
 
-    max.push_back(2);
-    min.push_back(0);
-    totalnodes = compute_total_nodes(min, max);
-    sprintf(buffer, teststr, totalnodes);
-
-    describer = it([totalnodes] () -> bool {
-        return (12 == totalnodes);
+    spec.it("Computing total nodes, should equal 4 (with #define DO)", DO_SPEC {
+      SimilarityProfile max{1, 1};
+      SimilarityProfile min{0, 0};
+      return (4 == compute_total_nodes(min, max));
     });
-    describer(INDENT4, buffer);
+
+
+    spec.it("Max (1,1,2) and min(0,0,0) should have 12 nodes", DO_SPEC {
+        SimilarityProfile max{1, 1, 2};
+        SimilarityProfile min{0, 0, 0};
+        return (12 == compute_total_nodes(min, max));
+    });
 
   }
 
