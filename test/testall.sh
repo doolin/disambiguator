@@ -51,10 +51,7 @@ echo "jwcmp test"
 
 echo "engine test"
 ./engine
-
-echo "ratios test"
 ./ratios
-
 ./ratiocomponent
 
 echo "Blocking test"
