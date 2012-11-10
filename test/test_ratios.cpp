@@ -27,7 +27,11 @@ public:
 
   Describer it (std::function<bool()> test) {
 
-
+    static uint8_t indentation = 2;
+    auto indent = []()->const char * {
+      return string(indentation, ' ').c_str();
+    };
+    std::cout << indent() << "Indentation" << std::endl;
     Describer d;
     try {
       CPPUNIT_ASSERT(test());
@@ -35,8 +39,10 @@ public:
     } catch (CppUnit::Exception e) {
       d = describe_fail;
     }
+    indentation *= 2;
     return d;
   }
+
 
   void test_compute_total_nodes() {
 

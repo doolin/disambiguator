@@ -10,6 +10,9 @@
 #define INDENT4 "     "
 #define INDENT6 "       "
 
+typedef const char * Description;
+typedef void (*DescriptionPrinter)(Description);
+
 typedef void (*Describer)(const char *, const char *);
 
 void describe_test(const char * indent, const char * description);
