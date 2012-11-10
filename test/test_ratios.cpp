@@ -1,5 +1,6 @@
 #include <string>
 #include <iostream>
+#include <memory>
 
 #include <cppunit/TestCase.h>
 
@@ -12,48 +13,43 @@
 
 using std::string;
 using std::pair;
+using std::unique_ptr;
 
 
 class RatioSmoothingTest : public CppUnit::TestCase {
 
 private:
-
+  FakeTest * ft;
   static const short BUF_SIZE = 256;
-  Describer describer;
-
 
 public:
   RatioSmoothingTest(string name) : CppUnit::TestCase(name) {
 
     const string filename("testdata/clustertest.csv");
-    FakeTest * ft = new FakeTest(string("Fake RatioComponentTest"), filename);
+    ft = new FakeTest(string("Fake RatioComponentTest"), filename);
     ft->load_fake_data(filename);
 
     describe_test(INDENT0, name.c_str());
   }
 
+ ~RatioSmoothingTest() {
+   delete ft;
+ }
 
   void test_compute_total_nodes() {
 
     Spec spec;
 
-    spec.it("Computing total nodes %d", [&spec](Description desc)->bool {
+    spec.it("Max (empty) and min (empty) should have %d node", [&spec](Description desc)->bool {
       SimilarityProfile max;
       SimilarityProfile min;
-      uint32_t totalnodes = compute_total_nodes(min, max);
+      auto totalnodes = compute_total_nodes(min, max);
       sprintf(spec.buf, desc, totalnodes);
       return (1 == totalnodes);
     });
 
 
-    spec.it("Computing total nodes, should equal 4", [](Description d)->bool {
-      SimilarityProfile max{1, 1};
-      SimilarityProfile min{0, 0};
-      return (4 == compute_total_nodes(min, max));
-    });
-
-
-    spec.it("Computing total nodes, should equal 4 (with #define DO)", DO_SPEC {
+    spec.it("Max (1,1) and min(0,0) should have 4 nodes", DO_SPEC {
       SimilarityProfile max{1, 1};
       SimilarityProfile min{0, 0};
       return (4 == compute_total_nodes(min, max));
