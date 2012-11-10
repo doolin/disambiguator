@@ -4,8 +4,11 @@
 #include <cppunit/TestCase.h>
 
 #include "ratios.h"
+#include "engine.h"
+#include "block.h"
 
 #include "testutils.h"
+#include "fake.h"
 
 using std::string;
 using std::pair;
@@ -22,22 +25,12 @@ private:
 public:
   RatioSmoothingTest(string name) : CppUnit::TestCase(name) {
 
+    const string filename("testdata/clustertest.csv");
+    FakeTest * ft = new FakeTest(string("Fake RatioComponentTest"), filename);
+    ft->load_fake_data(filename);
+
     describe_test(INDENT0, name.c_str());
   }
-
-  /*
-  Describer it (std::function<bool()> test) {
-
-    Describer d;
-    try {
-      CPPUNIT_ASSERT(test());
-      d = describe_pass;
-    } catch (CppUnit::Exception e) {
-      d = describe_fail;
-    }
-    return d;
-  }
-  */
 
 
   void test_compute_total_nodes() {
@@ -77,7 +70,17 @@ public:
 
   void test_get_max_similarity() {
 
-    //SimilarityProfile sp = get_max_similarity(names);
+
+    Spec spec;
+    spec.it("Max similarity should be (4,3,5,6,4,6)", DO_SPEC {
+      vector<string> names{"Firstname", "Middlename", "Lastname", "Coauthor", "Class", "Assignee"};
+      Record::activate_comparators_by_name(names);
+      SimilarityProfile sp = get_max_similarity(names);
+      SimilarityProfile max = {4,3,5,6,4,6};
+      //print_similarity(sp);
+      return (max == get_max_similarity(names));
+    });
+
   }
 
   void test_ratios() {
