@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 
 #include "colortest.h"
 #include "testutils.h"

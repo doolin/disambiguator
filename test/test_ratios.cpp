@@ -25,6 +25,19 @@ public:
     describe_test(INDENT0, name.c_str());
   }
 
+  Describer it (std::function<bool()> test) {
+
+
+    Describer d;
+    try {
+      CPPUNIT_ASSERT(test());
+      d = describe_pass;
+    } catch (CppUnit::Exception e) {
+      d = describe_fail;
+    }
+    return d;
+  }
+
   void test_compute_total_nodes() {
 
     char buffer[BUF_SIZE];
@@ -35,12 +48,9 @@ public:
     uint32_t totalnodes = compute_total_nodes(min, max);
     sprintf(buffer, teststr, totalnodes);
 
-    try {
-      CPPUNIT_ASSERT(1 == totalnodes);
-      describer = describe_pass;
-    } catch (CppUnit::Exception e) {
-      describer = describe_fail;
-    }
+    describer = it([totalnodes] () -> bool {
+        return (1 == totalnodes);
+    });
     describer(INDENT4, buffer);
 
     max.push_back(1);
@@ -49,6 +59,8 @@ public:
     min.push_back(0);
     totalnodes = compute_total_nodes(min, max);
     sprintf(buffer, teststr, totalnodes);
+
+    /*
     try {
       CPPUNIT_ASSERT(4 == totalnodes);
       describer = describe_pass;
@@ -56,6 +68,13 @@ public:
       describer = describe_fail;
     }
     describer(INDENT4, buffer);
+    */
+
+    describer = it([totalnodes] () -> bool {
+        return (4 == totalnodes);
+    });
+    describer(INDENT4, buffer);
+
 
     max.push_back(2);
     min.push_back(0);
