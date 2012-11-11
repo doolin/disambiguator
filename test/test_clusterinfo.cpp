@@ -145,7 +145,7 @@ public:
 void
 test_clusters() {
 
-  ClusterInfoTest * cit = new ClusterInfoTest(std::string("initial test"));
+  ClusterInfoTest * cit = new ClusterInfoTest(std::string("ClusterInfo test"));
   cit->runTest();
   delete cit;
 }
