@@ -23,7 +23,7 @@ BlockByColumns::BlockByColumns (
     for (uint32_t i = 0; i < columnnames.size(); ++i) {
         indice.push_back(Record::get_index_by_name(columnnames.at(i)));
         infoless += delim;
-        pdata_indice.push_back( di.at(i));
+        pdata_indice.push_back(di.at(i));
     }
 }
 
@@ -57,8 +57,10 @@ BlockByColumns::extract_blocking_info(const Record * p) const {
 
     string temp;
     for (uint32_t i = 0; i < vsm.size(); ++i) {
-        temp += vsm[i]->manipulate(* p->get_data_by_index(indice[i]).
-                at(pdata_indice.at(i)));
+
+        uint32_t index = pdata_indice.at(i);
+        //temp += vsm[i]->manipulate(* p->get_data_by_index(indice[i]).at(pdata_indice.at(i)));
+        temp += vsm[i]->manipulate(* p->get_data_by_index(indice[i]).at(index));
         temp += delim;
     }
     return temp;
@@ -78,10 +80,12 @@ BlockByColumns::reset_data_indice (const vector<uint32_t> & indice) {
 /**
  * Aim: to extract a specific blocking string. look at the header file for mor details.
  */
-string BlockByColumns::extract_column_info (const Record * p, uint32_t flag) const {
+string
+BlockByColumns::extract_column_info (const Record * p, uint32_t flag) const {
 
-    if (flag >= indice.size())
+    if (flag >= indice.size()) {
         throw cException_Other("Flag index error.");
+    }
 
     return vsm[flag]->manipulate(*p->get_data_by_index(indice[flag]).at( pdata_indice.at(flag)));
 }

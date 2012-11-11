@@ -676,7 +676,6 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
         const vector<string> training_changable_vec (training_changable,
             training_changable + sizeof(training_changable)/sizeof(string));
 
-        // TODO: Change the switch to an if conditional if (1 == round) {...}
         if (1 == round) {
 
             // TODO: Refactor this block.
