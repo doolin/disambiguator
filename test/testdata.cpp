@@ -16,7 +16,7 @@ get_column_names() {
   cn.push_back("Country");
   cn.push_back("Patent");
   cn.push_back("ApplyYear");
-  cn.push_back("Asgnum");
+  cn.push_back("AsgNum");
   return cn;
 }
 
