@@ -334,6 +334,8 @@ instantiate_attributes(std::vector<std::string> column_names, int num_cols) {
       // If this crashes, will need to add code in the function `create_attribute_instance`
       // Also, it's stupid that this is used to check whether something is
       // instantiated.
+      // TODO: This code has the side effect of segfaulting when the attribute
+      // isn't spelled correctly (or some such thing)
 #if 1
       if (pointer_array[i]->get_attrib_group() != string("None")) {
           //std::cout << "pointer_array[i]->get_attrib_group(): " << pointer_array[i]->get_attrib_group() << std::endl;
