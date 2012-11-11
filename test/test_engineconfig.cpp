@@ -7,22 +7,12 @@
 #include <string>
 #include <stdlib.h>
 
-#include "record.h"
-#include "cluster.h"
-#include "training.h"
+#include <record.h>
+#include <cluster.h>
+#include <training.h>
 
 typedef std::vector<std::string> Labels;
 
-/*
-void
-printer(const Labels & l) {
-
-  Labels::const_iterator iter = l.begin();
-  for (; iter != l.end(); ++iter) {
-    std::cout << (*iter).c_str() << std::endl;
-  }
-}
-*/
 
 std::vector<std::string>
 setup_columns() {
@@ -81,6 +71,6 @@ main(int UP(argc), char ** UP(argv)) {
   std::list <Record> all_records;
   fetch_records_from_txt(all_records, filename, involved_columns);
   rare_names(all_records);
- 
+
   return 0;
 }
