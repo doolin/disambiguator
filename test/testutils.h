@@ -23,6 +23,7 @@ void describe_pass(const char * indent, const char * description);
 void describe_fail(const char * indent, const char * description);
 
 #define DO_SPEC [](Description d)->bool
+#define DO_SPEC_THIS [this](Description d)->bool
 
 class Spec {
 

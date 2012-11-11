@@ -8,13 +8,16 @@
 #include "colortest.h"
 #include "testutils.h"
 
+using std::string;
+using std::vector;
+
 class EngineTest : public CppUnit::TestCase {
 
 private:
   static const std::string LINE;
-  std::vector<std::string> tcn;
-  std::vector<std::string> requested_columns;
-  std::vector<unsigned int> indices;
+  vector<string> tcn;
+  vector<string> requested_columns;
+  vector<unsigned int> indices;
 
 public:
   EngineTest(std::string name) : CppUnit::TestCase(name) {
@@ -26,40 +29,54 @@ public:
     tcn = parse_column_names(LINE);
     requested_columns = get_column_names();
     // TODO: Find out why this is failing with an exception
-    //indices = create_column_indices(requested_columns, tcn);
-    //Attribute::register_class_names(requested_columns);
+    indices = create_column_indices(requested_columns, tcn);
+    Attribute::register_class_names(requested_columns);
   }
 
   void test_parse_column_names() {
-    CPPUNIT_ASSERT(9 == tcn.size());
-    describe_pass(INDENT2, "Correctly parsed column names");
+    Spec spec;
+    spec.it("Correctly parsed column names", DO_SPEC_THIS {
+      return (10 == tcn.size());
+    });
   }
+
 
   void test_create_column_indices() {
-    CPPUNIT_ASSERT(9 == indices.size());
+    Spec spec;
+    spec.it("Indices have the correct length", DO_SPEC_THIS {
+      //std::cout << "indices.size: " << indices.size() << std::endl;
+      return (10 == indices.size());
+    });
   }
 
+
   void test_instantiate_attributes() {
-    Attribute ** pointer_array = new Attribute*[tcn.size()];
-    pointer_array = instantiate_attributes(tcn, tcn.size());
-    // TODO: Add unit test code of some sort here.
-    delete pointer_array[0];
+
+    Attribute ** pa = new Attribute*[tcn.size()];
+    pa = instantiate_attributes(tcn, tcn.size());
+
+    Spec spec;
+    spec.it("First attribute has attrib_group 'Personal'", [this,pa](Description desc)->bool {
+      return (string("Personal") == pa[0]->get_attrib_group());
+    });
+
+    delete pa[0];
     for (unsigned int i = 1; i< tcn.size(); ++i) {
-      delete pointer_array[i];
+      delete pa[i];
     }
-    delete [] pointer_array;
+    delete [] pa;
   }
 
 
   void runTest() {
     set_up();
     test_parse_column_names();
-    //test_create_column_indices();
-    //test_instantiate_attributes();
+    test_create_column_indices();
+    test_instantiate_attributes();
   }
 };
 
-const std::string EngineTest::LINE  = "Firstname,Middlename,Lastname,Latitude,Assignee,City,Country,Patent,ApplyYear";
+const std::string EngineTest::LINE  = "Firstname,Middlename,Lastname,Latitude,Assignee,City,Country,Patent,ApplyYear,AsgNum";
 
 void
 test_engine() {
