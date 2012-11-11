@@ -637,7 +637,9 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
     Cluster::set_reference_patent_tree_pointer(blocker_coauthor.get_patent_tree());
 
     vector<string> prev_train_vec;
-    uint32_t firstname_prev_truncation = BlockingConfiguration::firstname_cur_truncation;
+
+    // Moved down to where it's being used.
+    //uint32_t firstname_prev_truncation = BlockingConfiguration::firstname_cur_truncation;
 
     const string module_prefix = "Round ";
     string module_name ;
@@ -675,6 +677,31 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
             training_changable + sizeof(training_changable)/sizeof(string));
 
         // TODO: Change the switch to an if conditional if (1 == round) {...}
+        if (1 == round) {
+
+            // TODO: Refactor this block.
+            vector<string> presort_columns;
+            StringRemainSame operator_no_change;
+            presort_columns.push_back(cFirstname::static_get_class_name());
+            presort_columns.push_back(cLastname::static_get_class_name());
+            presort_columns.push_back(cAssignee::static_get_class_name());
+            presort_columns.push_back(cStreet::static_get_class_name());
+            presort_columns.push_back(cCity::static_get_class_name());
+            presort_columns.push_back(cCountry::static_get_class_name());
+            //presort_columns.push_back(cClass::static_get_class_name());
+
+            const vector<const StringManipulator *> presort_strman(presort_columns.size(),
+                &operator_no_change);
+            const vector<uint32_t> presort_data_indice(presort_columns.size(), 0);
+
+            const BlockByColumns presort_blocker(
+                presort_strman, presort_columns, presort_data_indice);
+
+            match.preliminary_consolidation(presort_blocker, all_rec_pointers);
+            match.output_current_comparision_info(oldmatchfile);
+        }
+
+#if 0
         switch (round) {
             case 1:
             {
@@ -702,7 +729,11 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
             } default:
                 ;
         }
+#endif
 
+
+
+        uint32_t firstname_prev_truncation = BlockingConfiguration::firstname_cur_truncation;
         cFirstname::set_truncation(firstname_prev_truncation, BlockingConfiguration::firstname_cur_truncation);
         firstname_prev_truncation = BlockingConfiguration::firstname_cur_truncation;
         match.reset_blocking(*BlockingConfiguration::active_blocker_pointer, oldmatchfile);
