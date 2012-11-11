@@ -67,8 +67,8 @@ public:
   void test_multi_column_blocking() {
 
     std::auto_ptr<cBlocking_Operation> bptr = get_blocking_pointer();
-    const cBlocking_Operation_Multiple_Column_Manipulate & blocker_ref =
-      dynamic_cast<cBlocking_Operation_Multiple_Column_Manipulate &> (*bptr);
+    const BlockByColumns & blocker_ref =
+      dynamic_cast<BlockByColumns &> (*bptr);
     vector<string> names = blocker_ref.get_blocking_attribute_names();
     std::cout << "Name 0: " << names[0] << std::endl;
 
@@ -76,7 +76,7 @@ public:
     //const vector<const StringManipulator *> & inputvsm;
     //const vector<string> & columnnames;
     //const vector<unsigned int> & di;
-//    cBlocking_Operation_Multiple_Column_Manipulate & blocker_ref = dynamic_cast<cBlocking_Operation_Multiple_Column_Manipulate &> (*BlockingConfiguration::active_blocker_pointer);
+//    BlockByColumns & blocker_ref = dynamic_cast<BlockByColumns &> (*BlockingConfiguration::active_blocker_pointer);
 #endif
   }
 

@@ -227,7 +227,7 @@ int BlockingConfiguration::config_blocking(const char * filename, const string &
     }
 
     std::auto_ptr<cBlocking_Operation> bptr (
-            new cBlocking_Operation_Multiple_Column_Manipulate (pstring_oper, columns_for_blocking, data_indice_for_blocking));
+            new BlockByColumns (pstring_oper, columns_for_blocking, data_indice_for_blocking));
     BlockingConfiguration::active_blocker_pointer = bptr;
 
     return 0;
@@ -693,7 +693,7 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
                     &operator_no_change);
                 const vector<uint32_t> presort_data_indice(presort_columns.size(), 0);
 
-                const cBlocking_Operation_Multiple_Column_Manipulate presort_blocker(
+                const BlockByColumns presort_blocker(
                     presort_strman, presort_columns, presort_data_indice);
 
                 match.preliminary_consolidation(presort_blocker, all_rec_pointers);
@@ -721,8 +721,8 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
 
 
         if (!use_available_ratios) {
-            const cBlocking_Operation_Multiple_Column_Manipulate & blocker_ref =
-                    dynamic_cast<cBlocking_Operation_Multiple_Column_Manipulate &> (*BlockingConfiguration::active_blocker_pointer);
+            const BlockByColumns & blocker_ref =
+                    dynamic_cast<BlockByColumns &> (*BlockingConfiguration::active_blocker_pointer);
             make_changable_training_sets_by_patent(all_rec_pointers, blocker_ref.get_blocking_attribute_names(),
                     blocker_ref.get_blocking_string_manipulators(), limit, training_changable_vec);
         }

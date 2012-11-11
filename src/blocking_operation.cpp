@@ -8,17 +8,17 @@
 
 
 /*
- * Aim: constructors of cBlocking_Operation_Multiple_Column_Manipulate 
+ * Aim: constructors of BlockByColumns 
  * class. Look at the header file for more information.
  */
-cBlocking_Operation_Multiple_Column_Manipulate::cBlocking_Operation_Multiple_Column_Manipulate (
+BlockByColumns::BlockByColumns (
     const vector<const StringManipulator *> & inputvsm,
     const vector<string> & columnnames,
     const vector<uint32_t> & di)
     : vsm(inputvsm), attributes_names(columnnames) {
 
     if (inputvsm.size() != columnnames.size())
-        throw cException_Other("Critical Error in cBlocking_Operation_Multiple_Column_Manipulate: size of string manipulaters is different from size of columns");
+        throw cException_Other("Critical Error in BlockByColumns: size of string manipulaters is different from size of columns");
 
     for (uint32_t i = 0; i < columnnames.size(); ++i) {
         indice.push_back(Record::get_index_by_name(columnnames.at(i)));
@@ -28,7 +28,7 @@ cBlocking_Operation_Multiple_Column_Manipulate::cBlocking_Operation_Multiple_Col
 }
 
 
-cBlocking_Operation_Multiple_Column_Manipulate::cBlocking_Operation_Multiple_Column_Manipulate (
+BlockByColumns::BlockByColumns (
     const StringManipulator * const * pinputvsm,
     const string * pcolumnnames,
     const uint32_t * pdi,
@@ -53,7 +53,7 @@ cBlocking_Operation_Multiple_Column_Manipulate::cBlocking_Operation_Multiple_Col
  * pointers to create strings, and concatenate them.
  */
 string
-cBlocking_Operation_Multiple_Column_Manipulate::extract_blocking_info(const Record * p) const {
+BlockByColumns::extract_blocking_info(const Record * p) const {
 
     string temp;
     for (uint32_t i = 0; i < vsm.size(); ++i) {
@@ -66,7 +66,7 @@ cBlocking_Operation_Multiple_Column_Manipulate::extract_blocking_info(const Reco
 
 
 void
-cBlocking_Operation_Multiple_Column_Manipulate::reset_data_indice (const vector<uint32_t> & indice) {
+BlockByColumns::reset_data_indice (const vector<uint32_t> & indice) {
 
     if (indice.size() != this->pdata_indice.size())
         throw cException_Other("Indice size mismatch. cannot reset.");
@@ -78,7 +78,7 @@ cBlocking_Operation_Multiple_Column_Manipulate::reset_data_indice (const vector<
 /**
  * Aim: to extract a specific blocking string. look at the header file for mor details.
  */
-string cBlocking_Operation_Multiple_Column_Manipulate::extract_column_info (const Record * p, uint32_t flag) const {
+string BlockByColumns::extract_column_info (const Record * p, uint32_t flag) const {
 
     if (flag >= indice.size())
         throw cException_Other("Flag index error.");

@@ -7,7 +7,7 @@
 /**
  * cBlocking_Operation
  *  - cBlocking_Operation_Column_Manipulate
- *  - cBlocking_Operation_Multiple_Column_Manipulate
+ *  - BlockByColumns
  *
  * cBlocking_Operation reads data from a const Record pointer,
  * and extract information to create a string which represents
@@ -96,7 +96,7 @@ public:
  *
  *
  * However, this concrete class is not used often, because the
- * next class (cBlocking_Operation_Multiple_Column_Manipulate)
+ * next class (BlockByColumns)
  * is more widely used.
  *
  */
@@ -125,7 +125,7 @@ public:
 
 
 /**
- * cBlocking_Operation_Multiple_Column_Manipulate:
+ * BlockByColumns:
  * This is a subclass of cBlocking_Operation, which extracts information
  * from several columns and returns a block specifier string.
  *
@@ -176,7 +176,7 @@ public:
  * vec_di.push_back(data_position + 2);
  *
  * //create a multiple column blocking info extractor.
- * cBlocking_Operation_Multiple_Column_Manipulate mcmobj (
+ * BlockByColumns mcmobj (
  * vec_strman, vec_label, vec_di );
  */
 
@@ -218,7 +218,7 @@ public:
  * and mcmobj.extract_column_info (& recobj, 2) returns "HNST".
  */
 
-class cBlocking_Operation_Multiple_Column_Manipulate : public cBlocking_Operation {
+class BlockByColumns : public cBlocking_Operation {
 
 private:
 
@@ -244,7 +244,7 @@ private:
     vector<uint32_t> pdata_indice;
 
    /**
-    *  cBlocking_Operation_Multiple_Column_Manipulate (
+    *  BlockByColumns (
     *  const vector < const StringManipulator * > & inputvsm,
     *  const vector<string> & columnnames, const vector < uint32_t > & di )
     *     : This is a constructor of the class.
@@ -255,19 +255,19 @@ private:
     *   di = the vector of indice in the Attribute::data,
     *   which will serve as the source string pointers.
     *   NOTE: di SHOULD NOT BE DESTRUCTED BEFORE THE
-    *   cBlocking_Operation_Multiple_Column_Manipulate object is discarded.
+    *   BlockByColumns object is discarded.
     */
 
 
 public:
 
    /**
-    * cBlocking_Operation_Multiple_Column_Manipulate (
+    * BlockByColumns (
     * const StringManipulator * const* pinputvsm,
     * const string * pcolumnnames,
     * const uint32_t  * pdi,
     */
-    cBlocking_Operation_Multiple_Column_Manipulate (
+    BlockByColumns (
         const vector<const StringManipulator *> & inputvsm,
         const vector<string> & columnnames,
         const vector<uint32_t> & di);
@@ -279,9 +279,9 @@ public:
     * pdi = pointer of the Attribute::data indice array.
     * num_col = number of involved columns.
     * NOTE: pdi SHOULD NOT BE DESTRUCTED BEFORE THE
-    * cBlocking_Operation_Multiple_Column_Manipulate object is discarded.
+    * BlockByColumns object is discarded.
     */
-    cBlocking_Operation_Multiple_Column_Manipulate (
+    BlockByColumns (
         const StringManipulator * const* pinputvsm,
         const string * pcolumnnames,
         const uint32_t * pdi,
