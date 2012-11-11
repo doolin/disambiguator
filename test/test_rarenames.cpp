@@ -4,7 +4,9 @@
 
 #include <cppunit/TestCase.h>
 
-#include "training.h"
+#include <training.h>
+
+#include "testutils.h"
 
 extern "C" {
   #include "strcmp95.h"
@@ -17,7 +19,10 @@ using std::pair;
 class RarenamesTest : public CppUnit::TestCase {
 
 public:
-  RarenamesTest(string name) : CppUnit::TestCase(name) {}
+  RarenamesTest(string name) : CppUnit::TestCase(name) {
+
+    describe_test(INDENT0, name.c_str());
+  }
 
  /**
   * The name_compare function builds a similarity
@@ -32,6 +37,7 @@ public:
     WordCounter wc;
     wc.insert (pair<string, WordCounts> (string("foo"),   WordCounts(1,2)));
     wc.insert (pair<string, WordCounts> (string("bar"),   WordCounts(1,88)));
+    wc.insert (pair<string, WordCounts> (string("barbar"),WordCounts(3,88)));
     wc.insert (pair<string, WordCounts> (string("baz"),   WordCounts(1,200)));
     wc.insert (pair<string, WordCounts> (string("quux"),  WordCounts(5,2)));
     wc.insert (pair<string, WordCounts> (string("red"),   WordCounts(5,88)));
@@ -42,10 +48,17 @@ public:
 
     CPPUNIT_ASSERT(0 == rarewords.count("foo"));
     CPPUNIT_ASSERT(1 == rarewords.count("bar"));
+    CPPUNIT_ASSERT(1 == rarewords.count("barbar"));
     CPPUNIT_ASSERT(0 == rarewords.count("baz"));
     CPPUNIT_ASSERT(0 == rarewords.count("quux"));
     CPPUNIT_ASSERT(0 == rarewords.count("red"));
     CPPUNIT_ASSERT(0 == rarewords.count("black"));
+  }
+
+
+  void runTests() {
+    test_rarename();
+    test_choose_rare_words();
   }
 
 };
@@ -53,9 +66,8 @@ public:
 
 void test_rarenames() {
 
-  RarenamesTest * rt = new RarenamesTest(std::string("initial test"));
-  rt->test_rarename();
-  rt->test_choose_rare_words();
+  RarenamesTest * rt = new RarenamesTest(std::string("Rare names unit tests"));
+  rt->runTests();
   delete rt;
 }
 

@@ -18,10 +18,9 @@ initializeANSI
 ./training
 ./clusterinfo
 ./fetchrecords
+./misspell
 
 
-echo "Dis? test"
-`./distest`
 # engineconfig spews a huge list of records
 # to stdout.
 echo "Engine config"
@@ -32,8 +31,6 @@ echo "Typedefs test"
 `./typedefs`
 echo "Abbreviations test"
 `./abbreviation`
-echo "is_misspell test"
-`./misspell`
 echo "name_compare test"
 `./namecompare`
 echo "Record test"
