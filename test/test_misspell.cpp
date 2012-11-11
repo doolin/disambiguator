@@ -8,7 +8,7 @@
 
 
 /**
- * Run this code with /usr/bin/valgrind ./missing --leak-check=full
+ * Run this code with valgrind ./misspell --leak-check=full
  */
 
 class Misspell : public CppUnit::TestCase {
