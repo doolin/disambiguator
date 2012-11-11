@@ -585,9 +585,6 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
 
     bool matching_mode = true;
 
-    ClusterInfo match (uid_dict, matching_mode, frequency_adjust_mode, debug_mode);
-    match.set_thresholds(threshold_vec);
-
     char xset01[buff_size];
     char tset05[buff_size];
     char ratiofile[buff_size];
@@ -671,6 +668,9 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
         Record::activate_comparators_by_name(BlockingConfiguration::active_similarity_attributes);
         //now training
         //match.output_list(record_pointers);
+        ClusterInfo match (uid_dict, matching_mode, frequency_adjust_mode, debug_mode);
+        match.set_thresholds(threshold_vec);
+
 
         const string training_changable [] = { xset01, tset05 };
         const vector<string> training_changable_vec (training_changable,
