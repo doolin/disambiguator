@@ -8,6 +8,9 @@ namespace EngineConfiguration {
 }
 
 namespace BlockingConfiguration {
+
+  using std::string;
+
     class cBlockingDetail {
     public:
         StringManipulator * m_psm;
@@ -36,5 +39,9 @@ namespace BlockingConfiguration {
 
 int Full_Disambiguation(const char * EngineConfigFile, const char * BlockingConfigFile);
 
+// So ugly.
+#include <memory>
+class cBlocking_Operation;
+std::auto_ptr<cBlocking_Operation> get_blocking_pointer();
 
 #endif /* PATENT_DISAMBIGUATE_H */

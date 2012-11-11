@@ -59,20 +59,20 @@ public:
     virtual string extract_blocking_info(const Record *) const = 0;
 
    /**
-    * virtual string extract_column_info ( const Record *, unsigned int flag ) const:
+    * virtual string extract_column_info ( const Record *, uint32_t flag ) const:
     * virtual function that extract information from the (flag)th column.
     */
-    virtual string extract_column_info (const Record *, unsigned int UP(flag)) const {
+    virtual string extract_column_info (const Record *, uint32_t UP(flag)) const {
       throw cException_Other ("Function not defined yet.");
     }
 
     virtual ~cBlocking_Operation() {};
 
    /**
-    * virtual unsigned int num_involved_columns() const: return number
+    * virtual uint32_t num_involved_columns() const: return number
     * of columns that the extraction operates on.
     */
-    virtual unsigned int num_involved_columns() const {
+    virtual uint32_t num_involved_columns() const {
       return 1;
     }
 };
@@ -104,7 +104,7 @@ class cBlocking_Operation_Column_Manipulate: public cBlocking_Operation {
 
 private:
     const StringManipulator & sm;
-    const unsigned int column_index;
+    const uint32_t column_index;
 
 public:
     explicit cBlocking_Operation_Column_Manipulate(const StringManipulator & inputsm,
@@ -114,10 +114,10 @@ public:
     }
 
     string extract_blocking_info(const Record * p) const {
-      return sm.manipulate( * p->get_data_by_index(column_index).at(0));
+      return sm.manipulate(* p->get_data_by_index(column_index).at(0));
     }
 
-    string extract_column_info ( const Record * p, unsigned int UP(flag)) const {
+    string extract_column_info(const Record * p, uint32_t UP(flag)) const {
       return extract_blocking_info(p);
     }
 };
@@ -163,10 +163,10 @@ public:
  * vec_label.push_back(cLastname::static_get_class_name() );
  *
  * // initialize a data position array.
- * unsigned int data_position[] = { 1, 0, 2 };
+ * uint32_t data_position[] = { 1, 0, 2 };
  *
  * // initialize a vector to used the data position array
- * vector < const unsigned int * > vec_di ;
+ * vector < const uint32_t * > vec_di ;
  *
  * vec_di.push_back( data_position );
  *
@@ -228,25 +228,25 @@ private:
     */
     vector<const StringManipulator *> vsm;
 
-    vector<unsigned int> indice;
-
    /**
-    *   vector < unsigned int > indice: the vector of column indice
+    *   vector < uint32_t > indice: the vector of column indice
     *   from which the manipulators extract information, respectively.
     */
+    vector<uint32_t> indice;
+
     vector<string> attributes_names;
 
    /**
-    *   vector < const unsigned int * > pdata_indice: the vector of
+    *   vector < const uint32_t * > pdata_indice: the vector of
     *   the const interger pointers indicating the positions of data in
     *   the data vector in Attribute on which the extractions take place.
     */
-    vector<unsigned int> pdata_indice;
+    vector<uint32_t> pdata_indice;
 
    /**
     *  cBlocking_Operation_Multiple_Column_Manipulate (
     *  const vector < const StringManipulator * > & inputvsm,
-    *  const vector<string> & columnnames, const vector < unsigned int > & di )
+    *  const vector<string> & columnnames, const vector < uint32_t > & di )
     *     : This is a constructor of the class.
     *   inputvsm = the vector of string manipulator pointers
     *   columnnames = the vector of strings which reprensents
@@ -265,27 +265,27 @@ public:
     * cBlocking_Operation_Multiple_Column_Manipulate (
     * const StringManipulator * const* pinputvsm,
     * const string * pcolumnnames,
-    * const unsigned int  * pdi,
+    * const uint32_t  * pdi,
     */
     cBlocking_Operation_Multiple_Column_Manipulate (
         const vector<const StringManipulator *> & inputvsm,
         const vector<string> & columnnames,
-        const vector<unsigned int> & di );
+        const vector<uint32_t> & di);
 
    /**
     * This is another constructor of the class object.
     * pinputvsm = pointer of the string manipulator pointers array
     * pcolumnnames = pointer of the strings array.
     * pdi = pointer of the Attribute::data indice array.
-    * num_col = number of involed columns.
+    * num_col = number of involved columns.
     * NOTE: pdi SHOULD NOT BE DESTRUCTED BEFORE THE
     * cBlocking_Operation_Multiple_Column_Manipulate object is discarded.
     */
     cBlocking_Operation_Multiple_Column_Manipulate (
         const StringManipulator * const* pinputvsm,
         const string * pcolumnnames,
-        const unsigned int * pdi,
-        const unsigned int num_col );
+        const uint32_t * pdi,
+        const uint32_t num_col);
 
    /**
     * string extract_blocking_info(const Record * p) const:
@@ -294,26 +294,26 @@ public:
     string extract_blocking_info(const Record * p) const;
 
    /**
-    * string extract_column_info ( const Record * p, unsigned int flag ) const:
+    * string extract_column_info ( const Record * p, uint32_t flag ) const:
     * extracts information from specified column and returns a string
     */
-    string extract_column_info (const Record * p, unsigned int flag) const;
+    string extract_column_info (const Record * p, uint32_t flag) const;
 
    /**
-    * unsigned int num_involved_columns() const :
+    * uint32_t num_involved_columns() const :
     * return number of involved columns.
     */
-    unsigned int num_involved_columns() const {
+    uint32_t num_involved_columns() const {
       return vsm.size();
     }
 
-    void reset_data_indice(const vector < unsigned int > & indice);
+    void reset_data_indice(const vector < uint32_t > & indice);
 
-    const vector < string > & get_blocking_attribute_names() const {
+    const vector<string> & get_blocking_attribute_names() const {
       return attributes_names;
     }
 
-    const vector < const StringManipulator * > & get_blocking_string_manipulators() const {
+    const vector<const StringManipulator *> & get_blocking_string_manipulators() const {
       return vsm;
     }
 };
@@ -377,17 +377,17 @@ private:
     Uid2UinvTree uid2uinv_tree;
 
    /**
-    *  map < const Record *, unsigned int > uinv2count_tree:
+    *  map < const Record *, uint32_t > uinv2count_tree:
     *  a binary tree that maps the unique inventor record pointer
     *  to the number of its associated patents.
     */
-    map < const Record *, unsigned int > uinv2count_tree;
+    map <const Record *, uint32_t> uinv2count_tree;
 
    /**
-    *  const unsigned int num_coauthors: number of coauthors to
+    *  const uint32_t num_coauthors: number of coauthors to
     *  extract for blocking. Usually it should not be too large (like 10).
     */
-    const unsigned int num_coauthors;
+    const uint32_t num_coauthors;
 
    /**
     *  void build_patent_tree(const list < const Record * > & allrec):
@@ -402,29 +402,29 @@ public:
 
    /**
     * cBlocking_Operation_By_Coauthors(const list < const Record * > & allrec,
-    * const ClusterInfo& cluster, const unsigned int coauthors):
+    * const ClusterInfo& cluster, const uint32_t coauthors):
     * initialize a class object. allrec = a complete list of const Record pointers.
     * cluster = a ClusterInfo object, which contains all the information
     * of clustering from the previous disambiguation.
     * coauthors = number of coauthors for blocking information extraction.
     */
     cBlocking_Operation_By_Coauthors(const RecordPList & allrec,
-        const ClusterInfo& cluster, const unsigned int coauthors);
+        const ClusterInfo& cluster, const uint32_t coauthors);
 
    /**
     * cBlocking_Operation_By_Coauthors(const list < const Record * > & allrec,
-    * const unsigned int coauthors): the second constructor.
+    * const uint32_t coauthors): the second constructor.
     */
     cBlocking_Operation_By_Coauthors(const RecordPList & allrec,
-        const unsigned int num_coauthors);
+        const uint32_t num_coauthors);
 
    /**
-    *  RecordPList get_topN_coauthors( const Record * pRec, const unsigned int topN) const:
+    *  RecordPList get_topN_coauthors( const Record * pRec, const uint32_t topN) const:
     *  find the top N most prolific coauthors of the input pRec record
     *  pointer, and return a list of const Record pointers.
     */
     // TODO: Move this back to private, or protected/friend or something.
-    RecordPList get_topN_coauthors( const Record *, const unsigned int topN) const;
+    RecordPList get_topN_coauthors(const Record *, const uint32_t topN) const;
 
    /**
     * string extract_blocking_info(const Record * prec) const;
