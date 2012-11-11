@@ -18,7 +18,7 @@
 FakeTest::FakeTest(string name, string filename)
   : CppUnit::TestCase(name), csvfilename(filename) {
 
-    describe_test(INDENT0, name.c_str());
+    describe_test(INDENT2, name.c_str());
 
     requested_columns.push_back(string("Firstname"));
     requested_columns.push_back(string("Lastname"));
@@ -40,7 +40,7 @@ FakeTest::FakeTest(string name, string filename)
 void
 FakeTest::load_fake_data(string csvfilename) {
 
-    describe_test(INDENT2, "Loading fake data...");
+    describe_test(INDENT4, "Loading fake data...");
 
     //const char * filename = "testdata/clustertest.csv";
     const char * filename = csvfilename.c_str();

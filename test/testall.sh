@@ -53,8 +53,6 @@ echo "engine test"
 ./engine
 ./ratios
 ./ratiocomponent
-
-echo "Blocking test"
 ./blocking
 
 ./compare

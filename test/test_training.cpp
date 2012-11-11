@@ -5,47 +5,64 @@
 #include <cppunit/TestCase.h>
 
 #include <training.h>
+#include <engine.h>
+#include <ratios.h>
+#include <record.h>
 
 #include "colortest.h"
-
-
-// TODO: Put this function in the testdata.cpp file.
-vector<string> make_labels () {
-
-  vector<string> labels;
-  labels.push_back("Firstname");
-  labels.push_back("Lastname");
-  labels.push_back("Class");
-
-  return labels;
-}
-
-
+#include "testutils.h"
+#include "fake.h"
 
 class TrainingTest : public CppUnit::TestCase {
 
+private:
+  FakeTest * ft;
+  RecordPList recpointers;
+  vector<const Record*> rpv;
+
 public:
+
   TrainingTest(std::string name) : CppUnit::TestCase(name) {
-    fprintf(stdout, "%s\n", name.c_str());
+
+    describe_test(INDENT0, name.c_str());
+
+    const string filename("testdata/assignee_comparison.csv");
+    ft = new FakeTest(string("Fake training test"), filename);
+    ft->load_fake_data(filename);
+    recpointers = ft->get_recpointers();
+    rpv = ft->get_recvecs();
   }
+
+
+ ~TrainingTest() {
+   describe_test(INDENT2, "Destroying TrainingTest");
+   delete ft;
+ }
+
 
   void test_get_blocking_indice() {
-#if 1
-    vector<string> labels = make_labels();
-    vector<uint32_t> ci = get_blocking_indices(labels);
-    //vector<string> initial = { "bar", "baz", "foo" };
-    //CPPUNIT_ASSERT(labels == initial);
-#endif
+
+    describe_test(INDENT2, "Testing get_blocking_indice()");
+
+    Spec spec;
+
+    spec.it("Blocking index for Firstname/Lastname/Class/Coauthor: (0,1,13,12)", DO_SPEC {
+      vector<string> column_names = {
+        "Firstname", "Lastname", "Class", "Coauthor"
+      };
+      vector<uint32_t> bi = get_blocking_indices(column_names);
+      // The order of the blocking indices depends on how the column
+      // names are ordered when the data is read from the configuration file.
+      // We're controlling the order in the FakeTest constructor here.
+      vector<uint32_t> target = { 0, 1, 13, 12 };
+      return (target == bi);
+    });
+
   }
 
-  void delete_blocking() {
-  }
 
   void runTest() {
-    // Just o get startes...
-    CPPUNIT_ASSERT( 1  == 1 );
     test_get_blocking_indice();
-    delete_blocking();
   }
 };
 
@@ -53,7 +70,7 @@ public:
 void
 test_training() {
 
-  TrainingTest * tt = new TrainingTest(std::string(COLOR124"Training initial test" COLOR_RESET));
+  TrainingTest * tt = new TrainingTest(string("Training initial test"));
   tt->runTest();
   delete tt;
 }
