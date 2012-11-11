@@ -13,75 +13,34 @@
 
 #include "testdata.h"
 #include "testutils.h"
+#include "fake.h"
 
 
 class ClusterInfoTest : public CppUnit::TestCase {
 
 private:
 
+  FakeTest * ft;
+
   list<Record> source;
   vector<string> requested_columns;
-  RecordPList record_pointers;
+  RecordPList recpointers;
   // Accessory container for unit testing, not
   // present in the disambiguation code.
-  vector<Record *> rpv;
+  vector<const Record *> rpv;
 
 
 public:
 
   ClusterInfoTest(std::string name) : CppUnit::TestCase(name) {
+
     describe_test(INDENT0, name.c_str());
-    requested_columns.push_back(string("Firstname"));
-    requested_columns.push_back(string("Lastname"));
-    requested_columns.push_back(string("Middlename"));
-    requested_columns.push_back(string("Patent"));
-    requested_columns.push_back(string("Assignee"));
-    requested_columns.push_back(string("AsgNum"));
-    requested_columns.push_back(string("ApplyYear"));
-    requested_columns.push_back(string("Latitude"));
-    requested_columns.push_back(string("Longitude"));
-    requested_columns.push_back(string("Street"));
-    requested_columns.push_back(string("Country"));
-    requested_columns.push_back(string("Unique_Record_ID"));
-  }
+    const string filename("testdata/assignee_comparison.csv");
+    ft = new FakeTest(string("Fake ClusterInfo test"), filename);
+    ft->load_fake_data(filename);
+    recpointers = ft->get_recpointers();
+    rpv = ft->get_recvecs();
 
-  void load_fake_data() {
-
-    describe_test(INDENT2, "Loading fake data for clustering...");
-
-    const char * filename = "testdata/clustertest.csv";
-    bool successful = fetch_records_from_txt(source, filename, requested_columns);
-
-    if (not successful)
-      exit(-1);
-
-    create_record_plist(source, record_pointers);
-
-    // IPDict
-    map<string, const Record *> uid_dict;
-    const string uid_identifier = cUnique_Record_ID::static_get_class_name();
-    create_btree_uid2record_pointer(uid_dict, source, uid_identifier);
-
-    bool matching_mode         = true;
-    bool frequency_adjust_mode = false;
-    bool debug_mode            = false;
-    ClusterInfo match(uid_dict, matching_mode, frequency_adjust_mode, debug_mode);
-
-    const uint32_t num_coauthors_to_group = 2;
-    cBlocking_Operation_By_Coauthors blocker_coauthor(record_pointers, num_coauthors_to_group);
-
-    //cBlocking_Operation_By_Coauthors  blocker_coauthor = get_blocker_coathor();
-    Cluster::set_reference_patent_tree_pointer(blocker_coauthor.get_patent_tree());
-
-    list<Record>::iterator i = source.begin();
-    for (; i != source.end(); ++i) {
-      rpv.push_back(&(*i));
-    }
-
-    vector<string> comparators;
-    comparators.push_back("Firstname");
-    comparators.push_back("Lastname");
-    Record::activate_comparators_by_name(comparators);
   }
 
 
@@ -106,9 +65,9 @@ public:
 
     describe_test(INDENT2, "Testing get_initial_prior");
 
-    Record * r2 = rpv[2];
-    Record * r3 = rpv[3];
-    Record * r4 = rpv[4];
+    const Record * r2 = rpv[2];
+    const Record * r3 = rpv[3];
+    const Record * r4 = rpv[4];
     //r4->print();
 
     ClusterHead ch(r2, 0.9953);
@@ -135,7 +94,6 @@ public:
   }
 
   void runTest() {
-    load_fake_data();
     //create_cluster();
     test_get_initial_prior();
   }
@@ -143,7 +101,7 @@ public:
 
 
 void
-test_clusters() {
+test_clusterinfo() {
 
   ClusterInfoTest * cit = new ClusterInfoTest(std::string("ClusterInfo test"));
   cit->runTest();
@@ -155,7 +113,7 @@ test_clusters() {
 int
 main(int UP(argc), char ** UP(argv)) {
 
-  test_clusters();
+  test_clusterinfo();
   return 0;
 }
 #endif
