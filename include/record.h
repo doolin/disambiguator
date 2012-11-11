@@ -48,20 +48,20 @@ private:
     * which stores a vector of pointers of concrete attributes.
     */
     // TODO: s/vector_pdata/attributes/g
-    vector <const Attribute *> vector_pdata;
+    vector<const Attribute *> vector_pdata;
 
    /**
     * static vector <string> column_names: static member which stores the
     * name of each attributes with sequential information. Very important.
     */
-    static vector <string> column_names;
+    static vector<string> column_names;
 
    /**
     * static vector < string > active_similarity_names:
     * static member which stores the names of attributes
     * whose comparison functions are activated.
     */
-    static vector < string > active_similarity_names;
+    static vector<string> active_similarity_names;
 
    /**
     * static const Record * sample_record_pointer: a pointer of a real
@@ -82,6 +82,11 @@ public:
     // Record(): default constructor.
     Record() {}
 
+#if 0
+   ~Record() {
+     delete sample_record_pointer;
+   }
+#endif
 
     void set_column_names(std::vector<std::string> cn) {
       column_names = cn;
