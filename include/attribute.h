@@ -372,7 +372,7 @@ public:
 
     static int position_in_registry(const string &);
 
-    virtual vector < string > get_interactive_class_names() const = 0;
+    virtual vector<string> get_interactive_class_names() const = 0;
     virtual void activate_comparator() const = 0;
     virtual void deactivate_comparator() const = 0;
     virtual const Attribute *  get_effective_pointer() const = 0;    //specifically useful in the interactive mode
