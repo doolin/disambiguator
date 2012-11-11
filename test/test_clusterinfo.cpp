@@ -61,7 +61,7 @@ public:
     double prior = get_initial_prior(rg, false);
 
     Spec spec;
-    spec.it("The prior should be ~0.333333", [&](Description desc)->bool {
+    spec.it("get_initial_prior() returns ~0.333333", [&](Description desc)->bool {
       return ((0.333333-prior) < 0.00001);
     });
 
