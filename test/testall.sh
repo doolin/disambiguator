@@ -20,6 +20,7 @@ initializeANSI
 ./fetchrecords
 ./misspell
 ./rarenames
+./namecompare
 
 
 # engineconfig spews a huge list of records
@@ -30,8 +31,6 @@ echo "Typedefs test"
 `./typedefs`
 echo "Abbreviations test"
 `./abbreviation`
-echo "name_compare test"
-`./namecompare`
 echo "Record test"
 `./record`
 
