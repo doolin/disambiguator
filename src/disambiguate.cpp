@@ -234,6 +234,14 @@ int BlockingConfiguration::config_blocking(const char * filename, const string &
 }
 
 
+// Really important shit is hardwired via file-delimited namespacing,
+// ugly things like are necessary. This needs to be rewired completely.
+std::auto_ptr<cBlocking_Operation>
+get_blocking_pointer() {
+  return BlockingConfiguration::active_blocker_pointer;
+}
+
+
 
 bool
 EngineConfiguration::config_engine(const char * filename, std::ostream & os) {
@@ -511,12 +519,12 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
     const bool use_available_ratios       = EngineConfiguration::use_available_ratios_database;
     const string working_dir              = EngineConfiguration::working_dir;
     const vector<double> threshold_vec    = EngineConfiguration::thresholds ;
-    const uint32_t num_threads        = EngineConfiguration::number_of_threads;
+    const uint32_t num_threads            = EngineConfiguration::number_of_threads;
     const vector<string> column_vec       = EngineConfiguration::involved_columns;
-    const uint32_t limit              = EngineConfiguration::number_of_training_pairs;
+    const uint32_t limit                  = EngineConfiguration::number_of_training_pairs;
     bool frequency_adjust_mode            = EngineConfiguration::frequency_adjustment_mode;
     bool debug_mode                       = EngineConfiguration::debug_mode;
-    const uint32_t starting_round     = EngineConfiguration::starting_round;
+    const uint32_t starting_round         = EngineConfiguration::starting_round;
     const uint32_t buff_size = 512;
 
    /**

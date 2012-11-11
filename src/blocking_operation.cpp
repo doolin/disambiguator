@@ -58,7 +58,7 @@ cBlocking_Operation_Multiple_Column_Manipulate::extract_blocking_info(const Reco
     string temp;
     for (uint32_t i = 0; i < vsm.size(); ++i) {
         temp += vsm[i]->manipulate(* p->get_data_by_index(indice[i]).
-                at( pdata_indice.at(i)));
+                at(pdata_indice.at(i)));
         temp += delim;
     }
     return temp;
@@ -319,7 +319,8 @@ RecordPList cBlocking_Operation_By_Coauthors::get_topN_coauthors(
  * Aim: to get the blocking string id for prec.
  * Algorithm: see get_topN_coauthor
  */
-string cBlocking_Operation_By_Coauthors::extract_blocking_info(const Record * prec) const {
+string
+cBlocking_Operation_By_Coauthors::extract_blocking_info(const Record * prec) const {
 
     const RecordPList top_coauthor_list = get_topN_coauthors(prec, num_coauthors);
     // now make string
