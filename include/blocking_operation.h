@@ -100,14 +100,15 @@ public:
  * is more widely used.
  *
  */
-class cBlocking_Operation_Column_Manipulate: public cBlocking_Operation {
+//class cBlocking_Operation_Column_Manipulate: public cBlocking_Operation {
+class BlockColumn: public cBlocking_Operation {
 
 private:
     const StringManipulator & sm;
     const uint32_t column_index;
 
 public:
-    explicit cBlocking_Operation_Column_Manipulate(const StringManipulator & inputsm,
+    explicit BlockColumn(const StringManipulator & inputsm,
         const string & colname)
       : sm(inputsm), column_index(Record::get_index_by_name(colname)) {
         infoless = delim;
@@ -128,7 +129,9 @@ public:
  * BlockByColumns:
  * This is a subclass of cBlocking_Operation, which extracts information
  * from several columns and returns a block specifier string.
- *
+ */
+
+/**
  * Example:
  *
  * StringRemoveSpace rsobj;
@@ -140,44 +143,41 @@ public:
  * // that the truncation starts from the 3rd char
  * // and grabs 4 chars (if exists) from the forward direction.
  * // ie. nstobj.manipulate("EXAMPLES") returns "AMPL"
- *
+ */
+
+/**
  * vector < const StringManipulator * > vec_strman;
  * //initialize a string manipulator pointer vector
- *
  * vec_strman.push_back( &rsobj );
- *
  * vec_strman.push_back( &rsobj );
- *
  * // the vector now has 3 elements.
  * vec_strman.push_back( & nstobj );
- *
+ */
+
+/**
  * //initialize a vector container to store column
  * //names on which the string operations take place.
- * vector < string > vec_label;
- *
+ * vector<string> vec_label;
  * vec_label.push_back(cFirstname::static_get_class_name() );
- *
  * vec_label.push_back(cAssignee::static_get_class_name() );
- *
  * // the vector also has 3 elements. Pay attention to the sequence!
  * vec_label.push_back(cLastname::static_get_class_name() );
- *
+ */
+
+/**
  * // initialize a data position array.
  * uint32_t data_position[] = { 1, 0, 2 };
- *
  * // initialize a vector to used the data position array
- * vector < const uint32_t * > vec_di ;
- *
+ * vector<const uint32_t *> vec_di ;
  * vec_di.push_back( data_position );
- *
  * vec_di.push_back(data_position + 1);
- *
  * // another vector that has 3 elements. Also notice the sequence.
  * vec_di.push_back(data_position + 2);
- *
+ */
+
+/**
  * //create a multiple column blocking info extractor.
- * BlockByColumns mcmobj (
- * vec_strman, vec_label, vec_di );
+ * BlockByColumns mcmobj (vec_strman, vec_label, vec_di);
  */
 
 /**
@@ -193,7 +193,9 @@ public:
  *         1.3 pfirstname->data[2] points to "ALEXNICOLE".
  * Then the first string manipulator, rsobj, will look for
  * the string of data[1] and returns "NICOLAS".
- *
+ */
+
+/**
  * 2. const Attribute * passignee: pointing to an attribute
  * whose data vector contains 4 string pointers:
  *         2.1 passignee->data[0] points to "MICROSOFT CORP, LTD"
@@ -202,7 +204,9 @@ public:
  *         2.4 passignee->data[3] points to "MICROSOFT SHANGHAI, CHINA"
  * Then the second string manipulator, also rsobj, will look
  * for the string of data[0] and returns "MICROSOFTCORP,LTD"
- *
+ */
+
+/**
  * 3. const Attribute * plastname: pointing to an attribute
  * whose data vector contains 4 string pointers:
  *         3.1 plastname->data[0] points to "JOHNSON"
@@ -212,7 +216,9 @@ public:
  * Then the 3rd string manipulator, nstobj, will look for
  * the string of data[2] and, by removing space and truncating,
  * returns "HNST";
- *
+ */
+
+/**
  * Assuming that the cBlocking_Operation::delim is "@", then
  * mcmobj.extract_blocking_info( & recobj ) returns "NICOLAS@MICROSOFTCORP,LTD@HNST@"
  * and mcmobj.extract_column_info (& recobj, 2) returns "HNST".
@@ -257,8 +263,6 @@ private:
     *   NOTE: di SHOULD NOT BE DESTRUCTED BEFORE THE
     *   BlockByColumns object is discarded.
     */
-
-
 public:
 
    /**
