@@ -3,27 +3,25 @@
 #include <iostream>
 #include <cmath>
 
-#include <cppunit/Portability.h>
-#include <cppunit/portability/CppUnitSet.h>
-#include <cppunit/extensions/TestFactory.h>
 #include <cppunit/TestCase.h>
 
 #include "comparators.h"
 
+#include "testutils.h"
+
 using std::string;
 
-// Need a tempate for comparing floats
-/*
-bool
-is_equal(float f1, float f2, float tol) {
-  return (fabs(f1-f2) < tol);
-}
-*/
 
 class JWcmpTest : public CppUnit::TestCase {
 
+private:
+  string s1, s2;
+
 public:
-  JWcmpTest(std::string name) : CppUnit::TestCase(name) {}
+  JWcmpTest(std::string name) : CppUnit::TestCase(name) {
+
+    describe_test(INDENT0, name.c_str());
+  }
 
   float compute_jw(const char * s1, const char * s2) {
     return jwcmp(s1, s2);
@@ -37,45 +35,64 @@ public:
     std::cout << s1 << " vs. " << s2 << ": " << score << std::endl;
   }
 
+
+  void testem_all() {
+
+    Spec spec;
+
+    spec.it("Comparing two empty strings scores 0", [this](Description desc)->bool {
+      s1 = ""; s2 = "";
+      int score = jwcmp(s1, s2);
+      //print_score(s1, s2, score);
+      return (0 == score);
+    });
+
+
+    spec.it("Comparing %s with %s results in %d", [this, &spec](Description desc)->bool {
+      s1 = "MATTHEW"; s2 = "XYZ";
+      int score = jwcmp(s1, s2);
+      sprintf(spec.buf, desc, s1.c_str(), s2.c_str(), score);
+      return (0 == score);
+    });
+
+    spec.it("Comparing %s with %s results in %d", [this, &spec](Description desc)->bool {
+      s1 = "MATTHEW"; s2 = "TALIN";
+      int score = jwcmp(s1, s2);
+      sprintf(spec.buf, desc, s1.c_str(), s2.c_str(), score);
+      return (0 == score);
+    });
+
+
+    spec.it("Comparing %s with %s results in %d", [this, &spec](Description desc)->bool {
+      s1 = "MATTHEW"; s2 = "MATHEW";
+      int score = jwcmp(s1, s2);
+      sprintf(spec.buf, desc, s1.c_str(), s2.c_str(), score);
+      return (4 == score);
+    });
+
+
+    spec.it("Comparing %s with %s results in %d", [this, &spec](Description desc)->bool {
+      s1 = "MATTHEW"; s2 = "MATTHEW";
+      int score = jwcmp(s1, s2);
+      sprintf(spec.buf, desc, s1.c_str(), s2.c_str(), score);
+      return (5 == score);
+    });
+
+  }
+
+  void runTests() {
+    testem_all();
+  }
+
 };
 
 
 void
 test_jwcmp() {
 
-  JWcmpTest * st = new JWcmpTest(std::string("initial test"));
+  JWcmpTest * st = new JWcmpTest(std::string("Jaro/Winkler comparison unit testing"));
+  st->testem_all();
 
-  string s1("");
-  string s2("");
-  int score;
-
-  score = jwcmp(s1, s2);
-  st->print_score(s1, s2, score);
-  CPPUNIT_ASSERT(0 == score);
-
-  s1 = "MATTHEW";
-  s2 = "XYZ";
-  score = jwcmp(s1, s2);
-  //st->print_score(s1, s2, score);
-  CPPUNIT_ASSERT(0 == score);
-
-  s1 = "MATTHEW";
-  s2 = "TALIN";
-  score = jwcmp(s1, s2);
-  //st->print_score(s1, s2, score);
-  CPPUNIT_ASSERT(0 == score);
-
-  s1 = "MATTHEW";
-  s2 = "MATHEW";
-  score = jwcmp(s1, s2);
-  //st->print_score(s1, s2, score);
-  CPPUNIT_ASSERT(4 == score);
-
-  s1 = "MATTHEW";
-  s2 = "MATTHEW";
-  score = jwcmp(s1, s2);
-  //st->print_score(s1, s2, score);
-  CPPUNIT_ASSERT(5 == score);
   delete st;
 }
 

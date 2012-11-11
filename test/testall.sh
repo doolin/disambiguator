@@ -46,11 +46,9 @@ echo "strcmp95 test"
 echo "training test"
 ./training
 
-echo "jwcmp test"
-./jwcmp
-
 echo "engine test"
 ./engine
+./jwcmp
 ./ratios
 ./ratiocomponent
 ./blocking
