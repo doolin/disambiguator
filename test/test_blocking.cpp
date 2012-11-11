@@ -49,22 +49,34 @@ public:
 
 
   void test_read_blocking_config() {
-    std::ofstream devnull("/dev/null");
-    int result;
-    result = BlockingConfiguration::config_blocking("./fixtures/BlockingConfig.txt", string("Round 1"), devnull);
-    CPPUNIT_ASSERT(0 == result);
-    describe_pass(INDENT2, "Reads a valid blocking file correctly");
+
+    Spec spec;
+
+    spec.it("Reads a valid blocking file correctly", DO_SPEC {
+       std::ofstream devnull("/dev/null");
+       int result;
+       result = BlockingConfiguration::config_blocking("./fixtures/BlockingConfig.txt", string("Round 1"), devnull);
+       return (0 == result);
+    });
+
     // TODO: handle result = 1
     // TODO: handle result = 2
   }
 
+
   void test_multi_column_blocking() {
+
+    std::auto_ptr<cBlocking_Operation> bptr = get_blocking_pointer();
+    const cBlocking_Operation_Multiple_Column_Manipulate & blocker_ref =
+      dynamic_cast<cBlocking_Operation_Multiple_Column_Manipulate &> (*bptr);
+    vector<string> names = blocker_ref.get_blocking_attribute_names();
+    std::cout << "Name 0: " << names[0] << std::endl;
+
 #if 0
-    const vector<const StringManipulator *> & inputvsm;
-    const vector<string> & columnnames;
-    iconst vector<unsigned int> & di;
-    cBlocking_Operation_Multiple_Column_Manipulate & blocker_ref =
-      cBlocking_Operation_Multiple_Column_Manipulate & blocker_ref();
+    //const vector<const StringManipulator *> & inputvsm;
+    //const vector<string> & columnnames;
+    //const vector<unsigned int> & di;
+//    cBlocking_Operation_Multiple_Column_Manipulate & blocker_ref = dynamic_cast<cBlocking_Operation_Multiple_Column_Manipulate &> (*BlockingConfiguration::active_blocker_pointer);
 #endif
   }
 
