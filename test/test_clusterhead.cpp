@@ -5,21 +5,32 @@
 #include <clusterhead.h>
 
 #include "testdata.h"
+#include "testutils.h"
 
 class ClusterHeadTest : public CppUnit::TestCase {
 
 public:
-  ClusterHeadTest(std::string name) : CppUnit::TestCase(name) {}
+  ClusterHeadTest(std::string name) : CppUnit::TestCase(name) {
+
+    describe_test(INDENT0, name.c_str());
+  }
 
   void create_clusterhead() {
+
+    Spec spec;
+
     Record * r = make_foobar_record();
-    ClusterHead ch(r, 0.9953);
-    CPPUNIT_ASSERT (0.9953 == ch.m_cohesion);
+    spec.it("Creates a ClusterHead", [r](Description desc)->bool {
+      double cohesion = 0.9953;
+      ClusterHead ch(r, cohesion);
+      return (cohesion == ch.m_cohesion);
+    });
     // Segfaults...
     //r->print();
     // segfaults, which shouldn't be...
-    //r->clean_member_attrib_pool();
     // Leaks, bad
+    //r->clean_member_attrib_pool();
+    //std::cout << "sizeof(r): " << sizeof(*r) << std::endl;
     delete r;
   }
 
@@ -32,7 +43,7 @@ public:
 void
 test_clusterhead() {
 
-  ClusterHeadTest * cht = new ClusterHeadTest(std::string("initial test"));
+  ClusterHeadTest * cht = new ClusterHeadTest(std::string("ClusterHead unit testing"));
   cht->runTest();
   delete cht;
 }

@@ -46,9 +46,9 @@ public:
     const Record * r2 = rpv[2];
     const Record * r3 = rpv[3];
     const Record * r4 = rpv[4];
-    double chinit = 0.2343;
-    //ClusterHead ch(r2, 0.9953);
-    ClusterHead ch(r2, chinit);
+    double cohesion = 0.2343;
+    //double cohesion = 0.9953;
+    ClusterHead ch(r2, cohesion);
 
     RecordPList rpl1 = { r2 };
     Cluster c1 = Cluster(ch, rpl1);
