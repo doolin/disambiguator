@@ -135,12 +135,11 @@ Record::print() const {
  *
  * Algorithm: call each attribute pointer's "compare" method.
  */
-//vector <uint32_t>
 SimilarityProfile
 Record::record_compare(const Record & rhs) const {
 
     static const bool detail_debug = false;
-    vector <uint32_t > rec_comp_result;
+    SimilarityProfile sp;
 
     /////////////////////////////////////
     // TODO: Refactor this debugging code
@@ -170,7 +169,7 @@ Record::record_compare(const Record & rhs) const {
         for (uint32_t i = 0; i < this->vector_pdata.size(); ++i) {
             try {
                 uint32_t stage_result = this->vector_pdata[i]->compare(*(rhs.vector_pdata[i]));
-                rec_comp_result.push_back(stage_result);
+                sp.push_back(stage_result);
             }
             catch (const cException_No_Comparision_Function & err) {
                 //std::cout << err.what() << " does not have comparision function. " << std::endl; //for debug purpose
@@ -179,7 +178,7 @@ Record::record_compare(const Record & rhs) const {
     } catch (const cException_Interactive_Misalignment & except) {
 
         std::cout << "Skipped" << std::endl;
-        rec_comp_result.clear();
+        sp.clear();
     }
     /////////////////// End refactor /////////////////
 
@@ -200,14 +199,14 @@ Record::record_compare(const Record & rhs) const {
             std::cout << "..........." << std::endl;
             std::cout << "Similarity Profile =";
 
-            for ( vector < uint32_t >::const_iterator t = rec_comp_result.begin(); t != rec_comp_result.end(); ++t )
+            for ( vector < uint32_t >::const_iterator t = sp.begin(); t != sp.end(); ++t )
                 std::cout << *t << ",";
             std::cout << std::endl << std::endl;
         }
     }
     /////////////////// End refactor /////////////////
 
-    return rec_comp_result;
+    return sp;
 }
 
 
@@ -222,7 +221,7 @@ SimilarityProfile
 Record::record_compare_by_attrib_indice (const Record &rhs,
                                          const vector < uint32_t > & attrib_indice_to_compare) const {
 
-    vector <uint32_t > rec_comp_result;
+    SimilarityProfile sp;
 
     if (0 == attrib_indice_to_compare.size()) {
       std::cout << "Attrib index is empty" << std::endl;
@@ -237,7 +236,7 @@ Record::record_compare_by_attrib_indice (const Record &rhs,
                 uint32_t i = attrib_indice_to_compare.at(j);
                 uint32_t stage_result = this->vector_pdata[i]->compare(*(rhs.vector_pdata[i]));
                 //std::cout << "stage_result: " << stage_result << std::endl;
-                rec_comp_result.push_back(stage_result);
+                sp.push_back(stage_result);
             }
             catch (const cException_No_Comparision_Function & err) {
                 //std::cout << err.what() << " does not have comparision function. " << std::endl;
@@ -246,10 +245,10 @@ Record::record_compare_by_attrib_indice (const Record &rhs,
     } catch ( const cException_Interactive_Misalignment & except) {
 
         std::cout << "Skipped" << std::endl;
-        rec_comp_result.clear();
+        sp.clear();
     }
 
-    return rec_comp_result;
+    return sp;
 }
 
 
