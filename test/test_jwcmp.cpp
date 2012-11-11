@@ -90,7 +90,7 @@ public:
 void
 test_jwcmp() {
 
-  JWcmpTest * st = new JWcmpTest(std::string("Jaro/Winkler comparison unit testing"));
+  JWcmpTest * st = new JWcmpTest(std::string("Jaro/Winkler similarity binning unit testing"));
   st->testem_all();
 
   delete st;

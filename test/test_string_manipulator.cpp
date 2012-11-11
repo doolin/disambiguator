@@ -2,19 +2,20 @@
 #include <vector>
 #include <iostream>
 
-#include <cppunit/Portability.h>
-#include <cppunit/portability/CppUnitSet.h>
-#include <cppunit/extensions/TestFactory.h>
 #include <cppunit/TestCase.h>
 
 #include <disambiguation.h>
 #include <engine.h>
 
+#include "testutils.h"
 
-class StringManipulatorTest : public CppUnit::TestCase { 
+class StringManipulatorTest : public CppUnit::TestCase {
 
-public: 
-  StringManipulatorTest( std::string name ) : CppUnit::TestCase( name ) {}
+public:
+  StringManipulatorTest(std::string name) : CppUnit::TestCase(name) {
+
+    describe_test(INDENT0, name.c_str());
+  }
 
   // Postpone this until understanding what it does.
   // Mark it as will not fix in Trac
@@ -106,13 +107,15 @@ public:
     CPPUNIT_ASSERT(result == string("EYK"));
   }
 
+
   void extract_first_word() {
 
     StringExtractFirstWord sefobj;
     std::string thomas = sefobj.manipulate("THOMAS DAVID ANDERSON");
     CPPUNIT_ASSERT(thomas == std::string("THOMAS"));
   }
-  
+
+
   void runTest() {
     remain_same();
     remove_space();
@@ -126,7 +129,7 @@ public:
 int
 main(int, char **) {
 
-  StringManipulatorTest * rt = new StringManipulatorTest(std::string("initial test"));
+  StringManipulatorTest * rt = new StringManipulatorTest(std::string("String manipulator test"));
   rt->runTest();
   delete rt;
   return 0;
