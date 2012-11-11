@@ -67,23 +67,12 @@ public:
   void test_multi_column_blocking() {
 
     std::auto_ptr<cBlocking_Operation> bptr = get_blocking_pointer();
-    const BlockByColumns & blocker_ref =
-      dynamic_cast<BlockByColumns &> (*bptr);
+    const BlockByColumns & blocker_ref = dynamic_cast<BlockByColumns &> (*bptr);
     vector<string> names = blocker_ref.get_blocking_attribute_names();
     std::cout << "Name 0: " << names[0] << std::endl;
-
-#if 0
-    //const vector<const StringManipulator *> & inputvsm;
-    //const vector<string> & columnnames;
-    //const vector<unsigned int> & di;
-//    BlockByColumns & blocker_ref = dynamic_cast<BlockByColumns &> (*BlockingConfiguration::active_blocker_pointer);
-#endif
   }
 
- /**
-  * Coauthor blocking looks like a real pain, so letting this ride for now.
-  * Will return to it later.
-  */
+
   void test_get_topN_coauthors() {
     const Record * prec = recpointers.front();
     std::cout << "front pointer: " << recpointers.front() << std::endl;
@@ -91,12 +80,14 @@ public:
     //cob->get_topN_coauthors(prec, 2);
   }
 
+
   void test_coauthor_blocking() {
     //const Record * prec = recpointers.front();
     std::cout << "front pointer: " << recpointers.front() << std::endl;
     //std::string bi = cob->extract_blocking_info(recpointers.front());
     //std::cout << "blocking info: " << bi << std::endl;
   }
+
 
   void runTest() {
     test_read_blocking_config();
