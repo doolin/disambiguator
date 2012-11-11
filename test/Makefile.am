@@ -27,7 +27,7 @@ TESTS =  typedefs record blocking attribute stringmanipulator \
 	comparators comparesimilarities strcmp95 rarenames engineconfig           \
 	abbreviation misspell namecompare jwcmp similarity clusterhead cluster engine \
 	training ratios fetchrecords assigneecomparison clusterinfo ratiocomponent \
-	coauthor qp compare
+	coauthor qp compare testfake
 
 bin_PROGRAMS = $(TESTS)
 
@@ -37,6 +37,7 @@ bin_PROGRAMS = $(TESTS)
 COMMON = testdata.cpp testutils.cpp
 
 #fake_SOURCES = fake.cpp $(COMMON)
+testfake_SOURCES = testfake.cpp fake.cpp $(COMMON)
 ratiocomponent_SOURCES = test_ratiocomponent.cpp fake.cpp $(COMMON)
 engine_SOURCES = test_engine.cpp $(COMMON)
 idtest_SOURCES = test_uniqueid.cpp

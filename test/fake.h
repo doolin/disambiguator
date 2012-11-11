@@ -1,6 +1,15 @@
 #ifndef PATENT_FAKE_H
 #define PATENT_FAKE_H
 
+#include <string>
+#include <list>
+#include <map>
+
+#include <engine.h>
+#include <record.h>
+#include <ratios.h>
+#include <blocking_operation.h>
+
 #include <cppunit/TestCase.h>
 
 class FakeTest : public CppUnit::TestCase {

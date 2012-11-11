@@ -2,6 +2,7 @@
 !prior*.txt
 
 ## Executables using cppunit
+testfake
 compare
 qp
 coauthor
