@@ -40,6 +40,8 @@ public:
 
   vector<const Record *> get_recvecs();
 
+  list<Record> get_all_records();
+
   const cBlocking_Operation_By_Coauthors * get_coauthor_blocking();
 
   void runTest() {

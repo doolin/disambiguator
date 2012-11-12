@@ -106,6 +106,12 @@ FakeTest::get_recvecs() {
   return rpv;
 }
 
+
+list<Record>
+FakeTest::get_all_records() {
+  return source;
+}
+
 void
 test_fake() {
 

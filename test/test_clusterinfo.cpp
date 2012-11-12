@@ -24,6 +24,7 @@ private:
   FakeTest * ft;
   RecordPList recpointers;
   vector<const Record *> rpv;
+  list<Record> all_records;
 
 
 public:
@@ -35,6 +36,7 @@ public:
     ft = new FakeTest(string("Fake ClusterInfo test"), filename);
     ft->load_fake_data(filename);
     recpointers = ft->get_recpointers();
+    all_records = ft->get_all_records();
     rpv = ft->get_recvecs();
   }
 
@@ -104,10 +106,24 @@ public:
     });
   }
 
+  void test_constructor() {
+
+    describe_test(INDENT2, "Test the ClusterInfo constructor");
+
+    map<string, const Record *>  uid_dict;
+    const string uid_identifier = cUnique_Record_ID::static_get_class_name();
+    create_btree_uid2record_pointer(uid_dict, all_records, uid_identifier);
+    ClusterInfo match(uid_dict, true, true, false);
+    Spec spec;
+    spec.it("ClusterInfo constructor works", DO_SPEC {
+        return true;
+    });
+  }
 
   void runTests() {
     test_get_initial_prior();
     test_get_initial_prior2();
+    test_constructor();
   }
 
 };
