@@ -359,6 +359,16 @@ Record::activate_comparators_by_name (const vector<string> & inputvec) {
 }
 
 
+const string
+Record::get_unique_record_id() const {
+
+  uint32_t index = get_index_by_name(string("Unique_Record_ID"));
+  const vector<const string *> & uids = get_data_by_index(index);
+  const string uid(*uids.front());
+  return uid;
+}
+
+
 void
 Record::reconfigure_record_for_interactives() const {
 

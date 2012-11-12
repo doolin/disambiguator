@@ -177,6 +177,12 @@ public:
 
 
    /**
+    * Assumes something indicating a unique inventor-patent instance exists.
+    * Should fail elegantly if not.
+    */
+    const string get_unique_record_id() const;
+
+   /**
     * uint32_t record_exact_compare(const Record & rhs ) const:
     * compare (*this) with rhs and return the number of attributes that are exactly the same.
     */

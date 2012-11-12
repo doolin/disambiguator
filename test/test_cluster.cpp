@@ -77,6 +77,8 @@ public:
     typedef map<const Attribute *, uint32_t> AttCounts;
     RecordPList m_fellows = { r1, r2, r3 };
     vector<AttCounts> trace = make_trace(indice, m_fellows, numcols);
+
+#if 0 /// Save all this it's really useful
     for_each(begin(trace), end(trace), [](AttCounts acs)->void {
         for_each(begin(acs), end(acs), [](AttCount ac)->void {
            const vector<const string*> & data = ac.first->get_data();
@@ -86,12 +88,18 @@ public:
            std::cout << "count: " << ac.second << std::endl;
         });
     });
+#endif
 
     vector<const Attribute *> most = get_most(trace, numcols);
 
     const Record * mp = get_record_with_most(most, m_fellows, indice, numcols);
 
-    mp->print();
+    //mp->print();
+
+    spec.it("Unique record ID for cluster representative should be 06453319-4", [mp](Description desc)->bool {
+        const string uid = mp->get_unique_record_id();
+        return (uid == string("06453319-4"));
+    });
 
   }
 

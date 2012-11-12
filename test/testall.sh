@@ -17,6 +17,8 @@ initializeANSI
 ./stringmanipulator
 ./training
 ./clusterinfo
+./cluster
+./clusterhead
 ./fetchrecords
 ./misspell
 ./rarenames
