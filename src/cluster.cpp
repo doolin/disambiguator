@@ -340,9 +340,10 @@ ClusterInfo::preliminary_consolidation(const cBlocking_Operation & blocker,
     for (list<const Record *>::const_iterator p = all_rec_list.begin();
          p != all_rec_list.end(); ++p) {
 
-        string temp ( blocker.extract_blocking_info(*p));
+        string temp (blocker.extract_blocking_info(*p));
         mi = cluster_by_block.find(temp);
-        if ( mi == cluster_by_block.end() ) {
+
+        if (mi == cluster_by_block.end()) {
             ClusterHead th(*p, 1);
             Cluster tc(th, empty_fellows);
             ClusterList tr(1, tc);
@@ -352,7 +353,7 @@ ClusterInfo::preliminary_consolidation(const cBlocking_Operation & blocker,
     }
 
 
-    for ( mi = cluster_by_block.begin(); mi != cluster_by_block.end(); ++mi ) {
+    for (mi = cluster_by_block.begin(); mi != cluster_by_block.end(); ++mi ) {
         for ( ClusterList::iterator gi = mi->second.begin(); gi != mi->second.end(); ++gi) {
             gi->self_repair();
         }
@@ -393,7 +394,7 @@ ClusterInfo::output_current_comparision_info(const char * const outputfile ) con
 void
 ClusterInfo::print(std::ostream & os) const {
 
-    if ( is_matching && (! is_consistent() ))
+    if (is_matching && (!is_consistent()))
         throw cException_Duplicate_Attribute_In_Tree("Not Consistent!");
 
     std::ostream::sync_with_stdio(false);
@@ -484,7 +485,7 @@ ClusterInfo::reset_block_activity( const char * const filename ) {
         std::cout << "Warning: Since 0 blocks are active, all will be ACTIVATED instead."
                   << std::endl;
 
-        map< const string *, bool>::iterator p = block_activity.begin();
+        map<const string *, bool>::iterator p = block_activity.begin();
         for (; p != block_activity.end(); ++p)
             p->second = true;
         cnt = block_activity.size();
@@ -564,36 +565,34 @@ ClusterInfo::output_prior_value( const char * const outputfile ) const {
 // TODO: Implement unit test
 // rg = "record groups"
 double
-get_initial_prior(const list<Cluster> & rg, bool debug_mode) {
+get_initial_prior(const list<Cluster> & rg) {
 
     double numerator = 0;
-    uint32_t tt = 0;
-    // TODO: Move to headerfile as #define,
-    // then as class variables which can be initialized
-    // as a result of configuration.
-    static const double prior_default = 1e-6;
+    uint32_t totalsize = 0;
 
     list<Cluster>::const_iterator q = rg.begin();
     for (; q != rg.end(); ++q) {
         // get_fellows() returns a RecordPList, which
         // are the records associated with a particular Cluster
-        const uint32_t c = q->get_fellows().size();
-        numerator += 1.0 * c*(c - 1);
-        tt += c;
-
-        //if (debug_mode)
-        //    (*pfs) << c << " , ";
+        // cs is cluster size
+        const uint32_t cs = q->get_fellows().size();
+        numerator += 1.0 * cs*(cs - 1);
+        totalsize += cs;
     }
 
-    double denominator = 1.0 * tt*(tt - 1);
+    double denominator = 1.0 * totalsize*(totalsize - 1);
 
-    if (denominator == 0)
-        denominator = 1e10;
+    if (0 == denominator) denominator = 1e10;
 
     double prior = numerator/denominator;
 
-    if (prior == 0)
+    if (0 == prior) {
+        // TODO: Move to headerfile as #define,
+        // then as class variables which can be initialized
+        // as a result of configuration.
+        static const double prior_default = 1e-6;
         prior = prior_default;
+    }
 
     return prior;
  }
@@ -703,7 +702,7 @@ ClusterInfo::get_prior_value(const string & block_identifier,
     }
 
     // ///////////////////////////////////////////////////////
-    // TODO: Refactor into prior_initial_value or something.
+    // Refactored into get_initial_prior.
 #if 1
     double numerator = 0;
     uint32_t tt = 0;
@@ -735,7 +734,7 @@ ClusterInfo::get_prior_value(const string & block_identifier,
     //return prior; // for refactored block
     //////   End refactor block //////////////////////////////
 #else
-    double prior = get_initial_prior(rg, debug_mode);
+    double prior = get_initial_prior(rg);
 #endif
 
 

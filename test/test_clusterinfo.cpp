@@ -46,8 +46,8 @@ public:
     const Record * r2 = rpv[2];
     const Record * r3 = rpv[3];
     const Record * r4 = rpv[4];
+    // Dummy value for cohesion
     double cohesion = 0.2343;
-    //double cohesion = 0.9953;
     ClusterHead ch(r2, cohesion);
 
     RecordPList rpl1 = { r2 };
@@ -58,18 +58,56 @@ public:
 
     ClusterInfo::ClusterList rg = { c1, c2 };
 
-    double prior = get_initial_prior(rg, false);
+    double prior = get_initial_prior(rg);
 
     Spec spec;
     spec.it("get_initial_prior() returns ~0.333333", [&](Description desc)->bool {
-      return ((0.333333-prior) < 0.00001);
+      return (fabs(0.333333-prior) < 0.00001);
+    });
+
+    rg.clear();
+    rg.push_back(c2);
+    rg.push_back(c1);
+
+    spec.it("Reorder and get_initial_prior() returns ~0.333333", [&](Description desc)->bool {
+      return (fabs(0.333333-prior) < 0.00001);
     });
 
   }
 
 
+  void test_get_initial_prior2() {
+
+    const Record * r2 = rpv[2];
+    const Record * r3 = rpv[3];
+    const Record * r4 = rpv[4];
+    const Record * r5 = rpv[5];
+    const Record * r6 = rpv[6];
+    const Record * r7 = rpv[7];
+    const Record * r8 = rpv[8];
+    // Dummy value for cohesion
+    double cohesion = 0.2343;
+    ClusterHead ch(r2, cohesion);
+
+    RecordPList rpl1 = { r2, r3, r8 };
+    Cluster c1 = Cluster(ch, rpl1);
+    RecordPList rpl2 = { r4, r5, r6, r7 };
+    Cluster c2 = Cluster(ch, rpl2);
+    ClusterInfo::ClusterList rg = { c1, c2 };
+
+    double prior = get_initial_prior(rg);
+
+    Spec spec;
+    spec.it("get_initial_prior() returns ~0.428571", [&](Description desc)->bool {
+      //return ((0.333333-prior) < 0.00001);
+      return (fabs(0.428571-prior) < 0.00001);
+    });
+  }
+
+
   void runTests() {
     test_get_initial_prior();
+    test_get_initial_prior2();
   }
 
 };
