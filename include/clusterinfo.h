@@ -404,4 +404,14 @@ double get_initial_prior(const list<Cluster> & rg);
 
 vector<uint32_t> make_indice(const string columns[], const uint32_t numcols);
 
+
+vector<map<const Attribute *, uint32_t> > make_trace(vector<uint32_t> indice, RecordPList m_fellows, uint32_t numcols);
+
+vector<const Attribute *> get_most(vector<map<const Attribute *, uint32_t> > tracer, uint32_t numcols);
+
+const Record * get_record_with_most(vector<const Attribute*> most,
+                                    RecordPList m_fellows,
+                                    vector<uint32_t> indice,
+                                    uint32_t numcols);
+
 #endif /* PATENT_CLUSTERINFO_H */

@@ -295,6 +295,7 @@ Cluster::self_repair() {
 
 
 // Memory might be an issue here.
+// This is part of Cluster::find_representative
 vector<uint32_t>
 make_indice(const string columns[], const uint32_t numcols) {
 
