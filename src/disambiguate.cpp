@@ -476,10 +476,13 @@ disambiguate_main(std::string & engineconf, std::string & blockingconf) {
         const vector <string> column_vec = EngineConfiguration::involved_columns;
         bool is_success = fetch_records_from_txt(all_records, EngineConfiguration::source_csv_file.c_str(), column_vec);
         if (not is_success) return 1;
+
+        // TODO: document what this block achieves
         map <string, const Record *> uid_dict;
         const string uid_identifier = cUnique_Record_ID::static_get_class_name();
         create_btree_uid2record_pointer(uid_dict, all_records, uid_identifier);
-        map < const Record *, RecordPList, cSort_by_attrib > patent_tree(cPatent::static_get_class_name());
+
+        map<const Record *, RecordPList, cSort_by_attrib> patent_tree(cPatent::static_get_class_name());
         build_patent_tree(  patent_tree , all_records ) ;
         Cluster::set_reference_patent_tree_pointer( patent_tree);
         list < const Record *> all_rec_pointers;
@@ -583,7 +586,6 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
     // TODO: Get rid of this declaration.
     RecordPList record_pointers;
 
-    bool matching_mode = true;
 
     char xset01[buff_size];
     char tset05[buff_size];
@@ -668,6 +670,7 @@ Full_Disambiguation( const char * EngineConfigFile, const char * BlockingConfigF
         Record::activate_comparators_by_name(BlockingConfiguration::active_similarity_attributes);
         //now training
         //match.output_list(record_pointers);
+        bool matching_mode = true;
         ClusterInfo match (uid_dict, matching_mode, frequency_adjust_mode, debug_mode);
         match.set_thresholds(threshold_vec);
 

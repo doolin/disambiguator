@@ -730,8 +730,6 @@ ClusterInfo::get_prior_value(const string & block_identifier,
 
     if (prior == 0)
         prior = prior_default;
-
-    //return prior; // for refactored block
     //////   End refactor block //////////////////////////////
 #else
     double prior = get_initial_prior(rg);
@@ -1052,8 +1050,8 @@ disambiguate_wrapper(const map<string, ClusterInfo::ClusterList>::iterator & p,
  * Aim: set the thresholds for overall disambiguation.
  */
 // TODO: Fix this.
-const vector < double > &
-ClusterInfo::set_thresholds ( const vector < double > & input ) {
+const vector<double> &
+ClusterInfo::set_thresholds(const vector<double> & input) {
 
     this->thresholds =  input;
     return this->thresholds;
