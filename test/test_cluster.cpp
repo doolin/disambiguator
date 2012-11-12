@@ -20,16 +20,19 @@ class ClusterTest : public CppUnit::TestCase {
 private:
 
   FakeTest * ft;
+  vector<const Record *> rpv;
+
 
 public:
   ClusterTest(std::string name) : CppUnit::TestCase(name) {
 
     describe_test(INDENT0, name.c_str());
 
-    //const string filename("testdata/clustertest.csv");
-    const string filename("testdata/assignee_comparison.csv");
+    const string filename("testdata/clustertest.csv");
+    //const string filename("testdata/assignee_comparison.csv");
     ft = new FakeTest(string("Fake ClusterTest"), filename);
     ft->load_fake_data(filename);
+    rpv = ft->get_recvecs();
   }
 
   void create_cluster() {
@@ -43,7 +46,8 @@ public:
     delete c;
   }
 
-  void test_make_indice() {
+
+  void test_find_representatives() {
 
     static const string useful_columns[] = {
       cFirstname::static_get_class_name(),
@@ -64,10 +68,36 @@ public:
         return (test == indice);
     });
 
+
+    const Record * r1 = rpv[1];
+    const Record * r2 = rpv[2];
+    const Record * r3 = rpv[3];
+
+    typedef std::pair<const Attribute *, uint32_t> AttCount;
+    typedef map<const Attribute *, uint32_t> AttCounts;
+    RecordPList m_fellows = { r1, r2, r3 };
+    vector<AttCounts> trace = make_trace(indice, m_fellows, numcols);
+    for_each(begin(trace), end(trace), [](AttCounts acs)->void {
+        for_each(begin(acs), end(acs), [](AttCount ac)->void {
+           const vector<const string*> & data = ac.first->get_data();
+           for_each(begin(data), end(data), [](const string * s)->void {
+              std::cout << "Att: " << s->c_str() << ", ";
+           });
+           std::cout << "count: " << ac.second << std::endl;
+        });
+    });
+
+    vector<const Attribute *> most = get_most(trace, numcols);
+
+    const Record * mp = get_record_with_most(most, m_fellows, indice, numcols);
+
+    mp->print();
+
   }
 
+
   void runTest() {
-    test_make_indice();
+    test_find_representatives();
     //create_cluster();
   }
 };

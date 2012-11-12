@@ -307,6 +307,72 @@ make_indice(const string columns[], const uint32_t numcols) {
 }
 
 
+// This is part of Cluster::find_representative
+typedef map<const Attribute *, uint32_t> AttCounts;
+vector<AttCounts>
+make_trace(vector<uint32_t> indice, RecordPList m_fellows, uint32_t numcols) {
+
+	vector<AttCounts> tracer(numcols);
+
+  RecordPList::const_iterator rp = m_fellows.begin();
+	for (; rp != m_fellows.end(); ++rp) {
+		for (uint32_t i = 0 ; i < numcols; ++i) {
+			const Attribute * pA = (*rp)->get_attrib_pointer_by_index(indice.at(i));
+			++tracer.at(i)[pA];
+		}
+	}
+  return tracer;
+}
+
+
+// This is part of Cluster::find_representative
+vector<const Attribute *>
+get_most(vector<AttCounts> tracer, uint32_t numcols) {
+
+	vector<const Attribute *> most;
+	for (uint32_t i = 0; i < numcols ; ++i) {
+
+		const Attribute * most_pA = NULL;
+		uint32_t most_cnt = 0;
+
+		for (map < const Attribute *, uint32_t >::const_iterator p = tracer.at(i).begin(); p != tracer.at(i).end(); ++p) {
+			if (p->second > most_cnt) {
+				most_cnt = p->second;
+				most_pA = p->first;
+			}
+		}
+		most.push_back(most_pA);
+  }
+  return most;
+}
+
+//
+// This is part of Cluster::find_representative
+const Record *
+get_record_with_most(vector<const Attribute*> most, RecordPList m_fellows,
+    vector<uint32_t> indice, uint32_t numcols) {
+
+	uint32_t m_cnt = 0;
+  // TODO: change to nullptr.
+	const Record * mp = NULL;
+
+	for (RecordPList::const_iterator p = m_fellows.begin(); p != m_fellows.end(); ++p) {
+		uint32_t c = 0;
+
+		for (uint32_t i = 0 ; i < numcols; ++i) {
+			const Attribute * pA = (*p)->get_attrib_pointer_by_index(indice.at(i));
+			if (pA == most.at(i)) ++c;
+		}
+
+		if (c > m_cnt) {
+			m_cnt = c;
+			mp = *p;
+		}
+
+	}
+  return mp;
+}
+
 /**
  * Aim: to find a representative/delegate for a cluster.
  *
@@ -342,15 +408,24 @@ Cluster::find_representative()  {
 	vector<uint32_t> indice = make_indice(useful_columns, numcols);
 #endif
 
-	vector < map<const Attribute *, uint32_t> > tracer(numcols);
+#if 1
+  // TODO: Refactor this block. ////////////////////////////////
+	//vector < map<const Attribute *, uint32_t> > tracer(numcols);
+  typedef map<const Attribute *, uint32_t> AttCounts;
+	vector<AttCounts> tracer(numcols);
 	for (RecordPList::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p) {
 		for (uint32_t i = 0 ; i < numcols; ++i) {
 			const Attribute * pA = (*p)->get_attrib_pointer_by_index(indice.at(i));
 			++tracer.at(i)[pA];
 		}
 	}
+  ///////////////////// End refactor  ////////////////////////////////
+#else
+// Need to set tracer here.  make_trace(indice, this->m_fellows, numcols);
+#endif
 
 
+#if 1
   // TODO: Refactor this block. ////////////////////////////////
 	vector<const Attribute *> most;
 	for (uint32_t i = 0; i < numcols ; ++i) {
@@ -367,9 +442,13 @@ Cluster::find_representative()  {
 		most.push_back(most_pA);
 	}
   ///////////////////// End refactor  ////////////////////////////////
+#else
+	vector<const Attribute *> most = get_most(tracer, numcols);
+#endif
 
 
-  // TODO: Refactor into max_attribute_count or something
+#if 1
+  ////////////////// TODO: Refactor ///////////////////////////////////
 	uint32_t m_cnt = 0;
   // TODO: change to nullptr.
 	const Record * mp = NULL;
@@ -390,7 +469,10 @@ Cluster::find_representative()  {
 	}
 
   // return mp;// from refactor
-  // /// End refactor
+  ///////////////////// End refactor  ////////////////////////////////
+#else
+  const Record * mp = get_record_with_most(most, this->m_fellows, indice, numcols);
+#endif
 
 	this->m_info.m_delegate = mp;
 }
