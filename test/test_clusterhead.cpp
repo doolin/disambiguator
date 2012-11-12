@@ -19,10 +19,10 @@ public:
 
     Spec spec;
 
-    Record * r = make_foobar_record();
-    spec.it("Creates a ClusterHead", [r](Description desc)->bool {
+    Record * representative = make_foobar_record();
+    spec.it("Creates a ClusterHead", [representative](Description desc)->bool {
       double cohesion = 0.9953;
-      ClusterHead ch(r, cohesion);
+      ClusterHead ch(representative, cohesion);
       return (cohesion == ch.m_cohesion);
     });
     // Segfaults...
@@ -31,7 +31,7 @@ public:
     // Leaks, bad
     //r->clean_member_attrib_pool();
     //std::cout << "sizeof(r): " << sizeof(*r) << std::endl;
-    delete r;
+    delete representative;
   }
 
   void runTest() {

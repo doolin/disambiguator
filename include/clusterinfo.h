@@ -402,6 +402,6 @@ public:
 
 double get_initial_prior(const list<Cluster> & rg);
 
-
+vector<uint32_t> make_indice(const string columns[], const uint32_t numcols);
 
 #endif /* PATENT_CLUSTERINFO_H */

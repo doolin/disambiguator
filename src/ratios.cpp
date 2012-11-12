@@ -582,6 +582,12 @@ print_similarity(const SimilarityProfile & s) {
 
   std::cout << "(";
 
+#if 0
+for_each (begin(indice), end(indice), [](int i)->void {
+  std::cout << i; // << std::endl;
+});
+#endif
+
   SimilarityProfile::const_iterator i = s.begin();
   for (i; i != s.end()-1; ++i) {
     std::cout << *i << ", ";

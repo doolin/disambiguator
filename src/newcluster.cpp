@@ -294,6 +294,18 @@ Cluster::self_repair() {
 }
 
 
+// Memory might be an issue here.
+vector<uint32_t>
+make_indice(const string columns[], const uint32_t numcols) {
+
+	vector<uint32_t> indice;
+	for (uint32_t i = 0; i < numcols; ++i) {
+		indice.push_back(Record::get_index_by_name(columns[i]));
+  }
+  return indice;
+}
+
+
 /**
  * Aim: to find a representative/delegate for a cluster.
  *
@@ -316,26 +328,31 @@ Cluster::find_representative()  {
     cCity::static_get_class_name(),
     cCountry::static_get_class_name()
   };
+	static const uint32_t numcols = sizeof(useful_columns)/sizeof(string);
 
-	static const uint32_t nc = sizeof(useful_columns)/sizeof(string);
-	vector<map<const Attribute *, uint32_t> > tracer(nc);
-  // TODO: Rename this to "local_index" or something.
+#if 1
+  // TODO: Refactor this block. ////////////////////////////////
 	vector<uint32_t> indice;
-
-	for (uint32_t i = 0; i < nc; ++i)
+	for (uint32_t i = 0; i < numcols; ++i) {
 		indice.push_back(Record::get_index_by_name(useful_columns[i]));
+  }
+  ///////////////////// End refactor  ////////////////////////////////
+#else
+	vector<uint32_t> indice = make_indice(useful_columns, numcols);
+#endif
 
+	vector < map<const Attribute *, uint32_t> > tracer(numcols);
 	for (RecordPList::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p) {
-		for (uint32_t i = 0 ; i < nc; ++i) {
+		for (uint32_t i = 0 ; i < numcols; ++i) {
 			const Attribute * pA = (*p)->get_attrib_pointer_by_index(indice.at(i));
 			++tracer.at(i)[pA];
 		}
 	}
 
 
-  // TODO: Refactor this block.
+  // TODO: Refactor this block. ////////////////////////////////
 	vector<const Attribute *> most;
-	for (uint32_t i = 0; i < nc ; ++i) {
+	for (uint32_t i = 0; i < numcols ; ++i) {
 
 		const Attribute * most_pA = NULL;
 		uint32_t most_cnt = 0;
@@ -348,25 +365,29 @@ Cluster::find_representative()  {
 		}
 		most.push_back(most_pA);
 	}
-  ///////////////////// End refactor
+  ///////////////////// End refactor  ////////////////////////////////
+
 
   // TODO: Refactor into max_attribute_count or something
 	uint32_t m_cnt = 0;
+  // TODO: change to nullptr.
 	const Record * mp = NULL;
+
 	for (RecordPList::const_iterator p = this->m_fellows.begin(); p != this->m_fellows.end(); ++p) {
 		uint32_t c = 0;
 
-		for (uint32_t i = 0 ; i < nc; ++i) {
+		for (uint32_t i = 0 ; i < numcols; ++i) {
 			const Attribute * pA = (*p)->get_attrib_pointer_by_index(indice.at(i));
-			if (pA == most.at(i))
-				++c;
+			if (pA == most.at(i)) ++c;
 		}
 
 		if (c > m_cnt) {
 			m_cnt = c;
 			mp = *p;
 		}
+
 	}
+
   // return mp;// from refactor
   // /// End refactor
 
