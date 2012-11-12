@@ -139,6 +139,23 @@ public:
     //print_similarity(sp);
   }
 
+
+  void test_pending() {
+
+    Spec spec;
+    spec.xit ("Test how pending works", DO_SPEC {
+        return false;
+    });
+  }
+
+
+  void runTest() {
+    compare_assignee();
+    test_different_assignees();
+    test_r1r2();
+    test_pending();
+  }
+
 };
 
 
@@ -146,9 +163,7 @@ void
 test_fetch_records() {
 
   AssigneeComparisonTest * act = new AssigneeComparisonTest("Testing assignee_comparison");
-  act->compare_assignee();
-  act->test_different_assignees();
-  act->test_r1r2();
+  act->runTest();
   delete act;
 }
 

@@ -30,6 +30,8 @@ public:
 
   FakeTest(string name, string filename);
 
+ ~FakeTest() {}
+
   void load_fake_data(string csvfilename);
 
   RecordIndex * get_uid_dict();

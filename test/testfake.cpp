@@ -5,7 +5,8 @@ void
 testfake() {
 
   string filename = "./testdata/assignee_comparison.csv";
-  FakeTest * ft = new FakeTest("Fake testing...", filename);
+  string title = "Fake testing...";
+  FakeTest * ft = new FakeTest(title, filename);
   ft->load_fake_data(filename);
   delete ft;
 }
