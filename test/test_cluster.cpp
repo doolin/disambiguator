@@ -79,10 +79,10 @@ public:
     vector<AttCounts> trace = make_trace(indice, m_fellows, numcols);
 
 #if 0 /// Save all this it's really useful
-    for_each(begin(trace), end(trace), [](AttCounts acs)->void {
-        for_each(begin(acs), end(acs), [](AttCount ac)->void {
+    for_each(begin(trace), end(trace), [](AttCounts acs) {
+        for_each(begin(acs), end(acs), [](AttCount ac) {
            const vector<const string*> & data = ac.first->get_data();
-           for_each(begin(data), end(data), [](const string * s)->void {
+           for_each(begin(data), end(data), [](const string * s) {
               std::cout << "Att: " << s->c_str() << ", ";
            });
            std::cout << "count: " << ac.second << std::endl;
