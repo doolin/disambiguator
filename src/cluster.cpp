@@ -703,7 +703,7 @@ ClusterInfo::get_prior_value(const string & block_identifier,
 
     // ///////////////////////////////////////////////////////
     // Refactored into get_initial_prior.
-#if 1
+#if 0
     double numerator = 0;
     uint32_t tt = 0;
     // TODO: Move to headerfile as #define,
