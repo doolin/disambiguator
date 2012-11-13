@@ -89,7 +89,7 @@ public:
 
   std::vector<std::string> involved_columns = setup_columns();
   //printer(involved_columns);
-  char filename[] = "./testdata/clustertest.csv";
+  char filename[] = "./fixtures/csv/rjones.csv";
   std::list <Record> all_records;
   fetch_records_from_txt(all_records, filename, involved_columns);
   rare_names(all_records);
