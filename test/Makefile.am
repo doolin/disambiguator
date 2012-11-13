@@ -1,15 +1,15 @@
 
-ILOGINSTALLDIR=/data/patentdata/ILOG/CPLEX_Studio124
-#ILOGINSTALLDIR=/Users/daviddoolin/Applications/IBM/ILOG/CPLEX_Studio124
+#ILOGINSTALLDIR=/data/patentdata/ILOG/CPLEX_Studio124
+ILOGINSTALLDIR=/Users/daviddoolin/Applications/IBM/ILOG/CPLEX_Studio124
 CPLEXINCLUDE=$(ILOGINSTALLDIR)/cplex/include
 CONCERTINCLUDE=$(ILOGINSTALLDIR)/concert/include
 
 # Linux server
-CPLEXLIB=$(ILOGINSTALLDIR)/cplex/lib/x86-64_sles10_4.1/static_pic
-CONCERTLIB=$(ILOGINSTALLDIR)/concert/lib/x86-64_sles10_4.1/static_pic
+#CPLEXLIB=$(ILOGINSTALLDIR)/cplex/lib/x86-64_sles10_4.1/static_pic
+#CONCERTLIB=$(ILOGINSTALLDIR)/concert/lib/x86-64_sles10_4.1/static_pic
 # Local macbook
-#CPLEXLIB=$(ILOGINSTALLDIR)/cplex/lib/x86-64_darwin9_gcc4.0/static_pic
-#CONCERTLIB=$(ILOGINSTALLDIR)/concert/lib/x86-64_darwin9_gcc4.0/static_pic
+CPLEXLIB=$(ILOGINSTALLDIR)/cplex/lib/x86-64_darwin9_gcc4.0/static_pic
+CONCERTLIB=$(ILOGINSTALLDIR)/concert/lib/x86-64_darwin9_gcc4.0/static_pic
 
 INCLUDES = -I/usr/local/include -I$(CPLEXINCLUDE) -I$(CONCERTINCLUDE) -I../include -I/opt/local/include -I../src
 
