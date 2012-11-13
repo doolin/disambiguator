@@ -23,12 +23,10 @@ initializeANSI
 ./misspell
 ./rarenames
 ./namecompare
-
-
-# engineconfig spews a huge list of records
-# to stdout.
-echo "Engine config"
 ./engineconfig
+
+
+
 echo "Typedefs test"
 `./typedefs`
 echo "Abbreviations test"
