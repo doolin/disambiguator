@@ -5,15 +5,19 @@
 
 #include <disambiguation.h>
 #include <engine.h>
+#include <record.h>
 
-#include "record.h"
+#include "../src/record_private.h"
 
-#include <record_private.h>
+#include "testutils.h"
 
 class RecordTest : public CppUnit::TestCase {
 
 public:
-  RecordTest(std::string name) : CppUnit::TestCase(name) {}
+  RecordTest(std::string name) : CppUnit::TestCase(name) {
+
+    describe_test(INDENT0, name.c_str());
+  }
 
   Record make_foobar_record() {
 
@@ -143,18 +147,17 @@ public:
 
   void test_sample_record_pointer() {
 
-    Record foobar = make_foobar_record();
-    foobar.set_sample_record(&foobar);
-    const Record & sample(Record::get_sample_record());
-    //Record sample = Record::get_sample_record();
-    std::cout << "&foobar: " << &foobar << ", &sample: " << &sample << std::endl;
-    CPPUNIT_ASSERT(&foobar == &sample);
+    Spec spec;
+    spec.it("Correctly sets sample record pointer", DO_SPEC_THIS {
+      Record foobar = make_foobar_record();
+      foobar.set_sample_record(&foobar);
+      const Record & sample(Record::get_sample_record());
+      return (&foobar == &sample);
+    });
   }
 
 
   void runTest() {
-    // Just o get startes...
-    CPPUNIT_ASSERT( 1  == 1 );
     delete_record();
     make_foobar_record();
     make_quuxalot_record();
@@ -171,7 +174,7 @@ public:
 void
 test_records() {
 
-  RecordTest * rt = new RecordTest(std::string("initial test"));
+  RecordTest * rt = new RecordTest(std::string("Record unit testing"));
   rt->runTest();
   delete rt;
 }

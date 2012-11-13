@@ -24,6 +24,7 @@ initializeANSI
 ./rarenames
 ./namecompare
 ./engineconfig
+./record
 
 
 
@@ -31,8 +32,6 @@ echo "Typedefs test"
 `./typedefs`
 echo "Abbreviations test"
 `./abbreviation`
-echo "Record test"
-`./record`
 
 source ./integration.sh
 
