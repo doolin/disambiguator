@@ -7,12 +7,19 @@
 #include <string>
 #include <stdlib.h>
 
+#include <cppunit/TestCase.h>
+
 #include <record.h>
 #include <cluster.h>
 #include <training.h>
 
 typedef std::vector<std::string> Labels;
 
+#include "testdata.h"
+#include "testutils.h"
+
+using std::string;
+using std::vector;
 
 std::vector<std::string>
 setup_columns() {
@@ -62,8 +69,23 @@ rare_names(std::list<Record> all_records) {
 }
 
 
-void
-test_engineconfig() {
+class EngineConfigTest : public CppUnit::TestCase {
+
+private:
+  static const std::string LINE;
+  vector<string> tcn;
+  vector<string> requested_columns;
+  vector<unsigned int> indices;
+
+public:
+  EngineConfigTest(std::string name) : CppUnit::TestCase(name) {
+
+    describe_test(INDENT0, name.c_str());
+  }
+
+ ~EngineConfigTest() {}
+
+  void runTest() {
 
   std::vector<std::string> involved_columns = setup_columns();
   //printer(involved_columns);
@@ -71,6 +93,16 @@ test_engineconfig() {
   std::list <Record> all_records;
   fetch_records_from_txt(all_records, filename, involved_columns);
   rare_names(all_records);
+  }
+};
+
+
+void
+test_engineconfig() {
+
+  EngineConfigTest * ect = new EngineConfigTest("Engine configuration unit testing");
+  ect->runTest();
+  delete ect;
 }
 
 

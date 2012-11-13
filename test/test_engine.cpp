@@ -5,7 +5,6 @@
 #include <engine.h>
 
 #include "testdata.h"
-#include "colortest.h"
 #include "testutils.h"
 
 using std::string;
