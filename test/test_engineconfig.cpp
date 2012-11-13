@@ -61,16 +61,24 @@ rare_names(std::list<Record> all_records) {
   std::cout << "End of rare_names in test" << std::endl;
 }
 
-int
-main(int UP(argc), char ** UP(argv)) {
+
+void
+test_engineconfig() {
 
   std::vector<std::string> involved_columns = setup_columns();
   //printer(involved_columns);
-  //char filename[] = "./testdata/invpat2.txt";
-  char filename[] = "/var/share/patentdata/patents/2010/invpat.csv";
+  char filename[] = "./testdata/clustertest.csv";
   std::list <Record> all_records;
   fetch_records_from_txt(all_records, filename, involved_columns);
   rare_names(all_records);
+}
 
+
+#ifdef test_engineconfig_STANDALONE
+int
+main(int UP(argc), char ** UP(argv)) {
+
+  test_engineconfig();
   return 0;
 }
+#endif
