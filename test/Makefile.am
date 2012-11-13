@@ -40,7 +40,6 @@ COMMON = testdata.cpp testutils.cpp
 testfake_SOURCES = testfake.cpp fake.cpp $(COMMON)
 ratiocomponent_SOURCES = test_ratiocomponent.cpp fake.cpp $(COMMON)
 engine_SOURCES = test_engine.cpp $(COMMON)
-#idtest_SOURCES = test_uniqueid.cpp
 typedefs_SOURCES = test_typedefs.cpp
 record_SOURCES = test_record.cpp
 cluster_SOURCES = test_cluster.cpp fake.cpp $(COMMON)
