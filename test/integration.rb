@@ -12,17 +12,17 @@ class IntegrationTest
   @@testdir      = "/data/patentdata/disambiguation/experiments/earth/berkeley"
 
   def print_headline(testname)
-    color = @@colors[116]
+    color = @@colors[45]
     print "#{color}## Integration testing for #{testname}", RESET, "\n"
   end
 
   def print_passed(testname)
-    color = @@colors[116]
+    color = @@colors[119]
     print "  #{color} Passed: #{testname}", RESET, "\n"
   end
 
   def print_failed(testname)
-    color = @@colors[116]
+    color = @@colors[124]
     print "  #{color} Failed: #{testname}", RESET, "\n"
   end
 end
