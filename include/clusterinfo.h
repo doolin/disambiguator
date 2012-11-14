@@ -223,14 +223,14 @@ private:
     map < const string *, bool > block_activity;
 
    /**
-    * vector < uint32_t > max_occurrence:
+    * max_occurrence:
     * data collected from column_stat that stores the
     * maximum occurrence of each blocking string part.
     */
     vector<uint32_t> max_occurrence;
 
    /**
-    * vector < uint32_t > min_occurrence:
+    * min_occurrence:
     * data collected from column_stat that stores the
     * minimum occurrence of each blocking string part.
     */
@@ -239,12 +239,8 @@ private:
     string useless;
     const bool frequency_adjust_mode;
     const bool debug_mode;
-    vector < double > thresholds;
+    vector<double> thresholds;
 
-    double adjust_prior(const ClusterList & rg,
-                        const string & block_id,
-                        double prior,
-                        bool debug);
 
     class cException_Cluster_Error: public cAbstract_Exception {
     public:
@@ -307,12 +303,17 @@ public:
 
     ~ClusterInfo() {}
 
-/**
- * void output_current_comparision_info(const char * const outputfile ) const:
- *     output current comparison results to a file.
- */
+   /**
+    * void output_current_comparision_info(const char * const outputfile ) const:
+    *     output current comparison results to a file.
+    */
     void output_current_comparision_info(const char * const outputfile ) const;
 
+
+    double adjust_prior(const ClusterList & rg,
+                        const string & block_id,
+                        double prior,
+                        bool debug);
 /**
  * void reset_blocking(const cBlocking_Operation & blocker, const char * const past_comparision_file):
  *     Read the data from the specified file, and use the blocker to

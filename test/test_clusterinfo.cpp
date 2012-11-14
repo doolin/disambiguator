@@ -123,6 +123,30 @@ public:
 
   void test_adjust_prior() {
 
+    const Record * r2 = rpv[2];
+    const Record * r3 = rpv[3];
+    const Record * r4 = rpv[4];
+    const Record * r5 = rpv[5];
+    const Record * r6 = rpv[6];
+    const Record * r7 = rpv[7];
+    const Record * r8 = rpv[8];
+    // Dummy value for cohesion
+    double cohesion = 0.2343;
+    ClusterHead ch(r2, cohesion);
+
+    RecordPList rpl1 = { r2, r3, r8 };
+    Cluster c1 = Cluster(ch, rpl1);
+    RecordPList rpl2 = { r4, r5, r6, r7 };
+    Cluster c2 = Cluster(ch, rpl2);
+    ClusterInfo::ClusterList rg = { c1, c2 };
+
+    map<string, const Record *>  uid_dict;
+    const string uid_identifier = cUnique_Record_ID::static_get_class_name();
+    create_btree_uid2record_pointer(uid_dict, all_records, uid_identifier);
+    ClusterInfo match(uid_dict, true, true, false);
+
+    double adjusted = match.adjust_prior(rg, string("FOOBAR###BAZ"), 0.333, false);
+
     Spec spec;
     spec.xit("adjust_prior() should do nothing", DO_SPEC {
         return true;
