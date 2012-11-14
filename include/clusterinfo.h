@@ -71,17 +71,6 @@
  * Value = whether or not to disambiguate.
  */
 
-/**
- * vector < uint32_t > max_occurrence:
- * data collected from column_stat that stores the
- * maximum occurrence of each blocking string part.
- */
-
-/**
- * vector < uint32_t > max_occurrence:
- * data collected from column_stat that stores the
- * minimum occurrence of each blocking string part.
- */
 
 /**
  * string useless:
@@ -232,8 +221,20 @@ private:
     vector < map < string, uint32_t > > column_stat;
     map < const string *, list <double>  > prior_data;
     map < const string *, bool > block_activity;
-    vector < uint32_t > max_occurrence;
-    vector < uint32_t > min_occurrence;
+
+   /**
+    * vector < uint32_t > max_occurrence:
+    * data collected from column_stat that stores the
+    * maximum occurrence of each blocking string part.
+    */
+    vector<uint32_t> max_occurrence;
+
+   /**
+    * vector < uint32_t > min_occurrence:
+    * data collected from column_stat that stores the
+    * minimum occurrence of each blocking string part.
+    */
+    vector<uint32_t> min_occurrence;
 
     string useless;
     const bool frequency_adjust_mode;
