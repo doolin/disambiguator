@@ -115,7 +115,16 @@ public:
     create_btree_uid2record_pointer(uid_dict, all_records, uid_identifier);
     ClusterInfo match(uid_dict, true, true, false);
     Spec spec;
-    spec.it("ClusterInfo constructor works", DO_SPEC {
+    spec.xit("ClusterInfo constructor works", DO_SPEC {
+        return true;
+    });
+  }
+
+
+  void test_adjust_prior() {
+
+    Spec spec;
+    spec.xit("adjust_prior() should do nothing", DO_SPEC {
         return true;
     });
   }
@@ -123,6 +132,7 @@ public:
   void runTests() {
     test_get_initial_prior();
     test_get_initial_prior2();
+    test_adjust_prior();
     test_constructor();
   }
 

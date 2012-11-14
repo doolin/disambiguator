@@ -135,6 +135,10 @@ ClusterInfo::retrieve_last_comparision_info (
         uint32_t count = 0;
         const uint32_t base = 100000;
 
+
+        // TODO: Refactor all these clearing calls into a
+        // ClusterInfo::clear(). Testing can proceed against
+        // .empty().
         cluster_by_block.clear();
         this->column_stat.clear();
         this->column_stat.resize(num_columns);
@@ -621,11 +625,11 @@ ClusterInfo::adjust_prior(const ClusterInfo::ClusterList & rg,
     const uint32_t uninvolved_index = 1; 
 
     while (true) {
-        pos = block_identifier.find(cBlocking_Operation::delim, prev_pos );
+        pos = block_identifier.find(cBlocking_Operation::delim, prev_pos);
         if (pos == string::npos)
             break;
 
-        string piece = block_identifier.substr( prev_pos, pos - prev_pos );
+        string piece = block_identifier.substr( prev_pos, pos - prev_pos);
         prev_pos = pos + cBlocking_Operation::delim.size();
 
         // TODO: uninvolved_index is a hardwired parameter
@@ -640,16 +644,17 @@ ClusterInfo::adjust_prior(const ClusterInfo::ClusterList & rg,
             factor_history.push_back(factor);
         }
 
-        /*
+        //*
         if (debug_mode) {
-            (*pfs) << '\n'
+            //(*pfs) << '\n'
+          std::cout << '\n'
                    << "Part: " << seq
                    << " Max occurrence: " << max_occurrence.at(seq)
                    << " Min occurrence: " << min_occurrence.at(seq)
                    << " Self occurrence: " << this->column_stat.at(seq)[piece]
                    << " Before adjustment: "<< prior << '\n';
         }
-        */
+        //*/
 
         final_factor = max_val(final_factor, factor);
         ++seq;
@@ -658,7 +663,7 @@ ClusterInfo::adjust_prior(const ClusterInfo::ClusterList & rg,
     if (final_factor <= 1) {
         prior *= final_factor;
     } else {
-        vector <double>::const_iterator pv = factor_history.begin();
+        vector<double>::const_iterator pv = factor_history.begin();
         for (; pv != factor_history.end(); ++pv)
             if (*pv > 1)
                 prior *= *pv;
