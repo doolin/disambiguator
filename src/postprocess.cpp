@@ -51,7 +51,6 @@ post_polish(ClusterSet & m,
             const string & logfile) {
 
     std::cout << "Starting post processing ... ..." << std::endl;
-    set < const Record *> linkages;
     const double normal_threshold = 0.95;
     const double asian_threshold = 0.99;
     double threshold = normal_threshold ;
@@ -77,8 +76,8 @@ post_polish(ClusterSet & m,
     const unsigned int base = 1000;
     unsigned int cnt = 0;
 
-    map < const Record *,  Cluster_Container::iterator > record2cluster;
-    map < const Record *, Cluster_Container::iterator >::const_iterator z;
+    map<const Record *, Cluster_Container::iterator> record2cluster;
+    map<const Record *, Cluster_Container::iterator>::const_iterator z;
 
     for ( Cluster_Container ::iterator p = m.get_modifiable_set().begin(); p != m.get_modifiable_set().end(); ++p ) {
         record2cluster.insert(std::pair < const Record *, Cluster_Container::iterator > (p->get_cluster_head().m_delegate, p ) );
@@ -97,9 +96,10 @@ post_polish(ClusterSet & m,
                 threshold = asian_threshold;
 
 
+            set<const Record *> linkages;
             linkages.clear();
             find_associated_nodes( *q, uid2uinv, patent_tree, linkages);
-            list < const Record *> links ( linkages.begin(), linkages.end()) ;
+            list <const Record *> links (linkages.begin(), linkages.end()) ;
 
 
             const Attribute * center_first_attrib = q->get_cluster_head().m_delegate->get_attrib_pointer_by_index(fi);
