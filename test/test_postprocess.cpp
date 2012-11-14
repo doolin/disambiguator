@@ -35,7 +35,20 @@ public:
     describe_test(INDENT0, name.c_str());
   }
 
+
+  void test_find_associated_nodes() {
+
+    describe_test(INDENT2, "Testing associated nodes...");
+
+    Spec spec;
+    spec.xit("create associated_delegates set", DO_SPEC {
+        return false;
+    });
+  }
+
+
   void runTests() {
+    test_find_associated_nodes();
   }
 
 };
