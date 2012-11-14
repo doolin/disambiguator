@@ -25,7 +25,7 @@ initializeANSI
 ./namecompare
 ./engineconfig
 ./record
-
+./postprocess
 
 
 echo "Typedefs test"

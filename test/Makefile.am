@@ -28,7 +28,7 @@ TESTS =  typedefs record blocking attribute stringmanipulator \
 	comparators comparesimilarities strcmp95 rarenames engineconfig           \
 	abbreviation misspell namecompare jwcmp similarity clusterhead cluster engine \
 	training ratios fetchrecords assigneecomparison clusterinfo ratiocomponent \
-	coauthor qp compare testfake
+	coauthor qp compare testfake postprocess
 
 bin_PROGRAMS = $(TESTS)
 
@@ -69,6 +69,7 @@ stringmanipulator_SOURCES = test_string_manipulator.cpp $(COMMON)
 strcmp95_SOURCES = test_strcmp95.cpp $(COMMON)
 qp_SOURCES = test_qp.cpp $(COMMON)
 compare_SOURCES = test_compare.cpp $(COMMON)
+postprocess_SOURCES = test_postprocess.cpp $(COMMON)
 
 relink:
 	rm -rf $(TESTS)
