@@ -116,19 +116,20 @@
  */
 
 /**
- *        void retrieve_last_comparision_info (const cBlocking_Operation & blocker,
- *                                             const char * const past_comparision_file):
- *            To retrieve the disambiguation results from last run, and start blocking by "blocker".
+ * void retrieve_last_comparision_info (const cBlocking_Operation & blocker,
+ * const char * const past_comparision_file):
+ * To retrieve the disambiguation results from last run,
+ * and start blocking by "blocker".
  */
 
 /**
- *        void output_prior_value(const char * const prior_to_save) const:
- *            save the priori values and their blocking ids in a file.
+ * void output_prior_value(const char * const prior_to_save) const:
+ * save the priori values and their blocking ids in a file.
  */
 
 /**
- *        ClusterInfo (const ClusterInfo &):
- *            copy constructor. It is forbidden to call copy constructor.
+ * ClusterInfo (const ClusterInfo &):
+ * copy constructor. It is forbidden to call copy constructor.
  */
 
 
@@ -423,18 +424,22 @@ public:
 };
 
 
-double get_initial_prior(const list<Cluster> & rg);
+double                    get_initial_prior   (const list<Cluster> & rg);
 
-vector<uint32_t> make_indice(const string columns[], const uint32_t numcols);
+vector<uint32_t>          make_indice         (const string columns[],
+                                               const uint32_t numcols);
 
 
-vector<map<const Attribute *, uint32_t> > make_trace(vector<uint32_t> indice, RecordPList m_fellows, uint32_t numcols);
+vector<map<const Attribute *, uint32_t> > make_trace(vector<uint32_t> indice,
+                                                     RecordPList m_fellows,
+                                                     uint32_t numcols);
 
-vector<const Attribute *> get_most(vector<map<const Attribute *, uint32_t> > tracer, uint32_t numcols);
+vector<const Attribute *> get_most            (vector<map<const Attribute *, uint32_t> > tracer,
+                                               uint32_t numcols);
 
-const Record * get_record_with_most(vector<const Attribute*> most,
-                                    RecordPList m_fellows,
-                                    vector<uint32_t> indice,
-                                    uint32_t numcols);
+const Record *            get_record_with_most(vector<const Attribute*> most,
+                                               RecordPList m_fellows,
+                                               vector<uint32_t> indice,
+                                               uint32_t numcols);
 
 #endif /* PATENT_CLUSTERINFO_H */
