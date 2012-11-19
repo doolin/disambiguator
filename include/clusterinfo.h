@@ -113,17 +113,25 @@
  *                                            const string * const bid,
  *                                            const double threshold ):
  *            To disambiguate a certain block with all necessary information.
- *
+ */
+
+/**
  *        void retrieve_last_comparision_info (const cBlocking_Operation & blocker,
  *                                             const char * const past_comparision_file):
  *            To retrieve the disambiguation results from last run, and start blocking by "blocker".
- *
+ */
+
+/**
  *        void output_prior_value(const char * const prior_to_save) const:
  *            save the priori values and their blocking ids in a file.
- *
+ */
+
+/**
  *        ClusterInfo (const ClusterInfo &):
  *            copy constructor. It is forbidden to call copy constructor.
- *
+ */
+
+/**
  *        void print(std::ostream & os) const:
  *            export the comparison to an ostream. Called only internally.
  */
@@ -131,26 +139,17 @@
 /*
  *        const string & get_useless_string() const:
  *            return the reference of the "information-less" string by the blocker.
- *
+ */
+
+/**
  *        double get_prior_value(const string & block_identifier, const list <Cluster> & rg):
  *            obtain a priori probability for a certain block.
- *
- *        const map < const string *, list<double> > & get_prior_map() const:
- *            return the const reference of priori probability map.
- *
- *        map < const string*, list <double> > & get_prior_map():
- *            returns the reference of the priori probability map.
- *
- *        const ClusterList & get_comparision_map(const string* bid) const:
- *            return the const reference of cluster lists whose blocking label pointer is bid.
- *
- *        ClusterList & get_comparision_map(const string* bid):
- *            return the reference of cluster lists whose blocking label pointer is bid.
- *
- *        uint32_t reset_block_activity(const char * filename):
- *            read data from the file and set the corresponding block to be active.
- *            Returns the number of active blocks. This is designed for debugging.
  */
+
+
+
+
+
 
 
 
@@ -270,18 +269,44 @@ private:
 
     double get_prior_value(const string & block_identifier, const list <Cluster> & rg );
 
+   /**
+    * const map < const string *, list<double> > & get_prior_map() const:
+    * return the const reference of priori probability map.
+    */
     const map<const string *, list<double> > & get_prior_map() const {
       return prior_data;
     }
 
+   /**
+    * map < const string*, list <double> > & get_prior_map():
+    * returns the reference of the priori probability map.
+    */
     map<const string*, list<double> > & get_prior_map() {
       return prior_data;
     };
 
+
+   /**
+    * const ClusterList & get_comparision_map(const string* bid) const:
+    * return the const reference of cluster lists whose blocking
+    * label pointer is bid.
+    */
     const ClusterList & get_comparision_map(const string* bid) const;
 
+
+   /**
+    * ClusterList & get_comparision_map(const string* bid):
+    * return the reference of cluster lists whose blocking
+    * label pointer is bid.
+    */
     ClusterList & get_comparision_map(const string* bid);
 
+
+   /**
+    * uint32_t reset_block_activity(const char * filename):
+    * read data from the file and set the corresponding block to be active.
+    * Returns the number of active blocks. This is designed for debugging.
+    */
     uint32_t reset_block_activity( const char * filename );
 
     void debug_disambiguation_loop(ClusterList::iterator, ClusterList::iterator, const double, const ClusterHead &);
@@ -329,18 +354,18 @@ public:
     */
     void preliminary_consolidation(const cBlocking_Operation & blocker, const list < const Record *> & all_rec_list);
 
-/**
- * ClusterInfo(const map <string, const Record*> & input_uid2record,
- * const bool input_is_matching,
- * const bool aum,
- * const bool debug):
- *  Constructor of a class object.
- *  input_uid2record = map of unique record id string to its Record object pointer.
- *  input_is_matching = whether the object reads a match file.
- *  Always set to true unless new functionalities are added.
- *  aum = frequency adjust mode: on or off.
- *  debug = debug mode: on or off.
- */
+   /**
+    * ClusterInfo(const map <string, const Record*> & input_uid2record,
+    * const bool input_is_matching,
+    * const bool aum,
+    * const bool debug):
+    *  Constructor of a class object.
+    *  input_uid2record = map of unique record id string to its Record object pointer.
+    *  input_is_matching = whether the object reads a match file.
+    *  Always set to true unless new functionalities are added.
+    *  aum = frequency adjust mode: on or off.
+    *  debug = debug mode: on or off.
+    */
     ClusterInfo(const map <string, const Record * > & input_uid2record,
                 const bool input_is_matching ,
                 const bool aum ,
