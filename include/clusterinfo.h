@@ -131,25 +131,6 @@
  *            copy constructor. It is forbidden to call copy constructor.
  */
 
-/**
- *        void print(std::ostream & os) const:
- *            export the comparison to an ostream. Called only internally.
- */
-
-/*
- *        const string & get_useless_string() const:
- *            return the reference of the "information-less" string by the blocker.
- */
-
-/**
- *        double get_prior_value(const string & block_identifier, const list <Cluster> & rg):
- *            obtain a priori probability for a certain block.
- */
-
-
-
-
-
 
 
 
@@ -261,13 +242,28 @@ private:
 
     ClusterInfo (const ClusterInfo &);
 
+   /**
+    * void print(std::ostream & os) const:
+    * export the comparison to an ostream. Called only internally.
+    */
     void print(std::ostream & os) const;
 
+   /**
+    * const string & get_useless_string() const:
+    * return the reference of the "information-less"
+    * string by the blocker.
+    */
     const string & get_useless_string() const {
       return useless;
     }
 
+
+   /**
+    * double get_prior_value(const string & block_identifier, const list <Cluster> & rg):
+    *  obtain a priori probability for a certain block.
+    */
     double get_prior_value(const string & block_identifier, const list <Cluster> & rg );
+
 
    /**
     * const map < const string *, list<double> > & get_prior_map() const:
