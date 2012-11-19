@@ -289,16 +289,16 @@ private:
 
 public:
 
-/**
- * static const char * const primary_delim:
- * the primary delimiter in the text file that saves disambiguation results.
- */
+   /**
+    * static const char * const primary_delim:
+    * the primary delimiter in the text file that saves disambiguation results.
+    */
     static const char * const primary_delim;
 
-/**
- * static const char * const secondary_delim:
- * the secondary delimiter in the text file that saves disambiguation results.
- */
+   /**
+    * static const char * const secondary_delim:
+    * the secondary delimiter in the text file that saves disambiguation results.
+    */
     static const char * const secondary_delim;
 
     ~ClusterInfo() {}
@@ -314,19 +314,19 @@ public:
                         const string & block_id,
                         double prior,
                         bool debug);
-/**
- * void reset_blocking(const cBlocking_Operation & blocker, const char * const past_comparision_file):
- *     Read the data from the specified file, and use the blocker to
- *     create blocks. A necessary step for disambiguation.
- */
+   /**
+    * void reset_blocking(const cBlocking_Operation & blocker, const char * const past_comparision_file):
+    *     Read the data from the specified file, and use the blocker to
+    *     create blocks. A necessary step for disambiguation.
+    */
     void reset_blocking(const cBlocking_Operation & blocker, const char * const past_comparision_file);
 
-/**
- * void preliminary_consolidation(const cBlocking_Operation & blocker, const list < const Record *> & all_rec_list):
- *  A preliminary consolidation step. Put all the records with identical blocking
- *  string together in same clusters. In practice, it is used to group records
- *  with exact firstname, middlename, lastname, assignee, city, country together.
- */
+   /**
+    * void preliminary_consolidation(const cBlocking_Operation & blocker, const list < const Record *> & all_rec_list):
+    *  A preliminary consolidation step. Put all the records with identical blocking
+    *  string together in same clusters. In practice, it is used to group records
+    *  with exact firstname, middlename, lastname, assignee, city, country together.
+    */
     void preliminary_consolidation(const cBlocking_Operation & blocker, const list < const Record *> & all_rec_list);
 
 /**
