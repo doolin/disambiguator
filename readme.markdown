@@ -11,7 +11,28 @@ considerations.
 The United States Patent and Trademark Office issues unique ID 
 numbers for patents, but does not uniquely identify inventors.
 
+## Contributing
 
+Easy, fork it and go. You will need the following to compile:
+
+* gcc4.7 or 4.8 toolchain, or a recent icc or clang release
+implementing most of c++11.
+* IBM's cplex package, free for academic use. You can compile
+and link without cplex, but you won't be able to generate the
+lookup tables. 
+
+Don't forget to set the upstream repo for
+rebasing correctly:
+
+* git remote add upstream
+  https://doolin@bitbucket.org/doolin/disambiguator.git
+
+Before you pull from upstream or issue pull request, rebase:
+
+* git pull --rebase upstream master
+
+This will keep a linear commit history, which helps
+debugging tremendously.
 
 ## Documentation 
 
