@@ -19,10 +19,10 @@
 typedef const char * Description;
 typedef void (*Describer)(const char *, const char *);
 
-void describe_test(const char * indent, const char * description);
-void describe_pass(const char * indent, const char * description);
-void describe_fail(const char * indent, const char * description);
-void describe_pending(const char * indent, const char * description);
+void describe_test    (const char * indent, const char * description);
+void describe_pass    (const char * indent, const char * description);
+void describe_fail    (const char * indent, const char * description);
+void describe_pending (const char * indent, const char * description);
 
 #define DO_SPEC [](Description d)->bool
 #define DO_SPEC_THIS [this](Description d)->bool
