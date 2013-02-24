@@ -610,6 +610,15 @@ fetch_records_from_txt(list <Record> & source,
 }
 
 
+/**
+ * Helpful links:
+ * http://journal.stuffwithstuff.com/2012/01/24/higher-order-macros-in-c/
+ * http://www.drdobbs.com/the-new-c-x-macros/184401387
+ * http://blog.brush.co.nz/2009/08/xmacros/
+ * http://s11n.net/papers/supermacros_cpp.html
+ * http://gcc.gnu.org/onlinedocs/cpp/Stringification.html
+ * http://gcc.gnu.org/onlinedocs/cpp/Concatenation.html
+ */
 Attribute *
 create_attribute_instance ( const string & id ) {
 
