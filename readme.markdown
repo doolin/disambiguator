@@ -24,8 +24,8 @@ lookup tables.
 Don't forget to set the upstream repo for
 rebasing correctly:
 
-* git remote add upstream
-  https://doolin@bitbucket.org/doolin/disambiguator.git
+* `git remote add upstream
+  git://github.com/funginstitute/disambiguator.git`
 
 Before you pull from upstream or issue pull request, rebase:
 
